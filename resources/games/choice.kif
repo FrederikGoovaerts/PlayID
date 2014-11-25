@@ -1,0 +1,57 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Choice Game (Broncode van blocks gebruikt om heel simpel spel te maken)
+;;;
+;;;     Rules: To win, choose 'a', and not 'b'
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(role player)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    (init (unchosen a))
+    (init (unchosen b))
+
+    (init (step 1))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    (<= (next (chosen ?x))
+        (does player (choose ?x)))
+
+    (<= (next (unchosen ?x))
+        (does player (choose ?y))
+        (true (unchosen ?x))
+        (distinct ?x ?y))
+
+    (<= (next (unchosen ?x))
+        (does player (choose ?y))
+        (true (unchosen ?x))
+        (distinct ?x ?y))
+
+    (<= (next (step ?y))
+        (true (step ?x))
+        (succ ?x ?y))
+
+    (succ 1 2)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    (<= (legal player (choose ?x))
+        (true (unchosen ?x)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    (<= (goal player 100)
+        (chosen a))
+
+    (<= (goal player 0)
+        (chosen b))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    (<= terminal
+        (true (step 2)))
+
+    (<= terminal
+        (true (chosen ?x)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

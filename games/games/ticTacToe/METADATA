@@ -1,0 +1,7 @@
+{
+  "gameName": "Tic-Tac-Toe",  
+  "rulesheet": "ticTacToe.kif",
+  "stylesheet": "ticTacToe.xsl",
+  "description": "ticTacToe.txt",
+  "user_interface": "ticTacToe.js"
+}
