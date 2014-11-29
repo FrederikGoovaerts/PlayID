@@ -1,12 +1,12 @@
 package parser;
 
+import fodot.predicate.Predicate;
+import fodot.type.Type;
 import org.ggp.base.util.gdl.GdlVisitor;
 import org.ggp.base.util.gdl.GdlVisitors;
 import org.ggp.base.util.gdl.grammar.*;
 
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -15,10 +15,13 @@ public class GdlInspector extends GdlVisitor{
 
     /***************************************************************************
      * Constructor
-     *************************************************************************
-     * @param rules*/
+     **************************************************************************/
 
     public GdlInspector(List<Gdl> rules){
+        this.roles = new TreeSet<>();
+        this.predicates = new TreeSet<>();
+        this.constants = new HashMap<>();
+
         GdlVisitors.visitAll(rules, this);
         System.out.println(this.getRoles());
     }
@@ -27,7 +30,8 @@ public class GdlInspector extends GdlVisitor{
      * Class Properties
      **************************************************************************/
 
-    private Set<String> roles = new TreeSet<>();
+    /* Roles in the Gdl Game */
+    private Set<String> roles;
 
     public Set<String> getRoles() {
         return new TreeSet<>(roles);
@@ -37,6 +41,30 @@ public class GdlInspector extends GdlVisitor{
         if(roleName == null)
             throw new IllegalArgumentException();
         roles.add(roleName);
+    }
+
+    /* Predicates extracted from the Gdl Game */
+    private Set<Predicate> predicates;
+
+    public Set<Predicate> getPredicates() {
+        return new TreeSet<>(predicates);
+    }
+
+    private void addPredicate(Predicate pred){
+        if(pred == null)
+            throw new IllegalArgumentException();
+        predicates.add(pred);
+    }
+
+    /* Constants in the Gdl Game, with their types */
+
+    private Map<String,Type> constants;
+
+    private void addConstant(String constantName, Type type){
+        if(constants.containsKey(constantName)
+                && !constants.get(constantName).equals(Type.getPlaceHolderType()))
+            throw new IllegalArgumentException("Can't replace an existing constant!");
+        constants.put(constantName,type);
     }
 
     /***************************************************************************
@@ -63,16 +91,17 @@ public class GdlInspector extends GdlVisitor{
 
     @Override
     public void visitFunction(GdlFunction function) {
-        System.out.println("function = [" + function + "]");
+        //Add this stuff as a predicate to the theory
     }
 
     @Override
     public void visitDistinct(GdlDistinct distinct) {
-        System.out.println("distinct = [" + distinct + "]");
+        //This has to be picked up earlier in the recursive tree?
+        //Needs a second run?
     }
 
     @Override
     public void visitRule(GdlRule rule) {
-        System.out.println("rule = [" + rule + "]");
+        // Important. Declares next, goals, terminals and more
     }
 }
