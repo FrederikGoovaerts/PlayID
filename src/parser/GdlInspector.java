@@ -14,61 +14,61 @@ public class GdlInspector extends GdlVisitor{
 
     @Override
     public void visitTerm(GdlTerm term) {
-        // Do nothing; override in a subclass to do something.
+        System.out.println("term = [" + term + "]");
     }
 
     @Override
     public void visitConstant(GdlConstant constant) {
-        // Do nothing; override in a subclass to do something.
+        System.out.println("constant = [" + constant + "]");
     }
 
     @Override
     public void visitVariable(GdlVariable variable) {
-        // Do nothing; override in a subclass to do something.
+        System.out.println("variable = [" + variable + "]");
     }
 
     @Override
     public void visitFunction(GdlFunction function) {
-        // Do nothing; override in a subclass to do something.
+        System.out.println("function = [" + function + "]");
     }
 
     @Override
     public void visitLiteral(GdlLiteral literal) {
-        // Do nothing; override in a subclass to do something.
+        System.out.println("literal = [" + literal + "]");
     }
 
     @Override
     public void visitSentence(GdlSentence sentence) {
-        // Do nothing; override in a subclass to do something.
+        System.out.println("sentence = [" + sentence + "]");
     }
 
     @Override
     public void visitRelation(GdlRelation relation) {
-        // Do nothing; override in a subclass to do something.
+        System.out.println("relation = [" + relation + "]");
     }
 
     @Override
     public void visitProposition(GdlProposition proposition) {
-        // Do nothing; override in a subclass to do something.
+        System.out.println("proposition = [" + proposition + "]");
     }
 
     @Override
     public void visitNot(GdlNot not) {
-        // Do nothing; override in a subclass to do something.
+        System.out.println("not = [" + not + "]");
     }
 
     @Override
     public void visitDistinct(GdlDistinct distinct) {
-        // Do nothing; override in a subclass to do something.
+        System.out.println("distinct = [" + distinct + "]");
     }
 
     @Override
     public void visitOr(GdlOr or) {
-        // Do nothing; override in a subclass to do something.
+        System.out.println("or = [" + or + "]");
     }
 
     @Override
     public void visitRule(GdlRule rule) {
-        // Do nothing; override in a subclass to do something.
+        System.out.println("rule = [" + rule + "]");
     }
 }

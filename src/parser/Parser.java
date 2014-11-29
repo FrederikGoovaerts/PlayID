@@ -8,6 +8,7 @@ import java.util.Set;
 import org.ggp.base.util.Pair;
 import org.ggp.base.util.files.FileUtils;
 import org.ggp.base.util.game.Game;
+import org.ggp.base.util.gdl.GdlVisitors;
 import org.ggp.base.util.gdl.grammar.Gdl;
 
 /**
@@ -27,9 +28,8 @@ public class Parser {
         System.out.println(file.exists());
         Parser test = new Parser(file);
         List<Gdl> rules = test.game.getRules();
-        for (Gdl rule :rules) {
-            System.out.println(rule);
-        }
+        GdlInspector inspector = new GdlInspector();
+        GdlVisitors.visitAll(rules,inspector);
     }
 
     //---------------------------------------------
@@ -135,7 +135,6 @@ public class Parser {
     private Set<String> parseRoles() {
         return null;
     }
-
 
     private Set<Gdl> parseInits() {
         return null;
