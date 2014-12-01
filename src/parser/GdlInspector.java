@@ -67,16 +67,61 @@ public class GdlInspector extends GdlVisitor{
         constants.put(constantName,type);
     }
 
+    private boolean isConstantRegistered(String constantName){
+        return !constants.containsKey(constantName);
+    }
+
+    private boolean isConstantTyped(String constantName){
+        if(!constants.containsKey(constantName))
+            throw new IllegalArgumentException("constant is not yet in the mapping!");
+        return (constants.get(constantName).equals(Type.getPlaceHolderType()));
+    }
+
     /***************************************************************************
      * Visitor Methods
      **************************************************************************/
 
     @Override
     public void visitRelation(GdlRelation relation) {
-        if(relation.getName().getValue().equals("role")){
-            this.addRole(relation.getBody().get(0).toString());
+        String relationName = relation.getName().getValue();
+        switch (relationName) {
+            case "role": this.processRole(relation);
+                break;
+            case "init": this.processInit(relation);
+                break;
+            case "legal": this.processLegal(relation);
+                break;
+            case "terminal": this.processTerminal(relation);
+                break;
+            case "goal": this.processGoal(relation);
+                break;
+            default: this.processStaticRelation(relation);
+                break;
         }
-        System.out.println("relation = [" + relation + "]");
+    }
+
+    private void processRole(GdlRelation relation) {
+        this.addRole(relation.getBody().get(0).toString());
+    }
+
+    private void processInit(GdlRelation relation) {
+
+    }
+
+    private void processLegal(GdlRelation relation) {
+
+    }
+
+    private void processTerminal(GdlRelation relation) {
+
+    }
+
+    private void processGoal(GdlRelation relation) {
+
+    }
+
+    private void processStaticRelation(GdlRelation relation) {
+
     }
 
     @Override
