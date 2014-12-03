@@ -1,6 +1,6 @@
-package fodot.predicate;
+package fodot.objects.predicate;
 
-import fodot.type.Type;
+import fodot.objects.type.Type;
 
 import java.util.ArrayList;
 import java.util.List;

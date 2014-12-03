@@ -1,4 +1,7 @@
-package fodot.type;
+package fodot.objects.type;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -38,6 +41,14 @@ public class Type {
         return moon;
     }
 
+    public static List<Type> getPlaceHolderList(int amount){
+        List<Type> result = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            result.add(Type.getPlaceHolderType());
+        }
+        return result;
+    }
+
     /************************************/
 
     /***************************************************************************
@@ -51,7 +62,8 @@ public class Type {
 
         Type type = (Type) o;
 
-        if (typeName != null ? !typeName.equals(type.typeName) : type.typeName != null)
+        if (typeName != null ? !typeName.equals(type.typeName) :
+                type.typeName != null)
             return false;
 
         return true;
