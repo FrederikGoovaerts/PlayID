@@ -22,11 +22,6 @@
         (true (unchosen ?x))
         (distinct ?x ?y))
 
-    (<= (next (unchosen ?x))
-        (does player (choose ?y))
-        (true (unchosen ?x))
-        (distinct ?x ?y))
-
     (<= (next (step ?y))
         (true (step ?x))
         (succ ?x ?y))
