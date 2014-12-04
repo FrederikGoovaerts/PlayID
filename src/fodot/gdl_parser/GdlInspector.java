@@ -16,6 +16,7 @@ public class GdlInspector extends GdlVisitor{
      **************************************************************************/
 
     public GdlInspector(List<Gdl> rules, GdlTransformer transformer){
+        this.rules = rules;
         this.transformer = transformer;
         GdlVisitors.visitAll(rules, this);
     }
@@ -30,26 +31,52 @@ public class GdlInspector extends GdlVisitor{
         return transformer;
     }
 
+    private List<Gdl> rules;
+
+    private List<Gdl> getRules() {
+        return rules;
+    }
+
     /***************************************************************************
      * Visitor Methods
      **************************************************************************/
 
     @Override
     public void visitRelation(GdlRelation relation) {
+        System.out.println("relation = [" + relation + "]");
         String relationName = relation.getName().getValue();
-        switch (relationName) {
-            case "role": this.getTransformer().processRole(relation);
-                break;
-            case "init": this.getTransformer().processInit(relation);
-                break;
-            case "legal": this.getTransformer().processLegal(relation);
-                break;
-            case "terminal": this.getTransformer().processTerminal(relation);
-                break;
-            case "goal": this.getTransformer().processGoal(relation);
-                break;
-            default: this.getTransformer().processStaticRelation(relation);
-                break;
+        if(this.getRules().contains(relation)) {
+            System.out.println("is a root Relation");
+            switch (relationName) {
+                case "role":
+                    this.getTransformer().processRole(relation);
+                    break;
+                case "init":
+                    this.getTransformer().processInit(relation);
+                    break;
+                case "legal":
+                    this.getTransformer().processLegal(relation);
+                    break;
+                case "terminal":
+                    this.getTransformer().processTerminal(relation);
+                    break;
+                case "goal":
+                    this.getTransformer().processGoal(relation);
+                    break;
+                default:
+                    this.getTransformer().processStaticPredicate(relation);
+                    break;
+            }
+        } else {
+            switch (relationName) {
+                case "next":
+                case "true":
+                    this.getTransformer().processPredicate(relation.get(0));
+                    break;
+                case "does":
+                    this.getTransformer().processAction(relation.get(2));
+                    break;
+            }
         }
     }
 
@@ -65,17 +92,20 @@ public class GdlInspector extends GdlVisitor{
 
     @Override
     public void visitFunction(GdlFunction function) {
+        System.out.println("function = [" + function + "]");
         //Add this stuff as a predicate to the theory
     }
 
     @Override
     public void visitDistinct(GdlDistinct distinct) {
+        System.out.println("distinct = [" + distinct + "]");
         //This has to be picked up earlier in the recursive tree?
         //Needs a second run?
     }
 
     @Override
     public void visitRule(GdlRule rule) {
+        System.out.println("rule = [" + rule + "]");
         // Important. Declares next, goals, terminals and more
     }
 }

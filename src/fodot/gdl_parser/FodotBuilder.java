@@ -30,6 +30,8 @@ public class FodotBuilder implements GdlTransformer{
      * Class Properties
      **************************************************************************/
 
+    //TODO: Al deze shit in een apart Fodot object
+
     /* Roles in the Gdl Game */
     private Set<String> roles;
 
@@ -65,6 +67,10 @@ public class FodotBuilder implements GdlTransformer{
             throw new IllegalArgumentException("Predicate not found!");
         return predicates.get(predName);
     }
+
+    //TODO: set van predicaten die nog niet volledig getyped zijn, om te
+    // zien of er een nieuwe run van de regels gedaan moet worden om verder te
+    // typescannen
 
     /* Constants in the Gdl Game, with their types */
 
@@ -140,7 +146,12 @@ public class FodotBuilder implements GdlTransformer{
     }
 
     @Override
-    public void processStaticRelation(GdlRelation relation) {
+    public void processStaticPredicate(GdlRelation relation) {
+
+    }
+
+    @Override
+    public void processPredicate(GdlTerm gdlTerm) {
 
     }
 
