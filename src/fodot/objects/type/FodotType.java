@@ -8,14 +8,14 @@ import java.util.Set;
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
-public class Type {
+public class FodotType {
 
     /***************************************************************************
      * Constructor
      **************************************************************************/
 
 
-    public Type(String typeName) {
+    public FodotType(String typeName) {
         this.typeName = typeName;
     }
 
@@ -37,16 +37,16 @@ public class Type {
      * functions until they can be filled
      */
 
-    private static Type moon = new Type("Unfilled");
+    private static FodotType moon = new FodotType("Unfilled");
 
-    public static Type getPlaceHolderType() {
+    public static FodotType getPlaceHolderType() {
         return moon;
     }
 
-    public static List<Type> getPlaceHolderList(int amount) {
-        List<Type> result = new ArrayList<>();
+    public static List<FodotType> getPlaceHolderList(int amount) {
+        List<FodotType> result = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
-            result.add(Type.getPlaceHolderType());
+            result.add(FodotType.getPlaceHolderType());
         }
         return result;
     }
@@ -89,7 +89,7 @@ public class Type {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Type type = (Type) o;
+        FodotType type = (FodotType) o;
 
         if (typeName != null ? !typeName.equals(type.typeName) :
                 type.typeName != null)

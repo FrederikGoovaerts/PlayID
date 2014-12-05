@@ -1,7 +1,8 @@
 package fodot.gdl_parser;
 
-import fodot.objects.predicate.Predicate;
-import fodot.objects.type.Type;
+import fodot.objects.formulas.FodotPredicate;
+import fodot.objects.type.FodotType;
+
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
@@ -46,9 +47,9 @@ public class FodotBuilder implements GdlTransformer{
     }
 
     /* Predicates extracted from the Gdl Game */
-    private HashMap<String,Predicate> predicates;
+    private HashMap<String,FodotPredicate> predicates;
 
-    public HashMap<String,Predicate> getPredicates() {
+    public HashMap<String,FodotPredicate> getPredicates() {
         return new HashMap<>(predicates);
     }
 
@@ -56,13 +57,13 @@ public class FodotBuilder implements GdlTransformer{
         return predicates.containsKey(predName);
     }
 
-    private void addPredicate(Predicate pred){
+    private void addPredicate(FodotPredicate pred){
         if(pred == null)
             throw new IllegalArgumentException();
         predicates.put(pred.getPredicateName(), pred);
     }
 
-    private Predicate getPredicate(String predName){
+    private FodotPredicate getPredicate(String predName){
         if(!isPredicateRegistered(predName))
             throw new IllegalArgumentException("Predicate not found!");
         return predicates.get(predName);
@@ -74,11 +75,11 @@ public class FodotBuilder implements GdlTransformer{
 
     /* Constants in the Gdl Game, with their types */
 
-    private Map<String,Type> constants;
+    private Map<String,FodotType> constants;
 
-    private void addConstant(String constantName, Type type){
+    private void addConstant(String constantName, FodotType type){
         if(constants.containsKey(constantName)
-                && !constants.get(constantName).equals(Type.getPlaceHolderType()))
+                && !constants.get(constantName).equals(FodotType.getPlaceHolderType()))
             throw new IllegalArgumentException("Can't replace an existing constant!");
         constants.put(constantName,type);
     }
@@ -90,7 +91,7 @@ public class FodotBuilder implements GdlTransformer{
     private boolean isConstantTyped(String constantName){
         if(!constants.containsKey(constantName))
             throw new IllegalArgumentException("Constant is not yet in the mapping!");
-        return (constants.get(constantName).equals(Type.getPlaceHolderType()));
+        return (constants.get(constantName).equals(FodotType.getPlaceHolderType()));
     }
 
     /***************************************************************************
@@ -141,8 +142,8 @@ public class FodotBuilder implements GdlTransformer{
         int amountOfArguments = predSentence.arity();
 
         if(!isPredicateRegistered(predName)) {
-            Predicate newPred = new Predicate(predName,
-                    Type.getPlaceHolderList(amountOfArguments));
+            FodotPredicate newPred = new FodotPredicate(predName,
+                    FodotType.getPlaceHolderList(amountOfArguments));
         }
         
         for (int i = 0; i < amountOfArguments; i++) {

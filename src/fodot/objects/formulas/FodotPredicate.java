@@ -1,6 +1,6 @@
-package fodot.objects.predicate;
+package fodot.objects.formulas;
 
-import fodot.objects.type.Type;
+import fodot.objects.type.FodotType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,13 +8,13 @@ import java.util.List;
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
-public class Predicate {
+public class FodotPredicate extends FodotFormula {
     
     /***************************************************************************
      * Constructor
      **************************************************************************/
 
-    public Predicate(String predicateName, List<Type> argumentTypes) {
+    public FodotPredicate(String predicateName, List<FodotType> argumentTypes) {
         this.predicateName = predicateName;
         this.argumentTypes = argumentTypes;
     }
@@ -33,20 +33,20 @@ public class Predicate {
      * Predicate types
      */
 
-    private List<Type> argumentTypes;
+    private List<FodotType> argumentTypes;
 
-    public List<Type> getArgumentTypes(){
+    public List<FodotType> getArgumentTypes(){
         return new ArrayList<>(argumentTypes);
     }
 
-    public Type getArgumentType(int i){
+    public FodotType getArgumentType(int i){
         if(i<0 || i>=argumentTypes.size())
             throw new IllegalArgumentException("Invalid index.");
         return argumentTypes.get(i);
     }
 
-    public void setArgumentType(int i, Type t){
-        if(!getArgumentType(i).equals(Type.getPlaceHolderType()))
+    public void setArgumentType(int i, FodotType t){
+        if(!getArgumentType(i).equals(FodotType.getPlaceHolderType()))
             throw new IllegalArgumentException("Can't replace a legal type!");
         this.argumentTypes.set(i, t);
     }
