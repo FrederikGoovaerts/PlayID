@@ -18,7 +18,7 @@ public class GdlInspector extends GdlVisitor{
     public GdlInspector(List<Gdl> rules, GdlTransformer transformer){
         this.rules = rules;
         this.transformer = transformer;
-        GdlVisitors.visitAll(rules, this);
+        GdlRootVisitors.visitAll(rules, this);
     }
 
     /***************************************************************************
@@ -74,7 +74,7 @@ public class GdlInspector extends GdlVisitor{
                     this.getTransformer().processPredicate(relation.get(0));
                     break;
                 case "does":
-                    this.getTransformer().processAction(relation.get(2));
+                    this.getTransformer().processAction(relation.get(1));
                     break;
             }
         }

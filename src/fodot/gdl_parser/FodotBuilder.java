@@ -108,25 +108,7 @@ public class FodotBuilder implements GdlTransformer{
         // Init has one body item, namely a ground predicate representing a
         // truth for the initial state
         GdlTerm predTerm = relation.get(0);
-        //Needs a cast to function instead of conversion to sentence?
-        //This term is always a function
-        GdlSentence predSentence = predTerm.toSentence();
-        String predName = predSentence.getName().getValue();
-        int amountOfArguments = predSentence.arity();
-
-        if(!isPredicateRegistered(predName)){
-            Predicate newPred = new Predicate(predName,
-                    Type.getPlaceHolderList(amountOfArguments));
-        }
-
-        //TODO: check if constants are registered, if so, set pred type
-
-        //TODO: bind constants to predicates (Type has to be updated)
-        // Observer structure?
-
-        //TODO: register constants?
-
-        //TODO: register new types?
+        this.processPredicate(predTerm);
 
     }
 
@@ -152,7 +134,39 @@ public class FodotBuilder implements GdlTransformer{
 
     @Override
     public void processPredicate(GdlTerm gdlTerm) {
+        //Needs a cast to function instead of conversion to sentence?
+        //This term is always a function
+        GdlSentence predSentence = gdlTerm.toSentence();
+    	String predName = predSentence.getName().getValue();
+        int amountOfArguments = predSentence.arity();
 
+        if(!isPredicateRegistered(predName)) {
+            Predicate newPred = new Predicate(predName,
+                    Type.getPlaceHolderList(amountOfArguments));
+        }
+        
+        for (int i = 0; i < amountOfArguments; i++) {
+        	GdlTerm term = predSentence.get(i);
+        	if(term.isGround()) {
+        		GdlSentence sent = term.toSentence();
+        		System.out.println(sent.getName() + " with arity " + sent.arity());
+        	}
+		}
+
+        //TODO: check if constants are registered, if so, set pred type
+
+        //TODO: bind constants to predicates (Type has to be updated)
+        // Observer structure?
+
+        //TODO: register constants?
+
+        //TODO: register new types?
     }
+
+	@Override
+	public void processAction(GdlTerm gdlTerm) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

@@ -1,7 +1,9 @@
 package fodot.objects.type;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -41,7 +43,7 @@ public class Type {
         return moon;
     }
 
-    public static List<Type> getPlaceHolderList(int amount){
+    public static List<Type> getPlaceHolderList(int amount) {
         List<Type> result = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             result.add(Type.getPlaceHolderType());
@@ -49,6 +51,33 @@ public class Type {
         return result;
     }
 
+    /************************************/
+    
+    /*************************************
+     * Domain elements in type
+     */
+    
+    private Set<String> domain = new HashSet<>();
+
+    public void addDomainElement(String element) {
+//    	assert(!domain.contains(element)) :
+//    			"Type " + this.getTypeName()
+//    			+ " already contains given element " + element + ".";
+    	domain.add(element);
+    }
+    
+    public void addAllDomainElements(Set<String> elements) {
+    	domain.addAll(elements);
+    }
+    
+    public boolean containsElement(String element){
+    	return domain.contains(element);
+    }
+    
+    public Set<String> getDomainElements() {
+    	return new HashSet<String>(domain);
+    }
+    
     /************************************/
 
     /***************************************************************************
