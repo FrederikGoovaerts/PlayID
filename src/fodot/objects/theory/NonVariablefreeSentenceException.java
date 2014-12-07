@@ -1,9 +1,6 @@
 package fodot.objects.theory;
 
-import java.util.List;
-
 import fodot.objects.sentence.formulas.FodotFormula;
-import fodot.objects.sentence.terms.FodotVariable;
 
 public class NonVariablefreeSentenceException extends RuntimeException {
 	

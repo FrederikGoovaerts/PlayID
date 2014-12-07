@@ -1,7 +1,5 @@
 package fodot.objects.sentence.formulas.quantifiers;
 
-import java.util.List;
-
 import fodot.objects.sentence.formulas.FodotFormula;
 import fodot.objects.sentence.terms.FodotVariable;
 

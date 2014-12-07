@@ -5,13 +5,14 @@ import java.util.Set;
 
 import com.sun.xml.internal.ws.client.SenderException;
 
+import fodot.objects.theory.definitions.FodotInductiveDefinition;
 import fodot.objects.vocabulary.FodotVocabulary;
 
 
 public class FodotTheory {
-	//Are Inductive Definitions also "sentences"? Do they need their own class?
-	private Set<FodotSentence> sentences;
 	private FodotVocabulary vocabulary;
+	private Set<FodotInductiveDefinition> definitions;
+	private Set<FodotSentence> sentences;
 	
 	public FodotTheory(FodotVocabulary vocabulary) {
 		this(vocabulary, new HashSet<FodotSentence>());
@@ -22,6 +23,24 @@ public class FodotTheory {
 		this.sentences = sentences;
 	}
 
+	/* VOCABULARY */
+	public FodotVocabulary getVocabulary() {
+		return vocabulary;
+	}
+	
+	/* DEFINITIONS */
+	public void addInductiveDefinition(FodotInductiveDefinition definition) {
+		definitions.add(definition);
+	}
+	
+	public void removeInductiveDefinition(FodotInductiveDefinition definition) {
+		definitions.remove(definition);
+	}
+	
+	public Set<FodotInductiveDefinition> getInductiveDefinitions() {
+		return new HashSet<FodotInductiveDefinition>(definitions);
+	}
+	
 	/* SENTENCES */
 	public void addSentence(FodotSentence sentence) {
 		sentences.add(sentence);
@@ -34,12 +53,5 @@ public class FodotTheory {
 	public Set<FodotSentence> getSentences() {
 		return new HashSet<FodotSentence>(sentences);
 	}
-
-	/* VOCABULARY */
-	public FodotVocabulary getVocabulary() {
-		return vocabulary;
-	}
-	
-	
 	
 }

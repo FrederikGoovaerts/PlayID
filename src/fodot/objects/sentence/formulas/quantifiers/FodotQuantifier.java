@@ -36,7 +36,7 @@ public abstract class FodotQuantifier implements FodotFormula {
 	
 	@Override
 	public List<FodotVariable> getFreeVariables() {
-		List<FodotVariable> formulaVars = formula.getFreeVariables();
+		List<FodotVariable> formulaVars = getFormula().getFreeVariables();
 		//Remove the var that is being quantized by this formula
 		if (formulaVars.contains(getVariable())) {
 			formulaVars.remove(getVariable());
@@ -46,7 +46,7 @@ public abstract class FodotQuantifier implements FodotFormula {
 
 	@Override
 	public String toCode() {
-		return getSymbol() + " " + variable.getName() + " [" + variable.getType().getTypeName() + "] :" + formula.toCode();
+		return getSymbol() + " " + variable.getName() + " [" + variable.getType().getTypeName() + "] :" + getFormula().toCode();
 	}
 	
 	public abstract boolean isValidSymbol(String symbol);
