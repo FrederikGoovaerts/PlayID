@@ -3,20 +3,20 @@ package fodot.objects.vocabulary;
 import java.util.HashSet;
 import java.util.Set;
 
-import fodot.objects.formulas.FodotPredicate;
-import fodot.objects.terms.FodotFunction;
-import fodot.objects.type.FodotType;
+import fodot.objects.sentence.terms.FodotFunction;
+import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
+import fodot.objects.vocabulary.elements.FodotType;
 
 public class FodotVocabulary {
 	private Set<FodotType> types;
-	private Set<FodotPredicate> predicates;
+	private Set<FodotPredicateDeclaration> predicates;
 	private Set<FodotFunction> functions;
 	
 	public FodotVocabulary() {
-		this(new HashSet<FodotType>(), new HashSet<FodotPredicate>(), new HashSet<FodotFunction>());
+		this(new HashSet<FodotType>(), new HashSet<FodotPredicateDeclaration>(), new HashSet<FodotFunction>());
 	}
 	
-	public FodotVocabulary(Set<FodotType> types, Set<FodotPredicate> predicates,
+	public FodotVocabulary(Set<FodotType> types, Set<FodotPredicateDeclaration> predicates,
 			Set<FodotFunction> functions) {
 		this.types = types;
 		this.predicates = predicates;
@@ -56,16 +56,16 @@ public class FodotVocabulary {
 
 	/* PREDICATES */
 	
-	public void addPredicate(FodotPredicate predicate) {
+	public void addPredicate(FodotPredicateDeclaration predicate) {
 		predicates.add(predicate);
 	}
 	
-	public void removePredicate(FodotPredicate predicate) {
+	public void removePredicate(FodotPredicateDeclaration predicate) {
 		predicates.remove(predicate);
 	}
 	
-	public Set<FodotPredicate> getPredicate() {
-		return new HashSet<FodotPredicate>(predicates);
+	public Set<FodotPredicateDeclaration> getPredicate() {
+		return new HashSet<FodotPredicateDeclaration>(predicates);
 	}
 	
 	

@@ -3,7 +3,7 @@ package fodot.objects.structure.enumerations;
 import java.util.ArrayList;
 import java.util.List;
 
-import fodot.objects.type.FodotType;
+import fodot.objects.vocabulary.elements.FodotType;
 
 public class FodotTypeEnumeration {
 	public FodotType type;

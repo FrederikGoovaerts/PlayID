@@ -1,7 +1,7 @@
 package fodot.gdl_parser;
 
-import fodot.objects.formulas.FodotPredicate;
-import fodot.objects.type.FodotType;
+import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
+import fodot.objects.vocabulary.elements.FodotType;
 
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlSentence;
@@ -47,9 +47,9 @@ public class FodotBuilder implements GdlTransformer{
     }
 
     /* Predicates extracted from the Gdl Game */
-    private HashMap<String,FodotPredicate> predicates;
+    private HashMap<String,FodotPredicateDeclaration> predicates;
 
-    public HashMap<String,FodotPredicate> getPredicates() {
+    public HashMap<String,FodotPredicateDeclaration> getPredicates() {
         return new HashMap<>(predicates);
     }
 
@@ -57,13 +57,13 @@ public class FodotBuilder implements GdlTransformer{
         return predicates.containsKey(predName);
     }
 
-    private void addPredicate(FodotPredicate pred){
+    private void addPredicate(FodotPredicateDeclaration pred){
         if(pred == null)
             throw new IllegalArgumentException();
-        predicates.put(pred.getPredicateName(), pred);
+        predicates.put(pred.getName(), pred);
     }
 
-    private FodotPredicate getPredicate(String predName){
+    private FodotPredicateDeclaration getPredicate(String predName){
         if(!isPredicateRegistered(predName))
             throw new IllegalArgumentException("Predicate not found!");
         return predicates.get(predName);
@@ -142,7 +142,7 @@ public class FodotBuilder implements GdlTransformer{
         int amountOfArguments = predSentence.arity();
 
         if(!isPredicateRegistered(predName)) {
-            FodotPredicate newPred = new FodotPredicate(predName,
+            FodotPredicateDeclaration newPred = new FodotPredicateDeclaration(predName,
                     FodotType.getPlaceHolderList(amountOfArguments));
         }
         

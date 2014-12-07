@@ -1,4 +1,4 @@
-package fodot.objects.type;
+package fodot.objects.vocabulary.elements;
 
 import java.util.ArrayList;
 import java.util.HashSet;

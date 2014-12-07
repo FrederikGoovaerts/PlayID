@@ -1,10 +1,13 @@
-package fodot.objects.terms;
+package fodot.objects.sentence.terms;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import fodot.objects.exceptions.InvalidTermNameException;
-import fodot.objects.type.FodotType;
 import fodot.objects.util.TermsUtil;
+import fodot.objects.vocabulary.elements.FodotType;
 
-public class FodotVariable extends FodotTerm {
+public class FodotVariable implements FodotTerm {
 
 	private String name;
 	private FodotType type;
@@ -28,6 +31,18 @@ public class FodotVariable extends FodotTerm {
 
 	public FodotType getType() {
 		return type;
+	}
+
+	@Override
+	public List<FodotVariable> getFreeVariables() {
+		List<FodotVariable> result = new ArrayList<FodotVariable>();
+		result.add(this);
+		return result;
+	}
+
+	@Override
+	public String toCode() {
+		return name;
 	}
 
 	@Override

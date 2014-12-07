@@ -1,21 +1,16 @@
-package fodot.objects.formulas;
-
-import fodot.objects.type.FodotType;
+package fodot.objects.vocabulary.elements;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
- */
-public class FodotPredicate extends FodotFormula {
-    
-    /***************************************************************************
+public abstract class FodotArgumentListDeclaration {
+
+	/***************************************************************************
      * Constructor
      **************************************************************************/
 
-    public FodotPredicate(String predicateName, List<FodotType> argumentTypes) {
-        this.predicateName = predicateName;
+    public FodotArgumentListDeclaration(String name, List<FodotType> argumentTypes) {
+        this.name = name;
         this.argumentTypes = argumentTypes;
     }
 
@@ -23,14 +18,14 @@ public class FodotPredicate extends FodotFormula {
      * Class Properties
      **************************************************************************/
 
-    private final String predicateName;
+    private final String name;
 
-    public String getPredicateName() {
-        return predicateName;
+    public String getName() {
+        return name;
     }
 
     /*************************************
-     * Predicate types
+     * Argument types
      */
 
     private List<FodotType> argumentTypes;
@@ -52,7 +47,5 @@ public class FodotPredicate extends FodotFormula {
     }
 
     /************************************/
-
-
-
+	
 }

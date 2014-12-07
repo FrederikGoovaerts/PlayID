@@ -3,7 +3,7 @@ package fodot.objects.structure.enumerations;
 import java.util.HashMap;
 import java.util.Map;
 
-import fodot.objects.type.FodotType;
+import fodot.objects.vocabulary.elements.FodotType;
 
 public class FodotFunctionEnumeration {
 	public FodotType type;
