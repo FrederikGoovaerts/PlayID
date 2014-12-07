@@ -2,6 +2,8 @@ package fodot.objects.vocabulary.elements;
 
 import java.util.List;
 
+import fodot.objects.util.CollectionUtil;
+
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
@@ -16,6 +18,11 @@ public class FodotFunctionDeclaration extends FodotArgumentListDeclaration {
 
 	public FodotType getReturnType() {
 		return returnType;
+	}
+
+	@Override
+	public String toCode() {
+		return getName() + CollectionUtil.toCoupleAsCode(getArgumentTypes()) + " : " + getReturnType().getTypeName();
 	}
     
 }

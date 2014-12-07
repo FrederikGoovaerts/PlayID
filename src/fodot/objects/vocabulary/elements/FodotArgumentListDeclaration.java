@@ -3,7 +3,9 @@ package fodot.objects.vocabulary.elements;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FodotArgumentListDeclaration {
+import fodot.objects.IFodotElement;
+
+public abstract class FodotArgumentListDeclaration implements IFodotElement {
 
 	/***************************************************************************
      * Constructor

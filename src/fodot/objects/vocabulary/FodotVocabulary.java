@@ -1,57 +1,62 @@
 package fodot.objects.vocabulary;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import fodot.objects.sentence.terms.FodotFunction;
+import fodot.objects.IFodotElement;
+import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
-import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 
-public class FodotVocabulary {
-	private Set<FodotType> types;
+public class FodotVocabulary implements IFodotElement {
+	private String name;
+	private Set<FodotTypeDeclaration> types;
 	private Set<FodotPredicateDeclaration> predicates;
-	private Set<FodotFunction> functions;
+	private Set<FodotFunctionDeclaration> functions;
 	
-	public FodotVocabulary() {
-		this(new HashSet<FodotType>(), new HashSet<FodotPredicateDeclaration>(), new HashSet<FodotFunction>());
-	}
-	
-	public FodotVocabulary(Set<FodotType> types, Set<FodotPredicateDeclaration> predicates,
-			Set<FodotFunction> functions) {
+	public FodotVocabulary(String name, Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
+			Set<FodotFunctionDeclaration> functions) {
+		this.name = name;
 		this.types = types;
 		this.predicates = predicates;
 		this.functions = functions;
 	}
 	
+	public FodotVocabulary(String name) {
+		this(name, new HashSet<FodotTypeDeclaration>(), new HashSet<FodotPredicateDeclaration>(), new HashSet<FodotFunctionDeclaration>());
+	}
+	
 	/* TYPES */
 	
-	public void addType(FodotType type) {
+	public void addType(FodotTypeDeclaration type) {
 		if (containsType(type))
 			return;
-		if (containsTypeWithName(type.getTypeName()))
-			throw new RuntimeException("Vocabulary " + this + " already contains a type with name " + type.getTypeName());
+		if (containsTypeWithName(type.getType().getTypeName()))
+			throw new RuntimeException("Vocabulary " + this + " already contains a type declaration with name " + type.getType().getTypeName());
 		types.add(type);
 	}
 	
-	public void removeType(FodotType type) {
+	public void removeType(FodotTypeDeclaration type) {
 		types.remove(type);
 	}
 	
 	public boolean containsTypeWithName(String name) {
-		for (FodotType type : types) {
-			if (type.getTypeName() == name) {
+		for (FodotTypeDeclaration type : types) {
+			if (type.getType().getTypeName() == name) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public boolean containsType(FodotType type) {
+	public boolean containsType(FodotTypeDeclaration type) {
 		return types.contains(type);
 	}
 	
-	public Set<FodotType> getTypes() {
-		return new HashSet<FodotType>(types);
+	public Set<FodotTypeDeclaration> getTypes() {
+		return new HashSet<FodotTypeDeclaration>(types);
 	}
 
 	/* PREDICATES */
@@ -64,22 +69,49 @@ public class FodotVocabulary {
 		predicates.remove(predicate);
 	}
 	
-	public Set<FodotPredicateDeclaration> getPredicate() {
+	public Set<FodotPredicateDeclaration> getPredicates() {
 		return new HashSet<FodotPredicateDeclaration>(predicates);
 	}
 	
 	
 	/* FUNCTIONS */
 	
-	public void addFunction(FodotFunction function) {
+	public void addFunction(FodotFunctionDeclaration function) {
 		functions.add(function);
 	}
 	
-	public void removeFunction(FodotFunction function) {
+	public void removeFunction(FodotFunctionDeclaration function) {
 		functions.remove(function);
 	}
 	
-	public Set<FodotFunction> getFunction() {
-		return new HashSet<FodotFunction>(functions);
+	public Set<FodotFunctionDeclaration> getFunctions() {
+		return new HashSet<FodotFunctionDeclaration>(functions);
+	}
+	
+	/* NAMES */
+	
+	public String getName() {
+		return name;
+	}
+
+	
+	/* FODOT ELEMENT */
+	@Override
+	public String toCode() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("vocabulary " + getName() + " {");
+		
+		List<IFodotElement> toStringify = new ArrayList<IFodotElement>();
+		toStringify.addAll(getTypes());
+		toStringify.addAll(getFunctions());
+		toStringify.addAll(getPredicates());
+		
+		//Codify inductive definitions
+		for (IFodotElement el : toStringify) {
+			builder.append(el.toCode() + "\n");
+		}
+		
+		builder.append("}");
+		return builder.toString();
 	}
 }

@@ -1,14 +1,14 @@
 package fodot.objects.vocabulary.elements;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import fodot.objects.IFodotElement;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
-public class FodotType {
+public class FodotType implements IFodotElement {
 
     /***************************************************************************
      * Constructor
@@ -50,36 +50,6 @@ public class FodotType {
         }
         return result;
     }
-
-    /************************************/
-    
-    /*************************************
-     * Domain elements in type
-     */
-    
-    private Set<String> domain = new HashSet<>();
-
-    public void addDomainElement(String element) {
-//    	assert(!domain.contains(element)) :
-//    			"Type " + this.getTypeName()
-//    			+ " already contains given element " + element + ".";
-    	domain.add(element);
-    }
-    
-    public void addAllDomainElements(Set<String> elements) {
-    	domain.addAll(elements);
-    }
-    
-    public boolean containsElement(String element){
-    	return domain.contains(element);
-    }
-    
-    public Set<String> getDomainElements() {
-    	return new HashSet<String>(domain);
-    }
-    
-    /************************************/
-
     /***************************************************************************
      * Class Properties
      **************************************************************************/
@@ -102,4 +72,13 @@ public class FodotType {
     public int hashCode() {
         return typeName != null ? typeName.hashCode() : 0;
     }
+    
+    /***************************************************************************
+     * Fodot Element requirements
+     **************************************************************************/
+    
+	@Override
+	public String toCode() {
+		return getTypeName();
+	}
 }

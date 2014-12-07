@@ -1,6 +1,8 @@
 package fodot.objects.procedure;
 
-public class FodotProcedure {
+import fodot.objects.IFodotElement;
+
+public class FodotProcedure implements IFodotElement {
 	//TODO: better structure for this?
 	private String procedure;
 
@@ -11,6 +13,11 @@ public class FodotProcedure {
 
 	public String getProcedure() {
 		return procedure;
+	}
+
+	@Override
+	public String toCode() {
+		return getProcedure();
 	}
 	
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fodot.objects.IFodotElement;
-import fodot.objects.sentence.formulas.FodotFormula;
 import fodot.objects.theory.FodotSentence;
 
 

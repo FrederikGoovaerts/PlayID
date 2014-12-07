@@ -3,22 +3,23 @@ package fodot.objects.theory;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.sun.xml.internal.ws.client.SenderException;
-
+import fodot.objects.IFodotElement;
 import fodot.objects.theory.definitions.FodotInductiveDefinition;
 import fodot.objects.vocabulary.FodotVocabulary;
 
 
-public class FodotTheory {
+public class FodotTheory implements IFodotElement {
+	private String name;
 	private FodotVocabulary vocabulary;
 	private Set<FodotInductiveDefinition> definitions;
 	private Set<FodotSentence> sentences;
 	
-	public FodotTheory(FodotVocabulary vocabulary) {
-		this(vocabulary, new HashSet<FodotSentence>());
+	public FodotTheory(String name, FodotVocabulary vocabulary) {
+		this(name, vocabulary, new HashSet<FodotSentence>());
 	}
 	
-	public FodotTheory(FodotVocabulary vocabulary, Set<FodotSentence> sentences) {
+	public FodotTheory(String name, FodotVocabulary vocabulary, Set<FodotSentence> sentences) {
+		this.name = name;
 		this.vocabulary = vocabulary;
 		this.sentences = sentences;
 	}
@@ -52,6 +53,30 @@ public class FodotTheory {
 	
 	public Set<FodotSentence> getSentences() {
 		return new HashSet<FodotSentence>(sentences);
+	}
+
+	/* NAME */
+	public String getName() {
+		return name;
+	}
+	
+	@Override
+	public String toCode() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("theory " + getName() + ": " + getVocabulary().getName() + " {");
+		
+		//Codify inductive definitions
+		for (FodotInductiveDefinition definition : getInductiveDefinitions()) {
+			builder.append(definition.toCode() + "\n");
+		}
+		
+		//Codify sentences
+		for (FodotSentence sentence : getSentences()) {
+			builder.append(sentence.toCode() + "\n");
+		}	
+		
+		builder.append("}");
+		return builder.toString();
 	}
 	
 }

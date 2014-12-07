@@ -1,6 +1,8 @@
 package fodot.objects.structure.enumerations;
 
-public abstract class FodotEnumeration {
+import fodot.objects.IFodotElement;
+
+public abstract class FodotEnumeration implements IFodotElement {
 
 	
 }
