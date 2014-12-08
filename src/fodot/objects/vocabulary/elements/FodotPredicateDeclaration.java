@@ -2,8 +2,6 @@ package fodot.objects.vocabulary.elements;
 
 import java.util.List;
 
-import org.apache.batik.script.rhino.RhinoInterpreter.ArgumentsBuilder;
-
 import fodot.objects.util.CollectionUtil;
 
 /**

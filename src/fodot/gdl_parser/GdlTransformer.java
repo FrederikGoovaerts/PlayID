@@ -1,26 +1,24 @@
 package fodot.gdl_parser;
 
 import org.ggp.base.util.gdl.grammar.GdlRelation;
-import org.ggp.base.util.gdl.grammar.GdlTerm;
+import org.ggp.base.util.gdl.grammar.GdlRule;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
 public interface GdlTransformer {
 
-    void processRole(GdlRelation relation);
+    void processRoleRelation(GdlRelation relation);
 
-    void processInit(GdlRelation relation);
+    void processInitRelation(GdlRelation relation);
 
-    void processLegal(GdlRelation relation);
+    void processStaticPredicateRelation(GdlRelation relation);
 
-    void processTerminal(GdlRelation relation);
+    void processNextRule(GdlRule rule);
 
-    void processGoal(GdlRelation relation);
+    void processLegalRule(GdlRule rule);
 
-    void processStaticPredicate(GdlRelation relation);
+    void processGoalRule(GdlRule rule);
 
-    void processPredicate(GdlTerm gdlTerm);
-
-    void processAction(GdlTerm gdlTerm);
+    void processTerminalRule(GdlRule rule);
 }
