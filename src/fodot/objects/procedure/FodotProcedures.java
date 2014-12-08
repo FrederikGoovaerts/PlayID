@@ -45,5 +45,9 @@ public class FodotProcedures implements IFodotElement {
 				+ CollectionUtil.printStringList("", "", "\n", CollectionUtil.toCode(getProcedures()))
 				+ "}";
 	}
+
+	public void merge(FodotProcedures other) {
+		procedures.addAll(other.getProcedures());
+	}
 	
 }
