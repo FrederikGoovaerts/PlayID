@@ -37,7 +37,9 @@ public class FodotType implements IFodotElement {
      * functions until they can be filled
      */
 
-    private static FodotType moon = new FodotType("Unfilled");
+    private static final FodotType moon = new FodotType("Unfilled");
+    public static final FodotType NATURAL_NUMBER = new FodotType("nat");
+    public static final FodotType INTEGER = new FodotType("int");
 
     public static FodotType getPlaceHolderType() {
         return moon;

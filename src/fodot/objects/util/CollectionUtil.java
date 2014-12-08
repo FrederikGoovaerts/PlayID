@@ -27,6 +27,11 @@ public class CollectionUtil {
 		return printStringList("{", "}", ";", new ArrayList<String>(list));
 	}
 	
+	public static String toNakedList(Collection<String> list) {
+		return printStringList("", "", ", ", new ArrayList<String>(list));
+	}
+	
+	
 	public static String printStringList(String openingbracket, String closingBracket, String divider, List<String> list) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(openingbracket);
