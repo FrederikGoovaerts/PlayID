@@ -7,7 +7,7 @@ import fodot.objects.exceptions.InvalidTermNameException;
 import fodot.objects.util.TermsUtil;
 import fodot.objects.vocabulary.elements.FodotType;
 
-public class FodotVariable implements FodotTerm {
+public class FodotVariable implements IFodotTerm {
 
 	private String name;
 	private FodotType type;

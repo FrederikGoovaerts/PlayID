@@ -3,7 +3,7 @@ package fodot.objects.sentence.terms;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FodotConstant implements FodotTerm {
+public class FodotConstant implements IFodotTerm {
 
 	public String value;
 	

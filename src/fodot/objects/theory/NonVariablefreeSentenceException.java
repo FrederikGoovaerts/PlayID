@@ -1,10 +1,10 @@
 package fodot.objects.theory;
 
-import fodot.objects.sentence.formulas.FodotFormula;
+import fodot.objects.sentence.formulas.IFodotFormula;
 
 public class NonVariablefreeSentenceException extends RuntimeException {
 	
-	public NonVariablefreeSentenceException(FodotFormula formula) {
+	public NonVariablefreeSentenceException(IFodotFormula formula) {
 		super(formula + "is not variablefree: " + formula.getFreeVariables()
 				+ "\n Perhaps you should consider using FormulaUtil's 'makeVariableFree' method");
 	}

@@ -3,16 +3,16 @@ package fodot.objects.sentence.formulas.quantifiers;
 import java.util.List;
 
 import fodot.objects.exceptions.IllegalConnectorException;
-import fodot.objects.sentence.formulas.FodotFormula;
+import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotVariable;
 
-public abstract class FodotQuantifier implements FodotFormula {
+public abstract class FodotQuantifier implements IFodotFormula {
 	private String symbol;
 	private FodotVariable variable;
-	private FodotFormula formula;
+	private IFodotFormula formula;
 
 	
-	public FodotQuantifier(String symbol, FodotVariable variable, FodotFormula formula) {
+	public FodotQuantifier(String symbol, FodotVariable variable, IFodotFormula formula) {
 		super();
 		if (!isValidSymbol(symbol)) {
 			throw new IllegalConnectorException(this, symbol);
@@ -30,7 +30,7 @@ public abstract class FodotQuantifier implements FodotFormula {
 		return variable;
 	}
 	
-	public FodotFormula getFormula() {
+	public IFodotFormula getFormula() {
 		return formula;
 	}
 	

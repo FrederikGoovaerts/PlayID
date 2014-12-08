@@ -2,18 +2,18 @@ package fodot.objects.sentence.formulas.unary;
 
 import java.util.List;
 
-import fodot.objects.sentence.formulas.FodotFormula;
+import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotVariable;
 
-public class FodotNot implements FodotFormula {
-	private FodotFormula formula;
+public class FodotNot implements IFodotFormula {
+	private IFodotFormula formula;
 
-	public FodotNot(FodotFormula formula) {
+	public FodotNot(IFodotFormula formula) {
 		super();
 		this.formula = formula;
 	}
 
-	public FodotFormula getFormula() {
+	public IFodotFormula getFormula() {
 		return formula;
 	}
 
