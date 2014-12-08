@@ -1,5 +1,6 @@
 package fodot.gdl_parser;
 
+import fodot.objects.Fodot;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 
@@ -8,7 +9,6 @@ import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -22,18 +22,24 @@ public class FodotBuilder implements GdlTransformer{
      **************************************************************************/
 
     public FodotBuilder(){
-        this.roles = new TreeSet<>();
-        this.predicates = new HashMap<>();
-        this.constants = new HashMap<>();
+        builtFodot = Fodot.getNewEmptyFodot();
+
+//        this.roles = new TreeSet<>();
+//        this.fluentPredicates = new HashMap<>();
+//        this.constants = new HashMap<>();
+
     }
 
     /***************************************************************************
      * Class Properties
      **************************************************************************/
 
-    //TODO: Al deze shit in een apart Fodot object
+    Fodot builtFodot;
 
-    /* Roles in the Gdl Game */
+    /*************************************
+     * Roles
+     */
+
     private Set<String> roles;
 
     public Set<String> getRoles() {
@@ -46,53 +52,88 @@ public class FodotBuilder implements GdlTransformer{
         roles.add(roleName);
     }
 
-    /* Predicates extracted from the Gdl Game */
-    private HashMap<String,FodotPredicateDeclaration> predicates;
+    /************************************/
 
-    public HashMap<String,FodotPredicateDeclaration> getPredicates() {
-        return new HashMap<>(predicates);
+    //TODO
+    private FodotPredicateDeclaration getPredicate(String predName){
+        if(!isFluentPredicateRegistered(predName))
+            throw new IllegalArgumentException("Predicate not found!");
+        return fluentPredicates.get(predName);
     }
 
-    public boolean isPredicateRegistered(String predName) {
-        return predicates.containsKey(predName);
+    /*************************************
+     * Fluent Predicates
+     */
+
+    private HashMap<String,FodotPredicateDeclaration> fluentPredicates;
+
+    public HashMap<String,FodotPredicateDeclaration> getFluentPredicates() {
+        return new HashMap<>(fluentPredicates);
     }
 
-    private void addPredicate(FodotPredicateDeclaration pred){
+    public boolean isFluentPredicateRegistered(String predName) {
+        return (fluentPredicates.containsKey(predName)||staticPredicates.containsKey(predName));
+    }
+
+    private void addFluentPredicate(FodotPredicateDeclaration pred){
         if(pred == null)
             throw new IllegalArgumentException();
-        predicates.put(pred.getName(), pred);
+        fluentPredicates.put(pred.getName(), pred);
     }
 
-    private FodotPredicateDeclaration getPredicate(String predName){
-        if(!isPredicateRegistered(predName))
-            throw new IllegalArgumentException("Predicate not found!");
-        return predicates.get(predName);
+    private void removeFluentPredicate(FodotPredicateDeclaration pred){
+        if(pred == null)
+            throw new IllegalArgumentException();
+        if(!fluentPredicates.containsKey(pred.getName()))
+            throw new IllegalArgumentException();
+        fluentPredicates.remove(pred.getName());
     }
 
-    //TODO: set van predicaten die nog niet volledig getyped zijn, om te
-    // zien of er een nieuwe run van de regels gedaan moet worden om verder te
-    // typescannen
 
-    /* Constants in the Gdl Game, with their types */
+    /************************************/
 
-    private Map<String,FodotType> constants;
+    /*************************************
+     * Static Predicates
+     */
 
-    private void addConstant(String constantName, FodotType type){
-        if(constants.containsKey(constantName)
-                && !constants.get(constantName).equals(FodotType.getPlaceHolderType()))
-            throw new IllegalArgumentException("Can't replace an existing constant!");
-        constants.put(constantName,type);
+    private HashMap<String,FodotPredicateDeclaration> staticPredicates;
+
+    public HashMap<String,FodotPredicateDeclaration> getStaticPredicates() {
+        return new HashMap<>(staticPredicates);
+    }
+
+    private void addStaticPredicate(FodotPredicateDeclaration staticPred){
+        if(staticPred == null || fluentPredicates.containsKey(staticPred))
+            throw new IllegalArgumentException();
+        staticPredicates.put(staticPred.getName(), staticPred);
+    }
+
+    private void convertFluentPredicateToStatic(FodotPredicateDeclaration pred) {
+        if (!fluentPredicates.containsKey(pred.getName()))
+            throw new IllegalArgumentException();
+        removeFluentPredicate(pred);
+        addStaticPredicate(pred);
+    }
+
+    //TODO static checker
+
+    /************************************/
+
+    /*************************************
+     * Constants
+     */
+
+    private Set<String> constants;
+
+    private void addConstant(String constantName){
+        constants.add(constantName);
     }
 
     private boolean isConstantRegistered(String constantName){
-        return !constants.containsKey(constantName);
+        return !constants.contains(constantName);
     }
 
-    private boolean isConstantTyped(String constantName){
-        if(!constants.containsKey(constantName))
-            throw new IllegalArgumentException("Constant is not yet in the mapping!");
-        return (constants.get(constantName).equals(FodotType.getPlaceHolderType()));
-    }
+    /************************************/
 
     /***************************************************************************
      * Class Methods
@@ -101,7 +142,7 @@ public class FodotBuilder implements GdlTransformer{
     @Override
     public void processRole(GdlRelation relation) {
         // Role has only one body item, the name of a player
-        this.addRole(relation.getBody().get(0).toString());
+        this.addRole("p_"+relation.getBody().get(0).toString());
     }
 
     @Override
@@ -141,7 +182,7 @@ public class FodotBuilder implements GdlTransformer{
     	String predName = predSentence.getName().getValue();
         int amountOfArguments = predSentence.arity();
 
-        if(!isPredicateRegistered(predName)) {
+        if(!isFluentPredicateRegistered(predName)) {
             FodotPredicateDeclaration newPred = new FodotPredicateDeclaration(predName,
                     FodotType.getPlaceHolderList(amountOfArguments));
         }
@@ -156,7 +197,7 @@ public class FodotBuilder implements GdlTransformer{
 
         //TODO: check if constants are registered, if so, set pred type
 
-        //TODO: bind constants to predicates (Type has to be updated)
+        //TODO: bind constants to fluentPredicates (Type has to be updated)
         // Observer structure?
 
         //TODO: register constants?
