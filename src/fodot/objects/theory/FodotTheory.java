@@ -13,15 +13,21 @@ public class FodotTheory implements IFodotElement {
 	private FodotVocabulary vocabulary;
 	private Set<FodotInductiveDefinition> definitions;
 	private Set<FodotSentence> sentences;
+
+	public FodotTheory(String name, FodotVocabulary vocabulary, Set<FodotSentence> sentences) {
+		this.name = name;
+		this.vocabulary = vocabulary;
+		this.sentences = sentences;
+	}
 	
 	public FodotTheory(String name, FodotVocabulary vocabulary) {
 		this(name, vocabulary, new HashSet<FodotSentence>());
 	}
 	
-	public FodotTheory(String name, FodotVocabulary vocabulary, Set<FodotSentence> sentences) {
-		this.name = name;
-		this.vocabulary = vocabulary;
-		this.sentences = sentences;
+	private static final String DEFAULT_NAME = "T";
+	
+	public FodotTheory(FodotVocabulary voc) {
+		this(DEFAULT_NAME, voc);
 	}
 
 	/* VOCABULARY */

@@ -10,7 +10,7 @@ public class FodotProcedure implements IFodotElement {
 		super();
 		this.procedure = procedure;
 	}
-
+	
 	public String getProcedure() {
 		return procedure;
 	}

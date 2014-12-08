@@ -13,14 +13,20 @@ public class FodotStructure implements IFodotElement {
 	private String name;
 	private FodotVocabulary vocabulary;
 
-	public FodotStructure(List<FodotEnumeration> enumerations, String name,
-			FodotVocabulary vocabulary) {
+	public FodotStructure(String name, FodotVocabulary vocabulary, List<FodotEnumeration> enumerations) {
 		super();
 		this.enumerations = enumerations;
 		this.name = name;
 		this.vocabulary = vocabulary;
 	}
+	
+	private static final String DEFAULT_NAME = "S";
+	
+	public FodotStructure(FodotVocabulary voc) {
+		this(DEFAULT_NAME, voc, new ArrayList<FodotEnumeration>());
+	}
 
+	
 	/* NAME */
 
 	public String getName() {

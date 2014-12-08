@@ -28,6 +28,12 @@ public class FodotVocabulary implements IFodotElement {
 		this(name, new HashSet<FodotTypeDeclaration>(), new HashSet<FodotPredicateDeclaration>(), new HashSet<FodotFunctionDeclaration>());
 	}
 	
+	private static final String DEFAULT_NAME = "V";
+	
+	public FodotVocabulary() {
+		this(DEFAULT_NAME);
+	}
+	
 	/* TYPES */
 	
 	public void addType(FodotTypeDeclaration type) {
