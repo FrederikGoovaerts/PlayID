@@ -12,6 +12,10 @@ public class FodotInductiveDefinitionConnector extends FodotSentenceElementConne
 		super(head, INDUCTIVE_ARROW, body);		
 	}
 	
+	public FodotInductiveDefinitionConnector(FodotInductiveFunction head, FodotFormula body) {
+		super(head, INDUCTIVE_ARROW, body);
+	}
+	
 	@Override
 	public boolean isValidConnector(String connector) {
 		return connector.equals(INDUCTIVE_ARROW);
