@@ -38,7 +38,7 @@ public abstract class FodotQuantifier implements FodotFormula {
 	public List<FodotVariable> getFreeVariables() {
 		List<FodotVariable> formulaVars = getFormula().getFreeVariables();
 		//Remove the var that is being quantized by this formula
-		if (formulaVars.contains(getVariable())) {
+		while (formulaVars.contains(getVariable())) {
 			formulaVars.remove(getVariable());
 		}
 		return formulaVars;
