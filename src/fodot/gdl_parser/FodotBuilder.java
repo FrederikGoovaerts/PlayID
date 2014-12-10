@@ -6,10 +6,7 @@ import fodot.objects.vocabulary.elements.FodotType;
 
 import org.ggp.base.util.gdl.grammar.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -21,6 +18,8 @@ public class FodotBuilder implements GdlTransformer{
      **************************************************************************/
 
     public FodotBuilder(){
+
+        this.actionType = new FodotType("Action");
 
         this.roles = new TreeSet<>();
         this.fluentPredicates = new HashMap<>();
@@ -51,7 +50,7 @@ public class FodotBuilder implements GdlTransformer{
         roles.add(roleName);
     }
 
-    /************************************/
+    /*** End of Roles subsection ***/
 
     private FodotPredicateDeclaration getPredicate(String predName){
         if(!isPredicateRegistered(predName))
@@ -101,7 +100,7 @@ public class FodotBuilder implements GdlTransformer{
     }
 
 
-    /************************************/
+    /*** End of Fluent Predicates subsection ***/
 
     /*************************************
      * Static Predicates
@@ -136,7 +135,7 @@ public class FodotBuilder implements GdlTransformer{
         addStaticPredicate(pred);
     }
 
-    /************************************/
+    /*** End of Static Predicates subsection ***/
 
     /*************************************
      * Constants
@@ -156,7 +155,45 @@ public class FodotBuilder implements GdlTransformer{
         return !constants.contains(constantName);
     }
 
-    /************************************/
+    /*** End of Constants subsection ***/
+
+    /*************************************
+     * Initial values
+     */
+
+    //Looks intriguing, but have no fear.
+    private Map<FodotPredicateDeclaration,Set<String[]>>
+            initialValues;
+
+    private void addInitialValue(FodotPredicateDeclaration pred, String[] arguments){
+        if(initialValues.containsKey(pred)) {
+            initialValues.get(pred).add(arguments);
+        } else {
+            Set<String[]> newSet = new HashSet<String[]>();
+            newSet.add(arguments);
+            initialValues.put(pred,newSet);
+        }
+    }
+
+    /*** End of Initial values subsection ***/
+
+    /*************************************
+     * Static values
+     */
+
+    private Map<FodotPredicateDeclaration,Set<String[]>>
+        staticValues;
+
+
+    /*** End of Static values subsection ***/
+
+    /*************************************
+     * Actions
+     */
+
+    private FodotType actionType;
+
+    /*** End of Actions subsection ***/
 
     /***************************************************************************
      * Class Methods

@@ -25,6 +25,7 @@ public class Parser {
         List<Gdl> rules = test.game.getRules();
         FodotBuilder builder = new FodotBuilder();
         GdlInspector inspector = new GdlInspector(rules,builder);
+        System.out.println("Put breakpoint here to inspect the parsing.");
     }
 
     /***************************************************************************
