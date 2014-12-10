@@ -18,14 +18,7 @@ public class FodotBuilder implements GdlTransformer{
      **************************************************************************/
 
     public FodotBuilder(){
-
-        this.actionType = new FodotType("Action");
-
-        this.roles = new TreeSet<>();
-        this.fluentPredicates = new HashMap<>();
-        this.staticPredicates = new HashMap<>();
-        this.constants = new TreeSet<>();
-
+        this.cleanAndInitializeBuilder();
     }
 
     /***************************************************************************
@@ -63,6 +56,10 @@ public class FodotBuilder implements GdlTransformer{
     private  boolean isPredicateRegistered(String predName){
         return (isFluentPredicateRegistered(predName)
                 ||isStaticPredicateRegistered(predName));
+    }
+
+    private static String convertRawRole(String rawName){
+        return "p_" + rawName;
     }
 
     /*************************************
@@ -155,6 +152,10 @@ public class FodotBuilder implements GdlTransformer{
         return !constants.contains(constantName);
     }
 
+    private static String convertRawConstantName(String rawName){
+        return "c_" + rawName;
+    }
+
     /*** End of Constants subsection ***/
 
     /*************************************
@@ -199,22 +200,44 @@ public class FodotBuilder implements GdlTransformer{
      * Class Methods
      **************************************************************************/
 
+    public void cleanAndInitializeBuilder(){
+        this.actionType = new FodotType("Action");
+
+        this.roles = new TreeSet<>();
+        this.fluentPredicates = new HashMap<>();
+        this.staticPredicates = new HashMap<>();
+        this.constants = new TreeSet<>();
+        this.initialValues = new HashMap<>();
+        this.staticValues = new HashMap<>();
+    }
+
     @Override
     public void processRoleRelation(GdlRelation relation) {
         // Role: (role player)
         GdlConstant player = relation.getBody().get(0).toSentence().getName();
-        this.addRole("p_" + player.toString());
+        this.addRole(convertRawRole(player.toString()));
     }
 
     @Override
     public void processInitRelation(GdlRelation relation) {
         // Init: (init pred x1 .. xn)
 
-        //predicate is a GdlFunction
         GdlSentence predicate = relation.getBody().get(0).toSentence();
         processPredicate(predicate);
-        
-        //TODO: make initial sets/maps
+
+        FodotPredicateDeclaration fodotPredicate =
+                this.getPredicate(predicate.getName().getValue());
+        int predArity = predicate.arity();
+
+        String[] initValues = new String[predArity];
+
+        for (int i = 0; i < predArity; i++) {
+            //PLS TRUST ME
+            String constant = predicate.get(i).toSentence().getName().getValue();
+            initValues[i] = convertRawConstantName(constant);
+        }
+
+        this.addInitialValue(fodotPredicate,initValues);
     }
 
     @Override
@@ -295,7 +318,7 @@ public class FodotBuilder implements GdlTransformer{
         	GdlTerm term = predSentence.get(i);
         	if(term.isGround()) {
                 //Term is a constant, and only has a name, and arity 0
-                String constantName = "c_" + term.toSentence().getName().getValue();
+                String constantName = convertRawConstantName(term.toSentence().getName().getValue());
                 if(!isConstantRegistered(constantName))
                     addConstant(constantName);
         	}
