@@ -4,10 +4,7 @@ import fodot.objects.Fodot;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 
-import org.ggp.base.util.gdl.grammar.GdlRelation;
-import org.ggp.base.util.gdl.grammar.GdlRule;
-import org.ggp.base.util.gdl.grammar.GdlSentence;
-import org.ggp.base.util.gdl.grammar.GdlTerm;
+import org.ggp.base.util.gdl.grammar.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +21,6 @@ public class FodotBuilder implements GdlTransformer{
      **************************************************************************/
 
     public FodotBuilder(){
-        builtFodot = Fodot.getNewEmptyFodot();
 
         this.roles = new TreeSet<>();
         this.fluentPredicates = new HashMap<>();
@@ -169,20 +165,45 @@ public class FodotBuilder implements GdlTransformer{
     @Override
     public void processRoleRelation(GdlRelation relation) {
         // Role: (role player)
-        // player = relation.getBody().get(0)
-        this.addRole("p_"+relation.getBody().get(0).toString());
+        GdlConstant player = relation.getBody().get(0).toSentence().getName();
+        this.addRole("p_" + player.toString());
     }
 
     @Override
     public void processInitRelation(GdlRelation relation) {
         // Init: (init pred x1 .. xn)
-        // predName
-        
 
+        //predicate is a GdlFunction
+        GdlSentence predicate = relation.getBody().get(0).toSentence();
+        processPredicate(predicate);
+        
+        //TODO: make initial sets/maps
     }
 
     @Override
     public void processStaticPredicateRelation(GdlRelation relation) {
+        // Static: (pred x1 .. xn)
+        String predName = relation.getName().getValue();
+        int amountOfArguments = relation.arity();
+
+        FodotPredicateDeclaration newPred;
+
+        //If necessary, register predicate as static
+        if (!isStaticPredicateRegistered(predName)) {
+            if (isFluentPredicateRegistered(predName)){
+                convertFluentPredicateToStatic(getFluentPredicate(predName));
+            } else {
+                newPred = new FodotPredicateDeclaration(predName,
+                        FodotType.getPlaceHolderList(amountOfArguments));
+                this.addStaticPredicate(newPred);
+            }
+        } else {
+            newPred = this.getPredicate(predName);
+            if(newPred.getAmountOfArgumentTypes() != amountOfArguments)
+                throw new IllegalStateException("Predicate differs in arity from before!");
+        }
+
+        //TODO: make static sets/maps
 
     }
 
@@ -206,35 +227,42 @@ public class FodotBuilder implements GdlTransformer{
 
     }
 
-//    @Override
-//    public void processPredicate(GdlTerm gdlTerm) {
-//        //Needs a cast to function instead of conversion to sentence?
-//        //This term is always a function
-//        GdlSentence predSentence = gdlTerm.toSentence();
-//    	String predName = predSentence.getName().getValue();
-//        int amountOfArguments = predSentence.arity();
-//
-//        if(!isFluentPredicateRegistered(predName)) {
-//            FodotPredicateDeclaration newPred = new FodotPredicateDeclaration(predName,
-//                    FodotType.getPlaceHolderList(amountOfArguments));
-//        }
-//
-//        for (int i = 0; i < amountOfArguments; i++) {
-//        	GdlTerm term = predSentence.get(i);
-//        	if(term.isGround()) {
-//        		GdlSentence sent = term.toSentence();
-//        		System.out.println(sent.getName() + " with arity " + sent.arity());
-//        	}
-//		}
-//
-//        //TODO: check if constants are registered, if so, set pred type
-//
-//        //TODO: bind constants to fluentPredicates (Type has to be updated)
-//        // Observer structure?
-//
-//        //TODO: register constants?
-//
-//        //TODO: register new types?
-//    }
+    private void processPredicate(GdlTerm predTerm){
+        this.processPredicate(predTerm.toSentence());
+    }
+
+    private void processPredicate(GdlSentence predSentence) {
+        //Needs a cast to function instead of conversion to sentence?
+        //This term is always a function
+    	String predName = predSentence.getName().getValue();
+        int amountOfArguments = predSentence.arity();
+
+        FodotPredicateDeclaration newPred;
+
+        //If necessary, register predicate
+        if(!isPredicateRegistered(predName)) {
+            newPred = new FodotPredicateDeclaration(predName,
+                    FodotType.getPlaceHolderList(amountOfArguments));
+            this.addFluentPredicate(newPred);
+        } else {
+            newPred = this.getPredicate(predName);
+            if(newPred.getAmountOfArgumentTypes() != amountOfArguments)
+                throw new IllegalStateException("Predicate differs in arity from before!");
+        }
+
+        //Scan all body elements, if they are constants (ground in a non-built-in
+        // predicate is equivalent with being a constant), add them as a constant
+        // with the same type as its place in the predicate. Predicate should
+        // be registered by now.
+        for (int i = 0; i < amountOfArguments; i++) {
+        	GdlTerm term = predSentence.get(i);
+        	if(term.isGround()) {
+                //Term is a constant, and only has a name, and arity 0
+                String constantName = "c_" + term.toSentence().getName().getValue();
+                if(!isConstantRegistered(constantName))
+                    addConstant(constantName);
+        	}
+		}
+    }
 
 }
