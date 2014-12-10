@@ -4,9 +4,9 @@ import java.util.List;
 
 import fodot.objects.sentence.formulas.argumented.FodotAbstractArgumentList;
 
-public class FodotFunction extends FodotAbstractArgumentList implements FodotTerm {
+public class FodotFunction extends FodotAbstractArgumentList implements IFodotTerm {
 	
-	public FodotFunction(String name, List<FodotTerm> arguments) {
+	public FodotFunction(String name, List<IFodotTerm> arguments) {
 		super(name, arguments);
 	}
 	

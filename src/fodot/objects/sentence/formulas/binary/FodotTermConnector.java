@@ -3,12 +3,12 @@ package fodot.objects.sentence.formulas.binary;
 import java.util.Arrays;
 import java.util.List;
 
-import fodot.objects.sentence.terms.FodotTerm;
+import fodot.objects.sentence.terms.IFodotTerm;
 
-public class FodotTermConnector extends FodotSentenceElementConnector<FodotTerm> {
+public class FodotTermConnector extends FodotSentenceElementConnector<IFodotTerm> {
 	
-	public FodotTermConnector(FodotTerm term1,
-			String connector, FodotTerm term2) {
+	public FodotTermConnector(IFodotTerm term1,
+			String connector, IFodotTerm term2) {
 		super(term1, connector, term2);
 	}
 	

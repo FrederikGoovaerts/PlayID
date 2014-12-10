@@ -66,6 +66,11 @@ public class FodotStructure implements IFodotElement {
 		return builder.toString();
 	}
 
+	/* MERGE */
+	public void merge(FodotStructure other) {
+		enumerations.addAll(other.getEnumerations());
+	}
+
 	
 	
 }

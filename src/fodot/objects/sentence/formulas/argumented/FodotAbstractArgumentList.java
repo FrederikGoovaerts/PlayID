@@ -5,16 +5,16 @@ import java.util.List;
 
 import fodot.objects.exceptions.InvalidTermNameException;
 import fodot.objects.sentence.IFodotSentenceElement;
-import fodot.objects.sentence.terms.FodotTerm;
+import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.util.TermsUtil;
 
 public abstract class FodotAbstractArgumentList implements IFodotSentenceElement {
 
 	private String name;
-	private List<FodotTerm> arguments;
+	private List<IFodotTerm> arguments;
 	
-	public FodotAbstractArgumentList(String name, List<FodotTerm> arguments) {
+	public FodotAbstractArgumentList(String name, List<IFodotTerm> arguments) {
 		super();
 		setName(name);
 		this.arguments = arguments;
@@ -31,14 +31,14 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 		return name;
 	}
 	
-	public List<FodotTerm> getArguments() {
-		return new ArrayList<FodotTerm>(arguments);
+	public List<IFodotTerm> getArguments() {
+		return new ArrayList<IFodotTerm>(arguments);
 	}
 
 	@Override
 	public List<FodotVariable> getFreeVariables() {
 		List<FodotVariable> result = new ArrayList<FodotVariable>();
-		for (FodotTerm arg : getArguments()) {
+		for (IFodotTerm arg : getArguments()) {
 			result.addAll(arg.getFreeVariables());
 		}
 		return result;
@@ -60,7 +60,7 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	
 	protected String argumentsToString() {
 		StringBuilder builder = new StringBuilder();
-		for (FodotTerm term : getArguments()) {
+		for (IFodotTerm term : getArguments()) {
 			builder.append(term.toString() + ", ");
 		}
 		String builderStr = builder.toString();

@@ -4,10 +4,10 @@ import java.util.List;
 
 import fodot.objects.exceptions.IllegalConnectorException;
 import fodot.objects.sentence.IFodotSentenceElement;
-import fodot.objects.sentence.formulas.FodotFormula;
+import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotVariable;
 
-public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElement> implements FodotFormula {
+public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElement> implements IFodotFormula {
 
 	private E arg1;
 	private E arg2;

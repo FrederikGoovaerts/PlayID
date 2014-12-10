@@ -84,5 +84,10 @@ public class FodotTheory implements IFodotElement {
 		builder.append("}");
 		return builder.toString();
 	}
+
+	public void merge(FodotTheory other) {
+		definitions.addAll(other.getInductiveDefinitions());
+		sentences.addAll(other.getSentences());
+	}
 	
 }

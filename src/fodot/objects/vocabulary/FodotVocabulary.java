@@ -120,4 +120,12 @@ public class FodotVocabulary implements IFodotElement {
 		builder.append("}");
 		return builder.toString();
 	}
+	
+	/* MERGE */
+
+	public void merge(FodotVocabulary other) {
+		types.addAll(other.getTypes());
+		predicates.addAll(getPredicates());
+		functions.addAll(getFunctions());
+	}
 }
