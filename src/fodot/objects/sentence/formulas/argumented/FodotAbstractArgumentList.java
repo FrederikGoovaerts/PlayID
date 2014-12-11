@@ -3,32 +3,33 @@ package fodot.objects.sentence.formulas.argumented;
 import java.util.ArrayList;
 import java.util.List;
 
-import fodot.objects.exceptions.InvalidTermNameException;
 import fodot.objects.sentence.IFodotSentenceElement;
-import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.sentence.terms.FodotVariable;
-import fodot.objects.util.TermsUtil;
+import fodot.objects.sentence.terms.IFodotTerm;
+import fodot.objects.util.CollectionUtil;
+import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 
 public abstract class FodotAbstractArgumentList implements IFodotSentenceElement {
 
-	private String name;
+	private FodotArgumentListDeclaration declaration;
 	private List<IFodotTerm> arguments;
 	
-	public FodotAbstractArgumentList(String name, List<IFodotTerm> arguments) {
+	public FodotAbstractArgumentList(FodotArgumentListDeclaration decl, List<IFodotTerm> arguments) {
 		super();
-		setName(name);
+		setDeclaration(decl);
 		this.arguments = arguments;
 	}
 
-	public void setName(String name) {
-		if (!TermsUtil.isValidName(name)) {
-			throw new InvalidTermNameException(name);
-		}
-		this.name = name;
+	public FodotArgumentListDeclaration getDeclaration() {
+		return declaration;
 	}
 	
-	public String getName() {
-		return name;
+	public void setDeclaration(FodotArgumentListDeclaration name) {
+		this.declaration = name;
+	}
+	
+	public FodotArgumentListDeclaration getName() {
+		return declaration;
 	}
 	
 	public List<IFodotTerm> getArguments() {
@@ -47,24 +48,12 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(name + "(");
-		for (int i = 0; i < arguments.size(); i++) {
-			if (i>0) {
-				builder.append(", ");
-			}
-			builder.append(arguments.get(i).toCode());
-		}
-		builder.append(")");
+		builder.append(CollectionUtil.toCouple(CollectionUtil.toCode(getArguments())));
 		return builder.toString();
 	}
 	
 	protected String argumentsToString() {
-		StringBuilder builder = new StringBuilder();
-		for (IFodotTerm term : getArguments()) {
-			builder.append(term.toString() + ", ");
-		}
-		String builderStr = builder.toString();
-		return builderStr.substring(0, builderStr.length()-2);
+		return CollectionUtil.toNakedList(CollectionUtil.toString(getArguments()));
 	}
 	
 	@Override

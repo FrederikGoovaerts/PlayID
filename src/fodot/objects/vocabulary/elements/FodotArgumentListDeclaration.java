@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fodot.objects.IFodotElement;
+import fodot.objects.exceptions.InvalidTermNameException;
+import fodot.objects.util.TermsUtil;
 
 public abstract class FodotArgumentListDeclaration implements IFodotElement {
 
@@ -12,7 +14,7 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
      **************************************************************************/
 
     public FodotArgumentListDeclaration(String name, List<FodotType> argumentTypes) {
-        this.name = name;
+       	setName(name);
         this.argumentTypes = argumentTypes;
     }
 
@@ -20,10 +22,17 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
      * Class Properties
      **************************************************************************/
 
-    private final String name;
+    private String name;
 
     public String getName() {
         return name;
+    }
+    
+    public void setName(String name) {
+		if (!TermsUtil.isValidName(name)) {
+			throw new InvalidTermNameException(name);
+		}
+		this.name = name;
     }
 
     /*************************************
