@@ -185,6 +185,15 @@ public class FodotBuilder implements GdlTransformer{
     private Map<FodotPredicateDeclaration,Set<String[]>>
         staticValues;
 
+    private void addStaticValue(FodotPredicateDeclaration pred, String[] arguments){
+        if(staticValues.containsKey(pred)) {
+            staticValues.get(pred).add(arguments);
+        } else {
+            Set<String[]> newSet = new HashSet<String[]>();
+            newSet.add(arguments);
+            staticValues.put(pred,newSet);
+        }
+    }
 
     /*** End of Static values subsection ***/
 
@@ -244,7 +253,7 @@ public class FodotBuilder implements GdlTransformer{
     public void processStaticPredicateRelation(GdlRelation relation) {
         // Static: (pred x1 .. xn)
         String predName = relation.getName().getValue();
-        int amountOfArguments = relation.arity();
+        int predArity = relation.arity();
 
         FodotPredicateDeclaration newPred;
 
@@ -252,18 +261,27 @@ public class FodotBuilder implements GdlTransformer{
         if (!isStaticPredicateRegistered(predName)) {
             if (isFluentPredicateRegistered(predName)){
                 convertFluentPredicateToStatic(getFluentPredicate(predName));
+                newPred = this.getPredicate(predName);
             } else {
                 newPred = new FodotPredicateDeclaration(predName,
-                        FodotType.getPlaceHolderList(amountOfArguments));
+                        FodotType.getPlaceHolderList(predArity));
                 this.addStaticPredicate(newPred);
             }
         } else {
             newPred = this.getPredicate(predName);
-            if(newPred.getAmountOfArgumentTypes() != amountOfArguments)
+            if(newPred.getAmountOfArgumentTypes() != predArity)
                 throw new IllegalStateException("Predicate differs in arity from before!");
         }
 
-        //TODO: make static sets/maps
+        String[] staticValues = new String[predArity];
+
+        for (int i = 0; i < predArity; i++) {
+            //PLS TRUST ME
+            String constant = relation.get(i).toSentence().getName().getValue();
+            staticValues[i] = convertRawConstantName(constant);
+        }
+
+        this.addStaticValue(newPred, staticValues);
 
     }
 

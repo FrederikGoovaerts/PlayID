@@ -20,7 +20,7 @@ public class Parser {
      **************************************************************************/
 
     public static void main(String[] args) {
-        File file = new File("resources/games/choice.kif");
+        File file = new File("resources/games/blocks.kif");
         Parser test = new Parser(file);
         List<Gdl> rules = test.game.getRules();
         FodotBuilder builder = new FodotBuilder();
