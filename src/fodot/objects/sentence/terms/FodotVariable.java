@@ -1,7 +1,7 @@
 package fodot.objects.sentence.terms;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import fodot.objects.exceptions.InvalidTermNameException;
 import fodot.objects.util.TermsUtil;
@@ -34,8 +34,8 @@ public class FodotVariable implements IFodotTerm {
 	}
 
 	@Override
-	public List<FodotVariable> getFreeVariables() {
-		List<FodotVariable> result = new ArrayList<FodotVariable>();
+	public Set<FodotVariable> getFreeVariables() {
+		Set<FodotVariable> result = new HashSet<FodotVariable>();
 		result.add(this);
 		return result;
 	}

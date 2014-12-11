@@ -1,6 +1,6 @@
 package fodot.objects.sentence.formulas.quantifiers;
 
-import java.util.List;
+import java.util.Set;
 
 import fodot.objects.exceptions.IllegalConnectorException;
 import fodot.objects.sentence.formulas.IFodotFormula;
@@ -35,8 +35,8 @@ public abstract class FodotQuantifier implements IFodotFormula {
 	}
 	
 	@Override
-	public List<FodotVariable> getFreeVariables() {
-		List<FodotVariable> formulaVars = getFormula().getFreeVariables();
+	public Set<FodotVariable> getFreeVariables() {
+		Set<FodotVariable> formulaVars = getFormula().getFreeVariables();
 		//Remove the var that is being quantized by this formula
 		while (formulaVars.contains(getVariable())) {
 			formulaVars.remove(getVariable());

@@ -1,6 +1,6 @@
 package fodot.objects.sentence.formulas.unary;
 
-import java.util.List;
+import java.util.Set;
 
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotVariable;
@@ -18,7 +18,7 @@ public class FodotNot implements IFodotFormula {
 	}
 
 	@Override
-	public List<FodotVariable> getFreeVariables() {
+	public Set<FodotVariable> getFreeVariables() {
 		return formula.getFreeVariables();
 	}
 

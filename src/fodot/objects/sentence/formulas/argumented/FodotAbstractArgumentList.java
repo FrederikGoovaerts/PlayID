@@ -1,7 +1,9 @@
 package fodot.objects.sentence.formulas.argumented;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import fodot.objects.sentence.IFodotSentenceElement;
 import fodot.objects.sentence.terms.FodotVariable;
@@ -37,8 +39,8 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	}
 
 	@Override
-	public List<FodotVariable> getFreeVariables() {
-		List<FodotVariable> result = new ArrayList<FodotVariable>();
+	public Set<FodotVariable> getFreeVariables() {
+		Set<FodotVariable> result = new HashSet<FodotVariable>();
 		for (IFodotTerm arg : getArguments()) {
 			result.addAll(arg.getFreeVariables());
 		}

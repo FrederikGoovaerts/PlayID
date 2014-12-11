@@ -1,6 +1,6 @@
 package fodot.objects.sentence.formulas.binary;
 
-import java.util.List;
+import java.util.Set;
 
 import fodot.objects.exceptions.IllegalConnectorException;
 import fodot.objects.sentence.IFodotSentenceElement;
@@ -36,9 +36,9 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 	}
 	
 	@Override
-	public List<FodotVariable> getFreeVariables() {
-		List<FodotVariable> form1vars = getArgument1().getFreeVariables();
-		List<FodotVariable> form2vars = getArgument2().getFreeVariables();
+	public Set<FodotVariable> getFreeVariables() {
+		Set<FodotVariable> form1vars = getArgument1().getFreeVariables();
+		Set<FodotVariable> form2vars = getArgument2().getFreeVariables();
 		form1vars.addAll(form2vars);
 		return form1vars;
 	}

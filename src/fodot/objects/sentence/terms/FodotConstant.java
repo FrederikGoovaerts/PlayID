@@ -1,7 +1,7 @@
 package fodot.objects.sentence.terms;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class FodotConstant implements IFodotTerm {
 
@@ -17,8 +17,8 @@ public class FodotConstant implements IFodotTerm {
 	}
 
 	@Override
-	public List<FodotVariable> getFreeVariables() {
-		return new ArrayList<FodotVariable>();
+	public Set<FodotVariable> getFreeVariables() {
+		return new HashSet<FodotVariable>();
 	}
 
 	@Override
