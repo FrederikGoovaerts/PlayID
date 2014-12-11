@@ -56,4 +56,44 @@ public abstract class FodotQuantifier implements IFodotFormula {
 	
 	public abstract boolean isValidSymbol(String symbol);
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((formula == null) ? 0 : formula.hashCode());
+		result = prime * result + ((symbol == null) ? 0 : symbol.hashCode());
+		result = prime * result
+				+ ((variables == null) ? 0 : variables.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FodotQuantifier other = (FodotQuantifier) obj;
+		if (formula == null) {
+			if (other.formula != null)
+				return false;
+		} else if (!formula.equals(other.formula))
+			return false;
+		if (symbol == null) {
+			if (other.symbol != null)
+				return false;
+		} else if (!symbol.equals(other.symbol))
+			return false;
+		if (variables == null) {
+			if (other.variables != null)
+				return false;
+		} else if (!variables.equals(other.variables))
+			return false;
+		return true;
+	}
+	
+	
+
 }

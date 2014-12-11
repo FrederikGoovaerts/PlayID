@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import fodot.objects.IFodotElement;
+import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.util.CollectionUtil;
 
 public class FodotTypeDeclaration implements IFodotElement {
@@ -13,13 +14,13 @@ public class FodotTypeDeclaration implements IFodotElement {
 	private List<FodotType> subtypes;
 	private List<FodotType> supertypes;
 	
-	public FodotTypeDeclaration(FodotType type, Set<String> domain, List<FodotType> isa, List<FodotType> contains) {
+	public FodotTypeDeclaration(FodotType type, Set<FodotConstant> domain, List<FodotType> isa, List<FodotType> contains) {
 		this.type = type;
 		this.domain = domain;
 	}
 	
 	public FodotTypeDeclaration(FodotType type) {
-		this(type, new HashSet<String>(), new ArrayList<FodotType>(), new ArrayList<FodotType>());
+		this(type, new HashSet<FodotConstant>(), new ArrayList<FodotType>(), new ArrayList<FodotType>());
 	}
 
     /*************************************
@@ -90,25 +91,25 @@ public class FodotTypeDeclaration implements IFodotElement {
      * Domain elements in type declaration
      */
     
-    private Set<String> domain = new HashSet<>();
+    private Set<FodotConstant> domain = new HashSet<>();
 
-	public void addDomainElement(String element) {
+	public void addDomainElement(FodotConstant element) {
 //    	assert(!domain.contains(element)) :
 //    			"Type " + this.getTypeName()
 //    			+ " already contains given element " + element + ".";
     	domain.add(element);
     }
     
-    public void addAllDomainElements(Set<String> elements) {
+    public void addAllDomainElements(Set<FodotConstant> elements) {
     	domain.addAll(elements);
     }
     
-    public boolean containsElement(String element){
+    public boolean containsElement(FodotConstant element){
     	return domain.contains(element);
     }
     
-    public Set<String> getDomainElements() {
-    	return new HashSet<String>(domain);
+    public Set<FodotConstant> getDomainElements() {
+    	return new HashSet<FodotConstant>(domain);
     }
 
     
@@ -123,7 +124,7 @@ public class FodotTypeDeclaration implements IFodotElement {
 		return "type " + getType().getTypeName()
 				+ (hasSupertypes() ? " isa " + CollectionUtil.toNakedList(CollectionUtil.toCode(supertypes)) : "")
 				+ (hasSubtypes() ? " contains " + CollectionUtil.toNakedList(CollectionUtil.toCode(subtypes)) : "")
-				+ " constructed from " + CollectionUtil.toDomain(getDomainElements());
+				+ " constructed from " + CollectionUtil.toDomain(CollectionUtil.toCode(getDomainElements()));
 	}
     
 }

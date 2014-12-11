@@ -6,7 +6,7 @@ import java.util.List;
 import fodot.objects.sentence.formulas.IFodotFormula;
 
 public class FodotFormulaConnector extends FodotSentenceElementConnector<IFodotFormula> {
-	
+
 	public FodotFormulaConnector(IFodotFormula formula1,
 			String connector, IFodotFormula formula2) {
 		super(formula1, connector, formula2);
@@ -15,7 +15,7 @@ public class FodotFormulaConnector extends FodotSentenceElementConnector<IFodotF
 	/* VALID CONNECTORS */
 	private static final List<String> VALID_CONNECTORS =
 			Arrays.asList(new String[]{"&", "|",  "=>", "<=", "<=>"});
-	
+
 	public boolean isValidConnector(String connector) {
 		return VALID_CONNECTORS.contains(connector);
 	}
@@ -23,6 +23,8 @@ public class FodotFormulaConnector extends FodotSentenceElementConnector<IFodotF
 	@Override
 	public String toString() {
 		return "[formulaconnector "+getConnector()+":" + getArgument1() + ", " + getArgument2() + "]";
-		}
+	}
 	
+	
+
 }

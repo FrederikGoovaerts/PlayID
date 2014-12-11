@@ -61,4 +61,37 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	@Override
 	public abstract String toString();
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((arguments == null) ? 0 : arguments.hashCode());
+		result = prime * result
+				+ ((declaration == null) ? 0 : declaration.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FodotAbstractArgumentList other = (FodotAbstractArgumentList) obj;
+		if (arguments == null) {
+			if (other.arguments != null)
+				return false;
+		} else if (!arguments.equals(other.arguments))
+			return false;
+		if (declaration == null) {
+			if (other.declaration != null)
+				return false;
+		} else if (!declaration.equals(other.declaration))
+			return false;
+		return true;
+	}
+
 }
