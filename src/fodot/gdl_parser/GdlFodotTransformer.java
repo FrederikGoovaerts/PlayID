@@ -203,7 +203,6 @@ public class GdlFodotTransformer implements GdlTransformer{
      * Actions
      */
 
-    private FodotType actionType;
 
     /*** End of Actions subsection ***/
 
@@ -212,8 +211,6 @@ public class GdlFodotTransformer implements GdlTransformer{
      **************************************************************************/
 
     public void cleanAndInitializeBuilder(){
-        this.actionType = new FodotType("Action");
-
         this.roles = new TreeSet<>();
         this.fluentPredicates = new HashMap<>();
         this.staticPredicates = new HashMap<>();
