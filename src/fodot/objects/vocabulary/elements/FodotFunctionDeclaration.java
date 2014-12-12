@@ -10,19 +10,30 @@ import fodot.objects.util.CollectionUtil;
 public class FodotFunctionDeclaration extends FodotArgumentListDeclaration {
 
 	private final FodotType returnType;
+	private final boolean isPartial;
 	
-	public FodotFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType) {
+	public FodotFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType, boolean isPartial) {
 		super(name, argumentTypes);
 		this.returnType = returnType;
+		this.isPartial = isPartial;
 	}
 
+	public FodotFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType) {
+		this(name, argumentTypes, returnType, false);
+	}
+	
 	public FodotType getReturnType() {
 		return returnType;
+	}
+	
+	public boolean isPartial() {
+		return isPartial;
 	}
 
 	@Override
 	public String toCode() {
-		return getName() + CollectionUtil.toCoupleAsCode(getArgumentTypes()) + " : " + getReturnType().getTypeName();
+		return (isPartial() ? "partial " : "") + getName() +
+				CollectionUtil.toCoupleAsCode(getArgumentTypes()) + " : " + getReturnType().getTypeName();
 	}
 
 	@Override
