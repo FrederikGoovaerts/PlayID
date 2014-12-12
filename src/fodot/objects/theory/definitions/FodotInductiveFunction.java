@@ -12,6 +12,13 @@ public class FodotInductiveFunction implements IFodotFormula {
 	private FodotFunction function;
 	private IFodotTerm functionResult;
 	
+	public FodotInductiveFunction(FodotFunction function,
+			IFodotTerm functionResult) {
+		super();
+		this.function = function;
+		this.functionResult = functionResult;
+	}
+
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		Set<FodotVariable> result = function.getFreeVariables();
