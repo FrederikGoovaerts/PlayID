@@ -3,9 +3,9 @@ package fodot.objects.sentence.terms;
 import java.util.HashSet;
 import java.util.Set;
 
-import fodot.objects.exceptions.InvalidTermNameException;
-import fodot.objects.util.NameUtil;
+import fodot.exceptions.InvalidTermNameException;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.util.NameUtil;
 
 public class FodotVariable implements IFodotTerm {
 

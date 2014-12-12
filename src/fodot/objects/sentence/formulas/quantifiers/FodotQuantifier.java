@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import fodot.objects.exceptions.IllegalConnectorException;
+import fodot.exceptions.IllegalConnectorException;
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotVariable;
 

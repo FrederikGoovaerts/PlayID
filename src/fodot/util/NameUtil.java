@@ -1,4 +1,4 @@
-package fodot.objects.util;
+package fodot.util;
 
 public class NameUtil {
 	/* STATIC HELPERS */

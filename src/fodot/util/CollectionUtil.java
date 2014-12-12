@@ -1,4 +1,4 @@
-package fodot.objects.util;
+package fodot.util;
 
 import java.util.ArrayList;
 import java.util.Collection;

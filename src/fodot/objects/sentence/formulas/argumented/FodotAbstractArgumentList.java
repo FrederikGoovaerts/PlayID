@@ -8,8 +8,8 @@ import java.util.Set;
 import fodot.objects.sentence.IFodotSentenceElement;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
-import fodot.objects.util.CollectionUtil;
 import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
+import fodot.util.CollectionUtil;
 
 public abstract class FodotAbstractArgumentList implements IFodotSentenceElement {
 

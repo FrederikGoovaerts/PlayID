@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import fodot.objects.IFodotElement;
-import fodot.objects.util.NameUtil;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
+import fodot.util.NameUtil;
 
 public class FodotVocabulary implements IFodotElement {
 	//Maybe convert the three sets in just a set of FodotDeclarations?

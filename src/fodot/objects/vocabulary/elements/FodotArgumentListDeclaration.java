@@ -3,9 +3,9 @@ package fodot.objects.vocabulary.elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import fodot.exceptions.InvalidTermNameException;
 import fodot.objects.IFodotElement;
-import fodot.objects.exceptions.InvalidTermNameException;
-import fodot.objects.util.NameUtil;
+import fodot.util.NameUtil;
 
 public abstract class FodotArgumentListDeclaration implements IFodotElement {
 

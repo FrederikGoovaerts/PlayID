@@ -1,4 +1,4 @@
-package fodot.objects.util;
+package fodot.util;
 
 import fodot.helpers.FodotPartBuilder;
 import fodot.objects.sentence.formulas.IFodotFormula;

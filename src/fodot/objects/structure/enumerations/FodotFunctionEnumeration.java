@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fodot.objects.sentence.terms.FodotConstant;
-import fodot.objects.util.CollectionUtil;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
+import fodot.util.CollectionUtil;
 
 public class FodotFunctionEnumeration extends FodotEnumeration {
 	public FodotFunctionDeclaration function;

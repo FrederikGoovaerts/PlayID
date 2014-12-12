@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fodot.objects.IFodotElement;
-import fodot.objects.util.CollectionUtil;
-import fodot.objects.util.NameUtil;
+import fodot.util.CollectionUtil;
+import fodot.util.NameUtil;
 
 public class FodotProcedures implements IFodotElement {
 	private String name;

@@ -7,7 +7,7 @@ import java.util.Set;
 
 import fodot.objects.IFodotElement;
 import fodot.objects.sentence.terms.FodotConstant;
-import fodot.objects.util.CollectionUtil;
+import fodot.util.CollectionUtil;
 
 public class FodotTypeDeclaration implements IFodotElement {
 	private FodotType type;

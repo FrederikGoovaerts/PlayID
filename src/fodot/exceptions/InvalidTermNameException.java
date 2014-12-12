@@ -1,4 +1,4 @@
-package fodot.objects.exceptions;
+package fodot.exceptions;
 
 public class InvalidTermNameException extends RuntimeException {
 

@@ -29,13 +29,13 @@ import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionConnector;
 import fodot.objects.theory.definitions.FodotInductiveFunction;
-import fodot.objects.util.FormulaUtil;
-import fodot.objects.util.NameUtil;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
+import fodot.util.FormulaUtil;
+import fodot.util.NameUtil;
 
 public class FodotPartBuilder {
 	
