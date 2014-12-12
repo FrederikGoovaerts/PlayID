@@ -1,9 +1,11 @@
 package fodot.gdl_parser;
 
 import fodot.objects.Fodot;
+import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 
+import org.ggp.base.util.Pair;
 import org.ggp.base.util.gdl.grammar.*;
 
 import java.util.*;
@@ -297,7 +299,21 @@ public class FodotBuilder implements GdlTransformer{
 
     @Override
     public void processGoalRule(GdlRule rule) {
+        Pair<String, Integer> score;
 
+        GdlSentence scoreSentence = rule.getHead();
+        if(!scoreSentence.getName().getValue().equals("goal")) {
+            throw new IllegalArgumentException("Rule is not a goal rule!");
+        }
+
+        score = Pair.of(scoreSentence.get(0).toSentence().getName().getValue(),
+                Integer.parseInt(scoreSentence.get(1).toSentence().getName().getValue()));
+
+        FodotPredicate[] conditions = new FodotPredicate[rule.arity()];
+
+        for (GdlLiteral literal : rule.getBody()) {
+
+        }
     }
 
     @Override

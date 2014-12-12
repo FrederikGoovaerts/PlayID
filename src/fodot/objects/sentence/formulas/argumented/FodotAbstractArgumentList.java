@@ -1,34 +1,37 @@
 package fodot.objects.sentence.formulas.argumented;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import fodot.objects.exceptions.InvalidTermNameException;
 import fodot.objects.sentence.IFodotSentenceElement;
-import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.sentence.terms.FodotVariable;
-import fodot.objects.util.TermsUtil;
+import fodot.objects.sentence.terms.IFodotTerm;
+import fodot.objects.util.CollectionUtil;
+import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 
 public abstract class FodotAbstractArgumentList implements IFodotSentenceElement {
 
-	private String name;
+	private FodotArgumentListDeclaration declaration;
 	private List<IFodotTerm> arguments;
 	
-	public FodotAbstractArgumentList(String name, List<IFodotTerm> arguments) {
+	public FodotAbstractArgumentList(FodotArgumentListDeclaration decl, List<IFodotTerm> arguments) {
 		super();
-		setName(name);
+		setDeclaration(decl);
 		this.arguments = arguments;
 	}
 
-	public void setName(String name) {
-		if (!TermsUtil.isValidName(name)) {
-			throw new InvalidTermNameException(name);
-		}
-		this.name = name;
+	public FodotArgumentListDeclaration getDeclaration() {
+		return declaration;
 	}
 	
-	public String getName() {
-		return name;
+	public void setDeclaration(FodotArgumentListDeclaration name) {
+		this.declaration = name;
+	}
+	
+	public FodotArgumentListDeclaration getName() {
+		return declaration;
 	}
 	
 	public List<IFodotTerm> getArguments() {
@@ -36,8 +39,8 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	}
 
 	@Override
-	public List<FodotVariable> getFreeVariables() {
-		List<FodotVariable> result = new ArrayList<FodotVariable>();
+	public Set<FodotVariable> getFreeVariables() {
+		Set<FodotVariable> result = new HashSet<FodotVariable>();
 		for (IFodotTerm arg : getArguments()) {
 			result.addAll(arg.getFreeVariables());
 		}
@@ -47,27 +50,48 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(name + "(");
-		for (int i = 0; i < arguments.size(); i++) {
-			if (i>0) {
-				builder.append(", ");
-			}
-			builder.append(arguments.get(i).toCode());
-		}
-		builder.append(")");
+		builder.append(CollectionUtil.toCouple(CollectionUtil.toCode(getArguments())));
 		return builder.toString();
 	}
 	
 	protected String argumentsToString() {
-		StringBuilder builder = new StringBuilder();
-		for (IFodotTerm term : getArguments()) {
-			builder.append(term.toString() + ", ");
-		}
-		String builderStr = builder.toString();
-		return builderStr.substring(0, builderStr.length()-2);
+		return CollectionUtil.toNakedList(CollectionUtil.toString(getArguments()));
 	}
 	
 	@Override
 	public abstract String toString();
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((arguments == null) ? 0 : arguments.hashCode());
+		result = prime * result
+				+ ((declaration == null) ? 0 : declaration.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FodotAbstractArgumentList other = (FodotAbstractArgumentList) obj;
+		if (arguments == null) {
+			if (other.arguments != null)
+				return false;
+		} else if (!arguments.equals(other.arguments))
+			return false;
+		if (declaration == null) {
+			if (other.declaration != null)
+				return false;
+		} else if (!declaration.equals(other.declaration))
+			return false;
+		return true;
+	}
 
 }

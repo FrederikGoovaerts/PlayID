@@ -24,5 +24,33 @@ public class FodotFunctionDeclaration extends FodotArgumentListDeclaration {
 	public String toCode() {
 		return getName() + CollectionUtil.toCoupleAsCode(getArgumentTypes()) + " : " + getReturnType().getTypeName();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((returnType == null) ? 0 : returnType.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FodotFunctionDeclaration other = (FodotFunctionDeclaration) obj;
+		if (returnType == null) {
+			if (other.returnType != null)
+				return false;
+		} else if (!returnType.equals(other.returnType))
+			return false;
+		return true;
+	}
+	
+	
     
 }

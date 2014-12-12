@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fodot.objects.IFodotElement;
+import fodot.objects.exceptions.InvalidTermNameException;
+import fodot.objects.util.TermsUtil;
 
 public abstract class FodotArgumentListDeclaration implements IFodotElement {
 
@@ -12,7 +14,7 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
      **************************************************************************/
 
     public FodotArgumentListDeclaration(String name, List<FodotType> argumentTypes) {
-        this.name = name;
+       	setName(name);
         this.argumentTypes = argumentTypes;
     }
 
@@ -20,10 +22,17 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
      * Class Properties
      **************************************************************************/
 
-    private final String name;
+    private String name;
 
     public String getName() {
         return name;
+    }
+    
+    public void setName(String name) {
+		if (!TermsUtil.isValidName(name)) {
+			throw new InvalidTermNameException(name);
+		}
+		this.name = name;
     }
 
     /*************************************
@@ -53,5 +62,38 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
     }
 
     /************************************/
+    
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((argumentTypes == null) ? 0 : argumentTypes.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FodotArgumentListDeclaration other = (FodotArgumentListDeclaration) obj;
+		if (argumentTypes == null) {
+			if (other.argumentTypes != null)
+				return false;
+		} else if (!argumentTypes.equals(other.argumentTypes))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+    
 	
 }

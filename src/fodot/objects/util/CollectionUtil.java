@@ -15,6 +15,14 @@ public class CollectionUtil {
 		return toCodify;
 	}
 	
+	public static List<String> toString(Collection<? extends IFodotElement> list) {
+		List<String> toStringify = new ArrayList<String>();
+		for (IFodotElement element : list) {
+			toStringify.add(element.toString());
+		}
+		return toStringify;
+	}
+	
 	public static String toCoupleAsCode(Collection<? extends IFodotElement> list) {
 		return toCouple(toCode(list));
 	}

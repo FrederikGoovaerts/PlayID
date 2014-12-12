@@ -3,11 +3,12 @@ package fodot.objects.sentence.terms;
 import java.util.List;
 
 import fodot.objects.sentence.formulas.argumented.FodotAbstractArgumentList;
+import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 
 public class FodotFunction extends FodotAbstractArgumentList implements IFodotTerm {
 	
-	public FodotFunction(String name, List<IFodotTerm> arguments) {
-		super(name, arguments);
+	public FodotFunction(FodotArgumentListDeclaration decl, List<IFodotTerm> arguments) {
+		super(decl, arguments);
 	}
 	
 	@Override

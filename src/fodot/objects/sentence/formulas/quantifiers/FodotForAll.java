@@ -1,5 +1,7 @@
 package fodot.objects.sentence.formulas.quantifiers;
 
+import java.util.List;
+
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotVariable;
 
@@ -7,7 +9,7 @@ public class FodotForAll extends FodotQuantifier {
 	
 	private static String FORALL_SYMBOL = "!";
 	
-	public FodotForAll(FodotVariable variable, IFodotFormula formula) {
+	public FodotForAll(List<FodotVariable> variable, IFodotFormula formula) {
 		super(FORALL_SYMBOL, variable, formula);
 	}
 
