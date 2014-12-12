@@ -13,13 +13,13 @@ import java.util.*;
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
-public class FodotBuilder implements GdlTransformer{
+public class GdlFodotTransformer implements GdlTransformer{
 
     /***************************************************************************
      * Constructor
      **************************************************************************/
 
-    public FodotBuilder(){
+    public GdlFodotTransformer(){
         this.cleanAndInitializeBuilder();
     }
 

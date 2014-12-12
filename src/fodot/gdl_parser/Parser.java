@@ -23,7 +23,7 @@ public class Parser {
         File file = new File("resources/games/blocks.kif");
         Parser test = new Parser(file);
         List<Gdl> rules = test.game.getRules();
-        FodotBuilder builder = new FodotBuilder();
+        GdlFodotTransformer builder = new GdlFodotTransformer();
         GdlInspector inspector = new GdlInspector(rules,builder);
         System.out.println("Put breakpoint here to inspect the parsing.");
     }
