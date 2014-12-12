@@ -11,16 +11,18 @@ import fodot.objects.util.CollectionUtil;
 
 public class FodotTypeDeclaration implements IFodotElement {
 	private FodotType type;
-	private List<FodotType> subtypes;
-	private List<FodotType> supertypes;
+	private Set<FodotType> subtypes;
+	private Set<FodotType> supertypes;
 	
-	public FodotTypeDeclaration(FodotType type, Set<FodotConstant> domain, List<FodotType> isa, List<FodotType> contains) {
+	public FodotTypeDeclaration(FodotType type, Set<FodotConstant> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
 		this.type = type;
 		this.domain = domain;
+		setSupertypes(supertypes);
+		setSubtypes(subtypes);
 	}
 	
 	public FodotTypeDeclaration(FodotType type) {
-		this(type, new HashSet<FodotConstant>(), new ArrayList<FodotType>(), new ArrayList<FodotType>());
+		this(type, new HashSet<FodotConstant>(), null, null);
 	}
 
     /*************************************
@@ -37,11 +39,19 @@ public class FodotTypeDeclaration implements IFodotElement {
      * Subclasses
      */
 
+    private void setSubtypes(Set<FodotType> subtypes) {
+    	if (subtypes == null) {
+    		this.subtypes = new HashSet<FodotType>();
+    	} else {
+    		this.subtypes = subtypes;
+    	}
+    }
+    
     public void addSubtype(FodotType type) {
     	subtypes.add(type);
     }
     
-    public void addAllSubtypes(List<FodotType> types) {
+    public void addAllSubtypes(Set<FodotType> types) {
     	subtypes.addAll(types);
     }
     
@@ -64,11 +74,19 @@ public class FodotTypeDeclaration implements IFodotElement {
      * Superclasses
      */
 
+    private void setSupertypes(Set<FodotType> supertypes) {
+    	if (supertypes == null) {
+    		this.supertypes = new HashSet<FodotType>();
+    	} else {
+    		this.supertypes = supertypes;
+    	}
+    }
+    
     public void addSupertype(FodotType type) {
     	supertypes.add(type);
     }
     
-    public void addAllSupertypes(List<FodotType> types) {
+    public void addAllSupertypes(Set<FodotType> types) {
     	supertypes.addAll(types);
     }
     
