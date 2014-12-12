@@ -1,6 +1,6 @@
 package fodot.objects.util;
 
-public class TermsUtil {
+public class NameUtil {
 	/* STATIC HELPERS */
 
 	private static String validNameRegex = "^[a-zA-Z$][a-zA-Z_$0-9]*$";
@@ -12,7 +12,7 @@ public class TermsUtil {
 	 * @return
 	 */
 	public static boolean isValidName(String name) {
-		if (name.length() == 0) {
+		if (name == null || name.length() == 0) {
 			return false;
 		}
 		return name.matches(validNameRegex);

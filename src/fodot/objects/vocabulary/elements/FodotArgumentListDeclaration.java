@@ -5,7 +5,7 @@ import java.util.List;
 
 import fodot.objects.IFodotElement;
 import fodot.objects.exceptions.InvalidTermNameException;
-import fodot.objects.util.TermsUtil;
+import fodot.objects.util.NameUtil;
 
 public abstract class FodotArgumentListDeclaration implements IFodotElement {
 
@@ -29,7 +29,7 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
     }
     
     public void setName(String name) {
-		if (!TermsUtil.isValidName(name)) {
+		if (!NameUtil.isValidName(name)) {
 			throw new InvalidTermNameException(name);
 		}
 		this.name = name;

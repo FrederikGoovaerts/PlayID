@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fodot.objects.exceptions.InvalidTermNameException;
-import fodot.objects.util.TermsUtil;
+import fodot.objects.util.NameUtil;
 import fodot.objects.vocabulary.elements.FodotType;
 
 public class FodotVariable implements IFodotTerm {
@@ -19,7 +19,7 @@ public class FodotVariable implements IFodotTerm {
 	}
 
 	public void setName(String name) {
-		if (!TermsUtil.isValidName(name)) {
+		if (!NameUtil.isValidName(name)) {
 			throw new InvalidTermNameException(name);
 		}
 		this.name = name;
