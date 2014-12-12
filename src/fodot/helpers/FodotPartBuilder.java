@@ -85,6 +85,23 @@ public class FodotPartBuilder {
 	}
 	
 	//QUANTIFIERS	
+	
+	//Lil' helper
+	private static Set<FodotVariable> wrapVariableInSet(FodotVariable var) {
+		HashSet<FodotVariable> variables = new HashSet<FodotVariable>();
+		variables.add(var);
+		return variables;		
+	}
+	
+	private static final String FORALL_SYMBOL = "!";
+	
+	public static FodotQuantifier createForAll(Set<FodotVariable> set, IFodotFormula formula) {
+		return new FodotQuantifier(FORALL_SYMBOL, set, formula);
+	}
+	public static FodotQuantifier createForAll(FodotVariable variable, IFodotFormula formula) {
+		return createForAll(wrapVariableInSet(variable), formula);
+	}
+
 	private static final String EXISTS_SYMBOL = "?";	
 	
 	public static FodotQuantifier createExists(Set<FodotVariable> set, IFodotFormula formula) {
@@ -92,22 +109,46 @@ public class FodotPartBuilder {
 	}
 	
 	public static FodotQuantifier createExists(FodotVariable variable, IFodotFormula formula) {
-		HashSet<FodotVariable> variables = new HashSet<FodotVariable>();
-		variables.add(variable);
-		return createExists(variables, formula);
+		return createExists(wrapVariableInSet(variable), formula);
+	}
+	
+	//Awesome exists
+	private static final String EXISTS_EXACTLY_SYMBOL = EXISTS_SYMBOL + "=";
+	public static FodotQuantifier createExistsExactly(int amount, Set<FodotVariable> set, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_EXACTLY_SYMBOL + amount, set, formula);
+	}
+	
+	public static FodotQuantifier createExistsExactly(int amount, FodotVariable var, IFodotFormula formula) {
+		return createExistsExactly(amount, wrapVariableInSet(var), formula);		
+	}
+		
+	private static final String EXISTS_LESS_THAN_SYMBOL = EXISTS_SYMBOL + "<";
+	public static FodotQuantifier createExistsLessThan(int amount, Set<FodotVariable> set, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_LESS_THAN_SYMBOL + amount, set, formula);
+	}
+	
+	public static FodotQuantifier createExistsLessThan(int amount, FodotVariable var, IFodotFormula formula) {
+		return createExistsLessThan(amount, wrapVariableInSet(var), formula);		
 	}
 
-	private static final String FORALL_SYMBOL = "!";
-	
-	public static FodotQuantifier createForAll(Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(FORALL_SYMBOL, set, formula);
-	}
-	public static FodotQuantifier createForAll(FodotVariable variable, IFodotFormula formula) {
-		HashSet<FodotVariable> variables = new HashSet<FodotVariable>();
-		variables.add(variable);
-		return createForAll(variables, formula);
+	private static final String EXISTS_AT_MOST_SYMBOL = EXISTS_SYMBOL + "=<";
+	public static FodotQuantifier createExistsAtMost(int amount, Set<FodotVariable> set, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_AT_MOST_SYMBOL + amount, set, formula);
 	}
 	
+	public static FodotQuantifier createExistsAtMost(int amount, FodotVariable var, IFodotFormula formula) {
+		return createExistsAtMost(amount, wrapVariableInSet(var), formula);		
+	}
+
+	private static final String EXISTS_MORE_THAN_SYMBOL = EXISTS_SYMBOL + ">";
+	public static FodotQuantifier createExistsMoreThan(int amount, Set<FodotVariable> set, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_MORE_THAN_SYMBOL + amount, set, formula);
+	}
+	
+	public static FodotQuantifier createExistsMoreThan(int amount, FodotVariable var, IFodotFormula formula) {
+		return createExistsMoreThan(amount, wrapVariableInSet(var), formula);		
+	}
+
 	//TERM RELATED	
 	public static FodotNot createNot(IFodotFormula form) {
 		return new FodotNot(form);

@@ -1,7 +1,5 @@
 package fodot.objects.sentence.formulas.quantifiers;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import fodot.exceptions.IllegalConnectorException;
@@ -14,8 +12,9 @@ public class FodotQuantifier implements IFodotFormula {
 	private IFodotFormula formula;
 
 	/* VALID SYMBOL */
-	private static final List<String> VALID_SYMBOLS =
-			Arrays.asList(new String[]{"!", "?"});
+//	private static final List<String> VALID_SYMBOLS =
+//			Arrays.asList(new String[]{"!", "?"});
+	private static final String VALID_QUANTIFIER_REGEX = "!|([\\?]([=][<]|[<>]|=)?[0-9]*)|\\?";
 	
 	public FodotQuantifier(String symbol, Set<FodotVariable> variable, IFodotFormula formula) {
 		super();
@@ -59,9 +58,8 @@ public class FodotQuantifier implements IFodotFormula {
 	}
 	
 	public boolean isValidSymbol(String symbol) {
-		return VALID_SYMBOLS.contains(symbol);
+		return symbol.matches(VALID_QUANTIFIER_REGEX);
 	}
-	
 
 	@Override
 	public String toString() {
