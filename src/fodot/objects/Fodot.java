@@ -20,11 +20,6 @@ public class Fodot implements IFodotElement {
 		this.procedures = procedures;
 	}
 	
-	public static Fodot getNewEmptyFodot() {
-		FodotVocabulary voc = new FodotVocabulary();
-		return new Fodot(voc, new FodotTheory(voc), new FodotStructure(voc), new FodotProcedures("main"));
-	}
-	
 	public FodotVocabulary getVocabulary() {
 		return vocabulary;
 	}

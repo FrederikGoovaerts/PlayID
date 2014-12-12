@@ -1,7 +1,6 @@
 package fodot.objects.structure.enumerations;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import fodot.objects.sentence.terms.FodotConstant;

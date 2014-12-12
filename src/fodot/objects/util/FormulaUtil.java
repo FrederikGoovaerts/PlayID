@@ -1,10 +1,7 @@
 package fodot.objects.util;
 
-import java.util.ArrayList;
-
+import fodot.helpers.FodotPartBuilder;
 import fodot.objects.sentence.formulas.IFodotFormula;
-import fodot.objects.sentence.formulas.quantifiers.FodotForAll;
-import fodot.objects.sentence.terms.FodotVariable;
 
 public class FormulaUtil {
 	
@@ -15,7 +12,7 @@ public class FormulaUtil {
 	 */
 	public static IFodotFormula makeVariableFree(IFodotFormula formula) {
 		IFodotFormula newFormula = formula;
-		newFormula = new FodotForAll(new ArrayList<FodotVariable>(formula.getFreeVariables()), newFormula);
+		newFormula = FodotPartBuilder.createForAll(formula.getFreeVariables(), newFormula);
 		return newFormula;
 	}
 }
