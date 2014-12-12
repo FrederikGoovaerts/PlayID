@@ -4,18 +4,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.util.CollectionUtil;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 
 public class FodotFunctionEnumeration extends FodotEnumeration {
 	public FodotFunctionDeclaration function;
-	public Map<String[], String> values;
+	public Map<FodotConstant[], FodotConstant> values;
 	
 	public FodotFunctionEnumeration(FodotFunctionDeclaration function) {
-		this(function, new HashMap<String[], String>());
+		this(function, new HashMap<FodotConstant[], FodotConstant>());
 	}
 	
-	public FodotFunctionEnumeration(FodotFunctionDeclaration function, Map<String[], String> values) {
+	public FodotFunctionEnumeration(FodotFunctionDeclaration function, Map<FodotConstant[], FodotConstant> values) {
 		super();
 		this.function = function;
 		this.values = values;
@@ -27,29 +28,29 @@ public class FodotFunctionEnumeration extends FodotEnumeration {
 
 	/* VALUES */
 	
-	public void addValue(String[] input, String value) {
+	public void addValue(FodotConstant[] input, FodotConstant value) {
 		//TODO: some kind of validator for the amount of and type of arguments
 		values.put(input, value);
 	}
 	
-	public void removeValue(String[] input) {
+	public void removeValue(FodotConstant[] input) {
 		values.remove(input);
 	}
 	
-	public boolean containsValue(String[] input) {
+	public boolean containsValue(FodotConstant[] input) {
 		return values.containsKey(input);
 	}
 	
-	public Map<String[], String> getValues() {
-		return new HashMap<String[], String>(values);
+	public Map<FodotConstant[], FodotConstant> getValues() {
+		return new HashMap<FodotConstant[], FodotConstant>(values);
 	}
 
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(function.getName() + " = {");
-		for (String[] key : getValues().keySet()) {
-			builder.append(CollectionUtil.toCouple(Arrays.asList(key)) + " -> " + values.get(key) + "; \n");
+		for (FodotConstant[] key : getValues().keySet()) {
+			builder.append(CollectionUtil.toCoupleAsCode(Arrays.asList(key)) + " -> " + values.get(key) + "; \n");
 		}
 		builder.append("}");
 		return builder.toString();
@@ -85,6 +86,12 @@ public class FodotFunctionEnumeration extends FodotEnumeration {
 		} else if (!values.equals(other.values))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "FodotFunctionEnumeration [function=" + function + ", values="
+				+ values + "]";
 	}
 	
 	

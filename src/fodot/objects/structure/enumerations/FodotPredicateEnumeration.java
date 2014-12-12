@@ -4,18 +4,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.util.CollectionUtil;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 
 public class FodotPredicateEnumeration extends FodotEnumeration {
 	public FodotPredicateDeclaration predicate;
-	public List<String[]> values;
+	public List<FodotConstant[]> values;
 	
 	public FodotPredicateEnumeration(FodotPredicateDeclaration predicate) {
-		this(predicate, new ArrayList<String[]>());
+		this(predicate, new ArrayList<FodotConstant[]>());
 	}
 	
-	public FodotPredicateEnumeration(FodotPredicateDeclaration predicate, List<String[]> values) {
+	public FodotPredicateEnumeration(FodotPredicateDeclaration predicate, List<FodotConstant[]> values) {
 		super();
 		this.predicate = predicate;
 		this.values = values;
@@ -27,29 +28,29 @@ public class FodotPredicateEnumeration extends FodotEnumeration {
 
 	/* VALUES */
 	
-	public void addValue(String[] value) {
+	public void addValue(FodotConstant[] value) {
 		//TODO: some kind of validator for the amount of and type of arguments
 		values.add(value);
 	}
 	
-	public void removeValue(String[] value) {
+	public void removeValue(FodotConstant[] value) {
 		values.remove(value);
 	}
 	
-	public boolean containsValue(String[] value) {
+	public boolean containsValue(FodotConstant[] value) {
 		return values.contains(value);
 	}
 	
-	public List<String[]> getValues() {
-		return new ArrayList<String[]>(values);
+	public List<FodotConstant[]> getValues() {
+		return new ArrayList<FodotConstant[]>(values);
 	}
 
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(predicate.getName() + " = {");
-		for (String[] strings : getValues()) {
-			builder.append(CollectionUtil.toCouple(Arrays.asList(strings)) + ";\n");
+		for (FodotConstant[] constants : getValues()) {		
+			builder.append(CollectionUtil.toNakedList(CollectionUtil.toCode(Arrays.asList(constants))) + ";\n");
 		}
 		builder.append("}");
 		return builder.toString();
@@ -85,6 +86,12 @@ public class FodotPredicateEnumeration extends FodotEnumeration {
 		} else if (!values.equals(other.values))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "FodotPredicateEnumeration [predicate=" + predicate
+				+ ", values=" + values + "]";
 	}
 		
 }
