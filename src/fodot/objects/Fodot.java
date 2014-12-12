@@ -1,11 +1,14 @@
 package fodot.objects;
 
+import java.util.Set;
+
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.vocabulary.FodotVocabulary;
 
 public class Fodot implements IFodotElement {
+	private Set<String> includes;
 	private FodotVocabulary vocabulary;
 	private FodotTheory theory;
 	private FodotStructure structure;
@@ -32,10 +35,27 @@ public class Fodot implements IFodotElement {
 	public FodotProcedures getProcedures() {
 		return procedures;
 	}
-
+	
+	
+	//INCLUDES
+	public void addIncludes(String incl) {
+		includes.add(incl);
+	}
+	
+	public void removeIncludes(String incl){
+		includes.remove(incl);
+	}
+	
+	//FODOT ELEMENT
 	@Override
 	public String toCode() {
-		return getVocabulary().toCode() + "\n"
+		StringBuilder includesBuilder = new StringBuilder();
+		for (String s : includes) {
+			includesBuilder.append("include < " + s + ">\n");
+		}
+		
+		return includesBuilder.toString()
+				+ getVocabulary().toCode() + "\n"
 				+ getTheory().toCode() + "\n"
 				+ getStructure().toCode() + "\n"
 				+ getProcedures().toCode() + "\n";
@@ -47,5 +67,7 @@ public class Fodot implements IFodotElement {
 		getStructure().merge(other.getStructure());
 		getProcedures().merge(other.getProcedures());
 	}
+	
+	
 	
 }

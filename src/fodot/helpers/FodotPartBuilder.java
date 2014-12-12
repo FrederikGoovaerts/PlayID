@@ -29,6 +29,7 @@ import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionConnector;
 import fodot.objects.theory.definitions.FodotInductiveFunction;
+import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
@@ -40,58 +41,71 @@ import fodot.util.NameUtil;
 public class FodotPartBuilder {
 	
 	// FORMULA CONNECTORS
+	private static final String AND_SYMBOL = "&";
+	 
 	public static FodotFormulaConnector createAnd(IFodotFormula form1, IFodotFormula form2) {
-		return new FodotFormulaConnector(form1, "&", form2);
+		return new FodotFormulaConnector(form1, AND_SYMBOL, form2);
 	}
 
+	private static final String OR_SYMBOL = "|";
+	
 	public static FodotFormulaConnector createOr(IFodotFormula form1, IFodotFormula form2) {
-		return new FodotFormulaConnector(form1, "|", form2);
+		return new FodotFormulaConnector(form1, OR_SYMBOL, form2);
 	}
 
+	private static final String IMPLIES_SYMBOL = "=>";
+	
 	public static FodotFormulaConnector createImplies(IFodotFormula form1, IFodotFormula form2) {
-		return new FodotFormulaConnector(form1, "=>", form2);
+		return new FodotFormulaConnector(form1, IMPLIES_SYMBOL, form2);
 	}
 
+	private static final String IS_IMPLIED_SYMBOL = "<=";
+	
 	public static FodotFormulaConnector createIsImpliedBy(IFodotFormula form1, IFodotFormula form2) {
-		return new FodotFormulaConnector(form1, "<=", form2);
+		return new FodotFormulaConnector(form1, IS_IMPLIED_SYMBOL, form2);
 	}
 
+	private static final String EQUIVALENT_SYMBOL = "<=>";
+	
 	public static FodotFormulaConnector createEquivalent(IFodotFormula form1, IFodotFormula form2) {
-		return new FodotFormulaConnector(form1, "<=>", form2);
+		return new FodotFormulaConnector(form1, EQUIVALENT_SYMBOL, form2);
 	}
 	
 	//TERM CONNECTORS
+	private static final String EQUALS_SYMBOL = "=";
+	
 	public static FodotTermConnector createEquals(IFodotTerm term1, IFodotTerm term2) {
-		return new FodotTermConnector(term1, "=", term2);
+		return new FodotTermConnector(term1, EQUALS_SYMBOL, term2);
 	}
+
+	private static final String DISTINCT_SYMBOL = "~=";
 	
 	public static FodotTermConnector createDistinct(IFodotTerm term1, IFodotTerm term2) {
-		return new FodotTermConnector(term1, "~=", term2);
+		return new FodotTermConnector(term1, DISTINCT_SYMBOL, term2);
 	}
 	
 	//QUANTIFIERS	
-	private static final String EXISTS_SYMBOL = "?";
-	private static final String FORALL_SYMBOL = "!";
-
-	
-	public static FodotQuantifier createExists(FodotVariable variable, IFodotFormula formula) {
-		HashSet<FodotVariable> variables = new HashSet<FodotVariable>();
-		variables.add(variable);
-		return new FodotQuantifier(EXISTS_SYMBOL, variables, formula);
-	}
+	private static final String EXISTS_SYMBOL = "?";	
 	
 	public static FodotQuantifier createExists(Set<FodotVariable> set, IFodotFormula formula) {
 		return new FodotQuantifier(EXISTS_SYMBOL, set, formula);
 	}
 	
-	public static FodotQuantifier createForAll(FodotVariable variable, IFodotFormula formula) {
+	public static FodotQuantifier createExists(FodotVariable variable, IFodotFormula formula) {
 		HashSet<FodotVariable> variables = new HashSet<FodotVariable>();
 		variables.add(variable);
-		return new FodotQuantifier(FORALL_SYMBOL, variables, formula);
+		return createExists(variables, formula);
 	}
+
+	private static final String FORALL_SYMBOL = "!";
 	
 	public static FodotQuantifier createForAll(Set<FodotVariable> set, IFodotFormula formula) {
 		return new FodotQuantifier(FORALL_SYMBOL, set, formula);
+	}
+	public static FodotQuantifier createForAll(FodotVariable variable, IFodotFormula formula) {
+		HashSet<FodotVariable> variables = new HashSet<FodotVariable>();
+		variables.add(variable);
+		return createForAll(variables, formula);
 	}
 	
 	//TERM RELATED	
@@ -304,6 +318,23 @@ public class FodotPartBuilder {
 		return createVocabulary(null, null, null, null);
 	}
 	
+	public static FodotLTCVocabulary createLTCVocabulary(String name, Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
+			Set<FodotFunctionDeclaration> functions) {
+		return new FodotLTCVocabulary(name, types, predicates, functions);
+	}
+	
+	public static FodotLTCVocabulary createLTCVocabulary(String name) {
+		return createLTCVocabulary(name, null, null, null);
+	}
+	
+	public static FodotLTCVocabulary creatLTCeVocabulary(Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
+			Set<FodotFunctionDeclaration> functions) {
+		return createLTCVocabulary(null, types, predicates, functions);
+	}
+	
+	public static FodotLTCVocabulary createLTCVocabulary() {
+		return createLTCVocabulary(null, null, null, null);
+	}
 	
 	//FODOT ITSELF
 	public static Fodot createFodot(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures) {
@@ -318,5 +349,7 @@ public class FodotPartBuilder {
 	public static Fodot createFodot(FodotVocabulary voc) {
 		return createFodot(voc, createTheory(voc), createStructure(voc), createProcedures());
 	}
+	
+
 	
 }
