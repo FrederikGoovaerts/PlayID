@@ -24,6 +24,10 @@ public class FodotProcedures implements IFodotElement {
 		this(name, null, null);
 	}
 	
+	public FodotProcedures() {
+		this(null, null, null);
+	}
+	
 	//NAME
 	public String getName() {
 		return name;

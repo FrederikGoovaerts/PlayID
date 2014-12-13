@@ -1,28 +1,31 @@
 package fodot.objects;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.vocabulary.FodotVocabulary;
 
 public class Fodot implements IFodotElement {
-	private Set<String> includes;
+	private FodotIncludeHolder includes;
 	private FodotVocabulary vocabulary;
 	private FodotTheory theory;
 	private FodotStructure structure;
 	private FodotProcedures procedures;
 	
 	public Fodot(FodotVocabulary vocabulary, FodotTheory theory,
-			FodotStructure structure, FodotProcedures procedures) {
+			FodotStructure structure, FodotProcedures procedures, FodotIncludeHolder includes) {
 		super();
-		this.vocabulary = vocabulary;
-		this.theory = theory;
-		this.structure = structure;
-		this.procedures = procedures;
-		this.includes = new HashSet<>();
+		setVocabulary(vocabulary);
+		setTheory(theory);
+		setStructure(structure);
+		setProcedures(procedures);
+		setIncludes(includes);
+	}
+	
+	public Fodot(FodotVocabulary vocabulary, FodotTheory theory,
+			FodotStructure structure, FodotProcedures procedures) {
+		this(vocabulary, theory, structure, procedures, new FodotIncludeHolder());
 	}
 	
 	public FodotVocabulary getVocabulary() {
@@ -38,25 +41,34 @@ public class Fodot implements IFodotElement {
 		return procedures;
 	}
 	
-	
-	//INCLUDES
-	public void addIncludes(String incl) {
-		includes.add(incl);
+	public FodotIncludeHolder getIncludes() {
+		return includes;
 	}
-	
-	public void removeIncludes(String incl){
-		includes.remove(incl);
+
+	private void setVocabulary(FodotVocabulary vocabulary) {
+		this.vocabulary = (vocabulary == null ? new FodotVocabulary() : vocabulary);
 	}
-	
+
+	private void setTheory(FodotTheory theory) {
+		this.theory = (theory == null? new FodotTheory(getVocabulary()) : theory);
+	}
+
+	private void setStructure(FodotStructure structure) {
+		this.structure = (structure == null? new FodotStructure(getVocabulary()) : structure);
+	}
+
+	private void setProcedures(FodotProcedures procedures) {
+		this.procedures = (procedures == null? new FodotProcedures() : procedures);
+	}
+
+	private void setIncludes(FodotIncludeHolder includes) {
+		this.includes = (includes == null ? new FodotIncludeHolder() : includes);
+	}
+
 	//FODOT ELEMENT
 	@Override
 	public String toCode() {
-		StringBuilder includesBuilder = new StringBuilder();
-		for (String s : includes) {
-			includesBuilder.append("include < " + s + ">\n");
-		}
-		
-		return includesBuilder.toString()
+		return getIncludes().toCode() + "\n"
 				+ getVocabulary().toCode() + "\n"
 				+ getTheory().toCode() + "\n"
 				+ getStructure().toCode() + "\n"

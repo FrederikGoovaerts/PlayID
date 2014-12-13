@@ -8,6 +8,10 @@ import java.util.Map;
 import java.util.Set;
 
 import fodot.objects.Fodot;
+import fodot.objects.includes.FodotInclude;
+import fodot.objects.includes.FodotIncludeFile;
+import fodot.objects.includes.FodotIncludeHolder;
+import fodot.objects.includes.FodotIncludeLibrary;
 import fodot.objects.procedure.FodotProcedure;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.sentence.formulas.IFodotFormula;
@@ -258,6 +262,10 @@ public class FodotPartBuilder {
 		return createFunctionDeclaration(name, argumentTypes, returnType, false);
 	}
 	
+	public static FodotFunctionDeclaration createCompleteFunctionDeclaration(String name, FodotType returnType) {
+		return createCompleteFunctionDeclaration(name, returnType);
+	}
+	
 	public static FodotPredicateDeclaration createPredicateDeclaration(String name, List<FodotType> argumentTypes) {
 		return new FodotPredicateDeclaration(name, argumentTypes);
 	}
@@ -270,10 +278,15 @@ public class FodotPartBuilder {
 		return createTypeDeclaration(type, domain, supertypes, null);
 	}
 	
+	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, FodotType supertype) {
+        Set<FodotType> supertypes = new HashSet<FodotType>();
+        supertypes.add(supertype);
+		return createTypeDeclaration(type, null, supertypes, null);
+	}
+	
 	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<FodotConstant> domain) {
 		return createTypeDeclaration(type, domain, null, null);
 	}
-	
 	
 	public static FodotTypeDeclaration createTypeDeclaration(FodotType type) {
 		return createTypeDeclaration(type, null, null, null);
@@ -283,7 +296,47 @@ public class FodotPartBuilder {
 		return new FodotType(name);
 	}
 	
+	public static FodotType getNaturalNumberType() {
+		return FodotType.NATURAL_NUMBER;
+	}
+	
+	public static FodotType getIntegerType() {
+		return FodotType.INTEGER;
+	}
+	
+	public static FodotType getPlaceHolderType() { //moon
+		return FodotType.getPlaceHolderType();
+	}
+	
 	// == FODOT ESSENTIALS ==
+	
+	//FODOT INCLUDES
+	
+	public static FodotIncludeLibrary createIncludeLibrary(String library) {
+		return new FodotIncludeLibrary(library);
+	}
+	
+	public static FodotIncludeLibrary createIncludeLTC() {
+		return FodotIncludeLibrary.LTC;
+	}
+	
+	public static FodotIncludeFile createIncludeFile(String path) {
+		return new FodotIncludeFile(path);
+	}
+	
+	public static FodotIncludeHolder createIncludeHolder(Set<FodotInclude> includes) {
+		return new FodotIncludeHolder(includes);
+	}
+	
+	public static FodotIncludeHolder createIncludeHolder(FodotInclude initElement) {
+		Set<FodotInclude> toAdd = new HashSet<FodotInclude>();
+		toAdd.add(initElement);
+		return createIncludeHolder(toAdd);
+	}
+	
+	public static FodotIncludeHolder createIncludeHolder() {
+		return createIncludeHolder(new HashSet<FodotInclude>());
+	}
 	
 	//FODOT THEORY
 	public static FodotTheory createTheory(String name, FodotVocabulary vocabulary, Set<FodotSentence> sentences) {
@@ -387,8 +440,12 @@ public class FodotPartBuilder {
 	}
 	
 	//FODOT ITSELF
+	public static Fodot createFodot(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures, FodotIncludeHolder imports) {
+		return new Fodot(voc, theory, struc, procedures, imports);
+	}
+	
 	public static Fodot createFodot(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures) {
-		return new Fodot(voc, theory, struc, procedures);
+		return createFodot(voc, theory, struc, procedures, null);
 	}
 	
 	public static Fodot createFodot() {

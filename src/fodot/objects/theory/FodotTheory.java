@@ -58,7 +58,7 @@ public class FodotTheory implements IFodotElement {
 	}
 
 	private void setInductiveDefinitions(Set<FodotInductiveDefinitionBlock> def) {
-		this.definitions = (def == null ? new HashSet<>() : def);
+		this.definitions = (def == null ? new HashSet<FodotInductiveDefinitionBlock>() : def);
 	}
 	
 	public Set<FodotInductiveDefinitionBlock> getInductiveDefinitions() {
@@ -75,7 +75,7 @@ public class FodotTheory implements IFodotElement {
 	}
 
 	private void setSentences(Set<FodotSentence> sent) {
-		this.sentences = (sent == null ? new HashSet<>() : sent);
+		this.sentences = (sent == null ? new HashSet<FodotSentence>() : sent);
 	}
 	
 	public Set<FodotSentence> getSentences() {

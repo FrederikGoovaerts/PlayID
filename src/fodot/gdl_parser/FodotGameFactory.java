@@ -2,18 +2,17 @@ package fodot.gdl_parser;
 
 import static fodot.helpers.FodotPartBuilder.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fodot.objects.Fodot;
+import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotType;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -57,9 +56,9 @@ public class FodotGameFactory {
         FodotTheory theo = this.buildTheory(voc);
         FodotStructure struc = this.buildStructure(voc);
         FodotProcedures proc = this.buildProcedures();
+        FodotIncludeHolder incl = createIncludeHolder(createIncludeLTC());
 
-        Fodot toReturn = new Fodot(voc,theo,struc,proc);
-        toReturn.addIncludes("LTC");
+        Fodot toReturn = new Fodot(voc,theo,struc,proc,incl);
         return toReturn;
     }
 
@@ -99,15 +98,10 @@ public class FodotGameFactory {
         FodotLTCVocabulary defaultVoc = createLTCVocabulary();
 
         // type Time isa nat
-
-        Set<FodotType> natSet = new HashSet<>();
-        natSet.add(FodotType.NATURAL_NUMBER);
-        defaultVoc.addType(createTypeDeclaration(this.timeType, new HashSet<>(),
-                natSet));
+        defaultVoc.addType(createTypeDeclaration(this.timeType, getNaturalNumberType()));
 
         // Start: Time
-        defaultVoc.addFunction(createCompleteFunctionDeclaration("Start",
-                new ArrayList<>(), this.timeType));
+        defaultVoc.addFunction(createCompleteFunctionDeclaration("Start", this.timeType));
 
         // partial Next(Time):Time
         List<FodotType> timeList = new ArrayList<>();
@@ -129,9 +123,7 @@ public class FodotGameFactory {
         defaultVoc.addPredicate(createPredicateDeclaration("terminalTime", typeList2));
 
         // type ScoreType isa nat
-        natSet.add(FodotType.NATURAL_NUMBER);
-        defaultVoc.addType(createTypeDeclaration(this.scoreType, null,
-                natSet));
+        defaultVoc.addType(createTypeDeclaration(this.scoreType, getNaturalNumberType()));
 
         // Score(Player): ScoreType
         List<FodotType> playerList = new ArrayList<>();
