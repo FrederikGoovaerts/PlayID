@@ -1,5 +1,6 @@
 package fodot.objects;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import fodot.objects.procedure.FodotProcedures;
@@ -21,6 +22,7 @@ public class Fodot implements IFodotElement {
 		this.theory = theory;
 		this.structure = structure;
 		this.procedures = procedures;
+		this.includes = new HashSet<>();
 	}
 	
 	public FodotVocabulary getVocabulary() {

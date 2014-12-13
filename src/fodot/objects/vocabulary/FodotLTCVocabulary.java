@@ -11,7 +11,11 @@ public class FodotLTCVocabulary extends FodotVocabulary {
 			Set<FodotFunctionDeclaration> functions) {
 		super(name, types, predicates, functions);
 	}
-	
+
+	public FodotLTCVocabulary() {
+		super();
+	}
+
 	@Override
 	public String toCode() {
 		return "LTC" + super.toCode();

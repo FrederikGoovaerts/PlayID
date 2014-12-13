@@ -39,7 +39,7 @@ public class FodotVocabulary implements IFodotElement {
 	/* TYPES */
 	private void setTypes(Set<FodotTypeDeclaration> types) {
 		if (types == null) {
-			new HashSet<FodotTypeDeclaration>();
+			this.types = new HashSet<FodotTypeDeclaration>();
 		} else {
 			this.types = types;
 		}
@@ -78,7 +78,7 @@ public class FodotVocabulary implements IFodotElement {
 
 	private void setPredicates(Set<FodotPredicateDeclaration> predicates) {
 		if (predicates == null) {
-			new HashSet<FodotPredicateDeclaration>();
+			this.predicates = new HashSet<FodotPredicateDeclaration>();
 		} else {
 			this.predicates = predicates;
 		}
@@ -101,7 +101,7 @@ public class FodotVocabulary implements IFodotElement {
 
 	private void setFunctions(Set<FodotFunctionDeclaration> functions) {
 		if (functions == null) {
-			new HashSet<FodotFunctionDeclaration>();
+			this.functions = new HashSet<FodotFunctionDeclaration>();
 		} else {
 			this.functions = functions;
 		}
