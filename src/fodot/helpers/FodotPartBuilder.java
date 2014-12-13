@@ -1,6 +1,7 @@
 package fodot.helpers;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,14 +44,22 @@ public class FodotPartBuilder {
 	// FORMULA CONNECTORS
 	private static final String AND_SYMBOL = "&";
 	 
-	public static FodotFormulaConnector createAnd(IFodotFormula form1, IFodotFormula form2) {
-		return new FodotFormulaConnector(form1, AND_SYMBOL, form2);
+	public static FodotFormulaConnector createAnd(Collection<IFodotFormula> forms) {
+		return new FodotFormulaConnector(AND_SYMBOL, forms);
+	}
+	
+	public static FodotFormulaConnector createAnd(IFodotFormula... forms) {
+		return createAnd(Arrays.asList(forms));
 	}
 
 	private static final String OR_SYMBOL = "|";
 	
-	public static FodotFormulaConnector createOr(IFodotFormula form1, IFodotFormula form2) {
-		return new FodotFormulaConnector(form1, OR_SYMBOL, form2);
+	public static FodotFormulaConnector createOr(Collection<IFodotFormula> forms) {
+		return new FodotFormulaConnector(OR_SYMBOL, forms);
+	}
+	
+	public static FodotFormulaConnector createOr(IFodotFormula... forms) {
+		return createOr(Arrays.asList(forms));
 	}
 
 	private static final String IMPLIES_SYMBOL = "=>";
@@ -390,7 +399,5 @@ public class FodotPartBuilder {
 	public static Fodot createFodot(FodotVocabulary voc) {
 		return createFodot(voc, createTheory(voc), createStructure(voc), createProcedures());
 	}
-	
-
 	
 }
