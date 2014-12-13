@@ -139,7 +139,7 @@ public class FodotVocabulary implements IFodotElement {
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("vocabulary " + getName() + " {");
+		builder.append("vocabulary " + getName() + " {\n");
 
 		List<IFodotElement> toStringify = new ArrayList<IFodotElement>();
 		toStringify.addAll(getTypes());

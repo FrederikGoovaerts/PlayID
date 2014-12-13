@@ -94,7 +94,7 @@ public class FodotTheory implements IFodotElement {
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("theory " + getName() + ": " + getVocabulary().getName() + " {");
+		builder.append("theory " + getName() + ": " + getVocabulary().getName() + " {\n");
 		
 		//Codify inductive definitions
 		for (FodotInductiveDefinitionBlock definition : getInductiveDefinitions()) {

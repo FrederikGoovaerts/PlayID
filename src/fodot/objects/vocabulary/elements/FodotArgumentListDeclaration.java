@@ -15,7 +15,7 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
 
     public FodotArgumentListDeclaration(String name, List<FodotType> argumentTypes) {
        	setName(name);
-        this.argumentTypes = argumentTypes;
+		setArgumentTypes(argumentTypes);
     }
 
     /***************************************************************************
@@ -48,6 +48,14 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
     public int getAmountOfArgumentTypes(){
         return argumentTypes.size();
     }
+
+	private void setArgumentTypes(List<FodotType> argumentTypes) {
+		if(argumentTypes == null){
+			this.argumentTypes = new ArrayList<FodotType>();
+		} else {
+			this.argumentTypes = argumentTypes;
+		}
+	}
 
     public FodotType getArgumentType(int i){
         if(i<0 || i>=argumentTypes.size())
@@ -94,6 +102,7 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
 			return false;
 		return true;
 	}
-    
-	
+
+
+
 }

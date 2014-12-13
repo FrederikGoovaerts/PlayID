@@ -71,7 +71,7 @@ public class FodotStructure implements IFodotElement {
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("structure "+getName() + " : " + getVocabulary().getName() + " {");
+		builder.append("structure "+getName() + " : " + getVocabulary().getName() + " {\n");
 		for (FodotEnumeration enumeration : enumerations) {
 			builder.append(enumeration.toCode() + "\n");
 		}

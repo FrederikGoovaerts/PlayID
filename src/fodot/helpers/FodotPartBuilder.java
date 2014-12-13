@@ -263,7 +263,7 @@ public class FodotPartBuilder {
 	}
 	
 	public static FodotFunctionDeclaration createCompleteFunctionDeclaration(String name, FodotType returnType) {
-		return createCompleteFunctionDeclaration(name, returnType);
+		return createCompleteFunctionDeclaration(name,null, returnType);
 	}
 	
 	public static FodotPredicateDeclaration createPredicateDeclaration(String name, List<FodotType> argumentTypes) {
