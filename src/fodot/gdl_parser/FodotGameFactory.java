@@ -8,10 +8,7 @@ import fodot.objects.structure.FodotStructure;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
-import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
-import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
-import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,34 +53,38 @@ public class FodotGameFactory {
      **************************************************************************/
 
     Fodot createFodot(){
-        Fodot toReturn = new Fodot(this.createVocabulary(),this.createTheory(),
-                this.createStructure(),this.createProcedures());
+        FodotVocabulary voc = this.buildVocabulary();
+        FodotTheory theo = this.buildTheory(voc);
+        FodotStructure struc = this.buildStructure(voc);
+        FodotProcedures proc = this.buildProcedures();
+
+        Fodot toReturn = new Fodot(voc,theo,struc,proc);
         toReturn.addIncludes("LTC");
         return toReturn;
     }
 
-    private FodotVocabulary createVocabulary() {
+    private FodotVocabulary buildVocabulary() {
         FodotVocabulary toReturn = getDefaultVocabulary();
 
         //TODO: rest
         return toReturn;
     }
 
-    private FodotTheory createTheory() {
-        FodotTheory toReturn = getDefaultTheory();
+    private FodotTheory buildTheory(FodotVocabulary voc) {
+        FodotTheory toReturn = getDefaultTheory(voc);
 
         //TODO: rest
         return toReturn;
     }
 
-    private FodotStructure createStructure() {
-        FodotStructure toReturn = getDefaultStructure();
+    private FodotStructure buildStructure(FodotVocabulary voc) {
+        FodotStructure toReturn = getDefaultStructure(voc);
 
         //TODO: rest
         return toReturn;
     }
 
-    private FodotProcedures createProcedures() {
+    private FodotProcedures buildProcedures() {
         FodotProcedures toReturn = getDefaultProcedures();
 
         //TODO: rest
@@ -141,16 +142,19 @@ public class FodotGameFactory {
         return defaultVoc;
     }
 
-    private FodotTheory getDefaultTheory() {
-        return null;
+    private FodotTheory getDefaultTheory(FodotVocabulary voc) {
+        FodotTheory defaultTheory = createTheory(voc);
+        return defaultTheory;
     }
 
-    private FodotStructure getDefaultStructure() {
-        return null;
+    private FodotStructure getDefaultStructure(FodotVocabulary voc) {
+        FodotStructure defaultStructure = createStructure(voc);
+        return defaultStructure;
     }
 
     private FodotProcedures getDefaultProcedures() {
-        return null;
+        FodotProcedures defaultProcedures = createProcedures("main");
+        return defaultProcedures;
     }
 
 }

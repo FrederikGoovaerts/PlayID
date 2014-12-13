@@ -7,17 +7,26 @@ import fodot.objects.IFodotElement;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
 import fodot.objects.vocabulary.FodotVocabulary;
 
-
 public class FodotTheory implements IFodotElement {
+
 	private String name;
 	private FodotVocabulary vocabulary;
 	private Set<FodotInductiveDefinitionBlock> definitions;
 	private Set<FodotSentence> sentences;
 
+	public FodotTheory(String name,
+					   FodotVocabulary vocabulary,
+					   Set<FodotSentence> sentences,
+					   Set<FodotInductiveDefinitionBlock> definitions) {
+		super();
+		setName(name);
+		setVocabulary(vocabulary);
+		setSentences(sentences);
+		setInductiveDefinitions(definitions);
+	}
+
 	public FodotTheory(String name, FodotVocabulary vocabulary, Set<FodotSentence> sentences) {
-		this.name = name;
-		this.vocabulary = vocabulary;
-		this.sentences = sentences;
+		this(name,vocabulary,sentences,null);
 	}
 	
 	public FodotTheory(String name, FodotVocabulary vocabulary) {
@@ -31,6 +40,10 @@ public class FodotTheory implements IFodotElement {
 	}
 
 	/* VOCABULARY */
+	private void setVocabulary(FodotVocabulary voc) {
+		this.vocabulary = (voc == null? new FodotVocabulary() : voc);
+	}
+
 	public FodotVocabulary getVocabulary() {
 		return vocabulary;
 	}
@@ -42,6 +55,10 @@ public class FodotTheory implements IFodotElement {
 	
 	public void removeInductiveDefinition(FodotInductiveDefinitionBlock definition) {
 		definitions.remove(definition);
+	}
+
+	private void setInductiveDefinitions(Set<FodotInductiveDefinitionBlock> def) {
+		this.definitions = (def == null ? new HashSet<>() : def);
 	}
 	
 	public Set<FodotInductiveDefinitionBlock> getInductiveDefinitions() {
@@ -56,12 +73,20 @@ public class FodotTheory implements IFodotElement {
 	public void removeSentence(FodotSentence sentence) {
 		sentences.remove(sentence);
 	}
+
+	private void setSentences(Set<FodotSentence> sent) {
+		this.sentences = (sent == null ? new HashSet<>() : sent);
+	}
 	
 	public Set<FodotSentence> getSentences() {
 		return new HashSet<FodotSentence>(sentences);
 	}
 
 	/* NAME */
+	public void setName(String name) {
+		this.name = (name == null ? DEFAULT_NAME : name);
+	}
+
 	public String getName() {
 		return name;
 	}
