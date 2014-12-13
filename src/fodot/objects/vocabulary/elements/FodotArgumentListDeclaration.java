@@ -45,6 +45,10 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
         return new ArrayList<>(argumentTypes);
     }
 
+    public int getAmountOfArgumentTypes(){
+        return argumentTypes.size();
+    }
+
     public FodotType getArgumentType(int i){
         if(i<0 || i>=argumentTypes.size())
             throw new IllegalArgumentException("Invalid index.");
