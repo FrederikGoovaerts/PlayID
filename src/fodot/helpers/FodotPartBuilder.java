@@ -450,11 +450,11 @@ public class FodotPartBuilder {
 	
 	public static Fodot createFodot() {
 		FodotVocabulary voc = createVocabulary();
-		return createFodot(voc);
+		return createFodot(voc, null, null, null, null);
 	}
 	
 	public static Fodot createFodot(FodotVocabulary voc) {
-		return createFodot(voc, createTheory(voc), createStructure(voc), createProcedures());
+		return createFodot(voc, createTheory(voc), createStructure(voc), createProcedures(), null);
 	}
 	
 }

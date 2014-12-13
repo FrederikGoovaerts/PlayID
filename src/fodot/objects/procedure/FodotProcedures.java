@@ -11,7 +11,7 @@ public class FodotProcedures implements IFodotElement {
 	private String name;
 	private List<String> arguments;
 	private List<FodotProcedure> procedures;
-	private static final String DEFAULT_NAME = "Proc";
+	private static final String DEFAULT_NAME = "main";
 	
 	public FodotProcedures(String name, List<String> arguments, List<FodotProcedure> procedures) {
 		super();

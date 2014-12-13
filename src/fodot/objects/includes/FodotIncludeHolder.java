@@ -32,7 +32,7 @@ public class FodotIncludeHolder implements IFodotElement {
 
 	@Override
 	public String toCode() {		
-		return CollectionUtil.printStringList("", "", "\n", CollectionUtil.toCode(getIncludes()));
+		return CollectionUtil.printStringList("", "", "\n", CollectionUtil.toCode(getIncludes())) + "\n";
 	}
 
 	@Override
