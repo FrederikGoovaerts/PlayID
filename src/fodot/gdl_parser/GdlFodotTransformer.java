@@ -318,6 +318,11 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     }
 
+    @Override
+    public void processDefinitionRule(GdlRule rule) {
+
+    }
+
     private void processPredicate(GdlTerm predTerm){
         this.processPredicate(predTerm.toSentence());
     }

@@ -21,4 +21,6 @@ public interface GdlTransformer {
     void processGoalRule(GdlRule rule);
 
     void processTerminalRule(GdlRule rule);
+
+    void processDefinitionRule(GdlRule rule);
 }

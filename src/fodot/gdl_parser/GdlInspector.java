@@ -73,7 +73,8 @@ public class GdlInspector extends GdlVisitor{
                 this.getTransformer().processTerminalRule(rule);
                 break;
             default:
-                throw new IllegalArgumentException("Unsupported Rule encountered: " + rule.toString());
+                this.getTransformer().processDefinitionRule(rule);
+                break;
         }
     }
 }
