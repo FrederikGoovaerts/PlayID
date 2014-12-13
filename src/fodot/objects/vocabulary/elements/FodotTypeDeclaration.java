@@ -136,6 +136,10 @@ public class FodotTypeDeclaration implements IFodotElement {
     public Set<FodotConstant> getDomainElements() {
     	return new HashSet<FodotConstant>(domain);
     }
+    
+    public boolean hasDomainElements() {
+    	return domain != null && !domain.isEmpty();
+    }
 
     
     /************************************/
@@ -149,7 +153,7 @@ public class FodotTypeDeclaration implements IFodotElement {
 		return "type " + getType().getTypeName()
 				+ (hasSupertypes() ? " isa " + CollectionUtil.toNakedList(CollectionUtil.toCode(supertypes)) : "")
 				+ (hasSubtypes() ? " contains " + CollectionUtil.toNakedList(CollectionUtil.toCode(subtypes)) : "")
-				+ " constructed from " + CollectionUtil.toDomain(CollectionUtil.toCode(getDomainElements()));
+				+ (hasDomainElements() ? " constructed from " + CollectionUtil.toDomain(CollectionUtil.toCode(getDomainElements())) : "" );
 	}
     
 }
