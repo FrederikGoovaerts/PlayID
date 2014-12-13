@@ -1,5 +1,6 @@
 package fodot.gdl_parser;
 
+import fodot.objects.Fodot;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 
@@ -22,5 +23,7 @@ public interface GdlTransformer {
 
     void processTerminalRule(GdlRule rule);
 
-    void processDefinitionRule(GdlRule rule);
+    void processDefinitionRule(Object rule);
+
+    Fodot builFodot();
 }

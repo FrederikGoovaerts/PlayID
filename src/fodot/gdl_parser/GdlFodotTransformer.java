@@ -27,8 +27,6 @@ public class GdlFodotTransformer implements GdlTransformer{
      * Class Properties
      **************************************************************************/
 
-    Fodot builtFodot;
-
     /*************************************
      * Roles
      */
@@ -220,6 +218,12 @@ public class GdlFodotTransformer implements GdlTransformer{
     }
 
     @Override
+    public Fodot builFodot() {
+        FodotGameFactory factory = new FodotGameFactory(this);
+        return factory.createFodot();
+    }
+
+    @Override
     public void processRoleRelation(GdlRelation relation) {
         // Role: (role player)
         GdlConstant player = relation.getBody().get(0).toSentence().getName();
@@ -319,7 +323,7 @@ public class GdlFodotTransformer implements GdlTransformer{
     }
 
     @Override
-    public void processDefinitionRule(GdlRule rule) {
+    public void processDefinitionRule(Object rule) {
 
     }
 

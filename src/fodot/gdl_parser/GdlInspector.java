@@ -1,5 +1,6 @@
 package fodot.gdl_parser;
 
+import fodot.objects.Fodot;
 import org.ggp.base.util.gdl.GdlVisitor;
 import org.ggp.base.util.gdl.grammar.*;
 
@@ -14,9 +15,9 @@ public class GdlInspector extends GdlVisitor{
      * Constructor
      **************************************************************************/
 
-    public GdlInspector(List<Gdl> rules, GdlTransformer transformer){
+    public GdlInspector(List<Gdl> rules){
         this.rules = rules;
-        this.transformer = transformer;
+        this.transformer = new GdlFodotTransformer();
         GdlRootVisitors.visitAll(rules, this);
     }
 
@@ -34,6 +35,10 @@ public class GdlInspector extends GdlVisitor{
 
     private List<Gdl> getRules() {
         return rules;
+    }
+
+    public Fodot getFodot(){
+        return this.getTransformer().builFodot();
     }
 
     /***************************************************************************
