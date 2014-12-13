@@ -1,19 +1,22 @@
 package fodot.objects.sentence.formulas.quantifiers;
 
-import java.util.List;
 import java.util.Set;
 
-import fodot.objects.exceptions.IllegalConnectorException;
+import fodot.exceptions.IllegalConnectorException;
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotVariable;
 
-public abstract class FodotQuantifier implements IFodotFormula {
+public class FodotQuantifier implements IFodotFormula {
 	private String symbol;
-	private List<FodotVariable> variables;
+	private Set<FodotVariable> variables;
 	private IFodotFormula formula;
 
+	/* VALID SYMBOL */
+//	private static final List<String> VALID_SYMBOLS =
+//			Arrays.asList(new String[]{"!", "?"});
+	private static final String VALID_QUANTIFIER_REGEX = "!|([\\?]([=][<]|[<>]|=)?[0-9]*)|\\?";
 	
-	public FodotQuantifier(String symbol, List<FodotVariable> variable, IFodotFormula formula) {
+	public FodotQuantifier(String symbol, Set<FodotVariable> variable, IFodotFormula formula) {
 		super();
 		if (!isValidSymbol(symbol)) {
 			throw new IllegalConnectorException(this, symbol);
@@ -27,7 +30,7 @@ public abstract class FodotQuantifier implements IFodotFormula {
 		return symbol;
 	}
 
-	public List<FodotVariable> getVariable() {
+	public Set<FodotVariable> getVariable() {
 		return variables;
 	}
 	
@@ -54,8 +57,15 @@ public abstract class FodotQuantifier implements IFodotFormula {
 		return builder.toString();
 	}
 	
-	public abstract boolean isValidSymbol(String symbol);
+	public boolean isValidSymbol(String symbol) {
+		return symbol.matches(VALID_QUANTIFIER_REGEX);
+	}
 
+	@Override
+	public String toString() {
+		return "[quantifier ("+ getSymbol() +") "+getVariable()+" in "+getFormula()+"]";
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

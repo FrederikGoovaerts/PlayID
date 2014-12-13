@@ -4,14 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fodot.objects.IFodotElement;
-import fodot.objects.theory.definitions.FodotInductiveDefinition;
+import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
 import fodot.objects.vocabulary.FodotVocabulary;
 
 
 public class FodotTheory implements IFodotElement {
 	private String name;
 	private FodotVocabulary vocabulary;
-	private Set<FodotInductiveDefinition> definitions;
+	private Set<FodotInductiveDefinitionBlock> definitions;
 	private Set<FodotSentence> sentences;
 
 	public FodotTheory(String name, FodotVocabulary vocabulary, Set<FodotSentence> sentences) {
@@ -36,16 +36,16 @@ public class FodotTheory implements IFodotElement {
 	}
 	
 	/* DEFINITIONS */
-	public void addInductiveDefinition(FodotInductiveDefinition definition) {
+	public void addInductiveDefinition(FodotInductiveDefinitionBlock definition) {
 		definitions.add(definition);
 	}
 	
-	public void removeInductiveDefinition(FodotInductiveDefinition definition) {
+	public void removeInductiveDefinition(FodotInductiveDefinitionBlock definition) {
 		definitions.remove(definition);
 	}
 	
-	public Set<FodotInductiveDefinition> getInductiveDefinitions() {
-		return new HashSet<FodotInductiveDefinition>(definitions);
+	public Set<FodotInductiveDefinitionBlock> getInductiveDefinitions() {
+		return new HashSet<FodotInductiveDefinitionBlock>(definitions);
 	}
 	
 	/* SENTENCES */
@@ -72,7 +72,7 @@ public class FodotTheory implements IFodotElement {
 		builder.append("theory " + getName() + ": " + getVocabulary().getName() + " {");
 		
 		//Codify inductive definitions
-		for (FodotInductiveDefinition definition : getInductiveDefinitions()) {
+		for (FodotInductiveDefinitionBlock definition : getInductiveDefinitions()) {
 			builder.append(definition.toCode() + "\n");
 		}
 		

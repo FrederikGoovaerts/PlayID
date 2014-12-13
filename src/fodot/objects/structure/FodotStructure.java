@@ -15,15 +15,15 @@ public class FodotStructure implements IFodotElement {
 
 	public FodotStructure(String name, FodotVocabulary vocabulary, List<FodotEnumeration> enumerations) {
 		super();
-		this.enumerations = enumerations;
-		this.name = name;
-		this.vocabulary = vocabulary;
+		setEnumerations(enumerations);
+		setName(name);
+		setVocabulary(vocabulary);
 	}
-	
+
 	private static final String DEFAULT_NAME = "S";
 	
 	public FodotStructure(FodotVocabulary voc) {
-		this(DEFAULT_NAME, voc, new ArrayList<FodotEnumeration>());
+		this(null, voc, new ArrayList<FodotEnumeration>());
 	}
 
 	
@@ -33,7 +33,15 @@ public class FodotStructure implements IFodotElement {
 		return name;
 	}
 	
+	public void setName(String name) {
+		this.name = (name == null ? DEFAULT_NAME : name);
+	}
+	
 	/* ENUMERATIONS */
+
+	private void setEnumerations(List<FodotEnumeration> enumerat) {
+		this.enumerations = (enumerat == null ? new ArrayList<FodotEnumeration>() : enumerat);
+	}
 	
 	public void addEnumeration(FodotEnumeration enumeration) {
 		enumerations.add(enumeration);
@@ -51,6 +59,11 @@ public class FodotStructure implements IFodotElement {
 
 	public FodotVocabulary getVocabulary() {
 		return vocabulary;
+	}
+	
+	private void setVocabulary(FodotVocabulary voc) {
+		this.vocabulary = (voc == null? new FodotVocabulary() : voc);
+		
 	}
 	
 	/* FODOT ELEMENT */

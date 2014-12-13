@@ -3,9 +3,9 @@ package fodot.objects.vocabulary.elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import fodot.exceptions.InvalidTermNameException;
 import fodot.objects.IFodotElement;
-import fodot.objects.exceptions.InvalidTermNameException;
-import fodot.objects.util.TermsUtil;
+import fodot.util.NameUtil;
 
 public abstract class FodotArgumentListDeclaration implements IFodotElement {
 
@@ -29,7 +29,7 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
     }
     
     public void setName(String name) {
-		if (!TermsUtil.isValidName(name)) {
+		if (!NameUtil.isValidName(name)) {
 			throw new InvalidTermNameException(name);
 		}
 		this.name = name;

@@ -5,6 +5,7 @@ import java.util.Set;
 
 public class FodotConstant implements IFodotTerm {
 
+	//Willen we een link naar het type?
 	public String value;
 	
 	public FodotConstant(String value) {

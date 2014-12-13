@@ -7,22 +7,23 @@ import java.util.Set;
 
 import fodot.objects.IFodotElement;
 import fodot.objects.sentence.terms.FodotConstant;
-import fodot.objects.util.CollectionUtil;
+import fodot.util.CollectionUtil;
 
 public class FodotTypeDeclaration implements IFodotElement {
 	private FodotType type;
+    private Set<FodotConstant> domain = new HashSet<>();
 	private Set<FodotType> subtypes;
 	private Set<FodotType> supertypes;
 	
 	public FodotTypeDeclaration(FodotType type, Set<FodotConstant> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
 		this.type = type;
-		this.domain = domain;
+		setDomain(domain);
 		setSupertypes(supertypes);
 		setSubtypes(subtypes);
 	}
 	
 	public FodotTypeDeclaration(FodotType type) {
-		this(type, new HashSet<FodotConstant>(), null, null);
+		this(type, null, null, null);
 	}
 
     /*************************************
@@ -108,9 +109,15 @@ public class FodotTypeDeclaration implements IFodotElement {
 	/*************************************
      * Domain elements in type declaration
      */
-    
-    private Set<FodotConstant> domain = new HashSet<>();
 
+    private void setDomain(Set<FodotConstant> domain) {
+    	if (domain == null) {
+    		this.domain = new HashSet<FodotConstant>();
+    	} else {
+    		this.domain = domain;
+    	}
+    }
+    
 	public void addDomainElement(FodotConstant element) {
 //    	assert(!domain.contains(element)) :
 //    			"Type " + this.getTypeName()

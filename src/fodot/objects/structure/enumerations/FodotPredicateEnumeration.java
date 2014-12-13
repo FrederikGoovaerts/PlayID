@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import fodot.objects.sentence.terms.FodotConstant;
-import fodot.objects.util.CollectionUtil;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
+import fodot.util.CollectionUtil;
 
 public class FodotPredicateEnumeration extends FodotEnumeration {
 	public FodotPredicateDeclaration predicate;

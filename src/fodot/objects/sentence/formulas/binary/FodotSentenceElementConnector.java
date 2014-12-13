@@ -1,61 +1,112 @@
 package fodot.objects.sentence.formulas.binary;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import fodot.objects.exceptions.IllegalConnectorException;
+import fodot.exceptions.IllegalConnectorException;
 import fodot.objects.sentence.IFodotSentenceElement;
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotVariable;
+import fodot.util.CollectionUtil;
 
 public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElement> implements IFodotFormula {
 
-	private E arg1;
-	private E arg2;
+	private List<E> arguments;
 	private String connector;
-	
-	public FodotSentenceElementConnector(E arg1, String connector, E arg2) {
+
+	public FodotSentenceElementConnector(String connector, Collection<E> args) {
 		super();
 		if (!isValidConnector(connector)) {
 			throw new IllegalConnectorException(this, connector);
+		} 
+		if (!isAssociativeConnector(connector) && args.size() > 2) {
+			throw new RuntimeException(connector
+					+ " has way more than two arguments, which it doesn't seem to be able to handle. "
+					+ CollectionUtil.toCouple(CollectionUtil.toCode(args)));
 		}
-		this.arg1 = arg1;
-		this.arg2 = arg2;
-		this.connector = connector;
-	}
-	
-	public E getArgument1() {
-		return arg1;
+		this.connector = connector;	
+		this.arguments = new ArrayList<E>();	
+
+
+		for (E arg : args) {
+			if (isMergeableWith(arg)) {
+				@SuppressWarnings("unchecked")
+				FodotSentenceElementConnector<E> casted = (FodotSentenceElementConnector<E>) arg;
+				this.arguments.addAll(casted.getArguments());				
+			} else {
+				this.arguments.add(arg);
+			}
+		}
 	}
 
-	public E getArgument2() {
-		return arg2;
+	//Arguments
+
+	public List<E> getArguments() {
+		return new ArrayList<E>(arguments);
 	}
 
 	public String getConnector() {
 		return connector;
 	}
-	
+
+
+	//Mergeability
+	private boolean isMergeableWith(E arg) {
+		if (!isAssociativeConnector(connector))
+			return false;
+		if (!areAllOfSameClassAndConnector(connector, arg))
+			return false;
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean areAllOfSameClassAndConnector(String connector, E arg) {
+		if (!this.getClass().equals(arg.getClass()))
+			return false;
+		if ( ((FodotSentenceElementConnector<E>) arg).getConnector() != connector)
+			return false;
+		return true;
+	}
+
+	protected abstract boolean isAssociativeConnector(String connector);
+
+	//Fodot Formula
+
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
-		Set<FodotVariable> form1vars = getArgument1().getFreeVariables();
-		Set<FodotVariable> form2vars = getArgument2().getFreeVariables();
-		form1vars.addAll(form2vars);
-		return form1vars;
+		Set<FodotVariable> formVars = new HashSet<FodotVariable>();
+		for (IFodotSentenceElement arg : getArguments()) {
+			formVars.addAll(arg.getFreeVariables());
+		}
+		return formVars;
 	}
 
 	@Override
 	public String toCode() {
-		return "(" + getArgument1().toCode() + " " + getConnector() + " " + getArgument2().toCode() + ")";
+		StringBuilder builder = new StringBuilder();
+		builder.append("(");		
+		for (int i = 0; i < arguments.size(); i++) {
+			if (i>0) {
+				builder.append(" " + getConnector() + " ");
+			}
+			builder.append(arguments.get(i).toCode());
+		}
+		builder.append(")");
+		return builder.toString();
 	}	
-	
+
 	public abstract boolean isValidConnector(String connector);
 
+	//Hashcode & Equals
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((arg1 == null) ? 0 : arg1.hashCode());
-		result = prime * result + ((arg2 == null) ? 0 : arg2.hashCode());
+		result = prime * result
+				+ ((arguments == null) ? 0 : arguments.hashCode());
 		result = prime * result
 				+ ((connector == null) ? 0 : connector.hashCode());
 		return result;
@@ -70,15 +121,10 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 		if (getClass() != obj.getClass())
 			return false;
 		FodotSentenceElementConnector<?> other = (FodotSentenceElementConnector<?>) obj;
-		if (arg1 == null) {
-			if (other.arg1 != null)
+		if (arguments == null) {
+			if (other.arguments != null)
 				return false;
-		} else if (!arg1.equals(other.arg1))
-			return false;
-		if (arg2 == null) {
-			if (other.arg2 != null)
-				return false;
-		} else if (!arg2.equals(other.arg2))
+		} else if (!arguments.equals(other.arguments))
 			return false;
 		if (connector == null) {
 			if (other.connector != null)
@@ -87,8 +133,5 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 			return false;
 		return true;
 	}
-	
-	
-	
 
 }

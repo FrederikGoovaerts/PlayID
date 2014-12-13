@@ -7,11 +7,11 @@ import fodot.objects.IFodotElement;
 import fodot.objects.theory.FodotSentence;
 
 
-public class FodotInductiveDefinition implements IFodotElement {
+public class FodotInductiveDefinitionBlock implements IFodotElement {
 
 	private List<FodotSentence> elements;
 	
-	public FodotInductiveDefinition(
+	public FodotInductiveDefinitionBlock(
 			List<FodotSentence> elements) {
 		super();
 		this.elements = elements;

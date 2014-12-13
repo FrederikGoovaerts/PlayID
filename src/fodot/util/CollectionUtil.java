@@ -1,4 +1,4 @@
-package fodot.objects.util;
+package fodot.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,14 +40,14 @@ public class CollectionUtil {
 	}
 	
 	
-	public static String printStringList(String openingbracket, String closingBracket, String divider, List<String> list) {
+	public static String printStringList(String openingbracket, String closingBracket, String divider, List<?> list) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(openingbracket);
 		for (int i = 0; i < list.size(); i++) {
 			if (i > 0) {
 				builder.append(divider);
 			}
-			builder.append(list.get(i));
+			builder.append(list.get(i).toString());
 		}
 		builder.append(closingBracket);
 		return builder.toString();

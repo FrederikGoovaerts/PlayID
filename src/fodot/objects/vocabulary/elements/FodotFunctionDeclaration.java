@@ -2,7 +2,7 @@ package fodot.objects.vocabulary.elements;
 
 import java.util.List;
 
-import fodot.objects.util.CollectionUtil;
+import fodot.util.CollectionUtil;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
