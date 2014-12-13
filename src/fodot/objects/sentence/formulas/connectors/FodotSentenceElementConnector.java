@@ -1,4 +1,4 @@
-package fodot.objects.sentence.formulas.binary;
+package fodot.objects.sentence.formulas.connectors;
 
 import java.util.ArrayList;
 import java.util.Collection;

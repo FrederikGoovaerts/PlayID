@@ -1,4 +1,4 @@
-package fodot.objects.sentence.formulas.binary;
+package fodot.objects.sentence.formulas.connectors;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import fodot.util.CollectionUtil;
 
 public class FodotTermConnector extends FodotSentenceElementConnector<IFodotTerm> {
 	
-	public FodotTermConnector(String connector, Collection<IFodotTerm> terms) {
+	protected FodotTermConnector(String connector, Collection<IFodotTerm> terms) {
 		super(connector, terms);
 	}
 	
@@ -17,7 +17,7 @@ public class FodotTermConnector extends FodotSentenceElementConnector<IFodotTerm
 		this(connector, Arrays.asList(new IFodotTerm[]{term1, term2}));
 	}
 	
-	public FodotTermConnector(String connector, IFodotTerm... terms) {
+	protected FodotTermConnector(String connector, IFodotTerm... terms) {
 		this(connector, Arrays.asList(terms));
 	}
 	

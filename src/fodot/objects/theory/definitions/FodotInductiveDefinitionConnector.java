@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
-import fodot.objects.sentence.formulas.binary.FodotSentenceElementConnector;
+import fodot.objects.sentence.formulas.connectors.FodotSentenceElementConnector;
 
 public class FodotInductiveDefinitionConnector extends FodotSentenceElementConnector<IFodotFormula> {
 
