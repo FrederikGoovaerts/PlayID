@@ -65,5 +65,9 @@ public class FodotIncludeHolder implements IFodotElement {
 	public String toString() {
 		return "FodotIncludesHolder [includes=" + includes + "]";
 	}
+	
+	public void merge(FodotIncludeHolder other) {
+		includes.addAll(other.getIncludes());
+	}
 
 }

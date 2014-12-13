@@ -76,6 +76,7 @@ public class Fodot implements IFodotElement {
 	}	
 	
 	public void merge(Fodot other) {
+		getIncludes().merge(other.getIncludes());
 		getVocabulary().merge(other.getVocabulary());
 		getTheory().merge(other.getTheory());
 		getStructure().merge(other.getStructure());
