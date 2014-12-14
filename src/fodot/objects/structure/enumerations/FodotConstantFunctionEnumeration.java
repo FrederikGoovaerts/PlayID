@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FodotConstantFunctionEnumeration extends FodotEnumeration {
-	public FodotFunctionDeclaration function;
-	public FodotConstant value;
+	private FodotFunctionDeclaration function;
+	private FodotConstant value;
 
 	public FodotConstantFunctionEnumeration(FodotFunctionDeclaration function, FodotConstant value) {
 		super();

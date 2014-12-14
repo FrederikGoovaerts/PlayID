@@ -9,8 +9,8 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.util.CollectionUtil;
 
 public class FodotPredicateEnumeration extends FodotEnumeration {
-	public FodotPredicateDeclaration predicate;
-	public List<FodotConstant[]> values;
+	private FodotPredicateDeclaration predicate;
+	private List<FodotConstant[]> values;
 	
 	public FodotPredicateEnumeration(FodotPredicateDeclaration predicate) {
 		this(predicate, new ArrayList<FodotConstant[]>());
