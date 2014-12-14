@@ -224,6 +224,16 @@ public class FodotPartBuilder {
 	public static FodotTypeEnumeration createTypeEnumeration(FodotTypeDeclaration type, List<FodotConstant> values) {
 		return new FodotTypeEnumeration(type.getType(), values);
 	}
+
+	public static FodotNumericalTypeRangeEnumeration createNumericalTypeRangeEnumeration(
+			FodotType type, FodotConstant head, FodotConstant last) {
+		return new FodotNumericalTypeRangeEnumeration(type, head, last);
+	}
+
+	public static FodotNumericalTypeRangeEnumeration createNumericalTypeRangeEnumeration(
+			FodotTypeDeclaration type, FodotConstant head, FodotConstant last) {
+		return new FodotNumericalTypeRangeEnumeration(type.getType(), head, last);
+	}
 	
 	
 	//INDUCTIVE DEFINITIONS
