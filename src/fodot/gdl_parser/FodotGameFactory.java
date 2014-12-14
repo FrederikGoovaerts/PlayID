@@ -228,10 +228,36 @@ public class FodotGameFactory {
          * }
          */
         List<FodotSentence> definitions = new ArrayList<>();
-        //createForAll(t_Time,
-
-        //        )
-
+        definitions.add(
+                createSentence(
+                        createForAll(t_Time,
+                                createInductiveDefinitionConnector(
+                                        createInductiveFunctionHead(
+                                                createFunction(this.nextFunctionDeclaration, t_Time),
+                                                t_Time //TODO: arithmetic
+                                        ), createAnd(
+                                                createNot(createPredicate(
+                                                        this.terminalTimePredicateDeclaration,
+                                                        t_Time)),
+                                                createExists(t2_Time,
+                                                        createEquals(createFunction(
+                                                                        this.nextFunctionDeclaration, t_Time),
+                                                                t2_Time)
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+        definitions.add(
+                createSentence(
+                        createEquals(
+                                createFunction(this.nextFunctionDeclaration,createConstant("0")),
+                                createConstant("1")
+                        )
+                )
+        );
+        defaultTheory.addInductiveDefinition(createInductiveDefinition(definitions));
 
         return defaultTheory;
     }
