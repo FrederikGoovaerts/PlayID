@@ -3,20 +3,44 @@ package fodot.objects.sentence.terms;
 import java.util.HashSet;
 import java.util.Set;
 
+import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
+
 public class FodotConstant implements IFodotTerm {
 
-	//Willen we een link naar het type?
-	public String value;
+	private String value;
+	private FodotType type;
 	
-	public FodotConstant(String value) {
+	public FodotConstant(String value, FodotType type) {
 		super();
-		this.value = value;
+		setValue(value);
+		setType(type);
 	}
 
+	//VALUE
 	public String getValue() {
 		return value;
 	}
+	
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
+	//TYPE	
+	public void setType(FodotType type) {
+		if (type == null) {
+			throw new IllegalArgumentException("Not a legal type");
+		}
+		this.type = type;
+		if (type.hasDeclaration()) {
+			this.type.getDeclaration().addDomainElement(this);
+		}
+	}
 
+	public FodotType getType() {
+		return getType();
+	}
+	//FODOT SENTENCE ELEMENT
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		return new HashSet<FodotVariable>();

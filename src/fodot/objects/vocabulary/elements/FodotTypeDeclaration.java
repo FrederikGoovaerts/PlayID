@@ -16,7 +16,7 @@ public class FodotTypeDeclaration implements IFodotElement {
 	private Set<FodotType> supertypes;
 	
 	public FodotTypeDeclaration(FodotType type, Set<FodotConstant> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
-		this.type = type;
+		setType(type);
 		setDomain(domain);
 		setSupertypes(supertypes);
 		setSubtypes(subtypes);
@@ -33,6 +33,13 @@ public class FodotTypeDeclaration implements IFodotElement {
     public FodotType getType() {
 		return type;
 	}
+    
+    private void setType(FodotType type) {
+    	if (type == null)
+    		throw new IllegalArgumentException("Not a valid type! ");
+    	this.type = type;
+    	this.type.setDeclaration(this);
+    }
 	
     /************************************/
     
