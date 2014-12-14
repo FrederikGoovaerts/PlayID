@@ -6,6 +6,7 @@ import java.util.List;
 
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.IFodotTerm;
+import fodot.objects.vocabulary.elements.FodotType;
 
 public class FodotArithmeticConnector extends FodotSentenceElementConnector<IFodotTerm> implements IFodotTerm {
 	
@@ -30,6 +31,11 @@ public class FodotArithmeticConnector extends FodotSentenceElementConnector<IFod
 	@Override
 	public boolean isValidConnector(String connector) {
 		return VALID_CONNECTORS.contains(connector);
+	}
+
+	@Override
+	public FodotType getType() {
+		return FodotType.INTEGER;
 	}
 
 }

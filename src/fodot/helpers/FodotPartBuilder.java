@@ -26,7 +26,12 @@ import fodot.objects.sentence.terms.FodotFunction;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.structure.enumerations.*;
+import fodot.objects.structure.enumerations.FodotConstantFunctionEnumeration;
+import fodot.objects.structure.enumerations.FodotEnumeration;
+import fodot.objects.structure.enumerations.FodotFunctionEnumeration;
+import fodot.objects.structure.enumerations.FodotNumericalTypeRangeEnumeration;
+import fodot.objects.structure.enumerations.FodotPredicateEnumeration;
+import fodot.objects.structure.enumerations.FodotTypeEnumeration;
 import fodot.objects.theory.FodotSentence;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
@@ -216,10 +221,18 @@ public class FodotPartBuilder {
 		return new FodotNot(form);
 	}
 
-	public static FodotConstant createConstant(String value) {
-		return new FodotConstant(value);
+	public static FodotConstant createConstant(String value, FodotType type) {
+		return new FodotConstant(value, type);
 	}
 
+	public static FodotConstant createNaturalNumber(int value) {
+		return createConstant(Integer.toString(value), getNaturalNumberType());
+	}
+	
+	public static FodotConstant createInteger(int value) {
+		return createConstant(Integer.toString(value), getIntegerType());
+	}
+	
 	public static FodotVariable createVariable(String name, FodotType type) {
 		return new FodotVariable(name, type);
 	}
@@ -363,11 +376,11 @@ public class FodotPartBuilder {
 	public static FodotType getNaturalNumberType() {
 		return FodotType.NATURAL_NUMBER;
 	}
-
+	
 	public static FodotType getIntegerType() {
 		return FodotType.INTEGER;
 	}
-
+	
 	public static FodotType getPlaceHolderType() { //moon
 		return FodotType.getPlaceHolderType();
 	}

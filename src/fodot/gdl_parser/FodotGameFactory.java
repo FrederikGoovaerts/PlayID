@@ -253,8 +253,8 @@ public class FodotGameFactory {
         definitions.add(
                 createSentence(
                         createEquals(
-                                createFunction(this.nextFunctionDeclaration,createConstant("0")),
-                                createConstant("1")
+                                createFunction(this.nextFunctionDeclaration,createInteger(0)),
+                                createInteger(1)
                         )
                 )
         );
@@ -270,7 +270,7 @@ public class FodotGameFactory {
         defaultStructure.addEnumeration(
                 createConstantFunctionEnumeration(
                         this.startFunctionDeclaration,
-                        createConstant("0")
+                        createInteger(0)
                 )
         );
 
@@ -278,8 +278,8 @@ public class FodotGameFactory {
         defaultStructure.addEnumeration(
                 createNumericalTypeRangeEnumeration(
                         this.timeType,
-                        createConstant("0"),
-                        createConstant(Integer.toString(this.timeLimit))
+                        createInteger(0),
+                        createInteger(this.timeLimit)
                 )
         );
 
@@ -287,8 +287,8 @@ public class FodotGameFactory {
         defaultStructure.addEnumeration(
                 createNumericalTypeRangeEnumeration(
                         this.scoreType,
-                        createConstant("0"),
-                        createConstant("100")
+                        createInteger(0),
+                        createInteger(100)
                 )
         );
 

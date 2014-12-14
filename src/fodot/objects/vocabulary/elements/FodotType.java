@@ -9,6 +9,9 @@ import fodot.objects.IFodotElement;
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
 public class FodotType implements IFodotElement {
+	
+	private FodotTypeDeclaration declaration;
+    private final String typeName;
 
     /***************************************************************************
      * Constructor
@@ -23,12 +26,22 @@ public class FodotType implements IFodotElement {
      * Class Properties
      **************************************************************************/
 
-    private final String typeName;
-
     public String getTypeName() {
         return typeName;
     }
 
+    public FodotTypeDeclaration getDeclaration() {
+    	return declaration;
+    }
+    
+    public void setDeclaration(FodotTypeDeclaration declaration) {
+    	this.declaration = declaration;
+    }
+    
+    public boolean hasDeclaration() {
+    	return this.declaration == null;
+    }
+    
     /*************************************
      *  Static 'placeholder' type
      *
