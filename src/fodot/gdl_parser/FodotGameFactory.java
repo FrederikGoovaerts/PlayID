@@ -274,11 +274,31 @@ public class FodotGameFactory {
                 )
         );
 
-        //Time={0..timeLimit}
+        //Time={0..Constant(timeLimit)}
+        defaultStructure.addEnumeration(
+                createNumericalTypeRangeEnumeration(
+                        this.timeType,
+                        createConstant("0"),
+                        createConstant(Integer.toString(this.timeLimit))
+                )
+        );
 
         //ScoreType={0..100}
+        defaultStructure.addEnumeration(
+                createNumericalTypeRangeEnumeration(
+                        this.scoreType,
+                        createConstant("0"),
+                        createConstant("100")
+                )
+        );
 
+        // This is dependent on the name of the player, cannot be instantiated here
         //Score={p_robot(),100}
+        //defaultStructure.addEnumeration(
+        //        createPredicateEnumeration()
+        //);
+
+
 
         return defaultStructure;
     }
