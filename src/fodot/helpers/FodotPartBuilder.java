@@ -25,10 +25,7 @@ import fodot.objects.sentence.terms.FodotFunction;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.structure.enumerations.FodotEnumeration;
-import fodot.objects.structure.enumerations.FodotFunctionEnumeration;
-import fodot.objects.structure.enumerations.FodotPredicateEnumeration;
-import fodot.objects.structure.enumerations.FodotTypeEnumeration;
+import fodot.objects.structure.enumerations.*;
 import fodot.objects.theory.FodotSentence;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
@@ -204,6 +201,11 @@ public class FodotPartBuilder {
 	
 	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionDeclaration declaration) {
 		return new FodotFunctionEnumeration(declaration);
+	}
+
+	public static FodotConstantFunctionEnumeration createConstantFunctionEnumeration(
+			FodotFunctionDeclaration declaration, FodotConstant value) {
+		return new FodotConstantFunctionEnumeration(declaration,value);
 	}
 	
 	public static FodotPredicateEnumeration createPredicateEnumeration(

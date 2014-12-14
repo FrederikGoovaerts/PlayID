@@ -267,6 +267,12 @@ public class FodotGameFactory {
         FodotStructure defaultStructure = createStructure(voc);
 
         //Start=0
+        defaultStructure.addEnumeration(
+                createConstantFunctionEnumeration(
+                        this.startFunctionDeclaration,
+                        createConstant("0")
+                )
+        );
 
         //Time={0..timeLimit}
 
