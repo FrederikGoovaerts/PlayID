@@ -49,9 +49,7 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 
 	@Override
 	public String toCode() {
-		StringBuilder builder = new StringBuilder();
-		builder.append(CollectionUtil.toCouple(CollectionUtil.toCode(getArguments())));
-		return builder.toString();
+		return getName() + CollectionUtil.toCouple(CollectionUtil.toCode(getArguments()));
 	}
 	
 	protected String argumentsToString() {
