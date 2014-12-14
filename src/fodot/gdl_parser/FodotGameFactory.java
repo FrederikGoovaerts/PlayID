@@ -6,6 +6,7 @@ import java.util.*;
 
 import fodot.objects.Fodot;
 import fodot.objects.includes.FodotIncludeHolder;
+import fodot.objects.procedure.FodotProcedure;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.terms.FodotVariable;
@@ -228,10 +229,36 @@ public class FodotGameFactory {
          * }
          */
         List<FodotSentence> definitions = new ArrayList<>();
-        //createForAll(t_Time,
-
-        //        )
-
+        definitions.add(
+                createSentence(
+                        createForAll(t_Time,
+                                createInductiveDefinitionConnector(
+                                        createInductiveFunctionHead(
+                                                createFunction(this.nextFunctionDeclaration, t_Time),
+                                                t_Time //TODO: arithmetic
+                                        ), createAnd(
+                                                createNot(createPredicate(
+                                                        this.terminalTimePredicateDeclaration,
+                                                        t_Time)),
+                                                createExists(t2_Time,
+                                                        createEquals(createFunction(
+                                                                        this.nextFunctionDeclaration, t_Time),
+                                                                t2_Time)
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+        definitions.add(
+                createSentence(
+                        createEquals(
+                                createFunction(this.nextFunctionDeclaration,createConstant("0")),
+                                createConstant("1")
+                        )
+                )
+        );
+        defaultTheory.addInductiveDefinition(createInductiveDefinition(definitions));
 
         return defaultTheory;
     }
@@ -240,24 +267,54 @@ public class FodotGameFactory {
         FodotStructure defaultStructure = createStructure(voc);
 
         //Start=0
+        defaultStructure.addEnumeration(
+                createConstantFunctionEnumeration(
+                        this.startFunctionDeclaration,
+                        createConstant("0")
+                )
+        );
 
-        //Time={0..timeLimit}
+        //Time={0..Constant(timeLimit)}
+        defaultStructure.addEnumeration(
+                createNumericalTypeRangeEnumeration(
+                        this.timeType,
+                        createConstant("0"),
+                        createConstant(Integer.toString(this.timeLimit))
+                )
+        );
 
         //ScoreType={0..100}
+        defaultStructure.addEnumeration(
+                createNumericalTypeRangeEnumeration(
+                        this.scoreType,
+                        createConstant("0"),
+                        createConstant("100")
+                )
+        );
 
+        // This is dependent on the name of the player, cannot be instantiated here
         //Score={p_robot(),100}
+        //defaultStructure.addEnumeration(
+        //        createPredicateEnumeration()
+        //);
+
+
 
         return defaultStructure;
     }
 
     private FodotProcedures getDefaultProcedures() {
-        FodotProcedures defaultProcedures = createProcedures("main");
 
         //stdoptions.nbmodels=5
-
         //printmodels(modelexpand(T,S))
+        List<FodotProcedure> proc = new ArrayList<>(
+                Arrays.asList(
+                        createProcedure("stdoptions.nbmodels=5"),
+                        createProcedure("printmodels(modelexpand(T,S))")
+                )
+        );
 
-        return defaultProcedures;
+        return createProcedures("main",proc);
     }
 
 }

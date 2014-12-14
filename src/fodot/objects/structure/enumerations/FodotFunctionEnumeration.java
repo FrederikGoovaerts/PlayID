@@ -9,8 +9,8 @@ import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.util.CollectionUtil;
 
 public class FodotFunctionEnumeration extends FodotEnumeration {
-	public FodotFunctionDeclaration function;
-	public Map<FodotConstant[], FodotConstant> values;
+	private FodotFunctionDeclaration function;
+	private Map<FodotConstant[], FodotConstant> values;
 	
 	public FodotFunctionEnumeration(FodotFunctionDeclaration function) {
 		this(function, new HashMap<FodotConstant[], FodotConstant>());

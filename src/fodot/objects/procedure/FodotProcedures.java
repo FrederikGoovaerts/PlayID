@@ -60,7 +60,7 @@ public class FodotProcedures implements IFodotElement {
 		return "procedure " + getName() +
 				(getArguments() != null ? CollectionUtil.toCouple(getArguments()) : "") + " {\n"
 				+ CollectionUtil.printStringList("", "", "\n", CollectionUtil.toCode(getProcedures()))
-				+ "}";
+				+ "\n}";
 	}
 
 	public void merge(FodotProcedures other) {

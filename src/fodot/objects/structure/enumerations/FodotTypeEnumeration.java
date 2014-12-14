@@ -8,8 +8,8 @@ import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.CollectionUtil;
 
 public class FodotTypeEnumeration extends FodotEnumeration {
-	public FodotType type;
-	public List<FodotConstant> values;
+	private FodotType type;
+	private List<FodotConstant> values;
 	
 	public FodotTypeEnumeration(FodotType type) {
 		this(type, new ArrayList<FodotConstant>());
@@ -45,7 +45,7 @@ public class FodotTypeEnumeration extends FodotEnumeration {
 
 	@Override
 	public String toCode() {
-		return getType().getTypeName() + CollectionUtil.toDomain(CollectionUtil.toCode(getValues()));
+		return getType().getTypeName() + " = " + CollectionUtil.toDomain(CollectionUtil.toCode(getValues()));
 	}
 
 	@Override

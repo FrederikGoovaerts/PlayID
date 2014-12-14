@@ -26,10 +26,7 @@ import fodot.objects.sentence.terms.FodotFunction;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.structure.enumerations.FodotEnumeration;
-import fodot.objects.structure.enumerations.FodotFunctionEnumeration;
-import fodot.objects.structure.enumerations.FodotPredicateEnumeration;
-import fodot.objects.structure.enumerations.FodotTypeEnumeration;
+import fodot.objects.structure.enumerations.*;
 import fodot.objects.theory.FodotSentence;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
@@ -258,6 +255,11 @@ public class FodotPartBuilder {
 		return new FodotFunctionEnumeration(declaration);
 	}
 
+	public static FodotConstantFunctionEnumeration createConstantFunctionEnumeration(
+			FodotFunctionDeclaration declaration, FodotConstant value) {
+		return new FodotConstantFunctionEnumeration(declaration,value);
+	}
+
 	public static FodotPredicateEnumeration createPredicateEnumeration(
 			FodotPredicateDeclaration declaration, List<FodotConstant[]> values) {
 		return new FodotPredicateEnumeration(declaration, values);
@@ -275,7 +277,17 @@ public class FodotPartBuilder {
 		return new FodotTypeEnumeration(type.getType(), values);
 	}
 
+	public static FodotNumericalTypeRangeEnumeration createNumericalTypeRangeEnumeration(
+			FodotType type, FodotConstant head, FodotConstant last) {
+		return new FodotNumericalTypeRangeEnumeration(type, head, last);
+	}
 
+	public static FodotNumericalTypeRangeEnumeration createNumericalTypeRangeEnumeration(
+			FodotTypeDeclaration type, FodotConstant head, FodotConstant last) {
+		return new FodotNumericalTypeRangeEnumeration(type.getType(), head, last);
+	}
+	
+	
 	//INDUCTIVE DEFINITIONS
 
 	public static FodotInductiveDefinitionBlock createInductiveDefinition(List<FodotSentence> sentences) {
