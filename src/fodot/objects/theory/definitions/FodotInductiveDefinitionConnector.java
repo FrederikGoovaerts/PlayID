@@ -6,7 +6,7 @@ import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.formulas.connectors.FodotSentenceElementConnector;
 
-public class FodotInductiveDefinitionConnector extends FodotSentenceElementConnector<IFodotFormula> {
+public class FodotInductiveDefinitionConnector extends FodotSentenceElementConnector<IFodotFormula> implements IFodotFormula {
 
 	private static final String INDUCTIVE_ARROW = "<-";
 	

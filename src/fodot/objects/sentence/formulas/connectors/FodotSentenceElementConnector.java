@@ -12,7 +12,7 @@ import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.util.CollectionUtil;
 
-public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElement> implements IFodotFormula {
+public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElement> implements IFodotSentenceElement {
 
 	private List<E> arguments;
 	private String connector;
