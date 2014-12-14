@@ -42,7 +42,7 @@ public class FodotQuantifier implements IFodotFormula {
 	public Set<FodotVariable> getFreeVariables() {
 		Set<FodotVariable> formulaVars = getFormula().getFreeVariables();
 		//Remove the var that is being quantized by this formula
-		formulaVars.remove(getVariable());
+		formulaVars.removeAll(getVariable());
 		return formulaVars;
  	}
 
