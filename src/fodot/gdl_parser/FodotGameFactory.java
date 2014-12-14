@@ -2,17 +2,22 @@ package fodot.gdl_parser;
 
 import static fodot.helpers.FodotPartBuilder.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import fodot.objects.Fodot;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedures;
+import fodot.objects.sentence.formulas.argumented.FodotPredicate;
+import fodot.objects.sentence.terms.FodotVariable;
+import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
+import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
+import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -25,7 +30,9 @@ public class FodotGameFactory {
 
     public FodotGameFactory(GdlFodotTransformer source) {
         this.source = source;
+        buildDefaultVocItems();
     }
+
 
     public FodotGameFactory(GdlFodotTransformer source, int timeLimit) {
         this(source);
@@ -38,10 +45,17 @@ public class FodotGameFactory {
 
     private GdlFodotTransformer source;
 
-    private FodotType timeType = new FodotType("Time");
-    private FodotType playerType = new FodotType("Player");
-    private FodotType actionType = new FodotType("Action");
-    private FodotType scoreType = new FodotType("Score");
+    private FodotType timeType;
+    private FodotType playerType;
+    private FodotType actionType;
+    private FodotType scoreType;
+
+    private FodotFunctionDeclaration startFunctionDeclaration;
+    private FodotFunctionDeclaration nextFunctionDeclaration;
+    private FodotPredicateDeclaration doPredicateDeclaration;
+    private FodotPredicateDeclaration terminalTimePredicateDeclaration;
+    private FodotTypeDeclaration scoreTypeDeclaration;
+    private FodotFunctionDeclaration scoreFunctionDeclaration;
 
     private int timeLimit = DEFAULT_TIME;
 
@@ -60,6 +74,37 @@ public class FodotGameFactory {
 
         Fodot toReturn = new Fodot(voc,theo,struc,proc,incl);
         return toReturn;
+    }
+
+    private void buildDefaultVocItems() {
+        this.timeType = new FodotType("Time");
+        this.playerType = new FodotType("Player");
+        this.actionType = new FodotType("Action");
+        this.scoreType = new FodotType("Score");
+
+        this.startFunctionDeclaration = createCompleteFunctionDeclaration("Start", this.timeType);
+
+        List<FodotType> timeList = new ArrayList<>();
+        timeList.add(this.timeType);
+        this.nextFunctionDeclaration = createPartialFunctionDeclaration("Next", timeList,
+                this.timeType);
+
+        List<FodotType> typeList = new ArrayList<>();
+        typeList.add(this.timeType);
+        typeList.add(this.playerType);
+        typeList.add(this.actionType);
+        this.doPredicateDeclaration = createPredicateDeclaration("do", typeList);
+
+        ArrayList<FodotType> typeList2 = new ArrayList<>();
+        typeList2.add(this.timeType);
+        this.terminalTimePredicateDeclaration = createPredicateDeclaration("terminalTime", typeList2);
+
+        this.scoreTypeDeclaration = createTypeDeclaration(this.scoreType, getNaturalNumberType());
+
+        List<FodotType> playerList = new ArrayList<>();
+        playerList.add(this.playerType);
+        scoreFunctionDeclaration = createCompleteFunctionDeclaration("Score", playerList,
+                this.scoreType);
     }
 
     private FodotVocabulary buildVocabulary() {
@@ -101,51 +146,91 @@ public class FodotGameFactory {
         defaultVoc.addType(createTypeDeclaration(this.timeType, getNaturalNumberType()));
 
         // Start: Time
-        defaultVoc.addFunction(createCompleteFunctionDeclaration("Start", this.timeType));
+        defaultVoc.addFunction(startFunctionDeclaration);
 
         // partial Next(Time):Time
-        List<FodotType> timeList = new ArrayList<>();
-        timeList.add(this.timeType);
-        defaultVoc.addFunction(createPartialFunctionDeclaration("Next", timeList,
-                this.timeType));
+        defaultVoc.addFunction(nextFunctionDeclaration);
 
         // do(Time, Player, Action)
-        List<FodotType> typeList = new ArrayList<>();
-        typeList.add(this.timeType);
-        typeList.add(this.playerType);
-        typeList.add(this.actionType);
-        defaultVoc.addPredicate(createPredicateDeclaration("do", typeList));
+        defaultVoc.addPredicate(doPredicateDeclaration);
 
 
         // terminalTime(Time)
-        List<FodotType> typeList2 = new ArrayList<>();
-        typeList2.add(this.timeType);
-        defaultVoc.addPredicate(createPredicateDeclaration("terminalTime", typeList2));
+        defaultVoc.addPredicate(terminalTimePredicateDeclaration);
 
         // type ScoreType isa nat
-        defaultVoc.addType(createTypeDeclaration(this.scoreType, getNaturalNumberType()));
+        defaultVoc.addType(scoreTypeDeclaration);
 
         // Score(Player): ScoreType
-        List<FodotType> playerList = new ArrayList<>();
-        playerList.add(this.playerType);
-        defaultVoc.addFunction(createCompleteFunctionDeclaration("Score", playerList,
-                this.scoreType));
+        defaultVoc.addFunction(scoreFunctionDeclaration);
 
         return defaultVoc;
     }
 
     private FodotTheory getDefaultTheory(FodotVocabulary voc) {
         FodotTheory defaultTheory = createTheory(voc);
+        //!a [Action] p [Player] t [Time]: do(t,p,a) => ~terminalTime(t) & (?t2 [Time]: Next(t) = t2).
+        FodotVariable a_Action = createVariable("a", this.actionType);
+        FodotVariable p_Player = createVariable("p", this.playerType);
+        FodotVariable t_Time = createVariable("t", this.timeType);
+        FodotVariable t2_Time = createVariable("t2",this.timeType);
+        Set<FodotVariable> variables =
+                new HashSet<>(Arrays.asList(a_Action,p_Player,t_Time));
+        variables.add(a_Action);
+        variables.add(p_Player);
+        variables.add(t_Time);
+        defaultTheory.addSentence(createSentence(createForAll(variables,
+                createImplies(
+                        createPredicate(this.doPredicateDeclaration
+                                , new ArrayList<IFodotTerm>(Arrays.asList(t_Time,
+                                p_Player,
+                                a_Action)))
+                        , createAnd(
+                                createNot(createPredicate(
+                                        this.terminalTimePredicateDeclaration,
+                                        t_Time)),
+                                createExists(t2_Time,
+                                        createEquals(createFunction(
+                                                        this.nextFunctionDeclaration, t_Time),
+                                                t2_Time)
+                                )
+                        )
+                )
+        )));
+
+        //! t [Time] p [Player]: ~terminalTime(t) & (?t2 [Time]: Next(t) = t2) => ?1 a [Action]: do(t,p,a).
+
+        /**
+         * {
+         *    !t: Next(t) = t+1 <- ~terminalTime(t) & (?t2 [Time]: Next(t2)=t).
+         *    Next(0) = 1.
+         * }
+         */
+
         return defaultTheory;
     }
 
     private FodotStructure getDefaultStructure(FodotVocabulary voc) {
         FodotStructure defaultStructure = createStructure(voc);
+
+        //Start=0
+
+        //Time={0..timeLimit}
+
+        //ScoreType={0..100}
+
+        //Score={p_robot(),100}
+
         return defaultStructure;
     }
 
     private FodotProcedures getDefaultProcedures() {
         FodotProcedures defaultProcedures = createProcedures("main");
+
+        //stdoptions.nbmodels=5
+
+        //printmodels(modelexpand(T,S))
+
         return defaultProcedures;
     }
 
