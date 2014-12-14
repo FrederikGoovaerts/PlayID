@@ -235,7 +235,7 @@ public class FodotGameFactory {
                                 createInductiveDefinitionConnector(
                                         createInductiveFunctionHead(
                                                 createFunction(this.nextFunctionDeclaration, t_Time),
-                                                t_Time //TODO: arithmetic
+                                                createAddition(t_Time,createConstant("1"))
                                         ), createAnd(
                                                 createNot(createPredicate(
                                                         this.terminalTimePredicateDeclaration,
