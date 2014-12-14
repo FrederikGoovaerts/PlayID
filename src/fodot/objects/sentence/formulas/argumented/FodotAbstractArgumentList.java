@@ -30,8 +30,8 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 		this.declaration = name;
 	}
 	
-	public FodotArgumentListDeclaration getName() {
-		return declaration;
+	public String getName() {
+		return declaration.getName();
 	}
 	
 	public List<IFodotTerm> getArguments() {
