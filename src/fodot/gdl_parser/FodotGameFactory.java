@@ -11,6 +11,7 @@ import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
+import fodot.objects.theory.FodotSentence;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
@@ -169,6 +170,7 @@ public class FodotGameFactory {
 
     private FodotTheory getDefaultTheory(FodotVocabulary voc) {
         FodotTheory defaultTheory = createTheory(voc);
+
         //!a [Action] p [Player] t [Time]: do(t,p,a) => ~terminalTime(t) & (?t2 [Time]: Next(t) = t2).
         FodotVariable a_Action = createVariable("a", this.actionType);
         FodotVariable p_Player = createVariable("p", this.playerType);
@@ -199,6 +201,25 @@ public class FodotGameFactory {
         )));
 
         //! t [Time] p [Player]: ~terminalTime(t) & (?t2 [Time]: Next(t) = t2) => ?1 a [Action]: do(t,p,a).
+        variables = new HashSet<>(Arrays.asList(t_Time,p_Player));
+        defaultTheory.addSentence(createSentence(createForAll(variables,
+                createImplies(
+                        createAnd(
+                                createNot(createPredicate(
+                                        this.terminalTimePredicateDeclaration,
+                                        t_Time)),
+                                createExists(t2_Time,
+                                        createEquals(createFunction(
+                                                        this.nextFunctionDeclaration, t_Time),
+                                                t2_Time)
+                                )
+                        ), createExistsExactly(1, a_Action,
+                                createPredicate(this.doPredicateDeclaration,
+                                        t_Time, p_Player, a_Action)
+                        )
+                )
+        )));
+
 
         /**
          * {
@@ -206,6 +227,11 @@ public class FodotGameFactory {
          *    Next(0) = 1.
          * }
          */
+        List<FodotSentence> definitions = new ArrayList<>();
+        //createForAll(t_Time,
+
+        //        )
+
 
         return defaultTheory;
     }

@@ -49,11 +49,11 @@ public class FodotQuantifier implements IFodotFormula {
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(getSymbol() + " ");
+		builder.append("(" + getSymbol() + " ");
 		for (FodotVariable var : variables) {
 			builder.append(var.getName() + " [" + var.getType().getTypeName() + "] ");
 		}
-		builder.append(" : " + getFormula().toCode());
+		builder.append(" : " + getFormula().toCode()+")");
 		return builder.toString();
 	}
 	
