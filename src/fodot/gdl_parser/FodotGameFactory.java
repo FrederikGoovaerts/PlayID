@@ -6,6 +6,7 @@ import java.util.*;
 
 import fodot.objects.Fodot;
 import fodot.objects.includes.FodotIncludeHolder;
+import fodot.objects.procedure.FodotProcedure;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.terms.FodotVariable;
@@ -277,13 +278,17 @@ public class FodotGameFactory {
     }
 
     private FodotProcedures getDefaultProcedures() {
-        FodotProcedures defaultProcedures = createProcedures("main");
 
         //stdoptions.nbmodels=5
-
         //printmodels(modelexpand(T,S))
+        List<FodotProcedure> proc = new ArrayList<>(
+                Arrays.asList(
+                        createProcedure("stdoptions.nbmodels=5"),
+                        createProcedure("printmodels(modelexpand(T,S))")
+                )
+        );
 
-        return defaultProcedures;
+        return createProcedures("main",proc);
     }
 
 }
