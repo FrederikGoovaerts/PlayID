@@ -20,7 +20,7 @@ public class FodotSentence implements IFodotElement {
 	}
 
 	private void setFormula(IFodotFormula formula) {
-		if (formula.getFreeVariables() != null) {
+		if (formula.getFreeVariables() != null && !(formula.getFreeVariables().isEmpty())) {
 			throw new NonVariablefreeSentenceException(formula);
 		}
 		this.formula = formula;
