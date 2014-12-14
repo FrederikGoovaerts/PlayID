@@ -39,7 +39,7 @@ public class FodotType implements IFodotElement {
     }
     
     public boolean hasDeclaration() {
-    	return this.declaration == null;
+    	return this.declaration != null;
     }
     
     /*************************************
