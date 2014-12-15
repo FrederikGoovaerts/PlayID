@@ -37,13 +37,16 @@ public class GdlFodotTransformer implements GdlTransformer{
     private FodotType playerType;
     private FodotType actionType;
     private FodotType scoreType;
+    private FodotType allType;
 
     private void buildDefaultTypes(){
         this.timeType = new FodotType("Time");
+        timeType.addSupertype(getNaturalNumberType());
         this.playerType = new FodotType("Player");
         this.actionType = new FodotType("Action");
-        this.scoreType = new FodotType("Score");
+        this.scoreType = new FodotType("ScoreType");
         scoreType.addSupertype(getNaturalNumberType());
+        this.allType = new FodotType("all");
     }
 
     public FodotType getTimeType(){
@@ -62,6 +65,10 @@ public class GdlFodotTransformer implements GdlTransformer{
         return scoreType;
     }
 
+    public FodotType getAllType() {
+        return allType;
+    }
+
     /*** End of Default Types subsection ***/
 
     /*************************************
@@ -73,6 +80,8 @@ public class GdlFodotTransformer implements GdlTransformer{
     private void addRole(FodotConstant role){
         if(role == null)
             throw new IllegalArgumentException();
+        if(ownRole == null)
+            ownRole = role;
         playerType.addDomainElement(role);
     }
 
@@ -179,22 +188,16 @@ public class GdlFodotTransformer implements GdlTransformer{
      * Constants
      */
 
-    private Set<String> constants;
-
-    public Set<String> getConstants(){
-        return new HashSet<>(constants);
+    private void addConstant(FodotConstant constantName){
+        allType.addDomainElement(constantName);
     }
 
-    private void addConstant(String constantName){
-        constants.add(constantName);
+    private boolean isConstantRegistered(FodotConstant constantName){
+        return !allType.containsElement(constantName);
     }
 
-    private boolean isConstantRegistered(String constantName){
-        return !constants.contains(constantName);
-    }
-
-    private static String convertRawConstantName(String rawName){
-        return "c_" + rawName;
+    private FodotConstant convertRawConstantName(String rawName){
+        return createConstant("c_" + rawName, allType);
     }
 
     /*** End of Constants subsection ***/
@@ -204,17 +207,21 @@ public class GdlFodotTransformer implements GdlTransformer{
      */
 
     //Looks intriguing, but have no fear.
-    private Map<FodotPredicateDeclaration,Set<String[]>>
+    private Map<FodotPredicateDeclaration,Set<FodotConstant[]>>
             initialValues;
 
-    private void addInitialValue(FodotPredicateDeclaration pred, String[] arguments){
+    private void addInitialValue(FodotPredicateDeclaration pred, FodotConstant[] arguments){
         if(initialValues.containsKey(pred)) {
             initialValues.get(pred).add(arguments);
         } else {
-            Set<String[]> newSet = new HashSet<String[]>();
+            Set<FodotConstant[]> newSet = new HashSet<FodotConstant[]>();
             newSet.add(arguments);
             initialValues.put(pred,newSet);
         }
+    }
+
+    public Map<FodotPredicateDeclaration, Set<FodotConstant[]>> getInitialValues() {
+        return new HashMap<>(initialValues);
     }
 
     /*** End of Initial values subsection ***/
@@ -223,17 +230,21 @@ public class GdlFodotTransformer implements GdlTransformer{
      * Static values
      */
 
-    private Map<FodotPredicateDeclaration,Set<String[]>>
+    private Map<FodotPredicateDeclaration,Set<FodotConstant[]>>
         staticValues;
 
-    private void addStaticValue(FodotPredicateDeclaration pred, String[] arguments){
+    private void addStaticValue(FodotPredicateDeclaration pred, FodotConstant[] arguments){
         if(staticValues.containsKey(pred)) {
             staticValues.get(pred).add(arguments);
         } else {
-            Set<String[]> newSet = new HashSet<String[]>();
+            Set<FodotConstant[]> newSet = new HashSet<FodotConstant[]>();
             newSet.add(arguments);
             staticValues.put(pred,newSet);
         }
+    }
+
+    public Map<FodotPredicateDeclaration, Set<FodotConstant[]>> getStaticValues() {
+        return new HashMap<>(staticValues);
     }
 
     /*** End of Static values subsection ***/
@@ -252,7 +263,6 @@ public class GdlFodotTransformer implements GdlTransformer{
     public void cleanAndInitializeBuilder(){
         this.fluentPredicates = new HashMap<>();
         this.staticPredicates = new HashMap<>();
-        this.constants = new HashSet<>();
         this.initialValues = new HashMap<>();
         this.staticValues = new HashMap<>();
         this.buildDefaultTypes();
@@ -282,7 +292,7 @@ public class GdlFodotTransformer implements GdlTransformer{
                 this.getPredicate(predicate.getName().getValue());
         int predArity = predicate.arity();
 
-        String[] initValues = new String[predArity];
+        FodotConstant[] initValues = new FodotConstant[predArity];
 
         for (int i = 0; i < predArity; i++) {
             //PLS TRUST ME
@@ -317,12 +327,12 @@ public class GdlFodotTransformer implements GdlTransformer{
                 throw new IllegalStateException("Predicate differs in arity from before!");
         }
 
-        String[] staticValues = new String[predArity];
+        FodotConstant[] staticValues = new FodotConstant[predArity];
 
         for (int i = 0; i < predArity; i++) {
             //PLS TRUST ME
-            String constant = relation.get(i).toSentence().getName().getValue();
-            staticValues[i] = convertRawConstantName(constant);
+            String constantName = relation.get(i).toSentence().getName().getValue();
+            staticValues[i] = convertRawConstantName(constantName);
         }
 
         this.addStaticValue(newPred, staticValues);
@@ -399,7 +409,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         	GdlTerm term = predSentence.get(i);
         	if(term.isGround()) {
                 //Term is a constant, and only has a name, and arity 0
-                String constantName = convertRawConstantName(term.toSentence().getName().getValue());
+                FodotConstant constantName = convertRawConstantName(term.toSentence().getName().getValue());
                 if(!isConstantRegistered(constantName))
                     addConstant(constantName);
         	}

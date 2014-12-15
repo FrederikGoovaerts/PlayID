@@ -121,6 +121,12 @@ public class FodotGameFactory {
          * resultaat:
          * type Unfilled constructed from {*alle constanten*}
          */
+        toReturn.addType(
+                createTypeDeclaration(
+                        source.getAllType()
+                )
+        );
+
 
         /**
          * nodig: alle fluent predicaten
@@ -208,9 +214,6 @@ public class FodotGameFactory {
     private FodotStructure buildStructure(FodotVocabulary voc) {
         FodotStructure toReturn = getDefaultStructure(voc);
 
-        //TODO: rest
-
-        //OPTIONEEL
         /**
          * nodig: *naam* van onze speler
          * resultaat:
@@ -255,7 +258,7 @@ public class FodotGameFactory {
         FodotLTCVocabulary defaultVoc = createLTCVocabulary();
 
         // type Time isa nat
-        defaultVoc.addType(createTypeDeclaration(source.getTimeType(), getNaturalNumberType()));
+        defaultVoc.addType(createTypeDeclaration(source.getTimeType()));
 
         // Start: Time
         defaultVoc.addFunction(startFunctionDeclaration);
