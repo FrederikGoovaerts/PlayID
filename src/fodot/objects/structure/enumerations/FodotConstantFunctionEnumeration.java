@@ -9,17 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FodotConstantFunctionEnumeration extends FodotEnumeration {
-	private FodotFunctionDeclaration function;
+	private FodotFunctionDeclaration declaration;
 	private FodotConstant value;
 
-	public FodotConstantFunctionEnumeration(FodotFunctionDeclaration function, FodotConstant value) {
+	public FodotConstantFunctionEnumeration(FodotFunctionDeclaration declaration, FodotConstant value) {
 		super();
-		this.function = function;
+		this.declaration = declaration;
 		this.value = value;
 	}
 
-	public FodotFunctionDeclaration getFunctionType() {
-		return function;
+	public FodotFunctionDeclaration getDeclaration() {
+		return declaration;
 	}
 
 	/* VALUE */
@@ -34,7 +34,7 @@ public class FodotConstantFunctionEnumeration extends FodotEnumeration {
 
 	@Override
 	public String toCode() {
-		return function.getName() + " = " + value.getValue();
+		return declaration.getName() + " = " + value.getValue();
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class FodotConstantFunctionEnumeration extends FodotEnumeration {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((function == null) ? 0 : function.hashCode());
+				+ ((declaration == null) ? 0 : declaration.hashCode());
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
@@ -56,10 +56,10 @@ public class FodotConstantFunctionEnumeration extends FodotEnumeration {
 		if (getClass() != obj.getClass())
 			return false;
 		FodotConstantFunctionEnumeration other = (FodotConstantFunctionEnumeration) obj;
-		if (function == null) {
-			if (other.function != null)
+		if (declaration == null) {
+			if (other.declaration != null)
 				return false;
-		} else if (!function.equals(other.function))
+		} else if (!declaration.equals(other.declaration))
 			return false;
 		if (value == null) {
 			if (other.value != null)
@@ -71,7 +71,7 @@ public class FodotConstantFunctionEnumeration extends FodotEnumeration {
 
 	@Override
 	public String toString() {
-		return "FodotConstantFunctionEnumeration [function=" + function + ", value="
+		return "FodotConstantFunctionEnumeration [function=" + declaration + ", value="
 				+ value + "]";
 	}
 	
