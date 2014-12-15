@@ -8,7 +8,7 @@ import fodot.objects.sentence.formulas.IFodotFormula;
  * Sentences end with a dot.
  */
 public class FodotSentence implements IFodotElement {
-	public IFodotFormula formula;
+	private IFodotFormula formula;
 
 	public FodotSentence(IFodotFormula formula) {
 		super();
