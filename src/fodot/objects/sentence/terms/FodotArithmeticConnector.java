@@ -19,7 +19,7 @@ public class FodotArithmeticConnector extends FodotSentenceElementConnector<IFod
 		
 		//All terms must have integer as supertype, you can comment this out if it's too restrictive
 		for (IFodotTerm term : args) {
-			if (!term.getType().containsSupertype(FodotType.INTEGER)) {
+			if (!(term.getType().isASubtypeOf(FodotType.INTEGER))) {
 				throw new IllegalArgumentException("You can't use arithmetic on " + term + " because it does not have integer as its superclass");
 			}
 		}

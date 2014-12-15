@@ -317,8 +317,9 @@ public class GdlFodotTransformer implements GdlTransformer{
                 convertFluentPredicateToStatic(getFluentPredicate(predName));
                 newPred = this.getPredicate(predName);
             } else {
+
                 newPred = new FodotPredicateDeclaration(predName,
-                        FodotType.getPlaceHolderList(predArity));
+                        FodotType.getSameTypeList(predArity,this.allType));
                 this.addStaticPredicate(newPred);
             }
         } else {
@@ -393,7 +394,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         //If necessary, register predicate
         if(!isPredicateRegistered(predName)) {
             newPred = new FodotPredicateDeclaration(predName,
-                    FodotType.getPlaceHolderList(amountOfArguments));
+                    FodotType.getSameTypeList(amountOfArguments,allType));
             this.addFluentPredicate(newPred);
         } else {
             newPred = this.getPredicate(predName);

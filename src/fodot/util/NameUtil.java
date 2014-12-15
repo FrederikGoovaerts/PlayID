@@ -3,7 +3,9 @@ package fodot.util;
 public class NameUtil {
 	/* STATIC HELPERS */
 
-	private static String validNameRegex = "^[a-zA-Z$][a-zA-Z_$0-9]*$";
+	// TODO: this is crudely fixed to allow for "-"
+	//private static String validNameRegex = "^[a-zA-Z$][a-zA-Z_$0-9]*$";
+	private static String validNameRegex = "^[a-zA-Z-$][a-zA-Z_$0-9]*$";
 	private static String alphanumericRegex = "[^a-zA-Z0-9]";
 
 	/**

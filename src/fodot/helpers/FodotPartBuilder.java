@@ -488,11 +488,6 @@ public class FodotPartBuilder {
 	public static FodotType getIntegerType() {
 		return FodotType.INTEGER;
 	}
-
-	@Deprecated
-	public static FodotType getPlaceHolderType() { //moon
-		return FodotType.getPlaceHolderType();
-	}
 	
 	public static FodotType createPlaceHolderType() {
 		return FodotType.createPlaceHolderType();

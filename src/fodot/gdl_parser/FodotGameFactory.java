@@ -366,8 +366,8 @@ public class FodotGameFactory {
         definitions.add(
                 createSentence(
                         createEquals(
-                                createFunction(this.nextFunctionDeclaration,createInteger(0)),
-                                createInteger(1)
+                                createFunction(this.nextFunctionDeclaration,createConstant("0",source.getTimeType())),
+                                createConstant("1", source.getTimeType())
                         )
                 )
         );

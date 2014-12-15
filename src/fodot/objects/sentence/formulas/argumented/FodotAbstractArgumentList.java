@@ -61,7 +61,7 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 		
 		//Check types of arguments
 		for (int i = 0; i < arguments.size(); i++) {
-			if (!arguments.get(i).getType().equals(argumentTypes.get(i))) {
+			if (!arguments.get(i).getType().isASubtypeOf(argumentTypes.get(i))) {
 				throw new IllegalTypeException("Argument " + i + " in " + getName(), arguments.get(i).getType(), argumentTypes.get(i));
 			}
 		}

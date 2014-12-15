@@ -18,8 +18,7 @@ public class FodotType implements IFodotElement {
 	
 
 	public static final FodotType NATURAL_NUMBER = new FodotType("nat");
-	public static final FodotType INTEGER = new FodotType("int", null, null, new HashSet<FodotType>(Arrays.asList(new FodotType[]{NATURAL_NUMBER})));	
-	private static final FodotType moon = createPlaceHolderType();
+	public static final FodotType INTEGER = new FodotType("int", null, null, new HashSet<FodotType>(Arrays.asList(new FodotType[]{NATURAL_NUMBER})));
 
 	private FodotTypeDeclaration declaration;
 	private String name;
@@ -69,36 +68,45 @@ public class FodotType implements IFodotElement {
 		return this.declaration != null;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		FodotType type = (FodotType) o;
+
+		if (name != null ? !name.equals(type.name) :
+				type.name != null)
+			return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return name != null ? name.hashCode() : 0;
+	}
+
+	/***************************************************************************
+	 * Class methods
+	 **************************************************************************/
+
+	public static List<FodotType> getSameTypeList(int predArity,
+												  FodotType type) {
+		List<FodotType> toReturn = new ArrayList<>();
+		for (int i = 0; i < predArity; i++) {
+			toReturn.add(type);
+		}
+		return toReturn;
+	}
+
 	/*************************************
-	 *  Static 'placeholder' type
+	 *  'placeholder' type
 	 *
-	 * This type is used as a placeholder
+	 * This type can be used as a placeholder
 	 * for all types in predicates and
 	 * functions until they can be filled
 	 */
-	/*This is a static variable, meaning that if we build two idp files,
-	 * this variable would contain all variables of the two programs,
-	 * which is not the intended behaviour.
-	 * 
-	 * Please create your own placeholder type by calling the createPlaceHolderType()
-	 * and cache the result for later use
-	 */
-	@Deprecated 
-	public static FodotType getPlaceHolderType() {
-		return moon;
-	}
-
-	/*
-	 * Please use the FormulaUtil createTypeList(type, amount) instead.
-	 */
-	@Deprecated
-	public static List<FodotType> getPlaceHolderList(int amount) {
-		List<FodotType> result = new ArrayList<>();
-		for (int i = 0; i < amount; i++) {
-			result.add(FodotType.getPlaceHolderType());
-		}
-		return result;
-	}
 
 	public static FodotType createPlaceHolderType() {
 		return new FodotType("Unfilled", null, new HashSet<FodotType>(Arrays.asList(new FodotType[]{INTEGER})), null);
@@ -114,6 +122,10 @@ public class FodotType implements IFodotElement {
 			this.subtypes = new HashSet<FodotType>();
 		} else {
 			this.subtypes = subtypes;
+			for (FodotType subtype : subtypes) {
+				if(!(subtype.containsSupertype(this)))
+					subtype.addSupertype(this);
+			}
 		}
 	}
 
@@ -166,7 +178,7 @@ public class FodotType implements IFodotElement {
 			if (current.equals(toLookFor)) {
 				return true;
 			}
-			queue.addAll(current.getSubtypes());
+			queue.addAll(current.getSupertypes());
 		}
 		return false;
 	}
@@ -184,6 +196,10 @@ public class FodotType implements IFodotElement {
 			this.supertypes = new HashSet<FodotType>();
 		} else {
 			this.supertypes = supertypes;
+			for (FodotType supertype : supertypes) {
+				if(!(supertype.containsSubtype(this)))
+					supertype.addSubtype(this);
+			}
 		}
 	}
 
@@ -236,7 +252,7 @@ public class FodotType implements IFodotElement {
 			if (current.equals(toLookFor)) {
 				return true;
 			}
-			queue.addAll(current.getSupertypes());
+			queue.addAll(current.getSubtypes());
 		}
 		return false;
 	}
@@ -278,29 +294,6 @@ public class FodotType implements IFodotElement {
 
 
 	/************************************/
-
-	/***************************************************************************
-	 * Class Properties
-	 **************************************************************************/
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		FodotType type = (FodotType) o;
-
-		if (name != null ? !name.equals(type.name) :
-			type.name != null)
-			return false;
-
-		return true;
-	}
-
-	@Override
-	public int hashCode() {
-		return name != null ? name.hashCode() : 0;
-	}
 
 	/***************************************************************************
 	 * Fodot Element requirements
