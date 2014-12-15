@@ -8,7 +8,6 @@ import java.util.Set;
 
 import fodot.exceptions.IllegalConnectorException;
 import fodot.objects.sentence.IFodotSentenceElement;
-import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.util.CollectionUtil;
 

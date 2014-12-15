@@ -19,24 +19,38 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	public FodotAbstractArgumentList(FodotArgumentListDeclaration decl, List<IFodotTerm> arguments) {
 		super();
 		setDeclaration(decl);
-		this.arguments = arguments;
+		setArguments(arguments);
 	}
 
+	//Declaration
 	public FodotArgumentListDeclaration getDeclaration() {
 		return declaration;
 	}
 	
-	public void setDeclaration(FodotArgumentListDeclaration name) {
-		this.declaration = name;
+	public void setDeclaration(FodotArgumentListDeclaration decl) {
+		this.declaration = decl;
 	}
 	
+	//Name
 	public String getName() {
 		return declaration.getName();
 	}
 	
+	
+	//Arguments
 	public List<IFodotTerm> getArguments() {
 		return new ArrayList<IFodotTerm>(arguments);
 	}
+	 
+	public boolean hasArguments() {
+		return !arguments.isEmpty();
+	}
+	
+	private void setArguments(List<IFodotTerm> args) {
+		this.arguments = (args == null ? new ArrayList<IFodotTerm>() : args);
+	}
+	
+	//Sentence element stuff
 
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
@@ -49,7 +63,7 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 
 	@Override
 	public String toCode() {
-		return getName() + CollectionUtil.toCouple(CollectionUtil.toCode(getArguments()));
+		return getName() + (hasArguments() ? CollectionUtil.toCouple(CollectionUtil.toCode(getArguments())) : "");
 	}
 	
 	protected String argumentsToString() {

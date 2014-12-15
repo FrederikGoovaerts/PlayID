@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotType;
 

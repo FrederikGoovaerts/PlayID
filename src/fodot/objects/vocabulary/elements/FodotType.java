@@ -1,9 +1,12 @@
 package fodot.objects.vocabulary.elements;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import fodot.objects.IFodotElement;
+import fodot.objects.sentence.terms.FodotConstant;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -11,30 +14,46 @@ import fodot.objects.IFodotElement;
 public class FodotType implements IFodotElement {
 	
 	private FodotTypeDeclaration declaration;
-    private final String typeName;
+    private String name;
+    private Set<FodotConstant> domain = new HashSet<>();
+	private Set<FodotType> subtypes;
+	private Set<FodotType> supertypes;
 
     /***************************************************************************
      * Constructor
      **************************************************************************/
 
+	public FodotType(String typeName, Set<FodotConstant> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
+		setName(typeName);
+		setDomain(domain);
+		setSupertypes(supertypes);
+		setSubtypes(subtypes);
+	}
 
     public FodotType(String typeName) {
-        this.typeName = typeName;
+        this(typeName, null, null, null);
     }
 
     /***************************************************************************
      * Class Properties
      **************************************************************************/
 
-    public String getTypeName() {
-        return typeName;
+    public String getName() {
+        return name;
+    }
+    
+    private void setName(String name) {
+    	this.name = name;
     }
 
     public FodotTypeDeclaration getDeclaration() {
+    	if (!hasDeclaration()) {
+    		setDeclaration(new FodotTypeDeclaration(this));
+    	}
     	return declaration;
     }
     
-    public void setDeclaration(FodotTypeDeclaration declaration) {
+    private void setDeclaration(FodotTypeDeclaration declaration) {
     	this.declaration = declaration;
     }
     
@@ -65,6 +84,113 @@ public class FodotType implements IFodotElement {
         }
         return result;
     }
+	
+	//DOMAIN, SUBCLASS, SUPERCLASS STUFF
+	 /*************************************
+     * Subclasses
+     */
+
+    private void setSubtypes(Set<FodotType> subtypes) {
+    	if (subtypes == null) {
+    		this.subtypes = new HashSet<FodotType>();
+    	} else {
+    		this.subtypes = subtypes;
+    	}
+    }
+    
+    public void addSubtype(FodotType type) {
+    	subtypes.add(type);
+    }
+    
+    public void addAllSubtypes(Set<FodotType> types) {
+    	subtypes.addAll(types);
+    }
+    
+    public boolean containsSubtype(FodotType type){
+    	return subtypes.contains(type);
+    }
+    
+    public List<FodotType> getSubtypes() {
+    	return new ArrayList<FodotType>(subtypes);
+    }
+    
+    public boolean hasSubtypes() {
+    	return !subtypes.isEmpty();
+    }
+    
+    /************************************/
+    
+    
+    /*************************************
+     * Superclasses
+     */
+
+    private void setSupertypes(Set<FodotType> supertypes) {
+    	if (supertypes == null) {
+    		this.supertypes = new HashSet<FodotType>();
+    	} else {
+    		this.supertypes = supertypes;
+    	}
+    }
+    
+    public void addSupertype(FodotType type) {
+    	supertypes.add(type);
+    }
+    
+    public void addAllSupertypes(Set<FodotType> types) {
+    	supertypes.addAll(types);
+    }
+    
+    public boolean containsSupertype(FodotType type){
+    	return supertypes.contains(type);
+    }
+    
+    public List<FodotType> getSupertypes() {
+    	return new ArrayList<FodotType>(supertypes);
+    }
+
+    public boolean hasSupertypes() {
+    	return !supertypes.isEmpty();
+    }
+    
+    /************************************/
+    
+
+	/*************************************
+     * Domain elements in type declaration
+     */
+
+    private void setDomain(Set<FodotConstant> domain) {
+    	if (domain == null) {
+    		this.domain = new HashSet<FodotConstant>();
+    	} else {
+    		this.domain = domain;
+    	}
+    }
+    
+	public void addDomainElement(FodotConstant element) {
+    	domain.add(element);
+    }
+    
+    public void addAllDomainElements(Set<FodotConstant> elements) {
+    	domain.addAll(elements);
+    }
+    
+    public boolean containsElement(FodotConstant element){
+    	return domain.contains(element);
+    }
+    
+    public Set<FodotConstant> getDomainElements() {
+    	return new HashSet<FodotConstant>(domain);
+    }
+    
+    public boolean hasDomainElements() {
+    	return domain != null && !domain.isEmpty();
+    }
+
+    
+    /************************************/
+	
     /***************************************************************************
      * Class Properties
      **************************************************************************/
@@ -76,8 +202,8 @@ public class FodotType implements IFodotElement {
 
         FodotType type = (FodotType) o;
 
-        if (typeName != null ? !typeName.equals(type.typeName) :
-                type.typeName != null)
+        if (name != null ? !name.equals(type.name) :
+                type.name != null)
             return false;
 
         return true;
@@ -85,7 +211,7 @@ public class FodotType implements IFodotElement {
 
     @Override
     public int hashCode() {
-        return typeName != null ? typeName.hashCode() : 0;
+        return name != null ? name.hashCode() : 0;
     }
     
     /***************************************************************************
@@ -94,6 +220,8 @@ public class FodotType implements IFodotElement {
     
 	@Override
 	public String toCode() {
-		return getTypeName();
+		return getName();
 	}
+	
+	
 }

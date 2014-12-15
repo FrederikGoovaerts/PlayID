@@ -9,48 +9,55 @@ import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.util.CollectionUtil;
 
 public class FodotFunctionEnumeration extends FodotEnumeration {
-	private FodotFunctionDeclaration function;
+	private FodotFunctionDeclaration declaration;
 	private Map<FodotConstant[], FodotConstant> values;
-	
+
 	public FodotFunctionEnumeration(FodotFunctionDeclaration function) {
 		this(function, new HashMap<FodotConstant[], FodotConstant>());
 	}
-	
-	public FodotFunctionEnumeration(FodotFunctionDeclaration function, Map<FodotConstant[], FodotConstant> values) {
+
+	public FodotFunctionEnumeration(FodotFunctionDeclaration declaraion, Map<FodotConstant[], FodotConstant> values) {
 		super();
-		this.function = function;
+		this.declaration = declaraion;
 		this.values = values;
 	}
 
-	public FodotFunctionDeclaration getFunctionType() {
-		return function;
+	public FodotFunctionDeclaration getDeclaration() {
+		return declaration;
 	}
 
 	/* VALUES */
-	
+
 	public void addValue(FodotConstant[] input, FodotConstant value) {
 		//TODO: some kind of validator for the amount of and type of arguments
 		values.put(input, value);
 	}
-	
+
 	public void removeValue(FodotConstant[] input) {
 		values.remove(input);
 	}
-	
+
 	public boolean containsValue(FodotConstant[] input) {
 		return values.containsKey(input);
 	}
-	
+
 	public Map<FodotConstant[], FodotConstant> getValues() {
 		return new HashMap<FodotConstant[], FodotConstant>(values);
 	}
 
+	public boolean hasValues() {
+		return !values.isEmpty();
+	}
+
+	//SENTENCE ELEMENT
+
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(function.getName() + " = {");
+		builder.append(declaration.getName());
+		builder.append(" = {");
 		for (FodotConstant[] key : getValues().keySet()) {
-			builder.append(CollectionUtil.toCoupleAsCode(Arrays.asList(key)) + " -> " + values.get(key) + "; \n");
+			builder.append(CollectionUtil.toCoupleAsCode(Arrays.asList(key)) + " -> " + values.get(key).toCode() + "; \n");
 		}
 		builder.append("}");
 		return builder.toString();
@@ -61,7 +68,7 @@ public class FodotFunctionEnumeration extends FodotEnumeration {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((function == null) ? 0 : function.hashCode());
+				+ ((declaration == null) ? 0 : declaration.hashCode());
 		result = prime * result + ((values == null) ? 0 : values.hashCode());
 		return result;
 	}
@@ -75,10 +82,10 @@ public class FodotFunctionEnumeration extends FodotEnumeration {
 		if (getClass() != obj.getClass())
 			return false;
 		FodotFunctionEnumeration other = (FodotFunctionEnumeration) obj;
-		if (function == null) {
-			if (other.function != null)
+		if (declaration == null) {
+			if (other.declaration != null)
 				return false;
-		} else if (!function.equals(other.function))
+		} else if (!declaration.equals(other.declaration))
 			return false;
 		if (values == null) {
 			if (other.values != null)
@@ -90,10 +97,10 @@ public class FodotFunctionEnumeration extends FodotEnumeration {
 
 	@Override
 	public String toString() {
-		return "FodotFunctionEnumeration [function=" + function + ", values="
+		return "FodotFunctionEnumeration [function=" + declaration + ", values="
 				+ values + "]";
 	}
-	
-	
-		
+
+
+
 }

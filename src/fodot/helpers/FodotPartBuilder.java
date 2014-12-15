@@ -100,6 +100,26 @@ public class FodotPartBuilder {
 		return new FodotTermConnector(term1, DISTINCT_SYMBOL, term2);
 	}
 
+	private static final String LESS_THAN = "<";
+
+	public static FodotTermConnector createLessThan(IFodotTerm term1, IFodotTerm term2) {
+		return new FodotTermConnector(term1, LESS_THAN, term2);
+	}
+	
+	public static IFodotFormula createLessThanOrEqualTo(IFodotTerm term1, IFodotTerm term2) {
+		return createOr(createLessThan(term1, term2), createEquals(term1, term2));
+	} 
+	
+	private static final String GREATER_THAN = ">";
+
+	public static FodotTermConnector createGreaterThan(IFodotTerm term1, IFodotTerm term2) {
+		return new FodotTermConnector(term1, GREATER_THAN, term2);
+	}
+	
+	public static IFodotFormula createGreaterThanOrEqualTo(IFodotTerm term1, IFodotTerm term2) {
+		return createOr(createGreaterThan(term1, term2), createEquals(term1, term2));
+	} 
+
 	//ARITHMETIC CONNECTORS
 	private static final String ADDITION_SYMBOL = "+";
 
@@ -347,28 +367,57 @@ public class FodotPartBuilder {
 		return new FodotPredicateDeclaration(name, argumentTypes);
 	}
 
+	//Type declaration
+	@Deprecated
 	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<FodotConstant> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
-		return new FodotTypeDeclaration(type, domain, supertypes, subtypes);
+		type.addAllSubtypes(subtypes);
+		type.addAllSupertypes(supertypes);
+		type.addAllDomainElements(domain);
+		return new FodotTypeDeclaration(type);
 	}
 
+	@Deprecated
 	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<FodotConstant> domain, Set<FodotType> supertypes) {
 		return createTypeDeclaration(type, domain, supertypes, null);
 	}
 
+	@Deprecated
 	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, FodotType supertype) {
 		Set<FodotType> supertypes = new HashSet<FodotType>();
 		supertypes.add(supertype);
 		return createTypeDeclaration(type, null, supertypes, null);
 	}
 
+	@Deprecated
 	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<FodotConstant> domain) {
 		return createTypeDeclaration(type, domain, null, null);
 	}
 
 	public static FodotTypeDeclaration createTypeDeclaration(FodotType type) {
-		return createTypeDeclaration(type, null, null, null);
+		if (type == null)
+			throw new IllegalArgumentException(type + " is not a valid type!");
+		return type.getDeclaration();
 	}
 
+	//Types
+	public static FodotType createType(String name, Set<FodotConstant> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
+		return new FodotType(name, domain, supertypes, subtypes);
+	}
+	
+	public static FodotType createType(String name, Set<FodotConstant> domain, Set<FodotType> supertypes) {
+		return createType(name, domain, supertypes, null);
+	}
+	
+	public static FodotType createType(String name, FodotType supertype) {
+		Set<FodotType> supertypes = new HashSet<FodotType>();
+		supertypes.add(supertype);
+		return createType(name, null, supertypes, null);
+	}
+	
+	public static FodotType createType(String name, Set<FodotConstant> domain) {
+		return createType(name, domain, null, null);
+	}
+	
 	public static FodotType createType(String name) {
 		return new FodotType(name);
 	}

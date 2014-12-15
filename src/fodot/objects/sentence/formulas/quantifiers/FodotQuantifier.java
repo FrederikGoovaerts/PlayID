@@ -51,7 +51,7 @@ public class FodotQuantifier implements IFodotFormula {
 		StringBuilder builder = new StringBuilder();
 		builder.append("(" + getSymbol() + " ");
 		for (FodotVariable var : variables) {
-			builder.append(var.getName() + " [" + var.getType().getTypeName() + "] ");
+			builder.append(var.getName() + " [" + var.getType().getName() + "] ");
 		}
 		builder.append(" : " + getFormula().toCode()+")");
 		return builder.toString();

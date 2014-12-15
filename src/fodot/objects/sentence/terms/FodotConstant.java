@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fodot.objects.vocabulary.elements.FodotType;
-import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 
 public class FodotConstant implements IFodotTerm {
 
@@ -33,7 +32,7 @@ public class FodotConstant implements IFodotTerm {
 		}
 		this.type = type;
 		if (type.hasDeclaration()) {
-			this.type.getDeclaration().addDomainElement(this);
+			this.type.addDomainElement(this);
 		}
 	}
 

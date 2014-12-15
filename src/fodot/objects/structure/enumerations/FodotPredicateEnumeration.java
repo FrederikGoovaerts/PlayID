@@ -9,21 +9,21 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.util.CollectionUtil;
 
 public class FodotPredicateEnumeration extends FodotEnumeration {
-	private FodotPredicateDeclaration predicate;
+	private FodotPredicateDeclaration declaration;
 	private List<FodotConstant[]> values;
 	
 	public FodotPredicateEnumeration(FodotPredicateDeclaration predicate) {
 		this(predicate, new ArrayList<FodotConstant[]>());
 	}
 	
-	public FodotPredicateEnumeration(FodotPredicateDeclaration predicate, List<FodotConstant[]> values) {
+	public FodotPredicateEnumeration(FodotPredicateDeclaration declaration, List<FodotConstant[]> values) {
 		super();
-		this.predicate = predicate;
+		this.declaration = declaration;
 		this.values = values;
 	}
 
-	public FodotPredicateDeclaration getPredicateType() {
-		return predicate;
+	public FodotPredicateDeclaration getDeclaration() {
+		return declaration;
 	}
 
 	/* VALUES */
@@ -48,7 +48,7 @@ public class FodotPredicateEnumeration extends FodotEnumeration {
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(predicate.getName() + " = {");
+		builder.append(declaration.getName() + " = {");
 		for (FodotConstant[] constants : getValues()) {		
 			builder.append(CollectionUtil.toNakedList(CollectionUtil.toCode(Arrays.asList(constants))) + ";\n");
 		}
@@ -61,7 +61,7 @@ public class FodotPredicateEnumeration extends FodotEnumeration {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((predicate == null) ? 0 : predicate.hashCode());
+				+ ((declaration == null) ? 0 : declaration.hashCode());
 		result = prime * result + ((values == null) ? 0 : values.hashCode());
 		return result;
 	}
@@ -75,10 +75,10 @@ public class FodotPredicateEnumeration extends FodotEnumeration {
 		if (getClass() != obj.getClass())
 			return false;
 		FodotPredicateEnumeration other = (FodotPredicateEnumeration) obj;
-		if (predicate == null) {
-			if (other.predicate != null)
+		if (declaration == null) {
+			if (other.declaration != null)
 				return false;
-		} else if (!predicate.equals(other.predicate))
+		} else if (!declaration.equals(other.declaration))
 			return false;
 		if (values == null) {
 			if (other.values != null)
@@ -90,7 +90,7 @@ public class FodotPredicateEnumeration extends FodotEnumeration {
 
 	@Override
 	public String toString() {
-		return "FodotPredicateEnumeration [predicate=" + predicate
+		return "FodotPredicateEnumeration [predicate=" + declaration
 				+ ", values=" + values + "]";
 	}
 		
