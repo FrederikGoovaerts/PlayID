@@ -1,14 +1,9 @@
 package fodot.gdl_parser;
 
-import static fodot.helpers.FodotPartBuilder.*;
-
-import java.util.*;
-
 import fodot.objects.Fodot;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedure;
 import fodot.objects.procedure.FodotProcedures;
-import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
@@ -20,6 +15,10 @@ import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
+
+import java.util.*;
+
+import static fodot.helpers.FodotPartBuilder.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -113,6 +112,40 @@ public class FodotGameFactory {
         FodotVocabulary toReturn = getDefaultVocabulary();
 
         //TODO: rest
+
+        /**
+         * nodig: alle roles
+         * resultaat:
+         * type Player constructed from {*alle roles*}
+         */
+
+
+        /**
+         * nodig: alle constanten
+         * resultaat:
+         * type Unfilled constructed from {*alle constanten*}
+         */
+
+        /**
+         * nodig: alle fluent predicaten
+         * resultaat voor elk predicaat:
+         * pred(Time,*standaard argumenten*)
+         * I_pred(*standaard argumenten*)
+         * C_pred(Time,*standaard argumenten*)
+         */
+
+        /**
+         * nodig: alle static predicaten
+         * resultaat:
+         * pred(*standaard argumenten*)
+         */
+
+        /**
+         * nodig: alle actions
+         * resultaat:
+         * type Action constructed from {*alle actionpredicaten*}
+         */
+
         return toReturn;
     }
 
@@ -120,6 +153,50 @@ public class FodotGameFactory {
         FodotTheory toReturn = getDefaultTheory(voc);
 
         //TODO: rest
+
+        /**
+         * nodig: alle fluent predicaten
+         * resultaat voor elk predicaat:
+         * {
+         *     !(var [Unfilled])*aantal argumenten keer* : clear(Start,*vars*) <- I_clear(*vars*).
+         *     !(var [Unfilled])*aantal argumenten keer* t [Time]: clear(Next(t),*vars*) <- C_clear(t,*vars*).
+         * }
+         */
+
+        //Een van de moeilijkste
+        /**
+         * nodig: alle causations van elk fluent predicaat
+         * resultaat voor elk predicaat:
+         * {
+         *     !(var [Unfilled])*aantal argumenten keer* t [Time]: C_on(t,*vars*) <- *causation*).
+         *     *dit voor elke causation van hetzelfde predicaat*
+         * }
+         */
+
+        /**
+         * nodig: alle legals, als legal head en legal body
+         * resultaat voor elk koppel:
+         * !(var [Unfilled])*aantal argumenten keer* t [Time]: *legal head* => *legal body*
+         */
+
+        /**
+         * nodig: elke goal, als *player*, *score*, *voorwaarden*
+         * resultaat:
+         * {
+         *    Score(*player*) = *score* <- (!t [Time]: terminalTime(t) => *voorwaarden*)
+         *    *en dit voor elk tripel*
+         * }
+         */
+
+        /**
+         * nodig: elke terminal *voorwaarde*
+         * resultaat:
+         * {
+         *     !t [Time]: terminalTime(t) <- *voorwaarde*
+         *     *voor elke voorwaarde*
+         * }
+         */
+
         return toReturn;
     }
 
@@ -127,6 +204,27 @@ public class FodotGameFactory {
         FodotStructure toReturn = getDefaultStructure(voc);
 
         //TODO: rest
+
+        //OPTIONEEL
+        /**
+         * nodig: *naam* van onze speler
+         * resultaat:
+         * Score={*naam*(),100}
+         */
+
+        /**
+         * nodig: Initiele *waarden* voor elk fluent *predicaat*
+         * resultaat voor elk predicaat:
+         * I_*predicaat* = {*waarden()*}
+         * OPGEPAST: in de structure moet achter elke constante een ()
+         */
+
+        /**
+         * nodig: *waarden* voor elk statisch *predicaat*
+         * resultaat:
+         * *predicaat*={*waarden()*}
+         */
+
         return toReturn;
     }
 
