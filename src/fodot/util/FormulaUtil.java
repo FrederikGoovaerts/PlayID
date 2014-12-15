@@ -25,7 +25,7 @@ public class FormulaUtil {
 		return newFormula;
 	}
 	
-	public static List<FodotType> getPlaceHolderList(FodotType type, int amount) {
+	public static List<FodotType> createTypeList(FodotType type, int amount) {
 		List<FodotType> result = new ArrayList<>();
 		for (int i = 0; i < amount; i++) {
 			result.add(type);
