@@ -1,7 +1,9 @@
 package fodot.objects.structure.enumerations;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import fodot.objects.sentence.terms.FodotConstant;
@@ -56,8 +58,13 @@ public class FodotFunctionEnumeration extends FodotEnumeration {
 		StringBuilder builder = new StringBuilder();
 		builder.append(declaration.getName());
 		builder.append(" = {");
-		for (FodotConstant[] key : getValues().keySet()) {
-			builder.append(CollectionUtil.toCoupleAsCode(Arrays.asList(key)) + " -> " + values.get(key).toCode() + "; \n");
+		List<FodotConstant[]> keys = new ArrayList<FodotConstant[]>(getValues().keySet());
+		for (int i = 0; i < keys.size(); i++) {
+			if (i > 0) {
+				builder.append("; \n");
+			}
+			FodotConstant[] key = keys.get(i);
+			builder.append(CollectionUtil.toCoupleAsCode(Arrays.asList(key)) + " -> " + values.get(key).toCode());
 		}
 		builder.append("}");
 		return builder.toString();

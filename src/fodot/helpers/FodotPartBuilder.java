@@ -2,6 +2,7 @@ package fodot.helpers;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +17,11 @@ import fodot.objects.procedure.FodotProcedure;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
-import fodot.objects.sentence.formulas.connectors.FodotArithmeticConnector;
 import fodot.objects.sentence.formulas.connectors.FodotFormulaConnector;
 import fodot.objects.sentence.formulas.connectors.FodotTermConnector;
 import fodot.objects.sentence.formulas.quantifiers.FodotQuantifier;
 import fodot.objects.sentence.formulas.unary.FodotNot;
+import fodot.objects.sentence.terms.FodotArithmeticConnector;
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.sentence.terms.FodotFunction;
 import fodot.objects.sentence.terms.FodotVariable;
@@ -105,17 +106,17 @@ public class FodotPartBuilder {
 	public static FodotTermConnector createLessThan(IFodotTerm term1, IFodotTerm term2) {
 		return new FodotTermConnector(term1, LESS_THAN, term2);
 	}
-	
+
 	public static IFodotFormula createLessThanOrEqualTo(IFodotTerm term1, IFodotTerm term2) {
 		return createOr(createLessThan(term1, term2), createEquals(term1, term2));
 	} 
-	
+
 	private static final String GREATER_THAN = ">";
 
 	public static FodotTermConnector createGreaterThan(IFodotTerm term1, IFodotTerm term2) {
 		return new FodotTermConnector(term1, GREATER_THAN, term2);
 	}
-	
+
 	public static IFodotFormula createGreaterThanOrEqualTo(IFodotTerm term1, IFodotTerm term2) {
 		return createOr(createGreaterThan(term1, term2), createEquals(term1, term2));
 	} 
@@ -126,51 +127,100 @@ public class FodotPartBuilder {
 	public static FodotArithmeticConnector createAddition(IFodotTerm term1, IFodotTerm term2) {
 		return new FodotArithmeticConnector(term1, ADDITION_SYMBOL, term2);
 	}
-	
+
 	private static final String SUBTRACTION_SYMBOL = "-";
 
 	public static FodotArithmeticConnector createSubtraction(IFodotTerm term1, IFodotTerm term2) {
 		return new FodotArithmeticConnector(term1, SUBTRACTION_SYMBOL, term2);
 	}
-	
+
 	private static final String MULTIPLICATION_SYMBOL = "*";
 
 	public static FodotArithmeticConnector createMultiplication(IFodotTerm term1, IFodotTerm term2) {
 		return new FodotArithmeticConnector(term1, MULTIPLICATION_SYMBOL, term2);
 	}
-	
+
 	private static final String DIVISION_SYMBOL = "/";
 
 	public static FodotArithmeticConnector createDivision(IFodotTerm term1, IFodotTerm term2) {
 		return new FodotArithmeticConnector(term1, DIVISION_SYMBOL, term2);
 	}
-	
+
 	private static final String MODULO_SYMBOL = "%";
 
 	public static FodotArithmeticConnector createModulo(IFodotTerm term1, IFodotTerm term2) {
 		return new FodotArithmeticConnector(term1, MODULO_SYMBOL, term2);
 	}
-	
-	//Other arithmetics:
-	private static final FodotPredicateDeclaration SUCCESSOR_INT =
-			createPredicateDeclaration("SUCC", Arrays.asList(new FodotType[]{getIntegerType()}));
-	
-	public static FodotPredicate createSuccessor(IFodotTerm term) {
-//		if (term.getType().equals(getIntegerType())) {
-			return createPredicate(SUCCESSOR_INT, term);
-//		} else if (term.getType().equals(getIntegerType())) {
-//			return createPredicate(SUCCESSOR_NAT, term);
-//		} else {
-//			//TODO: misschien algemeen systeem voor successor, predessor, max, min etc?
-//			throw new IllegalArgumentException("Unsupported Successorpredicate!");
-//		}
+
+	//Other arithmetics (IDP manual p8)
+	private static final Map<FodotType, FodotFunctionDeclaration> SUCCESSOR_DECLARATIONS = new HashMap<FodotType, FodotFunctionDeclaration>(); 
+
+	public static FodotFunction createSuccessor(IFodotTerm term) {
+		FodotType type = term.getType();
+		FodotFunctionDeclaration decl;
+		if (SUCCESSOR_DECLARATIONS.containsKey(type)) {
+			decl = SUCCESSOR_DECLARATIONS.get(type);
+		} else {
+			decl = createCompleteFunctionDeclaration("SUCC", Arrays.asList(type), type);
+			SUCCESSOR_DECLARATIONS.put(type, decl);
+		}
+		return createFunction(decl, term);
 	}
-	
-	private static final FodotPredicateDeclaration SUCCESSOR_NAT =
-			createPredicateDeclaration("SUCC", Arrays.asList(new FodotType[]{getNaturalNumberType()}));
-	
-	
-	
+
+	private static final Map<FodotType, FodotFunctionDeclaration> PREDECESSOR_DECLARATIONS = new HashMap<FodotType, FodotFunctionDeclaration>(); 
+
+	public static FodotFunction createPredecessor(IFodotTerm term) {
+		FodotType type = term.getType();
+		FodotFunctionDeclaration decl;
+		if (PREDECESSOR_DECLARATIONS.containsKey(type)) {
+			decl = PREDECESSOR_DECLARATIONS.get(type);
+		} else {
+			decl = createCompleteFunctionDeclaration("PRED", Arrays.asList(type), type);
+			PREDECESSOR_DECLARATIONS.put(type, decl);
+		}
+		return createFunction(decl, term);
+	}
+
+	private static final Map<FodotType, FodotFunctionDeclaration> MINIMUM_DECLARATIONS = new HashMap<FodotType, FodotFunctionDeclaration>(); 
+
+	public static FodotFunction createMinium(FodotType type) {
+		FodotFunctionDeclaration decl;
+		if (MINIMUM_DECLARATIONS.containsKey(type)) {
+			decl = MINIMUM_DECLARATIONS.get(type);
+		} else {
+			decl = createCompleteFunctionDeclaration("MIN", Arrays.asList(type), type);
+			MINIMUM_DECLARATIONS.put(type, decl);
+		}
+		return createFunction(decl);
+	}
+
+	private static final Map<FodotType, FodotFunctionDeclaration> MAXIMUM_DECLARATIONS = new HashMap<FodotType, FodotFunctionDeclaration>(); 
+
+	public static FodotFunction createMaximum(FodotType type) {
+		FodotFunctionDeclaration decl;
+		if (MAXIMUM_DECLARATIONS.containsKey(type)) {
+			decl = MAXIMUM_DECLARATIONS.get(type);
+		} else {
+			decl = createCompleteFunctionDeclaration("MAX", Arrays.asList(type), type);
+			MAXIMUM_DECLARATIONS.put(type, decl);
+		}
+		return createFunction(decl);
+	}
+
+	private static final FodotFunctionDeclaration ABSOLUTE_VALUE_DECLARATION =
+			createCompleteFunctionDeclaration("abs", Arrays.asList(getIntegerType()), getIntegerType());
+
+	public static FodotFunction createAbsoluteValue(IFodotTerm term) {
+		return createFunction(ABSOLUTE_VALUE_DECLARATION, term);
+	}
+
+	private static final FodotFunctionDeclaration NEGATE_INTEGER_DECLARATION =
+			createCompleteFunctionDeclaration("-", Arrays.asList(getIntegerType()), getIntegerType());
+
+	public static FodotFunction createNegateInteger(IFodotTerm term) {
+		return createFunction(NEGATE_INTEGER_DECLARATION, term);
+	}
+
 	//QUANTIFIERS	
 
 	//Lil' helper
@@ -248,11 +298,11 @@ public class FodotPartBuilder {
 	public static FodotConstant createNaturalNumber(int value) {
 		return createConstant(Integer.toString(value), getNaturalNumberType());
 	}
-	
+
 	public static FodotConstant createInteger(int value) {
 		return createConstant(Integer.toString(value), getIntegerType());
 	}
-	
+
 	public static FodotVariable createVariable(String name, FodotType type) {
 		return new FodotVariable(name, type);
 	}
@@ -319,8 +369,8 @@ public class FodotPartBuilder {
 			FodotTypeDeclaration type, FodotConstant head, FodotConstant last) {
 		return new FodotNumericalTypeRangeEnumeration(type.getType(), head, last);
 	}
-	
-	
+
+
 	//INDUCTIVE DEFINITIONS
 
 	public static FodotInductiveDefinitionBlock createInductiveDefinition(List<FodotSentence> sentences) {
@@ -360,7 +410,16 @@ public class FodotPartBuilder {
 	}
 
 	public static FodotFunctionDeclaration createCompleteFunctionDeclaration(String name, FodotType returnType) {
-		return createCompleteFunctionDeclaration(name,null, returnType);
+		return createCompleteFunctionDeclaration(name, null, returnType);
+	}
+
+	//If "PartialFunction" isn't specified, assume that it is Complete
+	public static FodotFunctionDeclaration createFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType) {
+		return createFunctionDeclaration(name, argumentTypes, returnType, false);
+	}
+
+	public static FodotFunctionDeclaration createFunctionDeclaration(String name, FodotType returnType) {
+		return createCompleteFunctionDeclaration(name, null, returnType);
 	}
 
 	public static FodotPredicateDeclaration createPredicateDeclaration(String name, List<FodotType> argumentTypes) {
@@ -403,21 +462,21 @@ public class FodotPartBuilder {
 	public static FodotType createType(String name, Set<FodotConstant> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
 		return new FodotType(name, domain, supertypes, subtypes);
 	}
-	
+
 	public static FodotType createType(String name, Set<FodotConstant> domain, Set<FodotType> supertypes) {
 		return createType(name, domain, supertypes, null);
 	}
-	
+
 	public static FodotType createType(String name, FodotType supertype) {
 		Set<FodotType> supertypes = new HashSet<FodotType>();
 		supertypes.add(supertype);
 		return createType(name, null, supertypes, null);
 	}
-	
+
 	public static FodotType createType(String name, Set<FodotConstant> domain) {
 		return createType(name, domain, null, null);
 	}
-	
+
 	public static FodotType createType(String name) {
 		return new FodotType(name);
 	}
@@ -425,13 +484,18 @@ public class FodotPartBuilder {
 	public static FodotType getNaturalNumberType() {
 		return FodotType.NATURAL_NUMBER;
 	}
-	
+
 	public static FodotType getIntegerType() {
 		return FodotType.INTEGER;
 	}
-	
+
+	@Deprecated
 	public static FodotType getPlaceHolderType() { //moon
 		return FodotType.getPlaceHolderType();
+	}
+	
+	public static FodotType createPlaceHolderType() {
+		return FodotType.createPlaceHolderType();
 	}
 
 	// == FODOT ESSENTIALS ==

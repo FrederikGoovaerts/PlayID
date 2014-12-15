@@ -37,7 +37,7 @@ public class FodotConstant implements IFodotTerm {
 	}
 
 	public FodotType getType() {
-		return getType();
+		return type;
 	}
 	//FODOT SENTENCE ELEMENT
 	@Override
