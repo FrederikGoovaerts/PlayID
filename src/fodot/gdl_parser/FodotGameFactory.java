@@ -92,7 +92,7 @@ public class FodotGameFactory {
         typeList2.add(source.getTimeType());
         this.terminalTimePredicateDeclaration = createPredicateDeclaration("terminalTime", typeList2);
 
-        this.scoreTypeDeclaration = createTypeDeclaration(source.getScoreType(), getNaturalNumberType());
+        this.scoreTypeDeclaration = createTypeDeclaration(source.getScoreType());
 
         List<FodotType> playerList = new ArrayList<>();
         playerList.add(source.getPlayerType());
@@ -103,8 +103,6 @@ public class FodotGameFactory {
     private FodotVocabulary buildVocabulary() {
         FodotVocabulary toReturn = getDefaultVocabulary();
 
-        //TODO: rest
-
         /**
          * nodig: alle roles
          * resultaat:
@@ -113,8 +111,7 @@ public class FodotGameFactory {
 
         toReturn.addType(
                 createTypeDeclaration(
-                        source.getPlayerType(),
-                        this.source.getRoles()
+                        source.getPlayerType()
                 )
         );
 

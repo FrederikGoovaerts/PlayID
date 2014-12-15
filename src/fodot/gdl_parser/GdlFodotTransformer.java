@@ -43,6 +43,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         this.playerType = new FodotType("Player");
         this.actionType = new FodotType("Action");
         this.scoreType = new FodotType("Score");
+        scoreType.addSupertype(getNaturalNumberType());
     }
 
     public FodotType getTimeType(){
@@ -67,23 +68,19 @@ public class GdlFodotTransformer implements GdlTransformer{
      * Roles
      */
 
-    private Set<FodotConstant> roles;
-
-    public Set<FodotConstant> getRoles() {
-        return new HashSet<>(roles);
-    }
+    private FodotConstant ownRole;
 
     private void addRole(FodotConstant role){
         if(role == null)
             throw new IllegalArgumentException();
-        roles.add(role);
+        playerType.addDomainElement(role);
     }
 
     public FodotConstant getOwnRole() {
-        if (roles == null || roles.isEmpty()) {
+        if (ownRole == null) {
             throw new IllegalStateException("No roles present in this class!");
         } else {
-            return roles.iterator().next();
+            return ownRole;
         }
     }
 
@@ -253,7 +250,6 @@ public class GdlFodotTransformer implements GdlTransformer{
      **************************************************************************/
 
     public void cleanAndInitializeBuilder(){
-        this.roles = new HashSet<>();
         this.fluentPredicates = new HashMap<>();
         this.staticPredicates = new HashMap<>();
         this.constants = new HashSet<>();
