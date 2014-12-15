@@ -45,7 +45,7 @@ public class FodotNumericalTypeRangeEnumeration extends FodotEnumeration {
 
 	@Override
 	public String toCode() {
-		return getType().getTypeName()
+		return getType().getName()
 				+ " = "
 				+ CollectionUtil.toDomain(headValue.toCode(),lastValue.toCode());
 	}

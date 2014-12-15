@@ -33,7 +33,7 @@ public class FodotConstant implements IFodotTerm {
 		}
 		this.type = type;
 		if (type.hasDeclaration()) {
-			this.type.getDeclaration().addDomainElement(this);
+			this.type.addDomainElement(this);
 		}
 	}
 

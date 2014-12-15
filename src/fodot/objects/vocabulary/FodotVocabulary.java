@@ -48,8 +48,8 @@ public class FodotVocabulary implements IFodotElement {
 	public void addType(FodotTypeDeclaration type) {
 		if (containsType(type))
 			return;
-		if (containsTypeWithName(type.getType().getTypeName()))
-			throw new RuntimeException("Vocabulary " + this + " already contains a type declaration with name " + type.getType().getTypeName());
+		if (containsTypeWithName(type.getType().getName()))
+			throw new RuntimeException("Vocabulary " + this + " already contains a type declaration with name " + type.getType().getName());
 		types.add(type);
 	}
 
@@ -59,7 +59,7 @@ public class FodotVocabulary implements IFodotElement {
 
 	public boolean containsTypeWithName(String name) {
 		for (FodotTypeDeclaration type : types) {
-			if (type.getType().getTypeName() == name) {
+			if (type.getType().getName() == name) {
 				return true;
 			}
 		}

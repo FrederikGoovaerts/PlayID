@@ -45,7 +45,7 @@ public class FodotTypeEnumeration extends FodotEnumeration {
 
 	@Override
 	public String toCode() {
-		return getType().getTypeName() + " = " + CollectionUtil.toDomain(CollectionUtil.toCode(getValues()));
+		return getType().getName() + " = " + CollectionUtil.toDomain(CollectionUtil.toCode(getValues()));
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public class FodotFunctionDeclaration extends FodotArgumentListDeclaration {
 	@Override
 	public String toCode() {
 		return (isPartial() ? "partial " : "") + getName() +
-				CollectionUtil.toCoupleAsCode(getArgumentTypes()) + " : " + getReturnType().getTypeName();
+				CollectionUtil.toCoupleAsCode(getArgumentTypes()) + " : " + getReturnType().getName();
 	}
 
 	@Override
