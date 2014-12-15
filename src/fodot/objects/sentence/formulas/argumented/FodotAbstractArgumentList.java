@@ -5,10 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fodot.exceptions.IllegalAmountOfArguments;
+import fodot.exceptions.IllegalTypeException;
 import fodot.objects.sentence.IFodotSentenceElement;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
+import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.CollectionUtil;
 
 public abstract class FodotAbstractArgumentList implements IFodotSentenceElement {
@@ -48,6 +51,20 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	
 	private void setArguments(List<IFodotTerm> args) {
 		this.arguments = (args == null ? new ArrayList<IFodotTerm>() : args);
+
+		
+		List<FodotType> argumentTypes = getDeclaration().getArgumentTypes();
+		//Check amount of arguments
+		if (arguments.size() != argumentTypes.size()) {
+			throw new IllegalAmountOfArguments(arguments.size(), argumentTypes.size());
+		}
+		
+		//Check types of arguments
+		for (int i = 0; i < arguments.size(); i++) {
+			if (!arguments.get(i).getType().equals(argumentTypes.get(i))) {
+				throw new IllegalTypeException("Argument " + i + " in " + getName(), arguments.get(i).getType(), argumentTypes.get(i));
+			}
+		}
 	}
 	
 	//Sentence element stuff
