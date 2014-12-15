@@ -57,7 +57,7 @@ public class FodotFunctionEnumeration extends FodotEnumeration {
 		builder.append(declaration.getName());
 		builder.append(" = {");
 		for (FodotConstant[] key : getValues().keySet()) {
-			builder.append(CollectionUtil.toCoupleAsCode(Arrays.asList(key)) + " -> " + values.get(key) + "; \n");
+			builder.append(CollectionUtil.toCoupleAsCode(Arrays.asList(key)) + " -> " + values.get(key).toCode() + "; \n");
 		}
 		builder.append("}");
 		return builder.toString();
