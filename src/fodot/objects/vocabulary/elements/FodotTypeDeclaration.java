@@ -1,12 +1,6 @@
 package fodot.objects.vocabulary.elements;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import fodot.objects.IFodotElement;
-import fodot.objects.sentence.terms.FodotConstant;
 import fodot.util.CollectionUtil;
 
 public class FodotTypeDeclaration implements IFodotElement {

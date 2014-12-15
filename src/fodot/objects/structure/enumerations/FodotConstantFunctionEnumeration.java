@@ -2,11 +2,6 @@ package fodot.objects.structure.enumerations;
 
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
-import fodot.util.CollectionUtil;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FodotConstantFunctionEnumeration extends FodotEnumeration {
 	private FodotFunctionDeclaration declaration;

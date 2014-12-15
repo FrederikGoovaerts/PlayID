@@ -4,9 +4,6 @@ import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.CollectionUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class FodotNumericalTypeRangeEnumeration extends FodotEnumeration {
 	private FodotType type;
 	private FodotConstant headValue;
