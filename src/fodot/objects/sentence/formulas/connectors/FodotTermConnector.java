@@ -24,7 +24,7 @@ public class FodotTermConnector extends FodotSentenceElementConnector<IFodotTerm
 	
 	/* VALID CONNECTORS */
 	private static final List<String> VALID_CONNECTORS =
-			Arrays.asList(new String[]{"=", "~="});
+			Arrays.asList(new String[]{"=", "~=", "<", ">"});
 	
 	public boolean isValidConnector(String connector) {
 		return VALID_CONNECTORS.contains(connector);

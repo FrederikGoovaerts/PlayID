@@ -100,6 +100,26 @@ public class FodotPartBuilder {
 		return new FodotTermConnector(term1, DISTINCT_SYMBOL, term2);
 	}
 
+	private static final String LESS_THAN = "<";
+
+	public static FodotTermConnector createLessThan(IFodotTerm term1, IFodotTerm term2) {
+		return new FodotTermConnector(term1, LESS_THAN, term2);
+	}
+	
+	public static IFodotFormula createLessThanOrEqualTo(IFodotTerm term1, IFodotTerm term2) {
+		return createOr(createLessThan(term1, term2), createEquals(term1, term2));
+	} 
+	
+	private static final String GREATER_THAN = ">";
+
+	public static FodotTermConnector createGreaterThan(IFodotTerm term1, IFodotTerm term2) {
+		return new FodotTermConnector(term1, GREATER_THAN, term2);
+	}
+	
+	public static IFodotFormula createGreaterThanOrEqualTo(IFodotTerm term1, IFodotTerm term2) {
+		return createOr(createGreaterThan(term1, term2), createEquals(term1, term2));
+	} 
+
 	//ARITHMETIC CONNECTORS
 	private static final String ADDITION_SYMBOL = "+";
 
