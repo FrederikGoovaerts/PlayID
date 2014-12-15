@@ -3,7 +3,10 @@ package fodot.util;
 import fodot.helpers.FodotPartBuilder;
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotVariable;
+import fodot.objects.vocabulary.elements.FodotType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class FormulaUtil {
@@ -20,5 +23,13 @@ public class FormulaUtil {
 			newFormula = FodotPartBuilder.createForAll(freeVars, newFormula);
 		}
 		return newFormula;
+	}
+	
+	public static List<FodotType> getPlaceHolderList(FodotType type, int amount) {
+		List<FodotType> result = new ArrayList<>();
+		for (int i = 0; i < amount; i++) {
+			result.add(type);
+		}
+		return result;
 	}
 }

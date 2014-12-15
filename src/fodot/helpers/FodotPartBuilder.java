@@ -489,8 +489,13 @@ public class FodotPartBuilder {
 		return FodotType.INTEGER;
 	}
 
+	@Deprecated
 	public static FodotType getPlaceHolderType() { //moon
 		return FodotType.getPlaceHolderType();
+	}
+	
+	public static FodotType createPlaceHolderType() {
+		return FodotType.createPlaceHolderType();
 	}
 
 	// == FODOT ESSENTIALS ==

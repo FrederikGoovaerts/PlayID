@@ -19,7 +19,7 @@ public class FodotType implements IFodotElement {
 
 	public static final FodotType NATURAL_NUMBER = new FodotType("nat");
 	public static final FodotType INTEGER = new FodotType("int", null, null, new HashSet<FodotType>(Arrays.asList(new FodotType[]{NATURAL_NUMBER})));	
-	private static final FodotType moon = new FodotType("Unfilled", null, new HashSet<FodotType>(Arrays.asList(new FodotType[]{INTEGER})), null);
+	private static final FodotType moon = createPlaceHolderType();
 
 	private FodotTypeDeclaration declaration;
 	private String name;
@@ -76,11 +76,22 @@ public class FodotType implements IFodotElement {
 	 * for all types in predicates and
 	 * functions until they can be filled
 	 */
-
+	/*This is a static variable, meaning that if we build two idp files,
+	 * this variable would contain all variables of the two programs,
+	 * which is not the intended behaviour.
+	 * 
+	 * Please create your own placeholder type by calling the createPlaceHolderType()
+	 * and cache the result for later use
+	 */
+	@Deprecated 
 	public static FodotType getPlaceHolderType() {
 		return moon;
 	}
 
+	/*
+	 * Please use the FormulaUtil createTypeList(type, amount) instead.
+	 */
+	@Deprecated
 	public static List<FodotType> getPlaceHolderList(int amount) {
 		List<FodotType> result = new ArrayList<>();
 		for (int i = 0; i < amount; i++) {
@@ -89,6 +100,10 @@ public class FodotType implements IFodotElement {
 		return result;
 	}
 
+	public static FodotType createPlaceHolderType() {
+		return new FodotType("Unfilled", null, new HashSet<FodotType>(Arrays.asList(new FodotType[]{INTEGER})), null);
+	}
+	
 	//DOMAIN, SUBCLASS, SUPERCLASS STUFF
 	/*************************************
 	 * Subclasses
