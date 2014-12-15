@@ -68,6 +68,10 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
             throw new IllegalArgumentException("Can't replace a legal type!");
         this.argumentTypes.set(i, t);
     }
+    
+    public boolean hasArguments() {
+    	return !argumentTypes.isEmpty();
+    }
 
     /************************************/
     
