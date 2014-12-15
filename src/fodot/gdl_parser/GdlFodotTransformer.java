@@ -2,8 +2,10 @@ package fodot.gdl_parser;
 
 import fodot.objects.Fodot;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
+import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+import static fodot.helpers.FodotPartBuilder.*;
 
 import org.ggp.base.util.Pair;
 import org.ggp.base.util.gdl.grammar.*;
@@ -28,19 +30,65 @@ public class GdlFodotTransformer implements GdlTransformer{
      **************************************************************************/
 
     /*************************************
+     * Default Types
+     */
+
+    private FodotType timeType;
+    private FodotType playerType;
+    private FodotType actionType;
+    private FodotType scoreType;
+
+    private void buildDefaultTypes(){
+        this.timeType = new FodotType("Time");
+        this.playerType = new FodotType("Player");
+        this.actionType = new FodotType("Action");
+        this.scoreType = new FodotType("Score");
+    }
+
+    public FodotType getTimeType(){
+        return this.timeType;
+    }
+
+    public FodotType getPlayerType() {
+        return playerType;
+    }
+
+    public FodotType getActionType() {
+        return actionType;
+    }
+
+    public FodotType getScoreType() {
+        return scoreType;
+    }
+
+    /*** End of Default Types subsection ***/
+
+    /*************************************
      * Roles
      */
 
-    private Set<String> roles;
+    private Set<FodotConstant> roles;
 
-    public Set<String> getRoles() {
-        return new TreeSet<>(roles);
+    public Set<FodotConstant> getRoles() {
+        return new HashSet<>(roles);
     }
 
-    private void addRole(String roleName){
-        if(roleName == null)
+    private void addRole(FodotConstant role){
+        if(role == null)
             throw new IllegalArgumentException();
-        roles.add(roleName);
+        roles.add(role);
+    }
+
+    public FodotConstant getOwnRole() {
+        if (roles == null || roles.isEmpty()) {
+            throw new IllegalStateException("No roles present in this class!");
+        } else {
+            return roles.iterator().next();
+        }
+    }
+
+    private FodotConstant convertRawRole(String rawName){
+        return createConstant("p_" + rawName, this.getPlayerType());
     }
 
     /*** End of Roles subsection ***/
@@ -56,10 +104,6 @@ public class GdlFodotTransformer implements GdlTransformer{
     private  boolean isPredicateRegistered(String predName){
         return (isFluentPredicateRegistered(predName)
                 ||isStaticPredicateRegistered(predName));
-    }
-
-    private static String convertRawRole(String rawName){
-        return "p_" + rawName;
     }
 
     /*************************************
@@ -209,12 +253,13 @@ public class GdlFodotTransformer implements GdlTransformer{
      **************************************************************************/
 
     public void cleanAndInitializeBuilder(){
-        this.roles = new TreeSet<>();
+        this.roles = new HashSet<>();
         this.fluentPredicates = new HashMap<>();
         this.staticPredicates = new HashMap<>();
-        this.constants = new TreeSet<>();
+        this.constants = new HashSet<>();
         this.initialValues = new HashMap<>();
         this.staticValues = new HashMap<>();
+        this.buildDefaultTypes();
     }
 
     @Override
@@ -249,7 +294,7 @@ public class GdlFodotTransformer implements GdlTransformer{
             initValues[i] = convertRawConstantName(constant);
         }
 
-        this.addInitialValue(fodotPredicate,initValues);
+        this.addInitialValue(fodotPredicate, initValues);
     }
 
     @Override

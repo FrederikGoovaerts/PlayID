@@ -4,6 +4,7 @@ import fodot.objects.Fodot;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedure;
 import fodot.objects.procedure.FodotProcedures;
+import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
@@ -46,11 +47,6 @@ public class FodotGameFactory {
 
     private GdlFodotTransformer source;
 
-    private FodotType timeType;
-    private FodotType playerType;
-    private FodotType actionType;
-    private FodotType scoreType;
-
     private FodotFunctionDeclaration startFunctionDeclaration;
     private FodotFunctionDeclaration nextFunctionDeclaration;
     private FodotPredicateDeclaration doPredicateDeclaration;
@@ -78,34 +74,30 @@ public class FodotGameFactory {
     }
 
     private void buildDefaultVocItems() {
-        this.timeType = new FodotType("Time");
-        this.playerType = new FodotType("Player");
-        this.actionType = new FodotType("Action");
-        this.scoreType = new FodotType("Score");
 
-        this.startFunctionDeclaration = createCompleteFunctionDeclaration("Start", this.timeType);
+        this.startFunctionDeclaration = createCompleteFunctionDeclaration("Start", source.getTimeType());
 
         List<FodotType> timeList = new ArrayList<>();
-        timeList.add(this.timeType);
+        timeList.add(source.getTimeType());
         this.nextFunctionDeclaration = createPartialFunctionDeclaration("Next", timeList,
-                this.timeType);
+                source.getTimeType());
 
         List<FodotType> typeList = new ArrayList<>();
-        typeList.add(this.timeType);
-        typeList.add(this.playerType);
-        typeList.add(this.actionType);
+        typeList.add(source.getTimeType());
+        typeList.add(source.getPlayerType());
+        typeList.add(source.getActionType());
         this.doPredicateDeclaration = createPredicateDeclaration("do", typeList);
 
         ArrayList<FodotType> typeList2 = new ArrayList<>();
-        typeList2.add(this.timeType);
+        typeList2.add(source.getTimeType());
         this.terminalTimePredicateDeclaration = createPredicateDeclaration("terminalTime", typeList2);
 
-        this.scoreTypeDeclaration = createTypeDeclaration(this.scoreType, getNaturalNumberType());
+        this.scoreTypeDeclaration = createTypeDeclaration(source.getScoreType(), getNaturalNumberType());
 
         List<FodotType> playerList = new ArrayList<>();
-        playerList.add(this.playerType);
+        playerList.add(source.getPlayerType());
         scoreFunctionDeclaration = createCompleteFunctionDeclaration("Score", playerList,
-                this.scoreType);
+                source.getScoreType());
     }
 
     private FodotVocabulary buildVocabulary() {
@@ -118,6 +110,13 @@ public class FodotGameFactory {
          * resultaat:
          * type Player constructed from {*alle roles*}
          */
+
+        toReturn.addType(
+                createTypeDeclaration(
+                        source.getPlayerType(),
+                        this.source.getRoles()
+                )
+        );
 
 
         /**
@@ -168,7 +167,16 @@ public class FodotGameFactory {
          * nodig: alle causations van elk fluent predicaat
          * resultaat voor elk predicaat:
          * {
-         *     !(var [Unfilled])*aantal argumenten keer* t [Time]: C_on(t,*vars*) <- *causation*).
+         *     !(var [Unfilled])*aantal argumenten keer* t [Time]: C_*pred*(t,*vars*) <- *causation*).
+         *     *dit voor elke causation van hetzelfde predicaat*
+         * }
+         */
+
+        /**
+         * nodig: alle causations van elk static predicaat
+         * resultaat voor elk predicaat:
+         * {
+         *     !(var [Unfilled])*aantal argumenten keer*: *pred*(*vars*) <- *causation*).
          *     *dit voor elke causation van hetzelfde predicaat*
          * }
          */
@@ -209,8 +217,16 @@ public class FodotGameFactory {
         /**
          * nodig: *naam* van onze speler
          * resultaat:
-         * Score={*naam*(),100}
+         * Score={*naam*()->100}
          */
+        Map<FodotConstant[],FodotConstant> desiredResult = new HashMap<>();
+        FodotConstant[] ownRole = {source.getOwnRole()};
+        desiredResult.put(ownRole,createConstant("100", getNaturalNumberType()));
+        toReturn.addEnumeration(
+                createFunctionEnumeration(
+                        this.scoreFunctionDeclaration, desiredResult
+                )
+        );
 
         /**
          * nodig: Initiele *waarden* voor elk fluent *predicaat*
@@ -231,7 +247,6 @@ public class FodotGameFactory {
     private FodotProcedures buildProcedures() {
         FodotProcedures toReturn = getDefaultProcedures();
 
-        //TODO: rest
         return toReturn;
     }
 
@@ -243,7 +258,7 @@ public class FodotGameFactory {
         FodotLTCVocabulary defaultVoc = createLTCVocabulary();
 
         // type Time isa nat
-        defaultVoc.addType(createTypeDeclaration(this.timeType, getNaturalNumberType()));
+        defaultVoc.addType(createTypeDeclaration(source.getTimeType(), getNaturalNumberType()));
 
         // Start: Time
         defaultVoc.addFunction(startFunctionDeclaration);
@@ -271,10 +286,10 @@ public class FodotGameFactory {
         FodotTheory defaultTheory = createTheory(voc);
 
         //!a [Action] p [Player] t [Time]: do(t,p,a) => ~terminalTime(t) & (?t2 [Time]: Next(t) = t2).
-        FodotVariable a_Action = createVariable("a", this.actionType);
-        FodotVariable p_Player = createVariable("p", this.playerType);
-        FodotVariable t_Time = createVariable("t", this.timeType);
-        FodotVariable t2_Time = createVariable("t2",this.timeType);
+        FodotVariable a_Action = createVariable("a", source.getActionType());
+        FodotVariable p_Player = createVariable("p", source.getPlayerType());
+        FodotVariable t_Time = createVariable("t", source.getTimeType());
+        FodotVariable t2_Time = createVariable("t2",source.getTimeType());
         Set<FodotVariable> variables =
                 new HashSet<>(Arrays.asList(a_Action,p_Player,t_Time));
         variables.add(a_Action);
@@ -375,7 +390,7 @@ public class FodotGameFactory {
         //Time={0..Constant(timeLimit)}
         defaultStructure.addEnumeration(
                 createNumericalTypeRangeEnumeration(
-                        this.timeType,
+                        source.getTimeType(),
                         createInteger(0),
                         createInteger(this.timeLimit)
                 )
@@ -384,7 +399,7 @@ public class FodotGameFactory {
         //ScoreType={0..100}
         defaultStructure.addEnumeration(
                 createNumericalTypeRangeEnumeration(
-                        this.scoreType,
+                        source.getScoreType(),
                         createInteger(0),
                         createInteger(100)
                 )
