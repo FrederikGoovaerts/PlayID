@@ -1,5 +1,6 @@
 package fodot.gdl_parser;
 
+import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.Fodot;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.terms.FodotConstant;
@@ -28,6 +29,7 @@ public class GdlFodotTransformer implements GdlTransformer{
     /***************************************************************************
      * Class Properties
      **************************************************************************/
+
 
     /*************************************
      * Default Types
@@ -99,101 +101,54 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     /*** End of Roles subsection ***/
 
+
+    /*************************************
+     * Predicate Pool
+     */
+
+    private LTCPool pool;
+
     private FodotPredicateDeclaration getPredicate(String predName){
-        if(!isPredicateRegistered(predName))
-            throw new IllegalArgumentException("Predicate not found!");
-        if(isFluentPredicateRegistered(predName))
-            return getFluentPredicate(predName);
-        return getStaticPredicate(predName);
+        return this.pool.getPredicate(predName);
     }
 
     private  boolean isPredicateRegistered(String predName){
-        return (isFluentPredicateRegistered(predName)
-                ||isStaticPredicateRegistered(predName));
-    }
-
-    /*************************************
-     * Fluent Predicates
-     */
-
-    private HashMap<String,FodotPredicateDeclaration> fluentPredicates;
-
-    public HashMap<String,FodotPredicateDeclaration> getFluentPredicates() {
-        return new HashMap<>(fluentPredicates);
-    }
-
-    private FodotPredicateDeclaration getFluentPredicate(String predName) {
-        if(!isFluentPredicateRegistered(predName))
-            throw new IllegalArgumentException();
-        return fluentPredicates.get(predName);
+        return pool.isPredicateRegistered(predName);
     }
 
     private boolean isFluentPredicateRegistered(String predName) {
-        return (fluentPredicates.containsKey(predName));
-    }
-
-    private void addFluentPredicate(FodotPredicateDeclaration pred){
-        if(pred == null)
-            throw new IllegalArgumentException();
-        fluentPredicates.put(pred.getName(), pred);
-    }
-
-    private void removeFluentPredicate(FodotPredicateDeclaration pred){
-        if(pred == null)
-            throw new IllegalArgumentException();
-        if(!fluentPredicates.containsKey(pred.getName()))
-            throw new IllegalArgumentException();
-        fluentPredicates.remove(pred.getName());
-    }
-
-
-    /*** End of Fluent Predicates subsection ***/
-
-    /*************************************
-     * Static Predicates
-     */
-
-    private HashMap<String,FodotPredicateDeclaration> staticPredicates;
-
-    public HashMap<String,FodotPredicateDeclaration> getStaticPredicates() {
-        return new HashMap<>(staticPredicates);
-    }
-
-    private FodotPredicateDeclaration getStaticPredicate(String predName) {
-        if(!isStaticPredicateRegistered(predName))
-            throw new IllegalArgumentException();
-        return staticPredicates.get(predName);
+        return pool.isFluentPredicateRegistered(predName);
     }
 
     private boolean isStaticPredicateRegistered(String predName) {
-        return (staticPredicates.containsKey(predName));
+        return pool.isStaticPredicateRegistered(predName);
+    }
+
+    private void addFluentPredicate(FodotPredicateDeclaration pred){
+        this.pool.addFluentPredicate(pred);
+    }
+
+    private void convertFluentPredicateToStatic(String pred) {
+        this.pool.convertFluentPredicateToStatic(pred);
     }
 
     private void addStaticPredicate(FodotPredicateDeclaration staticPred){
-        if(staticPred == null || fluentPredicates.containsKey(staticPred))
-            throw new IllegalArgumentException();
-        staticPredicates.put(staticPred.getName(), staticPred);
+        this.pool.addStaticPredicate(staticPred);
     }
 
-    private void convertFluentPredicateToStatic(FodotPredicateDeclaration pred) {
-        if (!fluentPredicates.containsKey(pred.getName()))
-            throw new IllegalArgumentException();
-        removeFluentPredicate(pred);
-        addStaticPredicate(pred);
-    }
 
-    /*** End of Static Predicates subsection ***/
+    /*** End of Predicate Pool subsection ***/
 
     /*************************************
      * Constants
      */
 
-    private void addConstant(FodotConstant constantName){
-        allType.addDomainElement(constantName);
+    private void addConstant(FodotConstant constant){
+        allType.addDomainElement(constant);
     }
 
-    private boolean isConstantRegistered(FodotConstant constantName){
-        return !allType.containsElement(constantName);
+    private boolean isConstantRegistered(FodotConstant constant){
+        return allType.containsElement(constant);
     }
 
     private FodotConstant convertRawConstantName(String rawName){
@@ -261,15 +216,14 @@ public class GdlFodotTransformer implements GdlTransformer{
      **************************************************************************/
 
     public void cleanAndInitializeBuilder(){
-        this.fluentPredicates = new HashMap<>();
-        this.staticPredicates = new HashMap<>();
+        this.pool = new LTCPool();
         this.initialValues = new HashMap<>();
         this.staticValues = new HashMap<>();
         this.buildDefaultTypes();
     }
 
     @Override
-    public Fodot builFodot() {
+    public Fodot buildFodot() {
         FodotGameFactory factory = new FodotGameFactory(this);
         return factory.createFodot();
     }
@@ -283,13 +237,12 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     @Override
     public void processInitRelation(GdlRelation relation) {
-        // Init: (init pred x1 .. xn)
+        // Init: (init (pred x1 .. xn))
 
         GdlSentence predicate = relation.getBody().get(0).toSentence();
-        processPredicate(predicate);
 
-        FodotPredicateDeclaration fodotPredicate =
-                this.getPredicate(predicate.getName().getValue());
+
+        FodotPredicateDeclaration fodotPredicate = processPredicate(predicate);
         int predArity = predicate.arity();
 
         FodotConstant[] initValues = new FodotConstant[predArity];
@@ -309,22 +262,21 @@ public class GdlFodotTransformer implements GdlTransformer{
         String predName = relation.getName().getValue();
         int predArity = relation.arity();
 
-        FodotPredicateDeclaration newPred;
+        FodotPredicateDeclaration pred;
 
         //If necessary, register predicate as static
         if (!isStaticPredicateRegistered(predName)) {
             if (isFluentPredicateRegistered(predName)){
-                convertFluentPredicateToStatic(getFluentPredicate(predName));
-                newPred = this.getPredicate(predName);
+                convertFluentPredicateToStatic(predName);
+                pred = this.getPredicate(predName);
             } else {
-
-                newPred = new FodotPredicateDeclaration(predName,
-                        FodotType.getSameTypeList(predArity,this.allType));
-                this.addStaticPredicate(newPred);
+                pred = new FodotPredicateDeclaration(predName,
+                        FodotType.getSameTypeList(predArity, this.allType));
+                this.addStaticPredicate(pred);
             }
         } else {
-            newPred = this.getPredicate(predName);
-            if(newPred.getAmountOfArgumentTypes() != predArity)
+            pred = this.getPredicate(predName);
+            if(pred.getAmountOfArgumentTypes() != predArity)
                 throw new IllegalStateException("Predicate differs in arity from before!");
         }
 
@@ -333,12 +285,17 @@ public class GdlFodotTransformer implements GdlTransformer{
         for (int i = 0; i < predArity; i++) {
             //PLS TRUST ME
             String constantName = relation.get(i).toSentence().getName().getValue();
-            staticValues[i] = convertRawConstantName(constantName);
+            FodotConstant newConstant = convertRawConstantName(constantName);
+            staticValues[i] = newConstant;
+            if(!isConstantRegistered(newConstant)) {
+                this.addConstant(newConstant);
+            }
         }
 
-        this.addStaticValue(newPred, staticValues);
+        this.addStaticValue(pred, staticValues);
 
     }
+
 
     @Override
     public void processNextRule(GdlRule rule) {
@@ -383,22 +340,24 @@ public class GdlFodotTransformer implements GdlTransformer{
         this.processPredicate(predTerm.toSentence());
     }
 
-    private void processPredicate(GdlSentence predSentence) {
-        //Needs a cast to function instead of conversion to sentence?
-        //This term is always a function
+    private FodotPredicateDeclaration processPredicate(GdlSentence predSentence) {
+        //Predicate: (pred x1 .. xn)
+
     	String predName = predSentence.getName().getValue();
         int amountOfArguments = predSentence.arity();
 
-        FodotPredicateDeclaration newPred;
+        FodotPredicateDeclaration pred;
 
         //If necessary, register predicate
         if(!isPredicateRegistered(predName)) {
-            newPred = new FodotPredicateDeclaration(predName,
-                    FodotType.getSameTypeList(amountOfArguments,allType));
-            this.addFluentPredicate(newPred);
+            pred = new FodotPredicateDeclaration(
+                    predName,
+                    FodotType.getSameTypeList(amountOfArguments, allType)
+            );
+            this.addFluentPredicate(pred);
         } else {
-            newPred = this.getPredicate(predName);
-            if(newPred.getAmountOfArgumentTypes() != amountOfArguments)
+            pred = this.getPredicate(predName);
+            if(pred.getAmountOfArgumentTypes() != amountOfArguments)
                 throw new IllegalStateException("Predicate differs in arity from before!");
         }
 
@@ -415,6 +374,8 @@ public class GdlFodotTransformer implements GdlTransformer{
                     addConstant(constantName);
         	}
 		}
+
+        return pred;
     }
 
 }

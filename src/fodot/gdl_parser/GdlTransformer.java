@@ -25,5 +25,5 @@ public interface GdlTransformer {
 
     void processDefinitionRule(Object rule);
 
-    Fodot builFodot();
+    Fodot buildFodot();
 }

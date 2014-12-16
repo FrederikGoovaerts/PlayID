@@ -1,11 +1,15 @@
 package fodot.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class NameUtil {
 	/* STATIC HELPERS */
 
 	// TODO: this is crudely fixed to allow for "-"
 	//private static String validNameRegex = "^[a-zA-Z$][a-zA-Z_$0-9]*$";
-	private static String validNameRegex = "^[a-zA-Z-$][a-zA-Z_$0-9]*$";
+	private static String validNameRegex = "^[a-zA-Z$][a-zA-Z_$0-9]*$";
+	private static List<String> allowedSpecialNames = Arrays.asList("-");
 	private static String alphanumericRegex = "[^a-zA-Z0-9]";
 
 	/**
@@ -17,7 +21,7 @@ public class NameUtil {
 		if (name == null || name.length() == 0) {
 			return false;
 		}
-		return name.matches(validNameRegex);
+		return (name.matches(validNameRegex)||allowedSpecialNames.contains("-"));
 	}
 
 	/**

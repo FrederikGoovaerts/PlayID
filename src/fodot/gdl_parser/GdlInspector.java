@@ -38,7 +38,7 @@ public class GdlInspector extends GdlVisitor{
     }
 
     public Fodot getFodot(){
-        return this.getTransformer().builFodot();
+        return this.getTransformer().buildFodot();
     }
 
     /***************************************************************************
