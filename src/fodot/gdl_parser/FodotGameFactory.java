@@ -1,5 +1,6 @@
 package fodot.gdl_parser;
 
+import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.Fodot;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedure;
@@ -30,14 +31,15 @@ public class FodotGameFactory {
      * Constructor
      **************************************************************************/
 
-    public FodotGameFactory(GdlFodotTransformer source) {
+    public FodotGameFactory(GdlFodotTransformer source, LTCPool pool) {
         this.source = source;
+        this.pool = pool;
         buildDefaultVocItems();
     }
 
 
-    public FodotGameFactory(GdlFodotTransformer source, int timeLimit) {
-        this(source);
+    public FodotGameFactory(GdlFodotTransformer source, LTCPool pool, int timeLimit) {
+        this(source, pool);
         this.timeLimit = timeLimit;
     }
 
@@ -46,6 +48,7 @@ public class FodotGameFactory {
      **************************************************************************/
 
     private GdlFodotTransformer source;
+    private LTCPool pool;
 
     private FodotFunctionDeclaration startFunctionDeclaration;
     private FodotFunctionDeclaration nextFunctionDeclaration;
@@ -135,6 +138,12 @@ public class FodotGameFactory {
          * I_pred(*standaard argumenten*)
          * C_pred(Time,*standaard argumenten*)
          */
+        for (FodotPredicateDeclaration declaration : this.pool.getFluentPredicates()) {
+            toReturn.addPredicate(this.pool.getTimedVerionOf(declaration));
+            toReturn.addPredicate(this.pool.getInitialOf(declaration));
+            toReturn.addPredicate(this.pool.getCauseOf(declaration));
+            toReturn.addPredicate(this.pool.getCauseNotOf(declaration));
+        }
 
         /**
          * nodig: alle static predicaten

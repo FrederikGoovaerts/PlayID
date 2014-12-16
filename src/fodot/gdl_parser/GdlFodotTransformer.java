@@ -108,6 +108,11 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     private LTCPool pool;
 
+    //Check wether an "external" pool is this object's pool
+    public boolean isInternalPool(LTCPool pool){
+        return this.pool == pool;
+    }
+
     private FodotPredicateDeclaration getPredicate(String predName){
         return this.pool.getPredicate(predName);
     }
@@ -224,7 +229,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     @Override
     public Fodot buildFodot() {
-        FodotGameFactory factory = new FodotGameFactory(this);
+        FodotGameFactory factory = new FodotGameFactory(this,pool);
         return factory.createFodot();
     }
 

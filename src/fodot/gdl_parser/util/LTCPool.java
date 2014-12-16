@@ -5,6 +5,7 @@ import fodot.objects.vocabulary.elements.FodotType;
 
 import static fodot.helpers.FodotPartBuilder.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,8 +58,8 @@ public class LTCPool {
 
     private HashMap<String,FodotPredicateDeclaration> fluentPredicates;
 
-    public HashMap<String,FodotPredicateDeclaration> getFluentPredicates() {
-        return new HashMap<>(fluentPredicates);
+    public List<FodotPredicateDeclaration> getFluentPredicates() {
+        return new ArrayList<>(fluentPredicates.values());
     }
 
     private FodotPredicateDeclaration getFluentPredicate(String predName) {
