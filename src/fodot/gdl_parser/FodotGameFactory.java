@@ -150,7 +150,6 @@ public class FodotGameFactory {
          * resultaat:
          * pred(*standaard argumenten*)
          */
-
         for (FodotPredicateDeclaration declaration : this.pool.getStaticPredicates()) {
             toReturn.addPredicate(declaration);
         }
@@ -161,22 +160,71 @@ public class FodotGameFactory {
          * type Action constructed from {*alle actionpredicaten*}
          */
 
+
         return toReturn;
     }
 
     private FodotTheory buildTheory(FodotVocabulary voc) {
         FodotTheory toReturn = getDefaultTheory(voc);
 
-        //TODO: rest
-
         /**
          * nodig: alle fluent predicaten
          * resultaat voor elk predicaat:
          * {
-         *     !(var [Unfilled])*aantal argumenten keer* : clear(Start,*vars*) <- I_clear(*vars*).
-         *     !(var [Unfilled])*aantal argumenten keer* t [Time]: clear(Next(t),*vars*) <- C_clear(t,*vars*).
+         *     !(var [Unfilled])*aantal argumenten keer* : *pred*(Start,*vars*) <- I_*pred*(*vars*).
+         *     !(var [Unfilled])*aantal argumenten keer* t [Time]: *pred*(Next(t),*vars*) <- C_*pred*(t,*vars*).
          * }
          */
+        for (FodotPredicateDeclaration declaration : pool.getFluentPredicates()) {
+            List<FodotSentence> definitions = new ArrayList<>();
+
+            int originalArity = declaration.getAmountOfArgumentTypes();
+
+            List<IFodotTerm> argList = new ArrayList<>();
+            List<IFodotTerm> iArgList = new ArrayList<>();
+            Set<FodotVariable> varSet = new HashSet<>();
+            argList.add(createFunction(this.startFunctionDeclaration));
+
+            for (int i = 0; i < originalArity; i++) {
+                FodotVariable newVar = createVariable(source.getAllType());
+                argList.add(newVar);
+                iArgList.add(newVar);
+                varSet.add(newVar);
+            }
+
+            definitions.add(createSentence(
+                    createForAll(
+                            varSet,
+                            createInductiveDefinitionConnector(
+                                    createPredicate(pool.getTimedVerionOf(declaration),argList),
+                                    createPredicate(pool.getInitialOf(declaration),iArgList)
+                                    )
+                    )
+            ));
+
+            argList = new ArrayList<>(iArgList);
+            List<IFodotTerm> cArgList = new ArrayList<>(iArgList);
+            varSet = new HashSet<>(varSet);
+
+            FodotVariable timeVar = createVariable(source.getTimeType());
+
+            argList.add(0,createFunction(this.nextFunctionDeclaration,timeVar));
+            cArgList.add(0,timeVar);
+            varSet.add(timeVar);
+
+            definitions.add(createSentence(
+                    createForAll(
+                            varSet,
+                            createInductiveDefinitionConnector(
+                                    createPredicate(pool.getTimedVerionOf(declaration),argList),
+                                    createPredicate(pool.getCauseOf(declaration),cArgList)
+                            )
+                    )
+            ));
+
+            toReturn.addInductiveDefinition(createInductiveDefinition(definitions));
+        }
+
 
         //Een van de moeilijkste
         /**
