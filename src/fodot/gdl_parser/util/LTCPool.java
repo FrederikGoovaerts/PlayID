@@ -1,8 +1,12 @@
 package fodot.gdl_parser.util;
 
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
+import fodot.objects.vocabulary.elements.FodotType;
+
+import static fodot.helpers.FodotPartBuilder.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -11,12 +15,24 @@ public class LTCPool {
 
     /***************************************************************************
      * Constructor
-     **************************************************************************/
+     *************************************************************************
+     * @param timeType*/
 
-    public LTCPool() {
+    public LTCPool(FodotType timeType) {
+        this.timeType = timeType;
         this.fluentPredicates = new HashMap<>();
         this.staticPredicates = new HashMap<>();
+        this.timedVersions = new HashMap<>();
+        this.initials = new HashMap<>();
+        this.causes = new HashMap<>();
+        this.causeNots = new HashMap<>();
     }
+
+    /***************************************************************************
+     * Class Properties
+     **************************************************************************/
+
+    private FodotType timeType;
 
     /***************************************************************************
      * Class Methods
@@ -66,11 +82,86 @@ public class LTCPool {
             throw new IllegalArgumentException();
         if(!fluentPredicates.containsKey(pred.getName()))
             throw new IllegalArgumentException();
+        this.removeLTCPredicatesOf(pred);
         fluentPredicates.remove(pred.getName());
     }
 
 
     /*** End of Fluent Predicates subsection ***/
+
+    /*************************************
+     * LTC predicates
+     */
+
+    private HashMap<FodotPredicateDeclaration,FodotPredicateDeclaration> timedVersions;
+
+    private HashMap<FodotPredicateDeclaration,FodotPredicateDeclaration> initials;
+
+    private HashMap<FodotPredicateDeclaration,FodotPredicateDeclaration> causes;
+
+    private HashMap<FodotPredicateDeclaration,FodotPredicateDeclaration> causeNots;
+
+    private void removeLTCPredicatesOf(FodotPredicateDeclaration pred) {
+        this.timedVersions.remove(pred);
+        this.initials.remove(pred);
+        this.causes.remove(pred);
+        this.causeNots.remove(pred);
+    }
+
+    public FodotPredicateDeclaration getTimedVerionOf(FodotPredicateDeclaration pred){
+        if(pred == null)
+            throw new IllegalArgumentException();
+        if(!fluentPredicates.containsKey(pred.getName()))
+            throw new IllegalArgumentException();
+        if(!timedVersions.containsKey(pred)) {
+            List<FodotType> timedList = pred.getArgumentTypes();
+            timedList.add(0, this.timeType);
+            timedVersions.put(pred, createPredicateDeclaration(pred.getName(), timedList));
+        }
+        return this.timedVersions.get(pred);
+    }
+
+    public FodotPredicateDeclaration getInitialOf(FodotPredicateDeclaration pred){
+        if(pred == null)
+            throw new IllegalArgumentException();
+        if(!fluentPredicates.containsKey(pred.getName()))
+            throw new IllegalArgumentException();
+        if(!initials.containsKey(pred)) {
+            initials.put(pred,createPredicateDeclaration("I_" + pred.getName(),
+                    pred.getArgumentTypes()));
+        }
+        return this.initials.get(pred);
+    }
+
+    public FodotPredicateDeclaration getCauseOf(FodotPredicateDeclaration pred){
+        if(pred == null)
+            throw new IllegalArgumentException();
+        if(!fluentPredicates.containsKey(pred.getName()))
+            throw new IllegalArgumentException();
+        if(!causes.containsKey(pred)) {
+            List<FodotType> timedList = pred.getArgumentTypes();
+            timedList.add(0, this.timeType);
+            causes.put(pred, createPredicateDeclaration("C_" + pred.getName(),
+                    timedList));
+        }
+        return this.causes.get(pred);
+    }
+
+    public FodotPredicateDeclaration getCauseNotOf(FodotPredicateDeclaration pred){
+        if(pred == null)
+            throw new IllegalArgumentException();
+        if(!fluentPredicates.containsKey(pred.getName()))
+            throw new IllegalArgumentException();
+        if(!causes.containsKey(pred)) {
+            List<FodotType> timedList = pred.getArgumentTypes();
+            timedList.add(0, this.timeType);
+            causes.put(pred, createPredicateDeclaration("Cn_" + pred.getName(),
+                    timedList));
+        }
+        return this.causes.get(pred);
+    }
+
+    /*** End of LTC predicates subsection ***/
 
     /*************************************
      * Static Predicates

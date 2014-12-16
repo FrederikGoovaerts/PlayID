@@ -216,10 +216,10 @@ public class GdlFodotTransformer implements GdlTransformer{
      **************************************************************************/
 
     public void cleanAndInitializeBuilder(){
-        this.pool = new LTCPool();
         this.initialValues = new HashMap<>();
         this.staticValues = new HashMap<>();
         this.buildDefaultTypes();
+        this.pool = new LTCPool(this.timeType);
     }
 
     @Override
