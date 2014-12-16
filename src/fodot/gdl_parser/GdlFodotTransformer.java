@@ -174,7 +174,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         if(initialValues.containsKey(pred)) {
             initialValues.get(pred).add(arguments);
         } else {
-            Set<FodotConstant[]> newSet = new HashSet<FodotConstant[]>();
+            Set<FodotConstant[]> newSet = new HashSet<>();
             newSet.add(arguments);
             initialValues.put(pred,newSet);
         }
@@ -197,7 +197,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         if(staticValues.containsKey(pred)) {
             staticValues.get(pred).add(arguments);
         } else {
-            Set<FodotConstant[]> newSet = new HashSet<FodotConstant[]>();
+            Set<FodotConstant[]> newSet = new HashSet<>();
             newSet.add(arguments);
             staticValues.put(pred,newSet);
         }
@@ -304,12 +304,12 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     @Override
     public void processNextRule(GdlRule rule) {
-
+        //TODO
     }
 
     @Override
     public void processLegalRule(GdlRule rule) {
-
+        //TODO
     }
 
     @Override
@@ -327,22 +327,18 @@ public class GdlFodotTransformer implements GdlTransformer{
         FodotPredicate[] conditions = new FodotPredicate[rule.arity()];
 
         for (GdlLiteral literal : rule.getBody()) {
-
+            //TODO
         }
     }
 
     @Override
     public void processTerminalRule(GdlRule rule) {
-
+        //TODO
     }
 
     @Override
     public void processDefinitionRule(Object rule) {
-
-    }
-
-    private void processPredicate(GdlTerm predTerm){
-        this.processPredicate(predTerm.toSentence());
+        //TODO
     }
 
     private FodotPredicateDeclaration processPredicate(GdlSentence predSentence) {

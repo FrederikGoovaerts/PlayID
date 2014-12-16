@@ -32,6 +32,8 @@ public class FodotGameFactory {
      **************************************************************************/
 
     public FodotGameFactory(GdlFodotTransformer source, LTCPool pool) {
+        if(!source.isInternalPool(pool))
+            throw new IllegalArgumentException("Pool and source are not a match.");
         this.source = source;
         this.pool = pool;
         buildDefaultVocItems();
@@ -72,8 +74,7 @@ public class FodotGameFactory {
         FodotProcedures proc = this.buildProcedures();
         FodotIncludeHolder incl = createIncludeHolder(createIncludeLTC());
 
-        Fodot toReturn = new Fodot(voc,theo,struc,proc,incl);
-        return toReturn;
+        return new Fodot(voc,theo,struc,proc,incl);
     }
 
     private void buildDefaultVocItems() {
@@ -235,6 +236,7 @@ public class FodotGameFactory {
          *     *dit voor elke causation van hetzelfde predicaat*
          * }
          */
+        //TODO
 
         /**
          * nodig: alle causations van elk static predicaat
@@ -244,12 +246,14 @@ public class FodotGameFactory {
          *     *dit voor elke causation van hetzelfde predicaat*
          * }
          */
+        //TODO
 
         /**
          * nodig: alle legals, als legal head en legal body
          * resultaat voor elk koppel:
          * !(var [Unfilled])*aantal argumenten keer* t [Time]: *legal head* => *legal body*
          */
+        //TODO
 
         /**
          * nodig: elke goal, als *player*, *score*, *voorwaarden*
@@ -259,6 +263,7 @@ public class FodotGameFactory {
          *    *en dit voor elk tripel*
          * }
          */
+        //TODO
 
         /**
          * nodig: elke terminal *voorwaarde*
@@ -268,6 +273,7 @@ public class FodotGameFactory {
          *     *voor elke voorwaarde*
          * }
          */
+        //TODO
 
         return toReturn;
     }
