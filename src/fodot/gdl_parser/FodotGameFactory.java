@@ -159,7 +159,7 @@ public class FodotGameFactory {
          * resultaat:
          * type Action constructed from {*alle actionpredicaten*}
          */
-
+        //TODO
 
         return toReturn;
     }
@@ -295,20 +295,34 @@ public class FodotGameFactory {
          * I_*predicaat* = {*waarden()*}
          * OPGEPAST: in de structure moet achter elke constante een ()
          */
+        Map<FodotPredicateDeclaration, Set<FodotConstant[]>> initMap
+                = this.source.getInitialValues();
+        for (FodotPredicateDeclaration declaration : initMap.keySet()) {
+            toReturn.addEnumeration(
+                    createPredicateEnumeration(this.pool.getInitialOf(declaration),
+                            new ArrayList<>(initMap.get(declaration)))
+            );
+        }
 
         /**
          * nodig: *waarden* voor elk statisch *predicaat*
          * resultaat:
          * *predicaat*={*waarden()*}
          */
+        Map<FodotPredicateDeclaration, Set<FodotConstant[]>> staticMap
+                = this.source.getStaticValues();
+        for (FodotPredicateDeclaration declaration : staticMap.keySet()) {
+            toReturn.addEnumeration(
+                    createPredicateEnumeration(declaration,
+                            new ArrayList<>(staticMap.get(declaration)))
+            );
+        }
 
         return toReturn;
     }
 
     private FodotProcedures buildProcedures() {
-        FodotProcedures toReturn = getDefaultProcedures();
-
-        return toReturn;
+        return getDefaultProcedures();
     }
 
     /***************************************************************************

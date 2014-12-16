@@ -7,10 +7,11 @@ public class NameUtil {
 	/* STATIC HELPERS */
 
 	// TODO: this is crudely fixed to allow for "-"
-	//private static String validNameRegex = "^[a-zA-Z$][a-zA-Z_$0-9]*$";
 	private static String validNameRegex = "^[a-zA-Z$][a-zA-Z_$0-9]*$";
 	private static List<String> allowedSpecialNames = Arrays.asList("-");
 	private static String alphanumericRegex = "[^a-zA-Z0-9]";
+
+	private static int varCounter = 1;
 
 	/**
 	 * Checks if the string is a valid name for a variable name in FodotIDP
@@ -43,8 +44,9 @@ public class NameUtil {
 		return generateVariableName();
 	}
 	
-	public static String generateVariableName() {
-		return "x" + Double.toString(Math.random()).replaceAll("0.", "").substring(0, 8);
-		
+	public static synchronized String generateVariableName() {
+		//return "x" + Double.toString(Math.random()).replaceAll("0.", "").substring(0, 8);
+		//Temporary for readability of test output
+		return "var" + Integer.toString(varCounter++);
 	}
 }

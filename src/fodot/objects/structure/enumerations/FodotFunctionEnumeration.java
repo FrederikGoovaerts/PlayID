@@ -56,12 +56,11 @@ public class FodotFunctionEnumeration extends FodotEnumeration {
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(declaration.getName());
-		builder.append(" = {");
+		builder.append(declaration.getName() + " = {");
 		List<FodotConstant[]> keys = new ArrayList<FodotConstant[]>(getValues().keySet());
 		for (int i = 0; i < keys.size(); i++) {
 			if (i > 0) {
-				builder.append("; \n");
+				builder.append(";");
 			}
 			FodotConstant[] key = keys.get(i);
 			builder.append(CollectionUtil.toCoupleAsCode(Arrays.asList(key)) + " -> " + values.get(key).toCode());

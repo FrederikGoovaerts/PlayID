@@ -49,8 +49,13 @@ public class FodotPredicateEnumeration extends FodotEnumeration {
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(declaration.getName() + " = {");
-		for (FodotConstant[] constants : getValues()) {		
-			builder.append(CollectionUtil.toNakedList(CollectionUtil.toCode(Arrays.asList(constants))) + ";\n");
+		List<FodotConstant[]> keys = new ArrayList<FodotConstant[]>(getValues());
+		for (int i = 0; i < keys.size(); i++) {
+			if (i > 0) {
+				builder.append(";");
+			}
+			FodotConstant[] key = keys.get(i);
+			builder.append(CollectionUtil.toNakedList(CollectionUtil.toCode(Arrays.asList(keys.get(i)))));
 		}
 		builder.append("}");
 		return builder.toString();
