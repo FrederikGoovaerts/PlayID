@@ -151,6 +151,10 @@ public class FodotGameFactory {
          * pred(*standaard argumenten*)
          */
 
+        for (FodotPredicateDeclaration declaration : this.pool.getStaticPredicates()) {
+            toReturn.addPredicate(declaration);
+        }
+
         /**
          * nodig: alle actions
          * resultaat:

@@ -170,8 +170,8 @@ public class LTCPool {
 
     private HashMap<String,FodotPredicateDeclaration> staticPredicates;
 
-    public HashMap<String,FodotPredicateDeclaration> getStaticPredicates() {
-        return new HashMap<>(staticPredicates);
+    public List<FodotPredicateDeclaration> getStaticPredicates() {
+        return new ArrayList<>(staticPredicates.values());
     }
 
     private FodotPredicateDeclaration getStaticPredicate(String predName) {
