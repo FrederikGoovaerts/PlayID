@@ -55,6 +55,9 @@ public class GdlInspector extends GdlVisitor{
             case "init":
                 this.getTransformer().processInitRelation(relation);
                 break;
+            case "base":
+                //ignore this for now
+                break;
             default:
                 this.getTransformer().processStaticPredicateRelation(relation);
                 break;
@@ -76,6 +79,12 @@ public class GdlInspector extends GdlVisitor{
                 break;
             case "terminal":
                 this.getTransformer().processTerminalRule(rule);
+                break;
+            case "base":
+                //ignore this for now
+                break;
+            case "input":
+                //ignore this for now
                 break;
             default:
                 this.getTransformer().processDefinitionRule(rule);

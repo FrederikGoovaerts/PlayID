@@ -1,6 +1,7 @@
 package fodot.gdl_parser;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import fodot.objects.Fodot;
@@ -23,10 +24,6 @@ public class Parser {
     public static void main(String[] args) {
         File file = new File("resources/games/blocks.kif");
         Parser test = new Parser(file);
-        List<Gdl> rules = test.game.getRules();
-        GdlInspector inspector = new GdlInspector(rules);
-        Fodot builtFodot = inspector.getFodot();
-        System.out.println(builtFodot.toCode());
     }
 
     /***************************************************************************
@@ -36,6 +33,21 @@ public class Parser {
     public Parser(File file) {
         String fileContents = FileUtils.readFileAsString(file);
         game = Game.createEphemeralGame(Game.preprocessRulesheet(fileContents));
+        List<Gdl> rules = game.getRules();
+        GdlInspector inspector = new GdlInspector(rules);
+        Fodot builtFodot = inspector.getFodot();
+        System.out.println(builtFodot.toCode());
+        if(outputToFile) {
+            String originalPath = file.getAbsolutePath();
+            StringBuilder b = new StringBuilder(originalPath);
+            b.replace(originalPath.lastIndexOf(".kif"), originalPath.lastIndexOf(".kif") + 4, ".idp");
+            File outFile = new File(b.toString());
+            try {
+                FileUtils.writeStringToFile(outFile, builtFodot.toCode());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /***************************************************************************
@@ -45,5 +57,5 @@ public class Parser {
     /* The game for this parser */
     private final Game game;
 
-
+    private static boolean outputToFile = false;
 }

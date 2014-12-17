@@ -35,6 +35,10 @@ public class CollectionUtil {
 		return printStringList("{", "}", ";", new ArrayList<String>(list));
 	}
 
+	public static String toDeclarationDomain(Collection<String> list) {
+		return printStringList("{", "}", ",", new ArrayList<String>(list));
+	}
+
 	public static String toDomain(String head, String last) {
 		return "{" + head + ".." + last +"}";
 	}
