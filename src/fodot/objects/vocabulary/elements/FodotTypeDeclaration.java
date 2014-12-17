@@ -36,7 +36,7 @@ public class FodotTypeDeclaration implements IFodotElement {
 		return "type " + getType().getName()
 				+ (getType().hasSupertypes() ? " isa " + CollectionUtil.toNakedList(CollectionUtil.toCode(getType().getSupertypes())) : "")
 //				+ (getType().hasSubtypes() ? " contains " + CollectionUtil.toNakedList(CollectionUtil.toCode(getType().getSubtypes())) : "")
-				+ (getType().hasDomainElements() ? " constructed from " + CollectionUtil.toDeclarationDomain(CollectionUtil.toCode(getType().getDomainElements())) : "" );
+				+ ((getType().hasDomainElements() && !getType().hasSupertypes()) ? " constructed from " + CollectionUtil.toDeclarationDomain(CollectionUtil.toCode(getType().getDomainElements())) : "" );
 	}
     /************************************/
     

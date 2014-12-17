@@ -1,9 +1,12 @@
 package fodot.gdl_parser;
 
+import fodot.gdl_parser.util.GdlCastHelper;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.Fodot;
+import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.terms.FodotConstant;
+import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import static fodot.helpers.FodotPartBuilder.*;
@@ -216,6 +219,20 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     /*** End of Actions subsection ***/
 
+
+    /*************************************
+     * Score
+     */
+
+    private Map<Pair<String, Integer>,Set<IFodotFormula>> scoreMap;
+
+    private void addScore(Pair<String, Integer> score, IFodotFormula condition) {
+
+        //TODO
+    }
+
+    /*** End of Score subsection ***/
+
     /***************************************************************************
      * Class Methods
      **************************************************************************/
@@ -223,6 +240,7 @@ public class GdlFodotTransformer implements GdlTransformer{
     public void cleanAndInitializeBuilder(){
         this.initialValues = new HashMap<>();
         this.staticValues = new HashMap<>();
+        this.scoreMap = new HashMap<>();
         this.buildDefaultTypes();
         this.pool = new LTCPool(this.timeType);
     }
@@ -304,7 +322,19 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     @Override
     public void processNextRule(GdlRule rule) {
-        //TODO
+        if(!rule.getHead().getName().getValue().equals("next"))
+            throw new IllegalArgumentException("Given rule is not a 'next' rule!");
+
+        HashMap<String,FodotVariable> variableMap = new HashMap<>();
+
+        //process (fluent) predicate in head
+        GdlSentence predSentence = rule.getHead().get(0).toSentence();
+        this.processPredicate(predSentence);
+
+        //generate IFodotFormula from the body
+        
+        
+        //add the combination as a next rule
     }
 
     @Override
@@ -314,21 +344,21 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     @Override
     public void processGoalRule(GdlRule rule) {
-        Pair<String, Integer> score;
-
-        GdlSentence scoreSentence = rule.getHead();
-        if(!scoreSentence.getName().getValue().equals("goal")) {
+        if(!rule.getHead().getName().getValue().equals("goal"))
             throw new IllegalArgumentException("Rule is not a goal rule!");
-        }
 
-        score = Pair.of(scoreSentence.get(0).toSentence().getName().getValue(),
-                Integer.parseInt(scoreSentence.get(1).toSentence().getName().getValue()));
+        HashMap<String,FodotVariable> variableMap = new HashMap<>();
 
-        FodotPredicate[] conditions = new FodotPredicate[rule.arity()];
+        Pair<String, Integer> score = Pair.of(rule.getHead().get(0).toSentence().getName().getValue(),
+                Integer.parseInt(rule.getHead().get(1).toSentence().getName().getValue()));
 
-        for (GdlLiteral literal : rule.getBody()) {
-            //TODO
-        }
+        IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
+                rule.getBody(),
+                variableMap,
+                this
+        );
+
+        this.addScore(score,condition);
     }
 
     @Override
@@ -341,7 +371,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         //TODO
     }
 
-    private FodotPredicateDeclaration processPredicate(GdlSentence predSentence) {
+    FodotPredicateDeclaration processPredicate(GdlSentence predSentence) {
         //Predicate: (pred x1 .. xn)
 
     	String predName = predSentence.getName().getValue();
