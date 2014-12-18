@@ -102,13 +102,69 @@ public class GdlCastHelper {
             );
         } else if(relation.getName().toString().equals("true")) {
             // process (true (*fluentpred*))
-            //TODO
             GdlSentence fluentPredSentence = relation.get(0).toSentence();
-            return null;
+            trans.processPredicate(fluentPredSentence);
+            FodotPredicateDeclaration decl = trans.getPool().getPredicate(
+                    fluentPredSentence.getName().getValue());
+
+            List<IFodotSentenceElement> elements = new ArrayList<>();
+            elements.add(createVariable("t",trans.getTimeType()));
+
+            for (int i = 0; i < fluentPredSentence.arity(); i++) {
+                GdlTerm term = fluentPredSentence.get(i);
+                IFodotSentenceElement element;
+                if(term.isGround()){
+                    element = createConstant(term.toSentence().getName().getValue(),
+                            trans.getAllType());
+                } else {
+                    if(variables.containsKey(term)){
+                        element = variables.get(term);
+                    } else {
+                        FodotVariable temp = createVariable(
+                                term.toSentence().getName().getValue(),
+                                trans.getAllType());
+                        variables.put((GdlVariable) term,temp);
+                        element = temp;
+                    }
+                }
+                elements.add(element);
+            }
+
+            return createPredicate(
+                    trans.getPool().getTimedVerionOf(decl),
+                    elements
+            );
         } else {
             // process (*staticpred*)
-            //TODO
-            return null;
+            FodotPredicateDeclaration decl = trans.getPool().getPredicate(
+                    relation.getName().getValue());
+
+            List<IFodotSentenceElement> elements = new ArrayList<>();
+
+            for (int i = 0; i < relation.arity(); i++) {
+                GdlTerm term = relation.get(i);
+                IFodotSentenceElement element;
+                if(term.isGround()){
+                    element = createConstant(term.toSentence().getName().getValue(),
+                            trans.getAllType());
+                } else {
+                    if(variables.containsKey(term)){
+                        element = variables.get(term);
+                    } else {
+                        FodotVariable temp = createVariable(
+                                term.toSentence().getName().getValue(),
+                                trans.getAllType());
+                        variables.put((GdlVariable) term,temp);
+                        element = temp;
+                    }
+                }
+                elements.add(element);
+            }
+
+            return createPredicate(
+                    trans.getPool().getTimedVerionOf(decl),
+                    elements
+            );
         }
     }
 

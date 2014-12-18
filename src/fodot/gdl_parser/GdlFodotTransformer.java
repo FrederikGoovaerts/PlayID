@@ -123,6 +123,10 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     private LTCPool pool;
 
+    public LTCPool getPool(){
+        return pool;
+    }
+
     //Check wether an "external" pool is this object's pool
     public boolean isInternalPool(LTCPool pool){
         return this.pool == pool;
@@ -413,7 +417,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         //TODO
     }
 
-    FodotPredicateDeclaration processPredicate(GdlSentence predSentence) {
+    public FodotPredicateDeclaration processPredicate(GdlSentence predSentence) {
         //This can still be used when rules are processed, but should not be used.
 
         //Predicate: (pred x1 .. xn)
