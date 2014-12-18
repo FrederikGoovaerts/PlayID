@@ -44,6 +44,7 @@ import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
+import fodot.objects.vocabulary.elements.IFodotDomainElement;
 import fodot.util.FormulaUtil;
 import fodot.util.NameUtil;
 
@@ -428,7 +429,7 @@ public class FodotPartBuilder {
 
 	//Type declaration
 	@Deprecated
-	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<FodotConstant> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
+	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<IFodotDomainElement> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
 		type.addAllSubtypes(subtypes);
 		type.addAllSupertypes(supertypes);
 		type.addAllDomainElements(domain);
@@ -436,7 +437,7 @@ public class FodotPartBuilder {
 	}
 
 	@Deprecated
-	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<FodotConstant> domain, Set<FodotType> supertypes) {
+	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<IFodotDomainElement> domain, Set<FodotType> supertypes) {
 		return createTypeDeclaration(type, domain, supertypes, null);
 	}
 
@@ -448,7 +449,7 @@ public class FodotPartBuilder {
 	}
 
 	@Deprecated
-	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<FodotConstant> domain) {
+	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<IFodotDomainElement> domain) {
 		return createTypeDeclaration(type, domain, null, null);
 	}
 
@@ -459,11 +460,11 @@ public class FodotPartBuilder {
 	}
 
 	//Types
-	public static FodotType createType(String name, Set<FodotConstant> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
+	public static FodotType createType(String name, Set<IFodotDomainElement> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
 		return new FodotType(name, domain, supertypes, subtypes);
 	}
 
-	public static FodotType createType(String name, Set<FodotConstant> domain, Set<FodotType> supertypes) {
+	public static FodotType createType(String name, Set<IFodotDomainElement> domain, Set<FodotType> supertypes) {
 		return createType(name, domain, supertypes, null);
 	}
 
@@ -473,7 +474,7 @@ public class FodotPartBuilder {
 		return createType(name, null, supertypes, null);
 	}
 
-	public static FodotType createType(String name, Set<FodotConstant> domain) {
+	public static FodotType createType(String name, Set<IFodotDomainElement> domain) {
 		return createType(name, domain, null, null);
 	}
 

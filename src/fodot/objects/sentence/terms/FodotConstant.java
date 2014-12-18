@@ -4,8 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.IFodotDomainElement;
 
-public class FodotConstant implements IFodotTerm {
+public class FodotConstant implements IFodotTerm, IFodotDomainElement {
 
 	private String value;
 	private FodotType type;
