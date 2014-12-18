@@ -31,17 +31,18 @@ public class FodotGameFactory {
      * Constructor
      **************************************************************************/
 
-    public FodotGameFactory(GdlFodotTransformer source, LTCPool pool) {
+    public FodotGameFactory(GdlFodotTransformer source, LTCPool pool, FodotPredicateDeclaration doPred) {
         if(!source.isInternalPool(pool))
             throw new IllegalArgumentException("Pool and source are not a match.");
         this.source = source;
         this.pool = pool;
+        this.doPredicateDeclaration = doPred;
         buildDefaultVocItems();
     }
 
 
-    public FodotGameFactory(GdlFodotTransformer source, LTCPool pool, int timeLimit) {
-        this(source, pool);
+    public FodotGameFactory(GdlFodotTransformer source, LTCPool pool, FodotPredicateDeclaration doPred, int timeLimit) {
+        this(source, pool, doPred);
         this.timeLimit = timeLimit;
     }
 
@@ -85,12 +86,6 @@ public class FodotGameFactory {
         timeList.add(source.getTimeType());
         this.nextFunctionDeclaration = createPartialFunctionDeclaration("Next", timeList,
                 source.getTimeType());
-
-        List<FodotType> typeList = new ArrayList<>();
-        typeList.add(source.getTimeType());
-        typeList.add(source.getPlayerType());
-        typeList.add(source.getActionType());
-        this.doPredicateDeclaration = createPredicateDeclaration("do", typeList);
 
         ArrayList<FodotType> typeList2 = new ArrayList<>();
         typeList2.add(source.getTimeType());
@@ -350,6 +345,8 @@ public class FodotGameFactory {
         // do(Time, Player, Action)
         defaultVoc.addPredicate(doPredicateDeclaration);
 
+        // type Action constructed from {*action*}
+        defaultVoc.addType(createTypeDeclaration(source.getActionType()));
 
         // terminalTime(Time)
         defaultVoc.addPredicate(terminalTimePredicateDeclaration);

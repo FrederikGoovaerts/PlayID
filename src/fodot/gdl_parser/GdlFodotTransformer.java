@@ -228,6 +228,11 @@ public class GdlFodotTransformer implements GdlTransformer{
      * Actions
      */
 
+    private FodotPredicateDeclaration doPredicateDeclaration;
+
+    public FodotPredicateDeclaration getDoPredicate(){
+        return this.doPredicateDeclaration;
+    }
 
     /*** End of Actions subsection ***/
 
@@ -256,11 +261,18 @@ public class GdlFodotTransformer implements GdlTransformer{
         this.processingRules = false;
         this.buildDefaultTypes();
         this.pool = new LTCPool(this.timeType);
+
+        List<FodotType> typeList = new ArrayList<>();
+        typeList.add(getTimeType());
+        typeList.add(getPlayerType());
+        typeList.add(getActionType());
+        this.doPredicateDeclaration = createPredicateDeclaration("do", typeList);
+
     }
 
     @Override
     public Fodot buildFodot() {
-        FodotGameFactory factory = new FodotGameFactory(this,pool);
+        FodotGameFactory factory = new FodotGameFactory(this,pool,doPredicateDeclaration);
         return factory.createFodot();
     }
 
@@ -375,7 +387,7 @@ public class GdlFodotTransformer implements GdlTransformer{
             throw new IllegalArgumentException("Rule is not a goal rule!");
         this.processingRules = true;
 
-        HashMap<String,FodotVariable> variableMap = new HashMap<>();
+        HashMap<GdlVariable, FodotVariable> variableMap = new HashMap<>();
 
         Pair<String, Integer> score = Pair.of(rule.getHead().get(0).toSentence().getName().getValue(),
                 Integer.parseInt(rule.getHead().get(1).toSentence().getName().getValue()));
