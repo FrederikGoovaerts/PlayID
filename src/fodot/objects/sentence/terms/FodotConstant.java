@@ -31,9 +31,7 @@ public class FodotConstant implements IFodotTerm {
 			throw new IllegalArgumentException("Not a legal type");
 		}
 		this.type = type;
-		if (type.hasDeclaration()) {
-			this.type.addDomainElement(this);
-		}
+		this.type.addDomainElement(this);
 	}
 
 	public FodotType getType() {
