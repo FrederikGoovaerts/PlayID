@@ -61,6 +61,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         timeType.addSupertype(getNaturalNumberType());
         this.playerType = new FodotType("Player");
         this.actionType = new FodotType("Action");
+        actionType.getDeclaration(); //TODO: this has to be fixed!
         this.scoreType = new FodotType("ScoreType");
         scoreType.addSupertype(getNaturalNumberType());
         this.allType = new FodotType("all");
@@ -367,14 +368,18 @@ public class GdlFodotTransformer implements GdlTransformer{
             throw new IllegalArgumentException("Given rule is not a 'next' rule!");
         this.processingRules = true;
 
-        HashMap<String,FodotVariable> variableMap = new HashMap<>();
+        HashMap<GdlVariable,FodotVariable> variableMap = new HashMap<>();
 
         //process (fluent) predicate in head
         GdlSentence predSentence = rule.getHead().get(0).toSentence();
         this.processPredicate(predSentence);
 
         //generate IFodotFormula from the body
-        
+        IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
+                rule.getBody(),
+                variableMap,
+                this
+        );
         
         //add the combination as a next rule
     }

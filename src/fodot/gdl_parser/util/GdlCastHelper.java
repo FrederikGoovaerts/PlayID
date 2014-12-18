@@ -1,7 +1,6 @@
 package fodot.gdl_parser.util;
 
 import fodot.gdl_parser.GdlFodotTransformer;
-import fodot.gdl_parser.GdlTransformer;
 import fodot.objects.sentence.IFodotSentenceElement;
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotConstant;
@@ -30,7 +29,7 @@ public class GdlCastHelper {
         for (GdlLiteral literal : originalFormulas) {
             resultingFormulas.add(generateFodot(literal,variables,trans));
         }
-        return createAnd();
+        return createAnd(resultingFormulas);
     }
 
     private static IFodotFormula generateFodot(
@@ -75,20 +74,20 @@ public class GdlCastHelper {
                             actionPred,
                             trans.getAllType()
                     ),
-                    trans.getAllType()
+                    trans.getActionType()
             );
             List<IFodotSentenceElement> actionVariables = new ArrayList<>();
-            for (GdlTerm gdlTerm : actionPredSentence.getBody()) {
-                GdlSentence sentence = gdlTerm.toSentence();
+            for (GdlTerm term : actionPredSentence.getBody()) {
+                //GdlSentence sentence = gdlTerm.toSentence();
                 IFodotTerm actionVar;
-                if(sentence.isGround()){
-                    actionVar = createConstant(sentence.getName().getValue(),trans.getAllType());
+                if(term.isGround()){
+                    actionVar = createConstant(term.toString(),trans.getAllType());
                 } else {
-                    if(variables.containsKey(gdlTerm)){
-                        actionVar = variables.get(gdlTerm);
+                    if(variables.containsKey(term)){
+                        actionVar = variables.get(term);
                     } else {
-                        FodotVariable temp = createVariable(sentence.getName().getValue(), trans.getAllType());
-                        variables.put((GdlVariable) gdlTerm,temp);
+                        FodotVariable temp = createVariable(term.toString(), trans.getAllType());
+                        variables.put((GdlVariable) term,temp);
                         actionVar = temp;
                     }
                 }
@@ -121,7 +120,7 @@ public class GdlCastHelper {
                         element = variables.get(term);
                     } else {
                         FodotVariable temp = createVariable(
-                                term.toSentence().getName().getValue(),
+                                term.toString(),
                                 trans.getAllType());
                         variables.put((GdlVariable) term,temp);
                         element = temp;
@@ -152,7 +151,7 @@ public class GdlCastHelper {
                         element = variables.get(term);
                     } else {
                         FodotVariable temp = createVariable(
-                                term.toSentence().getName().getValue(),
+                                term.toString(),
                                 trans.getAllType());
                         variables.put((GdlVariable) term,temp);
                         element = temp;
@@ -162,7 +161,7 @@ public class GdlCastHelper {
             }
 
             return createPredicate(
-                    trans.getPool().getTimedVerionOf(decl),
+                    decl,
                     elements
             );
         }
@@ -174,7 +173,7 @@ public class GdlCastHelper {
         StringBuilder b = new StringBuilder();
         b.append(decl.getName() + "(");
         for (int i = 0; i < decl.getAmountOfArgumentTypes(); i++) {
-            if(i<0) {
+            if(i>0) {
                 b.append(",");
             }
             b.append(allType.getName());
@@ -188,31 +187,31 @@ public class GdlCastHelper {
             HashMap<GdlVariable,FodotVariable> variables,
             GdlFodotTransformer trans) {
         //these are either constants or variables
-        GdlSentence arg1 = distinct.getArg1().toSentence();
-        GdlSentence arg2 = distinct.getArg2().toSentence();
+        GdlTerm arg1 = distinct.getArg1();
+        GdlTerm arg2 = distinct.getArg2();
 
         IFodotTerm arg1Fodot;
         IFodotTerm arg2Fodot;
 
         if(arg1.isGround()){
-            arg1Fodot = createConstant(arg1.getName().getValue(),trans.getAllType());
+            arg1Fodot = createConstant(arg1.toString(),trans.getAllType());
         } else {
             if(variables.containsKey(distinct.getArg1())){
                 arg1Fodot = variables.get(distinct.getArg1());
             } else {
-                FodotVariable temp = createVariable(arg1.getName().getValue(), trans.getAllType());
+                FodotVariable temp = createVariable(arg1.toString(), trans.getAllType());
                 variables.put((GdlVariable) distinct.getArg1(),temp);
                 arg1Fodot = temp;
             }
         }
 
         if(arg2.isGround()){
-            arg2Fodot = createConstant(arg2.getName().getValue(),trans.getAllType());
+            arg2Fodot = createConstant(arg2.toString(),trans.getAllType());
         } else {
             if(variables.containsKey(distinct.getArg2())){
                 arg2Fodot = variables.get(distinct.getArg2());
             } else {
-                FodotVariable temp = createVariable(arg2.getName().getValue(), trans.getAllType());
+                FodotVariable temp = createVariable(arg2.toString(), trans.getAllType());
                 variables.put((GdlVariable) distinct.getArg2(),temp);
                 arg2Fodot = temp;
             }
