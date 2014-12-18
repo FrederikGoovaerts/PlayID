@@ -2,13 +2,14 @@ package fodot.objects.sentence.terms;
 
 import java.util.List;
 
+import fodot.objects.sentence.IFodotSentenceElement;
 import fodot.objects.sentence.formulas.argumented.FodotAbstractArgumentList;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 
 public class FodotFunction extends FodotAbstractArgumentList implements IFodotTerm {
 	
-	public FodotFunction(FodotFunctionDeclaration decl, List<IFodotTerm> arguments) {
+	public FodotFunction(FodotFunctionDeclaration decl, List<IFodotSentenceElement> arguments) {
 		super(decl, arguments);
 	}
 	

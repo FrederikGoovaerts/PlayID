@@ -2,6 +2,7 @@ package fodot.gdl_parser.util;
 
 import fodot.gdl_parser.GdlFodotTransformer;
 import fodot.gdl_parser.GdlTransformer;
+import fodot.objects.sentence.IFodotSentenceElement;
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.sentence.terms.FodotVariable;
@@ -76,7 +77,7 @@ public class GdlCastHelper {
                     ),
                     trans.getAllType()
             );
-            List<IFodotTerm> actionVariables = new ArrayList<>();
+            List<IFodotSentenceElement> actionVariables = new ArrayList<>();
             for (GdlTerm gdlTerm : actionPredSentence.getBody()) {
                 GdlSentence sentence = gdlTerm.toSentence();
                 IFodotTerm actionVar;

@@ -17,9 +17,9 @@ import fodot.util.CollectionUtil;
 public abstract class FodotAbstractArgumentList implements IFodotSentenceElement {
 
 	private FodotArgumentListDeclaration declaration;
-	private List<IFodotTerm> arguments;
+	private List<IFodotSentenceElement> arguments;
 	
-	public FodotAbstractArgumentList(FodotArgumentListDeclaration decl, List<IFodotTerm> arguments) {
+	public FodotAbstractArgumentList(FodotArgumentListDeclaration decl, List<IFodotSentenceElement> arguments) {
 		super();
 		setDeclaration(decl);
 		setArguments(arguments);
@@ -41,16 +41,16 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	
 	
 	//Arguments
-	public List<IFodotTerm> getArguments() {
-		return new ArrayList<IFodotTerm>(arguments);
+	public List<IFodotSentenceElement> getArguments() {
+		return new ArrayList<IFodotSentenceElement>(arguments);
 	}
 	 
 	public boolean hasArguments() {
 		return !arguments.isEmpty();
 	}
 	
-	private void setArguments(List<IFodotTerm> args) {
-		this.arguments = (args == null ? new ArrayList<IFodotTerm>() : args);
+	private void setArguments(List<IFodotSentenceElement> args) {
+		this.arguments = (args == null ? new ArrayList<IFodotSentenceElement>() : args);
 
 		
 		List<FodotType> argumentTypes = getDeclaration().getArgumentTypes();
@@ -60,11 +60,11 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 		}
 		
 		//Check types of arguments
-		for (int i = 0; i < arguments.size(); i++) {
-			if (!arguments.get(i).getType().isASubtypeOf(argumentTypes.get(i))) {
-				throw new IllegalTypeException("Argument " + i + " in " + getName(), arguments.get(i).getType(), argumentTypes.get(i));
-			}
-		}
+//		for (int i = 0; i < arguments.size(); i++) {
+//			if (!arguments.get(i).getType().isASubtypeOf(argumentTypes.get(i))) {
+//				throw new IllegalTypeException("Argument " + i + " in " + getName(), arguments.get(i).getType(), argumentTypes.get(i));
+//			}
+//		}
 	}
 	
 	//Sentence element stuff
@@ -72,7 +72,7 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		Set<FodotVariable> result = new HashSet<FodotVariable>();
-		for (IFodotTerm arg : getArguments()) {
+		for (IFodotSentenceElement arg : getArguments()) {
 			result.addAll(arg.getFreeVariables());
 		}
 		return result;

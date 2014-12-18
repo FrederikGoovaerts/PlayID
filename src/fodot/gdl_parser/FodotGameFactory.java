@@ -5,6 +5,7 @@ import fodot.objects.Fodot;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedure;
 import fodot.objects.procedure.FodotProcedures;
+import fodot.objects.sentence.IFodotSentenceElement;
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
@@ -176,8 +177,8 @@ public class FodotGameFactory {
 
             int originalArity = declaration.getAmountOfArgumentTypes();
 
-            List<IFodotTerm> argList = new ArrayList<>();
-            List<IFodotTerm> iArgList = new ArrayList<>();
+            List<IFodotSentenceElement> argList = new ArrayList<>();
+            List<IFodotSentenceElement> iArgList = new ArrayList<>();
             Set<FodotVariable> varSet = new HashSet<>();
             argList.add(createFunction(this.startFunctionDeclaration));
 
@@ -199,7 +200,7 @@ public class FodotGameFactory {
             ));
 
             argList = new ArrayList<>(iArgList);
-            List<IFodotTerm> cArgList = new ArrayList<>(iArgList);
+            List<IFodotSentenceElement> cArgList = new ArrayList<>(iArgList);
             varSet = new HashSet<>(varSet);
 
             FodotVariable timeVar = createVariable(source.getTimeType());
@@ -376,7 +377,7 @@ public class FodotGameFactory {
         defaultTheory.addSentence(createSentence(createForAll(variables,
                 createImplies(
                         createPredicate(this.doPredicateDeclaration
-                                , new ArrayList<IFodotTerm>(Arrays.asList(t_Time,
+                                , new ArrayList<IFodotSentenceElement>(Arrays.asList(t_Time,
                                 p_Player,
                                 a_Action)))
                         , createAnd(

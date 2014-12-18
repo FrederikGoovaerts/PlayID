@@ -15,6 +15,7 @@ import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.includes.FodotIncludeLibrary;
 import fodot.objects.procedure.FodotProcedure;
 import fodot.objects.procedure.FodotProcedures;
+import fodot.objects.sentence.IFodotSentenceElement;
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.formulas.connectors.FodotFormulaConnector;
@@ -311,19 +312,19 @@ public class FodotPartBuilder {
 		return createVariable(NameUtil.generateVariableName(), type);
 	}
 
-	public static FodotPredicate createPredicate(FodotPredicateDeclaration declaration, List<IFodotTerm> arguments) {
+	public static FodotPredicate createPredicate(FodotPredicateDeclaration declaration, List<IFodotSentenceElement> arguments) {
 		return new FodotPredicate(declaration, arguments);
 	}
 
-	public static FodotPredicate createPredicate(FodotPredicateDeclaration declaration, IFodotTerm... arguments) {
+	public static FodotPredicate createPredicate(FodotPredicateDeclaration declaration, IFodotSentenceElement... arguments) {
 		return new FodotPredicate(declaration, Arrays.asList(arguments));
 	}
 
-	public static FodotFunction createFunction(FodotFunctionDeclaration declaration, List<IFodotTerm> arguments) {
+	public static FodotFunction createFunction(FodotFunctionDeclaration declaration, List<IFodotSentenceElement> arguments) {
 		return new FodotFunction(declaration, arguments);
 	}
 
-	public static FodotFunction createFunction(FodotFunctionDeclaration declaration, IFodotTerm... arguments) {
+	public static FodotFunction createFunction(FodotFunctionDeclaration declaration, IFodotSentenceElement... arguments) {
 		return new FodotFunction(declaration, Arrays.asList(arguments));
 	}
 
