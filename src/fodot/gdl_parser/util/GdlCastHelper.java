@@ -81,7 +81,7 @@ public class GdlCastHelper {
                 //GdlSentence sentence = gdlTerm.toSentence();
                 IFodotTerm actionVar;
                 if(term.isGround()){
-                    actionVar = createConstant(term.toString(),trans.getAllType());
+                    actionVar = createConstant("c_" + term.toString(),trans.getAllType());
                 } else {
                     if(variables.containsKey(term)){
                         actionVar = variables.get(term);
@@ -96,7 +96,7 @@ public class GdlCastHelper {
             return createPredicate(
                     trans.getDoPredicate(),
                     createVariable("t",trans.getTimeType()),
-                    createConstant(playerName,trans.getPlayerType()),
+                    createConstant("p_" + playerName,trans.getPlayerType()),
                     createPredicate(actionPred,actionVariables)
             );
         } else if(relation.getName().toString().equals("true")) {
@@ -113,7 +113,7 @@ public class GdlCastHelper {
                 GdlTerm term = fluentPredSentence.get(i);
                 IFodotSentenceElement element;
                 if(term.isGround()){
-                    element = createConstant(term.toSentence().getName().getValue(),
+                    element = createConstant("c_" + term.toSentence().getName().getValue(),
                             trans.getAllType());
                 } else {
                     if(variables.containsKey(term)){
@@ -144,7 +144,7 @@ public class GdlCastHelper {
                 GdlTerm term = relation.get(i);
                 IFodotSentenceElement element;
                 if(term.isGround()){
-                    element = createConstant(term.toSentence().getName().getValue(),
+                    element = createConstant("c_" + term.toSentence().getName().getValue(),
                             trans.getAllType());
                 } else {
                     if(variables.containsKey(term)){
@@ -194,7 +194,7 @@ public class GdlCastHelper {
         IFodotTerm arg2Fodot;
 
         if(arg1.isGround()){
-            arg1Fodot = createConstant(arg1.toString(),trans.getAllType());
+            arg1Fodot = createConstant("c_" + arg1.toString(),trans.getAllType());
         } else {
             if(variables.containsKey(distinct.getArg1())){
                 arg1Fodot = variables.get(distinct.getArg1());
@@ -206,7 +206,7 @@ public class GdlCastHelper {
         }
 
         if(arg2.isGround()){
-            arg2Fodot = createConstant(arg2.toString(),trans.getAllType());
+            arg2Fodot = createConstant("c_" + arg2.toString(),trans.getAllType());
         } else {
             if(variables.containsKey(distinct.getArg2())){
                 arg2Fodot = variables.get(distinct.getArg2());
