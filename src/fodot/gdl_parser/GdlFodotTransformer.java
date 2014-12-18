@@ -1,5 +1,6 @@
 package fodot.gdl_parser;
 
+import fodot.gdl_parser.exceptions.GdlParsingOrderException;
 import fodot.gdl_parser.util.GdlCastHelper;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.Fodot;
@@ -18,6 +19,9 @@ import java.util.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
+ *
+ * For correct utilization of this class, non-GdlRules should be processed before
+ * GdlRules. If this is not respected, a GdlParsingOrderException will be thrown.
  */
 public class GdlFodotTransformer implements GdlTransformer{
 
@@ -33,6 +37,14 @@ public class GdlFodotTransformer implements GdlTransformer{
      * Class Properties
      **************************************************************************/
 
+    /*************************************
+     * Processing state
+     */
+
+    /* This boolean is false when no GdlRules have been read in yet */
+    private boolean processingRules;
+
+    /*** End of Processing state subsection ***/
 
     /*************************************
      * Default Types
@@ -241,6 +253,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         this.initialValues = new HashMap<>();
         this.staticValues = new HashMap<>();
         this.scoreMap = new HashMap<>();
+        this.processingRules = false;
         this.buildDefaultTypes();
         this.pool = new LTCPool(this.timeType);
     }
@@ -253,6 +266,10 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     @Override
     public void processRoleRelation(GdlRelation relation) {
+        if(processingRules)
+            throw new GdlParsingOrderException("A rule has already been processed," +
+                    "processing realtions is not allowed anymore.");
+
         // Role: (role player)
         GdlConstant player = relation.getBody().get(0).toSentence().getName();
         this.addRole(convertRawRole(player.toString()));
@@ -260,6 +277,10 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     @Override
     public void processInitRelation(GdlRelation relation) {
+        if(processingRules)
+            throw new GdlParsingOrderException("A rule has already been processed," +
+                    "processing realtions is not allowed anymore.");
+
         // Init: (init (pred x1 .. xn))
 
         GdlSentence predicate = relation.getBody().get(0).toSentence();
@@ -281,6 +302,10 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     @Override
     public void processStaticPredicateRelation(GdlRelation relation) {
+        if(processingRules)
+            throw new GdlParsingOrderException("A rule has already been processed," +
+                    "processing realtions is not allowed anymore.");
+
         // Static: (pred x1 .. xn)
         String predName = relation.getName().getValue();
         int predArity = relation.arity();
@@ -324,6 +349,7 @@ public class GdlFodotTransformer implements GdlTransformer{
     public void processNextRule(GdlRule rule) {
         if(!rule.getHead().getName().getValue().equals("next"))
             throw new IllegalArgumentException("Given rule is not a 'next' rule!");
+        this.processingRules = true;
 
         HashMap<String,FodotVariable> variableMap = new HashMap<>();
 
@@ -339,6 +365,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     @Override
     public void processLegalRule(GdlRule rule) {
+        this.processingRules = true;
         //TODO
     }
 
@@ -346,6 +373,7 @@ public class GdlFodotTransformer implements GdlTransformer{
     public void processGoalRule(GdlRule rule) {
         if(!rule.getHead().getName().getValue().equals("goal"))
             throw new IllegalArgumentException("Rule is not a goal rule!");
+        this.processingRules = true;
 
         HashMap<String,FodotVariable> variableMap = new HashMap<>();
 
@@ -363,15 +391,19 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     @Override
     public void processTerminalRule(GdlRule rule) {
+        this.processingRules = true;
         //TODO
     }
 
     @Override
     public void processDefinitionRule(Object rule) {
+        this.processingRules = true;
         //TODO
     }
 
     FodotPredicateDeclaration processPredicate(GdlSentence predSentence) {
+        //This can still be used when rules are processed, but should not be used.
+
         //Predicate: (pred x1 .. xn)
 
     	String predName = predSentence.getName().getValue();

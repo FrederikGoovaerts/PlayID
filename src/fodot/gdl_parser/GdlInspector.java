@@ -4,6 +4,7 @@ import fodot.objects.Fodot;
 import org.ggp.base.util.gdl.GdlVisitor;
 import org.ggp.base.util.gdl.grammar.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,9 +17,22 @@ public class GdlInspector extends GdlVisitor{
      **************************************************************************/
 
     public GdlInspector(List<Gdl> rules){
-        this.rules = rules;
         this.transformer = new GdlFodotTransformer();
-        GdlRootVisitors.visitAll(rules, this);
+        this.gdlRules = new ArrayList<>();
+        this.gdlNonRules = new ArrayList<>();
+        this.splitRules(rules);
+        GdlRootVisitors.visitAll(gdlNonRules, this);
+        GdlRootVisitors.visitAll(gdlRules, this);
+    }
+
+    private void splitRules(List<Gdl> rules) {
+        for (Gdl rule : rules) {
+            if(rule instanceof GdlRule){
+                gdlRules.add(rule);
+            } else {
+                gdlNonRules.add(rule);
+            }
+        }
     }
 
     /***************************************************************************
@@ -31,10 +45,14 @@ public class GdlInspector extends GdlVisitor{
         return transformer;
     }
 
-    private List<Gdl> rules;
+    private List<Gdl> gdlRules;
+
+    private List<Gdl> gdlNonRules;
 
     private List<Gdl> getRules() {
-        return rules;
+        List<Gdl> toReturn = new ArrayList<>(gdlNonRules);
+        toReturn.addAll(gdlRules);
+        return toReturn;
     }
 
     public Fodot getFodot(){
