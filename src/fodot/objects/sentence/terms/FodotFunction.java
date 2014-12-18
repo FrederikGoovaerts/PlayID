@@ -13,6 +13,11 @@ public class FodotFunction extends FodotAbstractArgumentList implements IFodotTe
 	}
 	
 	@Override
+	public FodotFunctionDeclaration getDeclaration() {
+		return ((FodotFunctionDeclaration) super.getDeclaration());
+	}
+	
+	@Override
 	public String toString() {
 		return "[function "+getName()+": " + argumentsToString() + "]";
 	}

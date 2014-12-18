@@ -2,10 +2,12 @@ package fodot.objects.theory.definitions;
 
 import java.util.Set;
 
+import fodot.exceptions.IllegalTypeException;
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotFunction;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
+import fodot.objects.vocabulary.elements.FodotType;
 
 
 public class FodotInductiveFunction implements IFodotFormula {
@@ -16,7 +18,19 @@ public class FodotInductiveFunction implements IFodotFormula {
 			IFodotTerm functionResult) {
 		super();
 		this.function = function;
-		this.functionResult = functionResult;
+		setFunctionResult(functionResult);
+	}
+
+	private void setFunctionResult(IFodotTerm functionRes) {
+		if (functionRes == null) {
+			throw new IllegalArgumentException("Functionresult can't be null");
+		}
+		FodotType expectedType = function.getDeclaration().getReturnType();
+		if (!functionRes.getType().isASubtypeOf(expectedType)
+				&& !functionRes.getType().isASupertypeOf(expectedType)) {
+			throw new IllegalTypeException("In the returntype of the function in the inductive definition", functionRes.getType(), expectedType);
+		}
+		this.functionResult = functionRes;
 	}
 
 	@Override

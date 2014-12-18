@@ -256,7 +256,7 @@ public class FodotType implements IFodotElement {
 		}
 		return false;
 	}
-
+	
 	/************************************/
 
 
