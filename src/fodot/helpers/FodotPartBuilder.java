@@ -25,6 +25,7 @@ import fodot.objects.sentence.formulas.unary.FodotNot;
 import fodot.objects.sentence.terms.FodotArithmeticConnector;
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.sentence.terms.FodotFunction;
+import fodot.objects.sentence.terms.FodotPredicateTerm;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
@@ -43,6 +44,7 @@ import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
+import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
@@ -318,7 +320,15 @@ public class FodotPartBuilder {
 	}
 
 	public static FodotPredicate createPredicate(FodotPredicateDeclaration declaration, IFodotTerm... arguments) {
-		return new FodotPredicate(declaration, Arrays.asList(arguments));
+		return createPredicate(declaration, Arrays.asList(arguments));
+	}
+
+	public static FodotPredicateTerm createPredicateTerm(FodotPredicateTermDeclaration declaration, List<IFodotTerm> arguments) {
+		return new FodotPredicateTerm(declaration, arguments);
+	}
+	
+	public static FodotPredicateTerm createPredicateTerm(FodotPredicateTermDeclaration declaration, IFodotTerm... arguments) {
+		return createPredicateTerm(declaration, Arrays.asList(arguments));
 	}
 
 	public static FodotFunction createFunction(FodotFunctionDeclaration declaration, List<IFodotTerm> arguments) {
@@ -428,6 +438,10 @@ public class FodotPartBuilder {
 		return new FodotPredicateDeclaration(name, argumentTypes);
 	}
 
+	public static FodotPredicateTermDeclaration createPredicateDomainElementDeclaration(String name, List<FodotType> argumentTypes, FodotType type) {
+		return new FodotPredicateTermDeclaration(name, argumentTypes, type);
+	} 
+
 	//Type declaration
 	@Deprecated
 	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<IFodotDomainElement> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
@@ -490,7 +504,7 @@ public class FodotPartBuilder {
 	public static FodotType getIntegerType() {
 		return FodotType.INTEGER;
 	}
-	
+
 	public static FodotType createPlaceHolderType() {
 		return FodotType.createPlaceHolderType();
 	}

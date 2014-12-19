@@ -7,7 +7,7 @@ import fodot.util.CollectionUtil;
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
-public class FodotPredicateDeclaration extends FodotArgumentListDeclaration implements IFodotDomainElement {
+public class FodotPredicateDeclaration extends FodotArgumentListDeclaration {
     
     /***************************************************************************
      * Constructor

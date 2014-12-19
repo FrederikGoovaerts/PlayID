@@ -9,7 +9,6 @@ import java.util.Queue;
 import java.util.Set;
 
 import fodot.objects.IFodotElement;
-import fodot.objects.sentence.terms.FodotConstant;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -272,7 +271,7 @@ public class FodotType implements IFodotElement {
 		}
 	}
 
-	public void addDomainElement(FodotConstant element) {
+	public void addDomainElement(IFodotDomainElement element) {
 		domain.add(element);
 	}
 
@@ -292,6 +291,9 @@ public class FodotType implements IFodotElement {
 		return domain != null && !domain.isEmpty();
 	}
 
+	public void removeDomainElement(IFodotDomainElement element) {
+		domain.remove(element);
+	}
 
 	/************************************/
 
