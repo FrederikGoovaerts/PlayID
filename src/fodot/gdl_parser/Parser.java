@@ -57,5 +57,5 @@ public class Parser {
     /* The game for this parser */
     private final Game game;
 
-    private static boolean outputToFile = true;
+    private static boolean outputToFile = false;
 }

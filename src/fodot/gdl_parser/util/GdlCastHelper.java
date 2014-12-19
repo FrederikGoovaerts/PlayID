@@ -96,7 +96,7 @@ public class GdlCastHelper {
                     if(variables.containsKey(term)){
                         actionVar = variables.get(term);
                     } else {
-                        FodotVariable temp = createVariable(term.toString(), trans.getAllType());
+                        FodotVariable temp = createVariable(trans.getAllType());
                         variables.put((GdlVariable) term,temp);
                         actionVar = temp;
                     }
@@ -130,7 +130,6 @@ public class GdlCastHelper {
                         element = variables.get(term);
                     } else {
                         FodotVariable temp = createVariable(
-                                term.toString(),
                                 trans.getAllType());
                         variables.put((GdlVariable) term,temp);
                         element = temp;

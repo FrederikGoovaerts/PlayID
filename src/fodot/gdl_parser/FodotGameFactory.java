@@ -6,6 +6,8 @@ import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedure;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.sentence.IFodotSentenceElement;
+import fodot.objects.sentence.formulas.IFodotFormula;
+import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.sentence.terms.FodotPredicateTerm;
 import fodot.objects.sentence.terms.FodotVariable;
@@ -19,6 +21,8 @@ import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
+import fodot.util.FormulaUtil;
+import org.ggp.base.util.Pair;
 
 import java.util.*;
 
@@ -33,18 +37,26 @@ public class FodotGameFactory {
      * Constructor
      **************************************************************************/
 
-    public FodotGameFactory(GdlFodotTransformer source, LTCPool pool, FodotPredicateDeclaration doPred) {
+    public FodotGameFactory(GdlFodotTransformer source,
+                            LTCPool pool,
+                            FodotPredicateDeclaration doPred,
+                            FodotPredicateDeclaration terminalPred) {
         if(!source.isInternalPool(pool))
             throw new IllegalArgumentException("Pool and source are not a match.");
         this.source = source;
         this.pool = pool;
         this.doPredicateDeclaration = doPred;
+        this.terminalTimePredicateDeclaration = terminalPred;
         buildDefaultVocItems();
     }
 
 
-    public FodotGameFactory(GdlFodotTransformer source, LTCPool pool, FodotPredicateDeclaration doPred, int timeLimit) {
-        this(source, pool, doPred);
+    public FodotGameFactory(GdlFodotTransformer source,
+                            LTCPool pool,
+                            FodotPredicateDeclaration doPred,
+                            FodotPredicateDeclaration terminalPred,
+                            int timeLimit) {
+        this(source, pool, doPred, terminalPred);
         this.timeLimit = timeLimit;
     }
 
@@ -88,10 +100,6 @@ public class FodotGameFactory {
         timeList.add(source.getTimeType());
         this.nextFunctionDeclaration = createPartialFunctionDeclaration("Next", timeList,
                 source.getTimeType());
-
-        ArrayList<FodotType> typeList2 = new ArrayList<>();
-        typeList2.add(source.getTimeType());
-        this.terminalTimePredicateDeclaration = createPredicateDeclaration("terminalTime", typeList2);
 
         this.scoreTypeDeclaration = createTypeDeclaration(source.getScoreType());
 
@@ -151,13 +159,6 @@ public class FodotGameFactory {
         for (FodotPredicateDeclaration declaration : this.pool.getStaticPredicates()) {
             toReturn.addPredicate(declaration);
         }
-
-        /**
-         * nodig: alle actions
-         * resultaat:
-         * type Action constructed from {*alle actionpredicaten*}
-         */
-        //TODO
 
         return toReturn;
     }
@@ -223,8 +224,6 @@ public class FodotGameFactory {
             toReturn.addInductiveDefinition(createInductiveDefinition(definitions));
         }
 
-
-        //Een van de moeilijkste
         /**
          * nodig: alle causations van elk fluent predicaat
          * resultaat voor elk predicaat:
@@ -233,7 +232,14 @@ public class FodotGameFactory {
          *     *dit voor elke causation van hetzelfde predicaat*
          * }
          */
-        //TODO
+        Map<FodotPredicateDeclaration, Set<Pair<FodotPredicate, IFodotFormula>>> nextMap = source.getNextMap();
+        for (FodotPredicateDeclaration predicate : nextMap.keySet()) {
+            List<FodotSentence> definitions = new ArrayList<>();
+            for (Pair<FodotPredicate, IFodotFormula> pair : nextMap.get(predicate)) {
+                definitions.add(createSentence(createInductiveDefinitionConnector(pair.left, pair.right)));
+            }
+            toReturn.addInductiveDefinition(createInductiveDefinition(definitions));
+        }
 
         /**
          * nodig: alle causations van elk static predicaat
@@ -250,7 +256,13 @@ public class FodotGameFactory {
          * resultaat voor elk koppel:
          * !(var [Unfilled])*aantal argumenten keer* t [Time]: *legal head* => *legal body*
          */
-        //TODO
+        for (Map.Entry<FodotPredicate, Set<IFodotFormula>> entry : source.getLegalMap().entrySet()) {
+            for (IFodotFormula body : entry.getValue()) {
+                toReturn.addSentence(createSentence(
+                        createImplies(entry.getKey(),body)
+                ));
+            }
+        }
 
         /**
          * nodig: elke goal, als *player*, *score*, *voorwaarden*
@@ -260,7 +272,28 @@ public class FodotGameFactory {
          *    *en dit voor elk tripel*
          * }
          */
-        //TODO
+        Map<Pair<String, Integer>, Set<IFodotFormula>> scoreMap = source.getScoreMap();
+        List<FodotSentence> definitions = new ArrayList<>();
+        for (Pair<String, Integer> scorePair: scoreMap.keySet()) {
+            String playerName = scorePair.left;
+            int score = scorePair.right;
+            for (IFodotFormula formula : scoreMap.get(scorePair)) {
+                definitions.add(
+                        createSentence(createInductiveDefinitionConnector(
+                                createInductiveFunctionHead(
+                                        createFunction(
+                                                scoreFunctionDeclaration,
+                                                createConstant(playerName,source.getPlayerType())
+                                        ),
+                                        createConstant(Integer.toString(score),source.getScoreType())
+                                ), FormulaUtil.makeVariableFree(formula)
+                        )
+                    )
+                );
+            }
+        }
+        toReturn.addInductiveDefinition(createInductiveDefinition(definitions));
+
 
         /**
          * nodig: elke terminal *voorwaarde*
@@ -270,7 +303,21 @@ public class FodotGameFactory {
          *     *voor elke voorwaarde*
          * }
          */
-        //TODO
+        definitions = new ArrayList<>();
+        for (IFodotFormula formula : source.getTerminalSet()) {
+            definitions.add(
+                    createSentence(
+                            createInductiveDefinitionConnector(
+                                    createPredicate(
+                                            this.terminalTimePredicateDeclaration,
+                                            createVariable("t",source.getTimeType())
+                                    ),
+                                    formula
+                            )
+                    )
+            );
+        }
+        toReturn.addInductiveDefinition(createInductiveDefinition(definitions));
 
         return toReturn;
     }

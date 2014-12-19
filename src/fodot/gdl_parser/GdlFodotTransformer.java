@@ -248,13 +248,17 @@ public class GdlFodotTransformer implements GdlTransformer{
      * Next rules
      */
 
-    private Map<FodotPredicate,Set<IFodotFormula>> nextMap;
+    private Map<FodotPredicateDeclaration,Set<Pair<FodotPredicate, IFodotFormula>>> nextMap;
 
-    private void addNext(FodotPredicate predicate, IFodotFormula condition) {
+    public Map<FodotPredicateDeclaration,Set<Pair<FodotPredicate, IFodotFormula>>> getNextMap() {
+        return new HashMap<>(nextMap);
+    }
+
+    private void addNext(FodotPredicateDeclaration predicate, Pair<FodotPredicate, IFodotFormula> condition) {
         if(nextMap.containsKey(predicate)){
             nextMap.get(predicate).add(condition);
         } else {
-            Set<IFodotFormula> newSet = new HashSet<>();
+            Set<Pair<FodotPredicate, IFodotFormula>> newSet = new HashSet<>();
             newSet.add(condition);
             nextMap.put(predicate,newSet);
         }
@@ -267,6 +271,10 @@ public class GdlFodotTransformer implements GdlTransformer{
      */
 
     private Map<FodotPredicate,Set<IFodotFormula>> legalMap;
+
+    public Map<FodotPredicate, Set<IFodotFormula>> getLegalMap() {
+        return new HashMap<>(legalMap);
+    }
 
     private void addLegal(FodotPredicate predicate, IFodotFormula condition) {
         if(legalMap.containsKey(predicate)){
@@ -284,7 +292,13 @@ public class GdlFodotTransformer implements GdlTransformer{
      * Terminals
      */
 
+    private FodotPredicateDeclaration terminalTimePredicateDeclaration;
+
     Set<IFodotFormula> terminalSet;
+
+    public Set<IFodotFormula> getTerminalSet() {
+        return new HashSet<>(terminalSet);
+    }
 
     private void addTerminal(IFodotFormula condition) {
         this.terminalSet.add(condition);
@@ -335,11 +349,18 @@ public class GdlFodotTransformer implements GdlTransformer{
         typeList.add(getActionType());
         this.doPredicateDeclaration = createPredicateDeclaration("do", typeList);
 
+        ArrayList<FodotType> typeList2 = new ArrayList<>();
+        typeList2.add(getTimeType());
+        this.terminalTimePredicateDeclaration = createPredicateDeclaration("terminalTime", typeList2);
+
     }
 
     @Override
     public Fodot buildFodot() {
-        FodotGameFactory factory = new FodotGameFactory(this,pool,doPredicateDeclaration);
+        FodotGameFactory factory = new FodotGameFactory(this,
+                pool,
+                doPredicateDeclaration,
+                terminalTimePredicateDeclaration);
         return factory.createFodot();
     }
 
@@ -433,7 +454,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
         //process (fluent) predicate in head
         GdlSentence predSentence = rule.getHead().get(0).toSentence();
-        this.processPredicate(predSentence);
+        FodotPredicateDeclaration originalPredicate = this.processPredicate(predSentence);
 
         List<IFodotTerm> variables = new ArrayList<>();
         variables.add(createVariable("t",timeType));
@@ -446,7 +467,7 @@ public class GdlFodotTransformer implements GdlTransformer{
                 if(variableMap.containsKey(term)){
                     var = variableMap.get(term);
                 } else {
-                    FodotVariable temp = createVariable(term.toString(), getAllType());
+                    FodotVariable temp = createVariable(getAllType());
                     variableMap.put((GdlVariable) term, temp);
                     var = temp;
                 }
@@ -454,8 +475,10 @@ public class GdlFodotTransformer implements GdlTransformer{
             variables.add(var);
         }
 
-        FodotPredicate causePred = createPredicate(pool.getCauseOf(
-                pool.getPredicate(predSentence.getName().getValue())),variables);
+        FodotPredicate causePred = createPredicate(
+                pool.getCauseOf(originalPredicate),
+                variables
+        );
 
         //generate IFodotFormula from the body
         IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
@@ -465,7 +488,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         );
         
         //add the combination as a next rule
-        this.addNext(causePred,condition);
+        this.addNext(originalPredicate, Pair.of(causePred, condition));
     }
 
     @Override
@@ -492,7 +515,7 @@ public class GdlFodotTransformer implements GdlTransformer{
                 if(variableMap.containsKey(term)){
                     actionVar = variableMap.get(term);
                 } else {
-                    FodotVariable temp = createVariable(term.toString(), getAllType());
+                    FodotVariable temp = createVariable(getAllType());
                     variableMap.put((GdlVariable) term, temp);
                     actionVar = temp;
                 }
@@ -547,7 +570,15 @@ public class GdlFodotTransformer implements GdlTransformer{
                 this
         );
 
-        this.addScore(score,condition);
+        IFodotFormula extendedCondition =
+                createImplies(
+                    createPredicate(
+                            terminalTimePredicateDeclaration,
+                            createVariable("t",timeType)
+                    ), condition
+                );
+
+        this.addScore(score,extendedCondition);
     }
 
     @Override

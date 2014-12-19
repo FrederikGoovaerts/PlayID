@@ -22,7 +22,7 @@ public class NameUtil {
 		if (name == null || name.length() == 0) {
 			return false;
 		}
-		return (name.matches(validNameRegex)||allowedSpecialNames.contains("-"));
+		return (name.matches(validNameRegex)||allowedSpecialNames.contains(name));
 	}
 
 	/**
