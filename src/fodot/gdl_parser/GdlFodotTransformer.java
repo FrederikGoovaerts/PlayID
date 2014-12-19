@@ -8,6 +8,7 @@ import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.sentence.terms.FodotVariable;
+import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import static fodot.helpers.FodotPartBuilder.*;
@@ -245,9 +246,9 @@ public class GdlFodotTransformer implements GdlTransformer{
      * Next rules
      */
 
-    private Map<FodotPredicateDeclaration,Set<IFodotFormula>> nextMap;
+    private Map<FodotPredicate,Set<IFodotFormula>> nextMap;
 
-    private void addNext(FodotPredicateDeclaration predicate, IFodotFormula condition) {
+    private void addNext(FodotPredicate predicate, IFodotFormula condition) {
         if(nextMap.containsKey(predicate)){
             nextMap.get(predicate).add(condition);
         } else {
@@ -413,6 +414,28 @@ public class GdlFodotTransformer implements GdlTransformer{
         GdlSentence predSentence = rule.getHead().get(0).toSentence();
         this.processPredicate(predSentence);
 
+        List<IFodotTerm> variables = new ArrayList<>();
+        variables.add(createVariable("t",timeType));
+        for (GdlTerm term : predSentence.getBody()) {
+            //GdlSentence sentence = gdlTerm.toSentence();
+            IFodotTerm var;
+            if(term.isGround()){
+                var = createConstant("c_" + term.toString(), getAllType());
+            } else {
+                if(variableMap.containsKey(term)){
+                    var = variableMap.get(term);
+                } else {
+                    FodotVariable temp = createVariable(term.toString(), getAllType());
+                    variableMap.put((GdlVariable) term, temp);
+                    var = temp;
+                }
+            }
+            variables.add(var);
+        }
+
+        FodotPredicate causePred = createPredicate(pool.getCauseOf(
+                pool.getPredicate(predSentence.getName().getValue())),variables);
+
         //generate IFodotFormula from the body
         IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
                 rule.getBody(),
@@ -421,7 +444,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         );
         
         //add the combination as a next rule
-        this.addNext(this.getPool().getPredicate(predSentence.getName().getValue()),condition);
+        this.addNext(causePred,condition);
     }
 
     @Override
@@ -468,7 +491,7 @@ public class GdlFodotTransformer implements GdlTransformer{
     }
 
     @Override
-    public void processDefinitionRule(Object rule) {
+    public void processDefinitionRule(GdlRule rule) {
         this.processingRules = true;
         //TODO
     }

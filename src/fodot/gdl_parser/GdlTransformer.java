@@ -23,7 +23,7 @@ public interface GdlTransformer {
 
     void processTerminalRule(GdlRule rule);
 
-    void processDefinitionRule(Object rule);
+    void processDefinitionRule(GdlRule rule);
 
     Fodot buildFodot();
 }
