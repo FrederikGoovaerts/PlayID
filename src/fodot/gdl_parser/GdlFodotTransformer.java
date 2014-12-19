@@ -7,9 +7,11 @@ import fodot.objects.Fodot;
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.terms.FodotConstant;
+import fodot.objects.sentence.terms.FodotPredicateTerm;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
+import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import static fodot.helpers.FodotPartBuilder.*;
 
@@ -261,6 +263,24 @@ public class GdlFodotTransformer implements GdlTransformer{
     /*** End of Next rules subsection ***/
 
     /*************************************
+     * Legal
+     */
+
+    private Map<FodotPredicate,Set<IFodotFormula>> legalMap;
+
+    private void addLegal(FodotPredicate predicate, IFodotFormula condition) {
+        if(legalMap.containsKey(predicate)){
+            legalMap.get(predicate).add(condition);
+        } else {
+            Set<IFodotFormula> newSet = new HashSet<>();
+            newSet.add(condition);
+            legalMap.put(predicate,newSet);
+        }
+    }
+
+    /*** End of Legal subsection ***/
+
+    /*************************************
      * Terminals
      */
 
@@ -303,6 +323,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         this.staticValues = new HashMap<>();
         this.scoreMap = new HashMap<>();
         this.nextMap = new HashMap<>();
+        this.legalMap = new HashMap<>();
         this.terminalSet = new HashSet<>();
         this.processingRules = false;
         this.buildDefaultTypes();
@@ -449,8 +470,64 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     @Override
     public void processLegalRule(GdlRule rule) {
-        this.processingRules = true;
-        //TODO
+        String player = rule.getHead().get(0).toString();
+        GdlSentence actionSent = rule.getHead().get(1).toSentence();
+
+        HashMap<GdlVariable,FodotVariable> variableMap = new HashMap<>();
+
+        FodotPredicateTermDeclaration actionDecl =
+                createPredicateTermDeclaration(
+                        actionSent.getName().getValue(),
+                        FodotType.getSameTypeList(actionSent.arity(),getAllType()),
+                        getActionType()
+                );
+
+        List<IFodotTerm> actionVariables = new ArrayList<>();
+        for (GdlTerm term : actionSent.getBody()) {
+            //GdlSentence sentence = gdlTerm.toSentence();
+            IFodotTerm actionVar;
+            if(term.isGround()){
+                actionVar = createConstant("c_" + term.toString(),getAllType());
+            } else {
+                if(variableMap.containsKey(term)){
+                    actionVar = variableMap.get(term);
+                } else {
+                    FodotVariable temp = createVariable(term.toString(), getAllType());
+                    variableMap.put((GdlVariable) term, temp);
+                    actionVar = temp;
+                }
+            }
+            actionVariables.add(actionVar);
+        }
+
+        FodotPredicateTerm actionTerm =
+                createPredicateTerm(
+                        actionDecl,
+                        actionVariables
+                );
+
+        List<IFodotTerm> list =
+                Arrays.asList(
+                        createVariable("t", timeType),
+                        createConstant(player, playerType),
+                        actionTerm
+                );
+
+        FodotPredicate doPred =
+                createPredicate(
+                        this.doPredicateDeclaration,
+                        list
+                );
+
+        //generate IFodotFormula from the body
+        IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
+                rule.getBody(),
+                variableMap,
+                this
+        );
+
+        //add the combination as a next rule
+        this.addLegal(doPred, condition);
     }
 
     @Override
@@ -496,6 +573,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         //TODO
     }
 
+    //TODO: nakijken waar deze return niet gebruikt wordt
     public FodotPredicateDeclaration processPredicate(GdlSentence predSentence) {
         //This can still be used when rules are processed, but should not be used.
 

@@ -41,7 +41,7 @@ public class LTCPool {
 
     public FodotPredicateDeclaration getPredicate(String predName){
         if(!isPredicateRegistered(predName))
-            throw new IllegalArgumentException("Predicate not found!");
+            throw new IllegalArgumentException("Predicate not found: " + predName);
         if(isFluentPredicateRegistered(predName))
             return getFluentPredicate(predName);
         return getStaticPredicate(predName);
