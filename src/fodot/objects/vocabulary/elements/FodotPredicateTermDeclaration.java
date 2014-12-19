@@ -36,4 +36,43 @@ public class FodotPredicateTermDeclaration extends
 		return getName() + CollectionUtil.toCoupleAsCode(getArgumentTypes());
 	}
 
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FodotPredicateTermDeclaration other = (FodotPredicateTermDeclaration) obj;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		if (getArgumentTypes() == null) {
+			if (other.getArgumentTypes()  != null)
+				return false;
+		} else if (!getArgumentTypes() .equals(other.getArgumentTypes() ))
+			return false;
+		if (getName() == null) {
+			if (other.getName() != null)
+				return false;
+		} else if (!getName().equals(other.getName()))
+			return false;
+		return true;
+	}
+
+	
+	
 }
