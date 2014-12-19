@@ -66,7 +66,7 @@ public class GdlCastHelper {
             for (int i = 0; i < actionPredSentence.arity(); i++) {
                 types.add(trans.getAllType());
             }
-            FodotPredicateTermDeclaration actionPred = createPredicateDomainElementDeclaration(
+            FodotPredicateTermDeclaration actionPred = createPredicateTermDeclaration(
                     actionPredSentence.getName().getValue(),
                     types,
                     trans.getActionType()
@@ -78,7 +78,7 @@ public class GdlCastHelper {
 //                    ),
 //                    trans.getActionType()
 //            );
-            FodotPredicateTermDeclaration actionTerm = createPredicateDomainElementDeclaration(
+            FodotPredicateTermDeclaration actionTerm = createPredicateTermDeclaration(
                     actionPred.getName(),
                     FodotType.getSameTypeList(
                             actionPred.getAmountOfArgumentTypes(),
