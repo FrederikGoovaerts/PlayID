@@ -18,7 +18,8 @@ public class FodotInductiveDefinitionConnector extends FodotSentenceElementConne
 	 * @param body
 	 */
 	private FodotInductiveDefinitionConnector(String arrow, IFodotFormula head, IFodotFormula body) {
-		super(arrow, Arrays.asList(new IFodotFormula[]{head, body}));		
+		super(arrow, Arrays.asList(new IFodotFormula[]{head, body}));	
+		setShouldPrintBrackets(false);
 	}
 	
 	public FodotInductiveDefinitionConnector(FodotPredicate head, IFodotFormula body) {

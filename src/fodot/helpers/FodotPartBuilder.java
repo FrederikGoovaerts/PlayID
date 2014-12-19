@@ -15,7 +15,6 @@ import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.includes.FodotIncludeLibrary;
 import fodot.objects.procedure.FodotProcedure;
 import fodot.objects.procedure.FodotProcedures;
-import fodot.objects.sentence.IFodotSentenceElement;
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.formulas.connectors.FodotFormulaConnector;
@@ -40,6 +39,9 @@ import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionConnector;
 import fodot.objects.theory.definitions.FodotInductiveFunction;
+import fodot.objects.theory.definitions.FodotInductiveQuantifier;
+import fodot.objects.theory.definitions.FodotInductiveSentence;
+import fodot.objects.theory.definitions.IFodotInductiveDefinitionElement;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
@@ -385,7 +387,8 @@ public class FodotPartBuilder {
 
 	//INDUCTIVE DEFINITIONS
 
-	public static FodotInductiveDefinitionBlock createInductiveDefinition(List<FodotSentence> sentences) {
+	//TODO: rename this to "inductivedefinitionblock"?
+	public static FodotInductiveDefinitionBlock createInductiveDefinition(List<FodotInductiveSentence> sentences) {
 		return new FodotInductiveDefinitionBlock(sentences);
 	}
 
@@ -400,7 +403,21 @@ public class FodotPartBuilder {
 	public static FodotInductiveFunction createInductiveFunctionHead(FodotFunction function, IFodotTerm functionResult) {
 		return new FodotInductiveFunction(function, functionResult);
 	}
+	
+	public static FodotInductiveQuantifier createInductiveQuantifier(FodotQuantifier quantifier) {
+		if (! (quantifier.getFormula() instanceof IFodotInductiveDefinitionElement) ) {
+			throw new IllegalArgumentException(
+					"This is not an inductive definition element: " + quantifier.getFormula());
+		}
+		return new FodotInductiveQuantifier(
+				quantifier.getSymbol(), quantifier.getVariable(),
+				(IFodotInductiveDefinitionElement) quantifier.getFormula());
+	}
 
+	public static FodotInductiveQuantifier createInductiveForAll(Set<FodotVariable> var, IFodotInductiveDefinitionElement form) {
+		return new FodotInductiveQuantifier(FORALL_SYMBOL, var, form);
+	}
+	
 	//SENTENCE	
 	public static FodotSentence createSentence(IFodotFormula formula) {
 		formula = FormulaUtil.makeVariableFree(formula);

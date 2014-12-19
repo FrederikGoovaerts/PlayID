@@ -10,6 +10,7 @@ public class FodotQuantifier implements IFodotFormula {
 	private String symbol;
 	private Set<FodotVariable> variables;
 	private IFodotFormula formula;
+	private boolean shouldShowBrackets = true;
 
 	/* VALID SYMBOL */
 //	private static final List<String> VALID_SYMBOLS =
@@ -26,37 +27,59 @@ public class FodotQuantifier implements IFodotFormula {
 		this.variables = variable;
 	}
 
+	//Symbol
 	public String getSymbol() {
 		return symbol;
 	}
 
+	//Variable
 	public Set<FodotVariable> getVariable() {
 		return variables;
 	}
-	
+
+	//Formula	
 	public IFodotFormula getFormula() {
 		return formula;
 	}
-	
+
+	//Brackets
+
+	protected boolean shouldShowBrackets() {
+		return shouldShowBrackets;
+	}
+
+	protected void setShouldShowBrackets(boolean shouldShowBrackets) {
+		this.shouldShowBrackets = shouldShowBrackets;
+	}
+
+
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		Set<FodotVariable> formulaVars = getFormula().getFreeVariables();
 		//Remove the var that is being quantized by this formula
 		formulaVars.removeAll(getVariable());
 		return formulaVars;
- 	}
+	}
 
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("(" + getSymbol() + " ");
+		if (shouldShowBrackets()) {
+			builder.append("(");
+		}
+		
+		builder.append(getSymbol() + " ");
 		for (FodotVariable var : variables) {
 			builder.append(var.getName() + " [" + var.getType().getName() + "] ");
 		}
-		builder.append(" : " + getFormula().toCode()+")");
+		builder.append(" : " + getFormula().toCode());
+		
+		if (shouldShowBrackets()) {
+			builder.append(")");
+		}
 		return builder.toString();
 	}
-	
+
 	public boolean isValidSymbol(String symbol) {
 		return symbol.matches(VALID_QUANTIFIER_REGEX);
 	}
@@ -65,7 +88,7 @@ public class FodotQuantifier implements IFodotFormula {
 	public String toString() {
 		return "[quantifier ("+ getSymbol() +") "+getVariable()+" in "+getFormula()+"]";
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -103,7 +126,7 @@ public class FodotQuantifier implements IFodotFormula {
 			return false;
 		return true;
 	}
-	
-	
+
+
 
 }
