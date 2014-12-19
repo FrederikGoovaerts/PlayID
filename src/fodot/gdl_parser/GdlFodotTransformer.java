@@ -241,6 +241,35 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     /*** End of Actions subsection ***/
 
+    /*************************************
+     * Next rules
+     */
+
+    private Map<FodotPredicateDeclaration,Set<IFodotFormula>> nextMap;
+
+    private void addNext(FodotPredicateDeclaration predicate, IFodotFormula condition) {
+        if(nextMap.containsKey(predicate)){
+            nextMap.get(predicate).add(condition);
+        } else {
+            Set<IFodotFormula> newSet = new HashSet<>();
+            newSet.add(condition);
+            nextMap.put(predicate,newSet);
+        }
+    }
+
+    /*** End of Next rules subsection ***/
+
+    /*************************************
+     * Terminals
+     */
+
+    Set<IFodotFormula> terminalSet;
+
+    private void addTerminal(IFodotFormula condition) {
+        this.terminalSet.add(condition);
+    }
+
+    /*** End of Terminals subsection ***/
 
     /*************************************
      * Score
@@ -248,9 +277,18 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     private Map<Pair<String, Integer>,Set<IFodotFormula>> scoreMap;
 
-    private void addScore(Pair<String, Integer> score, IFodotFormula condition) {
+    public Map<Pair<String, Integer>,Set<IFodotFormula>> getScoreMap(){
+        return new HashMap<>(scoreMap);
+    }
 
-        //TODO
+    private void addScore(Pair<String, Integer> score, IFodotFormula condition) {
+        if(scoreMap.containsKey(score)){
+            scoreMap.get(score).add(condition);
+        } else {
+            Set<IFodotFormula> newSet = new HashSet<>();
+            newSet.add(condition);
+            scoreMap.put(score,newSet);
+        }
     }
 
     /*** End of Score subsection ***/
@@ -263,6 +301,8 @@ public class GdlFodotTransformer implements GdlTransformer{
         this.initialValues = new HashMap<>();
         this.staticValues = new HashMap<>();
         this.scoreMap = new HashMap<>();
+        this.nextMap = new HashMap<>();
+        this.terminalSet = new HashSet<>();
         this.processingRules = false;
         this.buildDefaultTypes();
         this.pool = new LTCPool(this.timeType);
@@ -361,7 +401,6 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     }
 
-
     @Override
     public void processNextRule(GdlRule rule) {
         if(!rule.getHead().getName().getValue().equals("next"))
@@ -382,6 +421,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         );
         
         //add the combination as a next rule
+        this.addNext(this.getPool().getPredicate(predSentence.getName().getValue()),condition);
     }
 
     @Override
@@ -412,8 +452,19 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     @Override
     public void processTerminalRule(GdlRule rule) {
+        if(!rule.getHead().getName().getValue().equals("terminal"))
+            throw new IllegalArgumentException("Rule is not a terminal rule!");
         this.processingRules = true;
-        //TODO
+        HashMap<GdlVariable, FodotVariable> variableMap = new HashMap<>();
+
+        IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
+                rule.getBody(),
+                variableMap,
+                this
+        );
+
+        this.addTerminal(condition);
+
     }
 
     @Override
