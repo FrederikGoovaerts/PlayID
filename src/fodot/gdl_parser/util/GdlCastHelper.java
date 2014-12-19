@@ -7,6 +7,7 @@ import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
+import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import org.ggp.base.util.gdl.grammar.*;
 
@@ -65,13 +66,22 @@ public class GdlCastHelper {
             for (int i = 0; i < actionPredSentence.arity(); i++) {
                 types.add(trans.getAllType());
             }
-            FodotPredicateDeclaration actionPred = new FodotPredicateDeclaration(
+            FodotPredicateTermDeclaration actionPred = createPredicateDomainElementDeclaration(
                     actionPredSentence.getName().getValue(),
-                    types
+                    types,
+                    trans.getActionType()
             );
-            FodotConstant action = createConstant(
-                    buildActionPredicateRepresentation(
-                            actionPred,
+//            FodotConstant action = createConstant(
+//                    buildActionPredicateRepresentation(
+//                            actionPred,
+//                            trans.getAllType()
+//                    ),
+//                    trans.getActionType()
+//            );
+            FodotPredicateTermDeclaration actionTerm = createPredicateDomainElementDeclaration(
+                    actionPred.getName(),
+                    FodotType.getSameTypeList(
+                            actionPred.getAmountOfArgumentTypes(),
                             trans.getAllType()
                     ),
                     trans.getActionType()
@@ -97,7 +107,7 @@ public class GdlCastHelper {
                     trans.getDoPredicate(),
                     createVariable("t",trans.getTimeType()),
                     createConstant("p_" + playerName,trans.getPlayerType()),
-                    createPredicate(actionPred,actionVariables)
+                    createPredicateTerm(actionPred, actionVariables)
             );
         } else if(relation.getName().toString().equals("true")) {
             // process (true (*fluentpred*))
@@ -166,22 +176,6 @@ public class GdlCastHelper {
             );
         }
     }
-
-    private static String buildActionPredicateRepresentation(
-            FodotPredicateDeclaration decl,
-            FodotType allType){
-        StringBuilder b = new StringBuilder();
-        b.append(decl.getName() + "(");
-        for (int i = 0; i < decl.getAmountOfArgumentTypes(); i++) {
-            if(i>0) {
-                b.append(",");
-            }
-            b.append(allType.getName());
-        }
-        b.append(")");
-        return b.toString();
-    }
-
     private static IFodotFormula generateDistinct(
             GdlDistinct distinct,
             HashMap<GdlVariable,FodotVariable> variables,
