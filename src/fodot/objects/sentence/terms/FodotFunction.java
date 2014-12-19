@@ -24,7 +24,7 @@ public class FodotFunction extends FodotAbstractArgumentList implements IFodotTe
 
 	@Override
 	public FodotType getType() {
-		return ((FodotFunctionDeclaration)getDeclaration()).getReturnType();
+		return getDeclaration().getReturnType();
 	}
 
 	
