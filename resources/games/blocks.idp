@@ -1,0 +1,66 @@
+include <LTC>
+
+LTCvocabulary V {
+type ScoreType isa nat
+type Player constructed from {p_robot,robot}
+type all constructed from {c_c,c_b,c_a,c_4,c_3,c_2,c_1}
+type Time isa nat
+type Action constructed from {u(all,all),s(all,all)}
+Start : Time
+partial Next(Time) : Time
+Score(Player) : ScoreType
+I_on(all,all)
+clear(Time,all)
+terminalTime(Time)
+do(Time,Player,Action)
+C_step(Time,all)
+I_clear(all)
+on(Time,all,all)
+I_table(all)
+succ(all,all)
+C_on(Time,all,all)
+C_table(Time,all)
+table(Time,all)
+step(Time,all)
+C_clear(Time,all)
+I_step(all)
+}
+theory T: V {
+{ 
+	(! t [Time]  : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2)).
+	Next(0) = 1.
+}
+{ 
+	(! var6 [all]  : table(Start,var6) <- I_table(var6)).
+	(! var7 [Time] var6 [all]  : table(Next(var7),var6) <- C_table(var7,var6)).
+}
+{ 
+	(! var1 [all]  : clear(Start,var1) <- I_clear(var1)).
+	(! var2 [Time] var1 [all]  : clear(Next(var2),var1) <- C_clear(var2,var1)).
+}
+{ 
+	(! var3 [all] var4 [all]  : on(Start,var3,var4) <- I_on(var3,var4)).
+	(! var3 [all] var4 [all] var5 [Time]  : on(Next(var5),var3,var4) <- C_on(var5,var3,var4)).
+}
+{ 
+	(! var8 [all]  : step(Start,var8) <- I_step(var8)).
+	(! var9 [Time] var8 [all]  : step(Next(var9),var8) <- C_step(var9,var8)).
+}
+(! p [Player] t [Time]  : ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2) => (?=1 a [Action]  : do(t,p,a))).
+(! a [Action] t [Time] p [Player]  : do(t,p,a) => ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2)).
+}
+structure S : V {
+Start = 0
+Time = {0..20}
+ScoreType = {0..100}
+Score = {p_robot -> 100}
+I_table = {c_a;c_b}
+I_step = {c_1}
+I_on = {c_c,c_a}
+I_clear = {c_c;c_b}
+succ = {c_3,c_4;c_2,c_3;c_1,c_2}
+}
+procedure main() {
+stdoptions.nbmodels=5
+printmodels(modelexpand(T,S))
+}

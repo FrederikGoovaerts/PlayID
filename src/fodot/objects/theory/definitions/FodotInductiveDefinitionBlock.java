@@ -9,29 +9,29 @@ import fodot.objects.theory.FodotSentence;
 
 public class FodotInductiveDefinitionBlock implements IFodotElement {
 
-	private List<FodotSentence> elements;
+	private List<FodotInductiveSentence> elements;
 	
 	public FodotInductiveDefinitionBlock(
-			List<FodotSentence> elements) {
+			List<FodotInductiveSentence> elements) {
 		super();
 		this.elements = elements;
 	}
 	
 	/* Elements control */
 	
-	public List<FodotSentence> getElements() {
-		return new ArrayList<FodotSentence>(elements);
+	public List<FodotInductiveSentence> getElements() {
+		return new ArrayList<FodotInductiveSentence>(elements);
 	}
 	
-	public void addElement(FodotSentence element) {
+	public void addElement(FodotInductiveSentence element) {
 		elements.add(element);
 	}
 	
-	public void removeElement(FodotSentence element) {
+	public void removeElement(FodotInductiveSentence element) {
 		elements.remove(element);
 	}
 	
-	public boolean containsElement(FodotSentence element) {
+	public boolean containsElement(FodotInductiveSentence element) {
 		return elements.contains(element);
 	}
 
@@ -41,7 +41,7 @@ public class FodotInductiveDefinitionBlock implements IFodotElement {
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{ \n");
-		for (FodotSentence element : elements) {
+		for (FodotInductiveSentence element : elements) {
 			builder.append("\t"+element.toCode()+"\n");
 		}		
 		builder.append("}");
