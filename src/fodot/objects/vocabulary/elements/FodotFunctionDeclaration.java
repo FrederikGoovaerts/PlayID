@@ -62,6 +62,13 @@ public class FodotFunctionDeclaration extends FodotArgumentListDeclaration {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "FodotFunctionDeclaration [returnType=" + returnType
+				+ ", isPartial=" + isPartial + ", getName()=" + getName()
+				+ ", getArgumentTypes()=" + getArgumentTypes() + "]";
+	}
 	
 	
     
