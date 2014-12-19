@@ -84,6 +84,10 @@ public class FodotTypeDeclaration implements IFodotElement {
 				+ (shouldShowDomain() && getType().hasDomainElements() ? " constructed from " + CollectionUtil.toDomain(CollectionUtil.toCode(getType().getDomainElements())) : "" );
 	}
     /************************************/
-    
+
+	@Override
+	public String toString() {
+		return "FodotTypeDeclaration [getType()=" + getType() + "]";
+	}
     
 }

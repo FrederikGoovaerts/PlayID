@@ -306,5 +306,12 @@ public class FodotType implements IFodotElement {
 		return getName();
 	}
 
+	@Override
+	public String toString() {
+		return "FodotType [declaration=" + declaration + ", name=" + name
+				+ ", domain=" + domain + ", subtypes=" + subtypes
+				+ ", supertypes=" + supertypes + "]";
+	}
+
 
 }

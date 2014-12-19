@@ -73,6 +73,16 @@ public class FodotPredicateTermDeclaration extends
 		return true;
 	}
 
+
+	@Override
+	public String toString() {
+		return "FodotPredicateTermDeclaration [getType()=" + getType()
+				+ ", getName()=" + getName() + ", getArgumentTypes()="
+				+ getArgumentTypes() + "]";
+	}
+	
+	
+
 	
 	
 }
