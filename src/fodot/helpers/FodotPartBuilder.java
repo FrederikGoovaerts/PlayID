@@ -437,7 +437,7 @@ public class FodotPartBuilder {
 		return new FodotPredicateDeclaration(name, argumentTypes);
 	}
 
-	public static FodotPredicateTermDeclaration createPredicateDomainElementDeclaration(String name, List<FodotType> argumentTypes, FodotType type) {
+	public static FodotPredicateTermDeclaration createPredicateTermDeclaration(String name, List<FodotType> argumentTypes, FodotType type) {
 		return new FodotPredicateTermDeclaration(name, argumentTypes, type);
 	} 
 
