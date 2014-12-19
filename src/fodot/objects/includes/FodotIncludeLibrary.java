@@ -11,7 +11,7 @@ public class FodotIncludeLibrary extends FodotInclude {
 
 	@Override
 	public String toCode() {
-		return "include <" + getToInclude() + ">";
+		return "include < " + getToInclude() + " >";
 	}
 
 	@Override

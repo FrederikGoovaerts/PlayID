@@ -76,7 +76,7 @@ public class GdlCastHelper {
                     ),
                     trans.getActionType()
             );
-            List<IFodotSentenceElement> actionVariables = new ArrayList<>();
+            List<IFodotTerm> actionVariables = new ArrayList<>();
             for (GdlTerm term : actionPredSentence.getBody()) {
                 //GdlSentence sentence = gdlTerm.toSentence();
                 IFodotTerm actionVar;
@@ -106,12 +106,12 @@ public class GdlCastHelper {
             FodotPredicateDeclaration decl = trans.getPool().getPredicate(
                     fluentPredSentence.getName().getValue());
 
-            List<IFodotSentenceElement> elements = new ArrayList<>();
+            List<IFodotTerm> elements = new ArrayList<>();
             elements.add(createVariable("t",trans.getTimeType()));
 
             for (int i = 0; i < fluentPredSentence.arity(); i++) {
                 GdlTerm term = fluentPredSentence.get(i);
-                IFodotSentenceElement element;
+                IFodotTerm element;
                 if(term.isGround()){
                     element = createConstant("c_" + term.toSentence().getName().getValue(),
                             trans.getAllType());
@@ -138,11 +138,11 @@ public class GdlCastHelper {
             FodotPredicateDeclaration decl = trans.getPool().getPredicate(
                     relation.getName().getValue());
 
-            List<IFodotSentenceElement> elements = new ArrayList<>();
+            List<IFodotTerm> elements = new ArrayList<>();
 
             for (int i = 0; i < relation.arity(); i++) {
                 GdlTerm term = relation.get(i);
-                IFodotSentenceElement element;
+                IFodotTerm element;
                 if(term.isGround()){
                     element = createConstant("c_" + term.toSentence().getName().getValue(),
                             trans.getAllType());

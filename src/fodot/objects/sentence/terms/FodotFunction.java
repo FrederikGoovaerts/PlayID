@@ -9,8 +9,13 @@ import fodot.objects.vocabulary.elements.FodotType;
 
 public class FodotFunction extends FodotAbstractArgumentList implements IFodotTerm {
 	
-	public FodotFunction(FodotFunctionDeclaration decl, List<IFodotSentenceElement> arguments) {
+	public FodotFunction(FodotFunctionDeclaration decl, List<IFodotTerm> arguments) {
 		super(decl, arguments);
+	}
+	
+	@Override
+	public FodotFunctionDeclaration getDeclaration() {
+		return ((FodotFunctionDeclaration) super.getDeclaration());
 	}
 	
 	@Override

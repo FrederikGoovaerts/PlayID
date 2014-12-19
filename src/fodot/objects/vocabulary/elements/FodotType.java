@@ -22,7 +22,7 @@ public class FodotType implements IFodotElement {
 
 	private FodotTypeDeclaration declaration;
 	private String name;
-	private Set<FodotConstant> domain = new HashSet<>();
+	private Set<IFodotDomainElement> domain = new HashSet<>();
 	private Set<FodotType> subtypes;
 	private Set<FodotType> supertypes;
 
@@ -30,7 +30,7 @@ public class FodotType implements IFodotElement {
 	 * Constructor
 	 **************************************************************************/
 
-	public FodotType(String typeName, Set<FodotConstant> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
+	public FodotType(String typeName, Set<IFodotDomainElement> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
 		setName(typeName);
 		setDomain(domain);
 		setSupertypes(supertypes);
@@ -256,7 +256,7 @@ public class FodotType implements IFodotElement {
 		}
 		return false;
 	}
-
+	
 	/************************************/
 
 
@@ -264,9 +264,9 @@ public class FodotType implements IFodotElement {
 	 * Domain elements in type declaration
 	 */
 
-	private void setDomain(Set<FodotConstant> domain) {
+	private void setDomain(Set<IFodotDomainElement> domain) {
 		if (domain == null) {
-			this.domain = new HashSet<FodotConstant>();
+			this.domain = new HashSet<IFodotDomainElement>();
 		} else {
 			this.domain = domain;
 		}
@@ -276,16 +276,16 @@ public class FodotType implements IFodotElement {
 		domain.add(element);
 	}
 
-	public void addAllDomainElements(Set<FodotConstant> elements) {
+	public void addAllDomainElements(Set<IFodotDomainElement> elements) {
 		domain.addAll(elements);
 	}
 
-	public boolean containsElement(FodotConstant element){
+	public boolean containsElement(IFodotDomainElement element){
 		return domain.contains(element);
 	}
 
-	public Set<FodotConstant> getDomainElements() {
-		return new HashSet<FodotConstant>(domain);
+	public Set<IFodotDomainElement> getDomainElements() {
+		return new HashSet<IFodotDomainElement>(domain);
 	}
 
 	public boolean hasDomainElements() {
