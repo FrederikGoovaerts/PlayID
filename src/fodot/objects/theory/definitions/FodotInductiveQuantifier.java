@@ -2,7 +2,6 @@ package fodot.objects.theory.definitions;
 
 import java.util.Set;
 
-import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.formulas.quantifiers.FodotQuantifier;
 import fodot.objects.sentence.terms.FodotVariable;
 

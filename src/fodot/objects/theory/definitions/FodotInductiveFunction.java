@@ -3,7 +3,6 @@ package fodot.objects.theory.definitions;
 import java.util.Set;
 
 import fodot.exceptions.IllegalTypeException;
-import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.FodotFunction;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
