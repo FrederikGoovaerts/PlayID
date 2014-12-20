@@ -404,6 +404,11 @@ public class FodotPartBuilder {
 		return new FodotInductiveFunction(function, functionResult);
 	}
 	
+	public static FodotInductiveSentence createInductiveSentence(IFodotInductiveDefinitionElement form) {
+		form = FormulaUtil.makeVariableFreeInductive(form);
+		return new FodotInductiveSentence(form);
+	}
+	
 	public static FodotInductiveQuantifier createInductiveQuantifier(FodotQuantifier quantifier) {
 		if (! (quantifier.getFormula() instanceof IFodotInductiveDefinitionElement) ) {
 			throw new IllegalArgumentException(
