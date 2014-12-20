@@ -312,6 +312,14 @@ public class FodotType implements IFodotElement {
 				+ ", domain=" + domain + ", subtypes=" + subtypes
 				+ ", supertypes=" + supertypes + "]";
 	}
+	
+	public Set<FodotType> getPrerequisiteTypes() {
+		Set<FodotType> result = new HashSet<FodotType>();
+		for (IFodotDomainElement el : getDomainElements()) {
+			result.addAll(el.getRequiredTypes());
+		}		
+		return result;
+	}
 
 
 }

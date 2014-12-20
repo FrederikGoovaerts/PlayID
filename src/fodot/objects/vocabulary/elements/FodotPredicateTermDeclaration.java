@@ -1,6 +1,8 @@
 package fodot.objects.vocabulary.elements;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import fodot.util.CollectionUtil;
 
@@ -79,6 +81,20 @@ public class FodotPredicateTermDeclaration extends
 		return "FodotPredicateTermDeclaration [getType()=" + getType()
 				+ ", getName()=" + getName() + ", getArgumentTypes()="
 				+ getArgumentTypes() + "]";
+	}
+
+
+	@Override
+	public Set<FodotType> getRequiredTypes() {
+		Set<FodotType> result = new HashSet<FodotType>();
+		//Check all arguments
+		for (FodotType arg : getArgumentTypes()) {
+			result.addAll(arg.getPrerequisiteTypes());
+		}
+		//
+		result.addAll(getArgumentTypes());
+		
+		return result;
 	}
 	
 	

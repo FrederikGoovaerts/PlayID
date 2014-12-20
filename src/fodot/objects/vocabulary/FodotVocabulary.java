@@ -2,12 +2,14 @@ package fodot.objects.vocabulary;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import fodot.objects.IFodotElement;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
+import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.util.NameUtil;
 
@@ -141,8 +143,21 @@ public class FodotVocabulary implements IFodotElement {
 		StringBuilder builder = new StringBuilder();
 		builder.append("vocabulary " + getName() + " {\n");
 
+		//TO CODE TYPES: IN THE RIGHT ORDER
+		LinkedList<FodotTypeDeclaration> allTypes = new LinkedList<FodotTypeDeclaration>(getTypes());
+		Set<FodotType> printedTypes = new HashSet<FodotType>();
+		while (!allTypes.isEmpty()) {
+			FodotTypeDeclaration current = allTypes.poll();
+			FodotType currentType = current.getType();
+			if (printedTypes.containsAll(currentType.getPrerequisiteTypes())) {
+				builder.append(current.toCode() + "\n");
+				printedTypes.add(currentType);
+			}
+		}		
+		
+		
+		//STRINGIFY FUNCTIONS&PREDICATES
 		List<IFodotElement> toStringify = new ArrayList<IFodotElement>();
-		toStringify.addAll(getTypes());
 		toStringify.addAll(getFunctions());
 		toStringify.addAll(getPredicates());
 

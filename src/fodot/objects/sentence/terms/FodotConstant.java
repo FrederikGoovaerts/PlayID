@@ -78,6 +78,11 @@ public class FodotConstant implements IFodotTerm, IFodotDomainElement {
 			return false;
 		return true;
 	}
+
+	@Override
+	public Set<FodotType> getRequiredTypes() {
+		return new HashSet<FodotType>();
+	}
 	
 	
 }
