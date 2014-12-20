@@ -152,6 +152,8 @@ public class FodotVocabulary implements IFodotElement {
 			if (printedTypes.containsAll(currentType.getPrerequisiteTypes())) {
 				builder.append(current.toCode() + "\n");
 				printedTypes.add(currentType);
+			} else {
+				allTypes.add(current);
 			}
 		}		
 		
