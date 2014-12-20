@@ -15,6 +15,8 @@ import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.theory.FodotSentence;
 import fodot.objects.theory.FodotTheory;
+import fodot.objects.theory.definitions.FodotInductiveDefinitionConnector;
+import fodot.objects.theory.definitions.FodotInductiveSentence;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
@@ -175,7 +177,7 @@ public class FodotGameFactory {
          * }
          */
         for (FodotPredicateDeclaration declaration : pool.getFluentPredicates()) {
-            List<FodotSentence> definitions = new ArrayList<>();
+            List<FodotInductiveSentence> definitions = new ArrayList<>();
 
             int originalArity = declaration.getAmountOfArgumentTypes();
 
@@ -191,15 +193,14 @@ public class FodotGameFactory {
                 varSet.add(newVar);
             }
 
-            definitions.add(createSentence(
-                    createForAll(
-                            varSet,
+            definitions.add(
+                    createInductiveSentence(
                             createInductiveDefinitionConnector(
-                                    createPredicate(pool.getTimedVerionOf(declaration),argList),
-                                    createPredicate(pool.getInitialOf(declaration),iArgList)
-                                    )
+                                    createPredicate(pool.getTimedVerionOf(declaration), argList),
+                                    createPredicate(pool.getInitialOf(declaration), iArgList)
+                            )
                     )
-            ));
+            );
 
             argList = new ArrayList<>(iArgList);
             List<IFodotTerm> cArgList = new ArrayList<>(iArgList);
@@ -211,13 +212,15 @@ public class FodotGameFactory {
             cArgList.add(0,timeVar);
             varSet.add(timeVar);
 
-            definitions.add(createSentence(
-                    createForAll(
-                            varSet,
-                            createInductiveDefinitionConnector(
-                                    createPredicate(pool.getTimedVerionOf(declaration),argList),
-                                    createPredicate(pool.getCauseOf(declaration),cArgList)
-                            )
+            definitions.add(createInductiveSentence(
+                    createInductiveQuantifier(
+                        createForAll(
+                                varSet,
+                                createInductiveDefinitionConnector(
+                                        createPredicate(pool.getTimedVerionOf(declaration),argList),
+                                        createPredicate(pool.getCauseOf(declaration),cArgList)
+                                )
+                        )
                     )
             ));
 
@@ -234,9 +237,9 @@ public class FodotGameFactory {
          */
         Map<FodotPredicateDeclaration, Set<Pair<FodotPredicate, IFodotFormula>>> nextMap = source.getNextMap();
         for (FodotPredicateDeclaration predicate : nextMap.keySet()) {
-            List<FodotSentence> definitions = new ArrayList<>();
+            List<FodotInductiveSentence> definitions = new ArrayList<>();
             for (Pair<FodotPredicate, IFodotFormula> pair : nextMap.get(predicate)) {
-                definitions.add(createSentence(createInductiveDefinitionConnector(pair.left, pair.right)));
+                definitions.add(createInductiveSentence(createInductiveDefinitionConnector(pair.left, pair.right)));
             }
             toReturn.addInductiveDefinition(createInductiveDefinition(definitions));
         }
@@ -273,22 +276,22 @@ public class FodotGameFactory {
          * }
          */
         Map<Pair<String, Integer>, Set<IFodotFormula>> scoreMap = source.getScoreMap();
-        List<FodotSentence> definitions = new ArrayList<>();
+        List<FodotInductiveSentence> definitions = new ArrayList<>();
         for (Pair<String, Integer> scorePair: scoreMap.keySet()) {
             String playerName = scorePair.left;
             int score = scorePair.right;
             for (IFodotFormula formula : scoreMap.get(scorePair)) {
                 definitions.add(
-                        createSentence(createInductiveDefinitionConnector(
-                                createInductiveFunctionHead(
-                                        createFunction(
-                                                scoreFunctionDeclaration,
-                                                createConstant(playerName,source.getPlayerType())
-                                        ),
-                                        createConstant(Integer.toString(score),source.getScoreType())
-                                ), FormulaUtil.makeVariableFree(formula)
+                        createInductiveSentence(createInductiveDefinitionConnector(
+                                        createInductiveFunctionHead(
+                                                createFunction(
+                                                        scoreFunctionDeclaration,
+                                                        createConstant("p_" + playerName, source.getPlayerType())
+                                                ),
+                                                createConstant(Integer.toString(score), source.getScoreType())
+                                        ), FormulaUtil.makeVariableFree(formula)
+                                )
                         )
-                    )
                 );
             }
         }
@@ -306,11 +309,11 @@ public class FodotGameFactory {
         definitions = new ArrayList<>();
         for (IFodotFormula formula : source.getTerminalSet()) {
             definitions.add(
-                    createSentence(
+                    createInductiveSentence(
                             createInductiveDefinitionConnector(
                                     createPredicate(
                                             this.terminalTimePredicateDeclaration,
-                                            createVariable("t",source.getTimeType())
+                                            createVariable("t", source.getTimeType())
                                     ),
                                     formula
                             )
@@ -468,22 +471,24 @@ public class FodotGameFactory {
          *    Next(0) = 1.
          * }
          */
-        List<FodotSentence> definitions = new ArrayList<>();
+        List<FodotInductiveSentence> definitions = new ArrayList<>();
         definitions.add(
-                createSentence(
-                        createForAll(t_Time,
-                                createInductiveDefinitionConnector(
-                                        createInductiveFunctionHead(
-                                                createFunction(this.nextFunctionDeclaration, t_Time),
-                                                createAddition(t_Time,createInteger(1))
-                                        ), createAnd(
-                                                createNot(createPredicate(
-                                                        this.terminalTimePredicateDeclaration,
-                                                        t_Time)),
-                                                createExists(t2_Time,
-                                                        createEquals(createFunction(
-                                                                        this.nextFunctionDeclaration, t_Time),
-                                                                t2_Time)
+                createInductiveSentence(
+                        createInductiveQuantifier(
+                                createForAll(t_Time,
+                                        createInductiveDefinitionConnector(
+                                                createInductiveFunctionHead(
+                                                        createFunction(this.nextFunctionDeclaration, t_Time),
+                                                        createAddition(t_Time, createInteger(1))
+                                                ), createAnd(
+                                                        createNot(createPredicate(
+                                                                this.terminalTimePredicateDeclaration,
+                                                                t_Time)),
+                                                        createExists(t2_Time,
+                                                                createEquals(createFunction(
+                                                                                this.nextFunctionDeclaration, t_Time),
+                                                                        t2_Time)
+                                                        )
                                                 )
                                         )
                                 )
@@ -491,9 +496,8 @@ public class FodotGameFactory {
                 )
         );
         definitions.add(
-                createSentence(
-                        createEquals(
-                                createFunction(this.nextFunctionDeclaration,createConstant("0",source.getTimeType())),
+                createInductiveSentence(
+                        createInductiveFunctionHead(createFunction(this.nextFunctionDeclaration,createConstant("0",source.getTimeType())),
                                 createConstant("1", source.getTimeType())
                         )
                 )

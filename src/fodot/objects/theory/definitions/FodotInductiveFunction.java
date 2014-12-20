@@ -10,7 +10,7 @@ import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotType;
 
 
-public class FodotInductiveFunction implements IFodotFormula {
+public class FodotInductiveFunction implements IFodotInductiveDefinitionElement {
 	private FodotFunction function;
 	private IFodotTerm functionResult;
 	

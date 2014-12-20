@@ -532,7 +532,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         List<IFodotTerm> list =
                 Arrays.asList(
                         createVariable("t", timeType),
-                        createConstant(player, playerType),
+                        createConstant("p_" + player, playerType),
                         actionTerm
                 );
 
