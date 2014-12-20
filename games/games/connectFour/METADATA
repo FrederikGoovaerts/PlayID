@@ -1,7 +1,0 @@
-{
-  "gameName": "Connect Four",  
-  "rulesheet": "connectFour.kif",  
-  "stylesheet": "connectFour.xsl",
-  "description": "connectFour.txt",
-  "user_interface": "connectFour.js"
-}
