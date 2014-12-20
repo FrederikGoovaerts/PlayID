@@ -486,8 +486,8 @@ public class FodotGameFactory {
                                                                 t_Time)),
                                                         createExists(t2_Time,
                                                                 createEquals(createFunction(
-                                                                                this.nextFunctionDeclaration, t_Time),
-                                                                        t2_Time)
+                                                                                this.nextFunctionDeclaration, t2_Time),
+                                                                        t_Time)
                                                         )
                                                 )
                                         )
