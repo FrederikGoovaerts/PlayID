@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fodot.objects.IFodotElement;
-import fodot.objects.theory.FodotSentence;
 
 
 public class FodotInductiveDefinitionBlock implements IFodotElement {
