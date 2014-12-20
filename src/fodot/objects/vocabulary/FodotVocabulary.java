@@ -1,9 +1,13 @@
 package fodot.objects.vocabulary;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import fodot.objects.IFodotElement;
@@ -11,6 +15,7 @@ import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
+import fodot.util.CollectionUtil;
 import fodot.util.NameUtil;
 
 public class FodotVocabulary implements IFodotElement {
@@ -144,18 +149,20 @@ public class FodotVocabulary implements IFodotElement {
 		builder.append("vocabulary " + getName() + " {\n");
 
 		//TO CODE TYPES: IN THE RIGHT ORDER
-		LinkedList<FodotTypeDeclaration> allTypes = new LinkedList<FodotTypeDeclaration>(getTypes());
-		Set<FodotType> printedTypes = new HashSet<FodotType>();
-		while (!allTypes.isEmpty()) {
-			FodotTypeDeclaration current = allTypes.poll();
-			FodotType currentType = current.getType();
-			if (printedTypes.containsAll(currentType.getPrerequisiteTypes())) {
-				builder.append(current.toCode() + "\n");
-				printedTypes.add(currentType);
-			} else {
-				allTypes.add(current);
-			}
-		}		
+		TypeDeclarationCodifier typeDeclCod = new TypeDeclarationCodifier(getTypes());
+		builder.append(typeDeclCod.createDeclarationBlock());
+//		LinkedList<FodotTypeDeclaration> allTypes = new LinkedList<FodotTypeDeclaration>(getTypes());
+//		Set<FodotType> printedTypes = new HashSet<FodotType>();
+//		while (!allTypes.isEmpty()) {
+//			FodotTypeDeclaration current = allTypes.poll();
+//			FodotType currentType = current.getType();
+//			if (printedTypes.containsAll(currentType.getPrerequisiteTypes())) {
+//				builder.append(current.toCode() + "\n");
+//				printedTypes.add(currentType);
+//			} else {
+//				allTypes.add(current);
+//			}
+//		}		
 		
 		
 		//STRINGIFY FUNCTIONS&PREDICATES
@@ -171,7 +178,84 @@ public class FodotVocabulary implements IFodotElement {
 		builder.append("}");
 		return builder.toString();
 	}
+ 
+	private class TypeDeclarationCodifier {
+		private List<FodotTypeDeclaration> toPrint;
+		private Set<FodotTypeDeclaration> alreadyTriedThisRound = new HashSet<FodotTypeDeclaration>();
+		private StringBuilder builder = new StringBuilder();
+		//Natural number and int does not have to be printed: add them as "printed"
+		private Set<FodotType> printed = new HashSet<FodotType>(Arrays.asList(FodotType.INTEGER, FodotType.NATURAL_NUMBER));
+				
+		public TypeDeclarationCodifier(Collection<? extends FodotTypeDeclaration> types) {
+			this.toPrint = new LinkedList<FodotTypeDeclaration>(types);
+		}
+		
+		
+		public String createDeclarationBlock() {
+			while (!toPrint.isEmpty()) {
+				tryPrinting(toPrint.get(0));
+			}		
+			
+			return builder.toString();
+		}
+		
+		private void tryPrinting(FodotTypeDeclaration current) {
+			FodotType currentType = current.getType();
+			/*Check if there's a loop like:
+			 * type A constructed from {u(B)}
+			 * type B constructed from {v(A)}
+			 */
+			if (alreadyTriedThisRound.contains(current)) {
+				throw new IllegalStateException(
+						"A loop has been detected in the order in which TypeDeclarations should be printed: \n"
+						+ CollectionUtil.toCoupleAsCode(alreadyTriedThisRound));
+			}
+			
+			//Check if printable
+			if (printed.containsAll(currentType.getPrerequisiteTypes())) {
+				print(current);
+			}
+			else {
+				alreadyTriedThisRound.add(current);
+				//Try printing the next type that printed does not contain
+				tryPrinting(getFirstNotPrinted(currentType));
+			}
+		}
+		
+		private FodotTypeDeclaration getFirstNotPrinted(FodotType type) {
+			Iterator<FodotType> it = type.getPrerequisiteTypes().iterator();
+			FodotType current = it.next();
+			while (printed.contains(current) && it.hasNext()) {
+				current = it.next();
+			}
+			FodotTypeDeclaration decl = current.getDeclaration();
+			
+			//Check for errors
+			if (printed.contains(current)) {
+				throw new IllegalStateException("Something has gone wrong in the typedeclaration block with " + current);
+			}
+			if (!toPrint.contains(decl)) {
+				throw new IllegalStateException("A type that wasn't declared is needed to be printed: " + decl);
+			}
+			
+			//return
+			return decl;
+		}
 
+
+		private void print(FodotTypeDeclaration decl) {
+			builder.append(decl.toCode() + "\n");
+			
+			//Add to printed, remove from toPrint
+			toPrint.remove(decl);
+			printed.add(decl.getType());
+			
+			//New round!
+			alreadyTriedThisRound.clear();
+		}
+
+	}
+	
 	/* MERGE */
 
 	public void merge(FodotVocabulary other) {
