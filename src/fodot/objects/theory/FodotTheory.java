@@ -6,6 +6,7 @@ import java.util.Set;
 import fodot.objects.IFodotElement;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
 import fodot.objects.vocabulary.FodotVocabulary;
+import fodot.util.CollectionUtil;
 
 public class FodotTheory implements IFodotElement {
 
@@ -97,14 +98,10 @@ public class FodotTheory implements IFodotElement {
 		builder.append("theory " + getName() + ": " + getVocabulary().getName() + " {\n");
 		
 		//Codify inductive definitions
-		for (FodotInductiveDefinitionBlock definition : getInductiveDefinitions()) {
-			builder.append(definition.toCode() + "\n");
-		}
+		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getInductiveDefinitions(),1));
 		
 		//Codify sentences
-		for (FodotSentence sentence : getSentences()) {
-			builder.append(sentence.toCode() + "\n");
-		}	
+		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getSentences(),1));
 		
 		builder.append("}");
 		return builder.toString();

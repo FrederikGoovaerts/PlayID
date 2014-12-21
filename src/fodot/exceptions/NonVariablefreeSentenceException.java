@@ -1,4 +1,4 @@
-package fodot.objects.theory;
+package fodot.exceptions;
 
 import fodot.objects.sentence.formulas.IFodotFormula;
 

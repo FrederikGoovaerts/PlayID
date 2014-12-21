@@ -1,6 +1,5 @@
 package fodot.objects.vocabulary;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -165,19 +164,14 @@ public class FodotVocabulary implements IFodotElement {
 		
 		
 		//STRINGIFY FUNCTIONS&PREDICATES
-		List<IFodotElement> toStringify = new ArrayList<IFodotElement>();
-		toStringify.addAll(getFunctions());
-		toStringify.addAll(getPredicates());
-
-		//Codify inductive definitions
-		for (IFodotElement el : toStringify) {
-			builder.append(el.toCode() + "\n");
-		}
+		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getFunctions(),1));
+		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getPredicates(),1));
 
 		builder.append("}");
 		return builder.toString();
 	}
  
+	//TODO: turn this into a sorter
 	private class TypeDeclarationCodifier {
 		private List<FodotTypeDeclaration> toPrint;
 		private Set<FodotTypeDeclaration> alreadyTriedThisRound = new HashSet<FodotTypeDeclaration>();
@@ -243,7 +237,7 @@ public class FodotVocabulary implements IFodotElement {
 
 
 		private void print(FodotTypeDeclaration decl) {
-			builder.append(decl.toCode() + "\n");
+			builder.append("\t"+decl.toCode() + "\n");
 			
 			//Add to printed, remove from toPrint
 			toPrint.remove(decl);

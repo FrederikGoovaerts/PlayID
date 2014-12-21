@@ -59,8 +59,8 @@ public class FodotProcedures implements IFodotElement {
 	public String toCode() {
 		return "procedure " + getName() +
 				(getArguments() != null ? CollectionUtil.toCouple(getArguments()) : "") + " {\n"
-				+ CollectionUtil.printStringList("", "", "\n", CollectionUtil.toCode(getProcedures()))
-				+ "\n}";
+				+ CollectionUtil.toNewLinesWithTabsAsCode(getProcedures(),1)
+				+ "}";
 	}
 
 	public void merge(FodotProcedures other) {

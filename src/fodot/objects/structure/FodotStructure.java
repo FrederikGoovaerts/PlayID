@@ -6,6 +6,7 @@ import java.util.List;
 import fodot.objects.IFodotElement;
 import fodot.objects.structure.enumerations.FodotEnumeration;
 import fodot.objects.vocabulary.FodotVocabulary;
+import fodot.util.CollectionUtil;
 
 public class FodotStructure implements IFodotElement {
 
@@ -72,9 +73,7 @@ public class FodotStructure implements IFodotElement {
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("structure "+getName() + " : " + getVocabulary().getName() + " {\n");
-		for (FodotEnumeration enumeration : enumerations) {
-			builder.append(enumeration.toCode() + "\n");
-		}
+		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(enumerations,1));
 		builder.append("}");
 		return builder.toString();
 	}

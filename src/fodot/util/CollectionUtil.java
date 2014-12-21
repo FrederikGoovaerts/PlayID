@@ -47,6 +47,14 @@ public class CollectionUtil {
 		return printStringList("", "", ",", new ArrayList<String>(list));
 	}
 	
+	public static String toNewLinesWithTabsAsCode(Collection<? extends IFodotElement> list, int tabs) {
+		StringBuilder prefixB = new StringBuilder();
+		for (int i = 0; i < tabs; i++) {
+			prefixB.append("\t");
+		}
+		String prefix = prefixB.toString();
+		return prefix + printStringList("","","\n"+prefix, toCode(list)) + "\n";
+	}
 	
 	public static String printStringList(String openingbracket, String closingBracket, String divider, List<?> list) {
 		StringBuilder builder = new StringBuilder();

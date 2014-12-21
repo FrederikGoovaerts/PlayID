@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fodot.objects.IFodotElement;
+import fodot.util.CollectionUtil;
 
 
 public class FodotInductiveDefinitionBlock implements IFodotElement {
@@ -39,11 +40,9 @@ public class FodotInductiveDefinitionBlock implements IFodotElement {
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("{ \n");
-		for (FodotInductiveSentence element : elements) {
-			builder.append("\t"+element.toCode()+"\n");
-		}		
-		builder.append("}");
+		builder.append("{\n");
+		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(elements,2));
+		builder.append("\t}");
 		return builder.toString();
 	}
 
