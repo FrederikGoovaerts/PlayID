@@ -1,7 +1,11 @@
 package fodot.util;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import fodot.objects.vocabulary.elements.FodotType;
 
 public class NameUtil {
 	/* STATIC HELPERS */
@@ -11,7 +15,7 @@ public class NameUtil {
 	private static List<String> allowedSpecialNames = Arrays.asList("-");
 	private static String alphanumericRegex = "[^a-zA-Z0-9]";
 
-	private static int varCounter = 1;
+	private static Map<String, Integer> prefixCounter = new HashMap<String, Integer>();
 
 	/**
 	 * Checks if the string is a valid name for a variable name in FodotIDP
@@ -30,7 +34,7 @@ public class NameUtil {
 	 * @param name
 	 * @return
 	 */
-	public static String convertToValidName(String name) {
+	public static String convertToValidName(String name, FodotType type) {
 		if (name != null) {
 			if (isValidName(name)) {
 				return name;
@@ -40,13 +44,29 @@ public class NameUtil {
 				return newName;
 			}
 		}
-		//If everything fails, just generate a random number as variable name (with a letter in front because it's required)
-		return generateVariableName();
+		return generateVariableName(type);
 	}
 	
-	public static synchronized String generateVariableName() {
-		//return "x" + Double.toString(Math.random()).replaceAll("0.", "").substring(0, 8);
-		//Temporary for readability of test output
-		return "var" + Integer.toString(varCounter++);
+	public static String convertToValidName(String name) {
+		return convertToValidName(name, null);
+	}
+	
+	private static synchronized String generateVariableName(String prefix) {
+		if (!prefixCounter.containsKey(prefix)) {
+			prefixCounter.put(prefix, 0);
+		}
+		prefixCounter.put(prefix, prefixCounter.get(prefix)+1);
+		return prefix + Integer.toString(prefixCounter.get(prefix));
+	}
+	
+	public static String generateVariableName(FodotType type) {
+		if (type == null) {
+			return generateVariableName();
+		}
+		return generateVariableName(type.getName().toLowerCase());
+	}
+	
+	public static String generateVariableName() {
+		return generateVariableName("var");
 	}
 }
