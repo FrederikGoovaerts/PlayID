@@ -1,7 +1,9 @@
 package fodot.objects.vocabulary.elements;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import fodot.exceptions.InvalidTermNameException;
 import fodot.objects.IFodotElement;
@@ -74,7 +76,12 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
     }
 
     /************************************/
-    
+
+
+	public Set<FodotType> getPrerequiredTypes() {
+		return new LinkedHashSet<FodotType>(getArgumentTypes());
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

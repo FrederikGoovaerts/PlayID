@@ -1,0 +1,95 @@
+include <LTC>
+
+LTCvocabulary V {
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type Player constructed from {p_robot}
+	type all constructed from {c_c,c_b,c_a,c_4,c_3,c_2,c_1}
+	type Action constructed from {u(all,all),s(all,all)}
+	do(Time,Player,Action)
+	terminalTime(Time)
+	type ScoreType isa nat
+	Score(Player) : ScoreType
+	clear(Time,all)
+	I_clear(all)
+	C_clear(Time,all)
+	on(Time,all,all)
+	I_on(all,all)
+	C_on(Time,all,all)
+	table(Time,all)
+	I_table(all)
+	C_table(Time,all)
+	step(Time,all)
+	I_step(all)
+	C_step(Time,all)
+	succ(all,all)
+}
+theory T: V {
+	(! a [Action] t [Time] p [Player]  : (do(t,p,a) => (~terminalTime(t) & (? t2 [Time]  : (Next(t) = t2))))).
+	(! p [Player] t [Time]  : ((~terminalTime(t) & (? t2 [Time]  : (Next(t) = t2))) => (?=1 a [Action]  : do(t,p,a)))).
+	{
+		! t [Time]  : Next(t) = (t + 1) <- (~terminalTime(t) & (? t2 [Time]  : (Next(t2) = t))).
+		Next(0) = 1.
+	}
+	{
+		! var33 [all]  : clear(Start,var33) <- I_clear(var33).
+		! var33 [all] var34 [Time]  : clear(Next(var34),var33) <- C_clear(var34,var33).
+	}
+	{
+		! var36 [all] var35 [all]  : on(Start,var35,var36) <- I_on(var35,var36).
+		! var37 [Time] var36 [all] var35 [all]  : on(Next(var37),var35,var36) <- C_on(var37,var35,var36).
+	}
+	{
+		! var38 [all]  : table(Start,var38) <- I_table(var38).
+		! var38 [all] var39 [Time]  : table(Next(var39),var38) <- C_table(var39,var38).
+	}
+	{
+		! var40 [all]  : step(Start,var40) <- I_step(var40).
+		! var40 [all] var41 [Time]  : step(Next(var41),var40) <- C_step(var41,var40).
+	}
+	{
+		! var19 [all] t [Time] var20 [all] var21 [all]  : C_table(t,var19) <- (do(t,p_robot,u(var20,var21)) & table(t,var19)).
+		! var18 [all] t [Time] var17 [all]  : C_table(t,var17) <- (do(t,p_robot,u(var17,var18))).
+		! var8 [all] var9 [all] var7 [all] t [Time]  : C_table(t,var7) <- (do(t,p_robot,s(var8,var9)) & table(t,var7) & ~(var8 = var7)).
+	}
+	{
+		! var27 [all] var28 [all] t [Time]  : C_step(t,var27) <- (step(t,var28) & succ(var28,var27)).
+	}
+	{
+		! var3 [all] var4 [all] var6 [all] var5 [all] t [Time]  : C_on(t,var3,var4) <- (do(t,p_robot,s(var5,var6)) & on(t,var3,var4)).
+		! var2 [all] t [Time] var1 [all]  : C_on(t,var1,var2) <- (do(t,p_robot,s(var1,var2))).
+		! var14 [all] var15 [all] var13 [all] t [Time] var16 [all]  : C_on(t,var13,var14) <- (do(t,p_robot,u(var15,var16)) & on(t,var13,var14) & ~(var15 = var13)).
+	}
+	{
+		! var23 [all] var22 [all] t [Time]  : C_clear(t,var22) <- (do(t,p_robot,u(var23,var22))).
+		! var24 [all] var26 [all] var25 [all] t [Time]  : C_clear(t,var24) <- (do(t,p_robot,u(var25,var26)) & clear(t,var24)).
+		! var10 [all] var12 [all] t [Time] var11 [all]  : C_clear(t,var10) <- (do(t,p_robot,s(var11,var12)) & clear(t,var10) & ~(var12 = var10)).
+	}
+	(! var30 [all] var29 [all] t [Time]  : (do(t,p_robot,s(var29,var30)) => (clear(t,var29) & table(t,var29) & clear(t,var30) & ~(var29 = var30)))).
+	(! var31 [all] var32 [all] t [Time]  : (do(t,p_robot,u(var31,var32)) => (clear(t,var31) & on(t,var31,var32)))).
+	{
+		Score(p_robot) = 100 <- (! t [Time]  : (terminalTime(t) => (on(t,c_a,c_b) & on(t,c_b,c_c)))).
+		Score(p_robot) = 0 <- (! t [Time]  : (terminalTime(t) => (~on(t,c_a,c_b)))).
+		Score(p_robot) = 0 <- (! t [Time]  : (terminalTime(t) => (~on(t,c_b,c_c)))).
+	}
+	{
+		! t [Time]  : terminalTime(t) <- (step(t,c_4)).
+		! t [Time]  : terminalTime(t) <- (on(t,c_a,c_b) & on(t,c_b,c_c)).
+	}
+}
+structure S : V {
+	Start = 0
+	Time = {0..20}
+	ScoreType = {0..100}
+	Score = {p_robot -> 100}
+	I_table = {c_b;c_a}
+	I_step = {c_1}
+	I_on = {c_c,c_a}
+	I_clear = {c_c;c_b}
+	succ = {c_3,c_4;c_2,c_3;c_1,c_2}
+}
+procedure main() {
+	stdoptions.nbmodels=5
+	printmodels(modelexpand(T,S))
+}

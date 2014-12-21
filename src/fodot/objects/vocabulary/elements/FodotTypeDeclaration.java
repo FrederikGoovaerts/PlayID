@@ -1,9 +1,10 @@
 package fodot.objects.vocabulary.elements;
 
-import fodot.objects.IFodotElement;
+import java.util.Set;
+
 import fodot.util.CollectionUtil;
 
-public class FodotTypeDeclaration implements IFodotElement {
+public class FodotTypeDeclaration implements IFodotVocabularyElement {
 	private FodotType type;
 	private boolean showDomain;
 	private boolean showSupertypes;
@@ -12,9 +13,6 @@ public class FodotTypeDeclaration implements IFodotElement {
 	private static final boolean DEFAULT_SHOW_DOMAIN = true;
 	private static final boolean DEFAULT_SHOW_SUPERTYPES = true;
 	private static final boolean DEFAULT_SHOW_SUBTYPES = false;
-	
-	
-	
 
 	public FodotTypeDeclaration(FodotType type, boolean showDomain,
 			boolean showSupertypes, boolean showSubtypes) {
@@ -88,6 +86,16 @@ public class FodotTypeDeclaration implements IFodotElement {
 	@Override
 	public String toString() {
 		return "FodotTypeDeclaration [getType()=" + getType() + "]";
+	}
+
+	@Override
+	public Set<FodotType> getPrerequiredTypes() {
+		return getType().getPrerequiredTypes();
+	}
+
+	@Override
+	public String getName() {
+		return getType().getName();
 	}
     
 }

@@ -89,7 +89,7 @@ public class FodotPredicateTermDeclaration extends
 		Set<FodotType> result = new HashSet<FodotType>();
 		//Check all arguments
 		for (FodotType arg : getArgumentTypes()) {
-			result.addAll(arg.getPrerequisiteTypes());
+			result.addAll(arg.getPrerequiredTypes());
 		}
 		//
 		result.addAll(getArgumentTypes());

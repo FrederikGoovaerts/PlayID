@@ -3,6 +3,7 @@ package fodot.objects.vocabulary;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -14,115 +15,149 @@ import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
+import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionUtil;
 import fodot.util.NameUtil;
 
 public class FodotVocabulary implements IFodotElement {
+
+	private static final String DEFAULT_NAME = "V";
+	
 	//Maybe convert the three sets in just a set of FodotDeclarations?
 	private String name;
 	private Set<FodotTypeDeclaration> types;
-	private Set<FodotPredicateDeclaration> predicates;
-	private Set<FodotFunctionDeclaration> functions;
-
+	private Set<IFodotVocabularyElement> elements;
+	
+	public FodotVocabulary(String name, Collection<? extends IFodotVocabularyElement> elements) {
+		setName(name);
+		setElements(elements);
+	}
+	
+	@Deprecated
 	public FodotVocabulary(String name, Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
 			Set<FodotFunctionDeclaration> functions) {
 		setName(name);
-		setTypes(types);
-		setPredicates(predicates);
-		setFunctions(functions);
+		setElements(null);
+		addAllElements(types);
+		addAllElements(predicates);
+		addAllElements(functions);
 	}
 
 	public FodotVocabulary(String name) {
-		this(name, null, null, null);
+		this(name, null);
 	}
-
-	private static final String DEFAULT_NAME = "V";
 
 	public FodotVocabulary() {
-		this(null);
+		this(null, null);
 	}
 
-	/* TYPES */
-	private void setTypes(Set<FodotTypeDeclaration> types) {
-		if (types == null) {
-			this.types = new LinkedHashSet<FodotTypeDeclaration>();
-		} else {
-			this.types = types;
+
+	/**********************************************
+	 *  Elements methods
+	 ***********************************************/
+	private void setElements(Collection<? extends IFodotVocabularyElement> argElements) {
+		this.elements = (isValidElements(argElements) ? new LinkedHashSet<IFodotVocabularyElement>(argElements)
+				: new LinkedHashSet<IFodotVocabularyElement>());
+	}
+
+	private boolean isValidElements(Collection<? extends IFodotVocabularyElement> argElements) {
+		return argElements != null;
+	}
+
+	public Set<IFodotVocabularyElement> getElements() {
+		return new LinkedHashSet<IFodotVocabularyElement>(elements);
+	}
+
+	public void addElement(IFodotVocabularyElement argElement) {
+		if (containsElementWithName(argElement.getName()))
+			throw new RuntimeException("Vocabulary " + this + " already contains an element with name " + argElement.getName());
+		this.elements.add(argElement);
+	}
+
+	public void addAllElements(Collection<? extends IFodotVocabularyElement> argElements) {
+		if (argElements != null) {
+			for (IFodotVocabularyElement el : argElements) {
+				this.elements.add(el);				
+			}
 		}
 	}
 
-	public void addType(FodotTypeDeclaration type) {
-		if (containsType(type))
-			return;
-		if (containsTypeWithName(type.getType().getName()))
-			throw new RuntimeException("Vocabulary " + this + " already contains a type declaration with name " + type.getType().getName());
-		types.add(type);
+	public boolean containsElement(IFodotVocabularyElement element) {
+		return this.elements.contains(element);
 	}
 
-	public void removeType(FodotTypeDeclaration type) {
-		types.remove(type);
-	}
-
-	public boolean containsTypeWithName(String name) {
-		for (FodotTypeDeclaration type : types) {
-			if (type.getType().getName() == name) {
+	public boolean containsElementWithName(String name) {
+		if (name == null) {
+			return false;
+		}
+		for (IFodotVocabularyElement el : elements) {
+			if (el.getName() != null && name.equals(el.getName())) {
 				return true;
 			}
 		}
 		return false;
+	}	
+
+	public boolean hasElements() {
+		return !elements.isEmpty();
 	}
 
+	public void removeElement(IFodotVocabularyElement argElement) {
+		this.elements.remove(argElement);
+	}
+
+	public int getAmountOfElements() {
+		return this.elements.size();
+	}
+	
+	/**********************************************/
+
+	
+	/* TYPES */
+	@Deprecated
+	public void addType(FodotTypeDeclaration type) {
+		addElement(type);
+	}
+
+	@Deprecated
+	public void removeType(FodotTypeDeclaration type) {
+		removeElement(type);
+	}
+
+	@Deprecated
+	public boolean containsTypeWithName(String name) {
+		return containsElementWithName(name);
+	}
+
+	@Deprecated
 	public boolean containsType(FodotTypeDeclaration type) {
-		return types.contains(type);
-	}
-
-	public Set<FodotTypeDeclaration> getTypes() {
-		return new LinkedHashSet<FodotTypeDeclaration>(types);
+		return elements.contains(type);
 	}
 
 	/* PREDICATES */
 
-	private void setPredicates(Set<FodotPredicateDeclaration> predicates) {
-		if (predicates == null) {
-			this.predicates = new LinkedHashSet<FodotPredicateDeclaration>();
-		} else {
-			this.predicates = predicates;
-		}
-	}
-
+	@Deprecated
 	public void addPredicate(FodotPredicateDeclaration predicate) {
-		predicates.add(predicate);
+		elements.add(predicate);
 	}
 
+	@Deprecated
 	public void removePredicate(FodotPredicateDeclaration predicate) {
-		predicates.remove(predicate);
-	}
-
-	public Set<FodotPredicateDeclaration> getPredicates() {
-		return new LinkedHashSet<FodotPredicateDeclaration>(predicates);
+		elements.remove(predicate);
 	}
 
 
 	/* FUNCTIONS */
 
-	private void setFunctions(Set<FodotFunctionDeclaration> functions) {
-		if (functions == null) {
-			this.functions = new LinkedHashSet<FodotFunctionDeclaration>();
-		} else {
-			this.functions = functions;
-		}
-	}
 
+	@Deprecated
 	public void addFunction(FodotFunctionDeclaration function) {
-		functions.add(function);
+		elements.add(function);
 	}
 
+	@Deprecated
 	public void removeFunction(FodotFunctionDeclaration function) {
-		functions.remove(function);
-	}
-
-	public Set<FodotFunctionDeclaration> getFunctions() {
-		return new LinkedHashSet<FodotFunctionDeclaration>(functions);
+		elements.remove(function);
 	}
 
 	/* NAMES */
@@ -147,90 +182,109 @@ public class FodotVocabulary implements IFodotElement {
 		StringBuilder builder = new StringBuilder();
 		builder.append("vocabulary " + getName() + " {\n");
 
-		//TO CODE TYPES: IN THE RIGHT ORDER
-		TypeDeclarationPrioritySorter typeSorter = new TypeDeclarationPrioritySorter(getTypes());
-		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(typeSorter.createDeclarationBlock(),1));		
+
+		VocabularyElementPrerequisiteSorter sorter = new VocabularyElementPrerequisiteSorter(getElements());
+		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(sorter.getSortedElements(),1));		
 		
 		//STRINGIFY FUNCTIONS&PREDICATES
-		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getFunctions(),1));
-		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getPredicates(),1));
+//		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getFunctions(),1));
+//		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getPredicates(),1));
 
 		builder.append("}");
 		return builder.toString();
 	}
+	
  
-	//TODO: turn this into a sorter
-	private class TypeDeclarationPrioritySorter {
-		private List<FodotTypeDeclaration> toSort;
-		private Set<FodotTypeDeclaration> alreadyTriedThisRound = new LinkedHashSet<FodotTypeDeclaration>();
-		private Set<FodotType> alreadyAdded = new LinkedHashSet<FodotType>(Arrays.asList(FodotType.INTEGER, FodotType.NATURAL_NUMBER));
-		private List<FodotTypeDeclaration> sorted = new ArrayList<FodotTypeDeclaration>();
-				
-		public TypeDeclarationPrioritySorter(Collection<? extends FodotTypeDeclaration> types) {
-			this.toSort = new LinkedList<FodotTypeDeclaration>(types);
+	/**
+	 * This is a stable sorted that will sort the list in such a way that
+	 * all the types necessary in vocabulary elements were declared before they are used as arguments
+	 * @author Thomas Winters
+	 *
+	 */
+	private class VocabularyElementPrerequisiteSorter {
+		private List<IFodotVocabularyElement> toSort;
+		private Set<IFodotVocabularyElement> alreadyTriedThisRound = new LinkedHashSet<IFodotVocabularyElement>();
+		private Set<IFodotVocabularyElement> alreadyAdded = new LinkedHashSet<IFodotVocabularyElement>(
+				Arrays.asList(FodotType.INTEGER.getDeclaration(), FodotType.NATURAL_NUMBER.getDeclaration()));
+		
+		private List<IFodotVocabularyElement> sorted = new ArrayList<IFodotVocabularyElement>();
+		
+		public VocabularyElementPrerequisiteSorter(Collection<? extends IFodotVocabularyElement> types) {
+			this.toSort = new ArrayList<IFodotVocabularyElement>(types);
 		}
 		
 		
-		public List<FodotTypeDeclaration> createDeclarationBlock() {
+		public List<IFodotVocabularyElement> getSortedElements() {
 			while (!toSort.isEmpty()) {
-				tryPrinting(toSort.get(0));
+				tryAddingToSorted(toSort.get(0));
 			}		
 			return sorted;
 		}
 		
-		private void tryPrinting(FodotTypeDeclaration current) {
-			FodotType currentType = current.getType();
+		private void tryAddingToSorted(IFodotVocabularyElement current) {
 			/*Check if there's a loop like:
 			 * type A constructed from {u(B)}
 			 * type B constructed from {v(A)}
 			 */
 			if (alreadyTriedThisRound.contains(current)) {
 				throw new IllegalStateException(
-						"A loop has been detected in the order in which TypeDeclarations should be printed: \n"
+						"A loop has been detected in the order in which VocabularyElements should be sorted: \n"
 						+ CollectionUtil.toCoupleAsCode(alreadyTriedThisRound));
 			}
 			
 			//Check if printable
-			if (alreadyAdded.containsAll(currentType.getPrerequisiteTypes())) {
-				print(current);
+			if (alreadyAdded.containsAll(getDeclarations(current.getPrerequiredTypes()))) {
+				addToSorted(current);
 			}
 			else {
 				alreadyTriedThisRound.add(current);
 				//Try printing the next type that printed does not contain
-				tryPrinting(getFirstNotPrinted(currentType));
+				tryAddingToSorted(getFirstNotPrinted(current));
 			}
 		}
 		
-		private FodotTypeDeclaration getFirstNotPrinted(FodotType type) {
-			Iterator<FodotType> it = type.getPrerequisiteTypes().iterator();
-			FodotType current = it.next();
-			while (alreadyAdded.contains(current) && it.hasNext()) {
-				current = it.next();
+		private FodotTypeDeclaration getFirstNotPrinted(IFodotVocabularyElement el) {
+			Iterator<FodotType> it = el.getPrerequiredTypes().iterator();
+			FodotTypeDeclaration currentDecl = it.next().getDeclaration();
+			while (alreadyAdded.contains(currentDecl) && it.hasNext()) {
+				currentDecl = it.next().getDeclaration();
 			}
-			FodotTypeDeclaration decl = current.getDeclaration();
 			
 			//Check for errors
-			if (alreadyAdded.contains(current)) {
-				throw new IllegalStateException("Something has gone wrong in the typedeclaration block with " + current);
+			if (alreadyAdded.contains(currentDecl)) {
+				throw new IllegalStateException("Something has gone wrong in the vocabularyelements block with " + currentDecl
+						+ "\nsorted:\n" + CollectionUtil.toNewLinesWithTabsAsCode(sorted,2)
+						+ "\ntoSort:\n" + CollectionUtil.toNewLinesWithTabsAsCode(toSort,2)
+						+ "\nalreadyAdded:\n" + CollectionUtil.toNewLinesWithTabsAsCode(alreadyAdded,2));
 			}
-			if (!toSort.contains(decl)) {
-				throw new IllegalStateException("A type that wasn't declared is needed to be printed: " + decl);
+			if (!toSort.contains(currentDecl)) {
+				throw new IllegalStateException("A type that wasn't declared is needed to be sorted: " + currentDecl
+						+ "\nsorted:\n" + CollectionUtil.toNewLinesWithTabsAsCode(sorted,2)
+						+ "\ntoSort:\n" + CollectionUtil.toNewLinesWithTabsAsCode(toSort,2));
 			}
 			
 			//return
-			return decl;
+			return currentDecl;
 		}
 
 
-		private void print(FodotTypeDeclaration decl) {
+		private void addToSorted(IFodotVocabularyElement decl) {
 			sorted.add(decl);
 			
 			//Add to printed, remove from toPrint
 			toSort.remove(decl);
-			alreadyAdded.add(decl.getType());
+			alreadyAdded.add(decl);
 			
 			//New round!
 			alreadyTriedThisRound.clear();
+		}
+		
+		private Set<FodotTypeDeclaration> getDeclarations(Set<FodotType> types) {
+			Set<FodotTypeDeclaration> result = new HashSet<FodotTypeDeclaration>();
+			for (FodotType t : types) {
+				result.add(t.getDeclaration());
+			}
+			return result;
 		}
 
 	}
@@ -238,8 +292,6 @@ public class FodotVocabulary implements IFodotElement {
 	/* MERGE */
 
 	public void merge(FodotVocabulary other) {
-		types.addAll(other.getTypes());
-		predicates.addAll(getPredicates());
-		functions.addAll(getFunctions());
+		addAllElements(other.getElements());
 	}
 }

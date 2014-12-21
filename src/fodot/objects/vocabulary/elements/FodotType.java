@@ -305,12 +305,10 @@ public class FodotType implements IFodotElement {
 
 	@Override
 	public String toString() {
-		return "FodotType [declaration=" + declaration + ", name=" + name
-				+ ", domain=" + domain + ", subtypes=" + subtypes
-				+ ", supertypes=" + supertypes + "]";
+		return "FodotType: [" + toCode() + "]";
 	}
 	
-	public Set<FodotType> getPrerequisiteTypes() {
+	public Set<FodotType> getPrerequiredTypes() {
 		Set<FodotType> result = new HashSet<FodotType>();
 		for (IFodotDomainElement el : getDomainElements()) {
 			result.addAll(el.getRequiredTypes());

@@ -7,7 +7,7 @@ import fodot.util.CollectionUtil;
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
-public class FodotFunctionDeclaration extends FodotArgumentListDeclaration {
+public class FodotFunctionDeclaration extends FodotArgumentListDeclaration implements IFodotVocabularyElement {
 
 	private final FodotType returnType;
 	private final boolean isPartial;

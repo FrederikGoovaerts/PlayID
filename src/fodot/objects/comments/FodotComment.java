@@ -3,14 +3,18 @@ package fodot.objects.comments;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import fodot.objects.IFodotElement;
 import fodot.objects.structure.IFodotStructureElement;
 import fodot.objects.theory.IFodotTheoryElement;
+import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionUtil;
 
-public class FodotComment implements IFodotElement, IFodotTheoryElement, IFodotStructureElement {
+public class FodotComment implements IFodotElement, IFodotTheoryElement, IFodotStructureElement, IFodotVocabularyElement {
 
 	private List<String> comments;
 	
@@ -65,6 +69,16 @@ public class FodotComment implements IFodotElement, IFodotTheoryElement, IFodotS
 		} else {
 			return CollectionUtil.printStringList("/**\n\t * ", "\n\t */", "\n\t * ", comments);
 		}
+	}
+
+	@Override
+	public Set<FodotType> getPrerequiredTypes() {
+		return new HashSet<FodotType>();
+	}
+
+	@Override
+	public String getName() {
+		return null;
 	}
 
 }
