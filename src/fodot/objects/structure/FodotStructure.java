@@ -74,7 +74,7 @@ public class FodotStructure implements IFodotElement {
 		return !elements.isEmpty();
 	}
 
-	public void removeElemente(IFodotStructureElement argElement) {
+	public void removeElements(IFodotStructureElement argElement) {
 		this.elements.remove(argElement);
 	}
 	/**********************************************/

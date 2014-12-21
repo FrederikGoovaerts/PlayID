@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fodot.objects.Fodot;
+import fodot.objects.comments.FodotComment;
 import fodot.objects.includes.FodotInclude;
 import fodot.objects.includes.FodotIncludeFile;
 import fodot.objects.includes.FodotIncludeHolder;
@@ -56,6 +57,11 @@ import fodot.util.NameUtil;
 
 public class FodotPartBuilder {
 
+	//COMMENTS
+	public static FodotComment createComment(String... comments) {
+		return new FodotComment(comments);
+	}
+	
 	// FORMULA CONNECTORS
 	private static final String AND_SYMBOL = "&";
 

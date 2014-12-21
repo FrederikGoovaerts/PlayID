@@ -72,7 +72,7 @@ public class FodotTheory implements IFodotElement {
 		return !elements.isEmpty();
 	}
 	
-	public void removeElemente(IFodotTheoryElement argElement) {
+	public void removeElements(IFodotTheoryElement argElement) {
 		this.elements.remove(argElement);
 	}
 	
