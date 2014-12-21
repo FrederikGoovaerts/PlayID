@@ -1,6 +1,6 @@
 package fodot.tests;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
@@ -15,6 +15,7 @@ import fodot.gdl_parser.Parser;
  * @author Thomas
  *
  */
+@SuppressWarnings("unused")
 public class ParserExceptionsTest {
 
 	private static final String GAMES_LOCATION = "resources/games/";

@@ -54,7 +54,6 @@ public class FodotPredicateEnumeration extends FodotEnumeration {
 			if (i > 0) {
 				builder.append(";");
 			}
-			FodotConstant[] key = keys.get(i);
 			builder.append(CollectionUtil.toNakedList(CollectionUtil.toCode(Arrays.asList(keys.get(i)))));
 		}
 		builder.append("}");
