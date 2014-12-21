@@ -1,5 +1,6 @@
 package fodot.objects.theory;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -12,23 +13,15 @@ public class FodotTheory implements IFodotElement {
 
 	private String name;
 	private FodotVocabulary vocabulary;
-	private Set<FodotInductiveDefinitionBlock> definitions;
-	private Set<FodotSentence> sentences;
-	
+	private Set<IFodotTheoryElement> elements;
 
 	public FodotTheory(String name,
 					   FodotVocabulary vocabulary,
-					   Set<FodotSentence> sentences,
-					   Set<FodotInductiveDefinitionBlock> definitions) {
+					   Collection<? extends IFodotTheoryElement> elements) {
 		super();
 		setName(name);
 		setVocabulary(vocabulary);
-		setSentences(sentences);
-		setInductiveDefinitions(definitions);
-	}
-
-	public FodotTheory(String name, FodotVocabulary vocabulary, Set<FodotSentence> sentences) {
-		this(name,vocabulary,sentences,null);
+		setElements(elements);
 	}
 	
 	public FodotTheory(String name, FodotVocabulary vocabulary) {
@@ -50,38 +43,59 @@ public class FodotTheory implements IFodotElement {
 		return vocabulary;
 	}
 	
-	/* DEFINITIONS */
-	public void addInductiveDefinition(FodotInductiveDefinitionBlock definition) {
-		definitions.add(definition);
+	/* ELEMENTS */
+	private void setElements(Collection<? extends IFodotTheoryElement> argElements) {
+		this.elements = (isValidElements(argElements) ? new LinkedHashSet<IFodotTheoryElement>(argElements) : new LinkedHashSet<IFodotTheoryElement>());
 	}
 	
-	public void removeInductiveDefinition(FodotInductiveDefinitionBlock definition) {
-		definitions.remove(definition);
+	private boolean isValidElements(Collection<? extends IFodotTheoryElement> argElements) {
+		return argElements != null;
+	}
+	
+	
+	public Set<IFodotTheoryElement> getElements() {
+		return new LinkedHashSet<IFodotTheoryElement>(elements);
+	}
+	public void addElement(IFodotTheoryElement argElement) {
+		this.elements.add(argElement);
+	}
+	
+	public void addAllElements(Set<IFodotTheoryElement> argElements) {
+		elements.addAll(argElements);
+	}
+	
+	public boolean containsElement(IFodotTheoryElement element){
+		return this.elements.contains(element);
+	}
+	
+	public boolean hasElements() {
+		return !elements.isEmpty();
+	}
+	
+	public void removeElemente(IFodotTheoryElement argElement) {
+		this.elements.remove(argElement);
+	}
+	
+	/* DEFINITIONS */
+	@Deprecated
+	public void addInductiveDefinition(FodotInductiveDefinitionBlock definition) {
+		elements.add(definition);
 	}
 
-	private void setInductiveDefinitions(Set<FodotInductiveDefinitionBlock> def) {
-		this.definitions = (def == null ? new LinkedHashSet<FodotInductiveDefinitionBlock>() : def);
-	}
-	
-	public Set<FodotInductiveDefinitionBlock> getInductiveDefinitions() {
-		return new LinkedHashSet<FodotInductiveDefinitionBlock>(definitions);
+	@Deprecated
+	public void removeInductiveDefinition(FodotInductiveDefinitionBlock definition) {
+		elements.remove(definition);
 	}
 	
 	/* SENTENCES */
+	@Deprecated
 	public void addSentence(FodotSentence sentence) {
-		sentences.add(sentence);
-	}
-	
-	public void removeSentence(FodotSentence sentence) {
-		sentences.remove(sentence);
+		elements.add(sentence);
 	}
 
-	private void setSentences(Set<FodotSentence> sent) {
-		this.sentences = (sent == null ? new LinkedHashSet<FodotSentence>() : sent);
-	}
-	
-	public Set<FodotSentence> getSentences() {
-		return new LinkedHashSet<FodotSentence>(sentences);
+	@Deprecated
+	public void removeSentence(FodotSentence sentence) {
+		elements.remove(sentence);
 	}
 
 	/* NAME */
@@ -97,20 +111,13 @@ public class FodotTheory implements IFodotElement {
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("theory " + getName() + ": " + getVocabulary().getName() + " {\n");
-		
-		//Codify inductive definitions
-		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getInductiveDefinitions(),1));
-		
-		//Codify sentences
-		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getSentences(),1));
-		
+		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getElements(),1));		
 		builder.append("}");
 		return builder.toString();
 	}
 
 	public void merge(FodotTheory other) {
-		definitions.addAll(other.getInductiveDefinitions());
-		sentences.addAll(other.getSentences());
+		addAllElements(other.getElements());
 	}
 	
 }

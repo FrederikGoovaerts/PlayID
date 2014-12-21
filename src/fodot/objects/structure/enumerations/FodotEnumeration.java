@@ -1,8 +1,8 @@
 package fodot.objects.structure.enumerations;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.structure.IFodotStructureElement;
 
-public abstract class FodotEnumeration implements IFodotElement {
+public abstract class FodotEnumeration implements IFodotStructureElement {
 	@Override
 	public abstract boolean equals(Object obj);
 	

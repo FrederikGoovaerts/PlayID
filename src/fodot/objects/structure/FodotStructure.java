@@ -1,30 +1,31 @@
 package fodot.objects.structure;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import fodot.objects.IFodotElement;
-import fodot.objects.structure.enumerations.FodotEnumeration;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.util.CollectionUtil;
 
 public class FodotStructure implements IFodotElement {
 
-	private List<FodotEnumeration> enumerations;
 	private String name;
 	private FodotVocabulary vocabulary;
+	private Set<IFodotStructureElement> elements;
 
-	public FodotStructure(String name, FodotVocabulary vocabulary, List<FodotEnumeration> enumerations) {
+	public FodotStructure(String name, FodotVocabulary vocabulary, Collection<? extends IFodotStructureElement> elements) {
 		super();
-		setEnumerations(enumerations);
 		setName(name);
 		setVocabulary(vocabulary);
+		setElements(elements);
 	}
 
 	private static final String DEFAULT_NAME = "S";
 	
 	public FodotStructure(FodotVocabulary voc) {
-		this(null, voc, new ArrayList<FodotEnumeration>());
+		this(null, voc, new ArrayList<IFodotStructureElement>());
 	}
 
 	
@@ -37,23 +38,58 @@ public class FodotStructure implements IFodotElement {
 	public void setName(String name) {
 		this.name = (name == null ? DEFAULT_NAME : name);
 	}
+
+
+	/**********************************************
+	 *  Elements methods
+	 ***********************************************/
+	private void setElements(Collection<? extends IFodotStructureElement> argElements) {
+		this.elements = (isValidElements(argElements) ? new LinkedHashSet<IFodotStructureElement>(argElements)
+				: new LinkedHashSet<IFodotStructureElement>());
+	}
+
+	private boolean isValidElements(Collection<? extends IFodotStructureElement> argElements) {
+		return argElements != null;
+	}
+
+	public Set<IFodotStructureElement> getElements() {
+		return new LinkedHashSet<IFodotStructureElement>(elements);
+	}
+
+	public void addElement(IFodotStructureElement argElement) {
+		this.elements.add(argElement);
+	}
+
+	public void addAllElements(Set<IFodotStructureElement> argElements) {
+		for (IFodotStructureElement element : argElements) {
+			addElement(element);
+		}
+	}
+
+	public boolean containsElement(IFodotStructureElement element) {
+		return this.elements.contains(element);
+	}
+
+	public boolean hasElements() {
+		return !elements.isEmpty();
+	}
+
+	public void removeElemente(IFodotStructureElement argElement) {
+		this.elements.remove(argElement);
+	}
+	/**********************************************/
 	
 	/* ENUMERATIONS */
 
-	private void setEnumerations(List<FodotEnumeration> enumerat) {
-		this.enumerations = (enumerat == null ? new ArrayList<FodotEnumeration>() : enumerat);
+
+	@Deprecated
+	public void addEnumeration(IFodotStructureElement enumeration) {
+		elements.add(enumeration);
 	}
-	
-	public void addEnumeration(FodotEnumeration enumeration) {
-		enumerations.add(enumeration);
-	}
-	
-	public void removeEnumeration(FodotEnumeration enumeration) {
-		enumerations.remove(enumeration);
-	}
-	
-	public List<FodotEnumeration> getEnumerations() {
-		return new ArrayList<FodotEnumeration>(enumerations);
+
+	@Deprecated
+	public void removeEnumeration(IFodotStructureElement enumeration) {
+		elements.remove(enumeration);
 	}
 
 	/* VOCABULARY */
@@ -73,14 +109,14 @@ public class FodotStructure implements IFodotElement {
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("structure "+getName() + " : " + getVocabulary().getName() + " {\n");
-		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(enumerations,1));
+		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(elements,1));
 		builder.append("}");
 		return builder.toString();
 	}
 
 	/* MERGE */
 	public void merge(FodotStructure other) {
-		enumerations.addAll(other.getEnumerations());
+		elements.addAll(other.getElements());
 	}
 
 	

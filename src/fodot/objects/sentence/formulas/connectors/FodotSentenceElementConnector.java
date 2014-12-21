@@ -17,7 +17,7 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 	private String connector;
 	private boolean shouldPrintBrackets = true;
 
-	public FodotSentenceElementConnector(String connector, Collection<E> args) {
+	public FodotSentenceElementConnector(String connector, Collection<? extends E> args) {
 		super();
 		if (!isValidConnector(connector)) {
 			throw new IllegalConnectorException(this, connector);

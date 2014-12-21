@@ -10,7 +10,7 @@ import fodot.util.CollectionUtil;
 public class FodotFormulaConnector extends FodotSentenceElementConnector<IFodotFormula> implements IFodotFormula {
 
 	
-	public FodotFormulaConnector(String connector, Collection<IFodotFormula> formulas) {
+	public FodotFormulaConnector(String connector, Collection<? extends IFodotFormula> formulas) {
 		super(connector, formulas);
 	}
 	

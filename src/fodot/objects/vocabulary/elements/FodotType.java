@@ -2,6 +2,7 @@ package fodot.objects.vocabulary.elements;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class FodotType implements IFodotElement {
 	 * Constructor
 	 **************************************************************************/
 
-	public FodotType(String typeName, Set<IFodotDomainElement> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
+	public FodotType(String typeName, Collection<? extends IFodotDomainElement> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
 		setName(typeName);
 		setDomain(domain);
 		setSupertypes(supertypes);
@@ -263,12 +264,8 @@ public class FodotType implements IFodotElement {
 	 * Domain elements in type declaration
 	 */
 
-	private void setDomain(Set<IFodotDomainElement> domain) {
-		if (domain == null) {
-			this.domain = new HashSet<IFodotDomainElement>();
-		} else {
-			this.domain = domain;
-		}
+	private void setDomain(Collection<? extends IFodotDomainElement> domain) {
+		this.domain = (domain == null? new HashSet<IFodotDomainElement>() : new HashSet<IFodotDomainElement>(domain));
 	}
 
 	public void addDomainElement(IFodotDomainElement element) {

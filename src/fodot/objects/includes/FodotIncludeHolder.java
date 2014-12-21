@@ -1,6 +1,7 @@
 package fodot.objects.includes;
 
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import fodot.objects.IFodotElement;
@@ -10,7 +11,7 @@ public class FodotIncludeHolder implements IFodotElement {
 
 	private Set<FodotInclude> includes;
 		
-	public FodotIncludeHolder(Set<FodotInclude> includes) {
+	public FodotIncludeHolder(Collection<? extends FodotInclude> includes) {
 		super();
 		setIncludes(includes);
 	}
@@ -24,8 +25,8 @@ public class FodotIncludeHolder implements IFodotElement {
 		return includes;
 	}	
 
-	private void setIncludes(Set<FodotInclude> includes) {
-		this.includes = (includes == null ? new HashSet<FodotInclude>() : includes);
+	private void setIncludes(Collection<? extends FodotInclude> includes) {
+		this.includes = (includes == null ? new LinkedHashSet<FodotInclude>() : new LinkedHashSet<FodotInclude>(includes));
 	}
 	
 	//IFodotElement

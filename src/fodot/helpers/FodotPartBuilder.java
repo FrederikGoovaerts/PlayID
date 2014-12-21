@@ -28,14 +28,15 @@ import fodot.objects.sentence.terms.FodotPredicateTerm;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
+import fodot.objects.structure.IFodotStructureElement;
 import fodot.objects.structure.enumerations.FodotConstantFunctionEnumeration;
-import fodot.objects.structure.enumerations.FodotEnumeration;
 import fodot.objects.structure.enumerations.FodotFunctionEnumeration;
 import fodot.objects.structure.enumerations.FodotNumericalTypeRangeEnumeration;
 import fodot.objects.structure.enumerations.FodotPredicateEnumeration;
 import fodot.objects.structure.enumerations.FodotTypeEnumeration;
 import fodot.objects.theory.FodotSentence;
 import fodot.objects.theory.FodotTheory;
+import fodot.objects.theory.IFodotTheoryElement;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionConnector;
 import fodot.objects.theory.definitions.FodotInductiveFunction;
@@ -58,7 +59,7 @@ public class FodotPartBuilder {
 	// FORMULA CONNECTORS
 	private static final String AND_SYMBOL = "&";
 
-	public static FodotFormulaConnector createAnd(Collection<IFodotFormula> forms) {
+	public static FodotFormulaConnector createAnd(Collection<? extends IFodotFormula> forms) {
 		return new FodotFormulaConnector(AND_SYMBOL, forms);
 	}
 
@@ -68,7 +69,7 @@ public class FodotPartBuilder {
 
 	private static final String OR_SYMBOL = "|";
 
-	public static FodotFormulaConnector createOr(Collection<IFodotFormula> forms) {
+	public static FodotFormulaConnector createOr(Collection<? extends IFodotFormula> forms) {
 		return new FodotFormulaConnector(OR_SYMBOL, forms);
 	}
 
@@ -497,11 +498,11 @@ public class FodotPartBuilder {
 	}
 
 	//Types
-	public static FodotType createType(String name, Set<IFodotDomainElement> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
+	public static FodotType createType(String name, Set<? extends IFodotDomainElement> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
 		return new FodotType(name, domain, supertypes, subtypes);
 	}
 
-	public static FodotType createType(String name, Set<IFodotDomainElement> domain, Set<FodotType> supertypes) {
+	public static FodotType createType(String name, Set<? extends IFodotDomainElement> domain, Set<FodotType> supertypes) {
 		return createType(name, domain, supertypes, null);
 	}
 
@@ -547,7 +548,7 @@ public class FodotPartBuilder {
 		return new FodotIncludeFile(path);
 	}
 
-	public static FodotIncludeHolder createIncludeHolder(Set<FodotInclude> includes) {
+	public static FodotIncludeHolder createIncludeHolder(Collection<? extends FodotInclude> includes) {
 		return new FodotIncludeHolder(includes);
 	}
 
@@ -562,16 +563,16 @@ public class FodotPartBuilder {
 	}
 
 	//FODOT THEORY
-	public static FodotTheory createTheory(String name, FodotVocabulary vocabulary, Set<FodotSentence> sentences) {
-		return new FodotTheory(name, vocabulary, sentences);
+	public static FodotTheory createTheory(String name, FodotVocabulary vocabulary, Collection<? extends IFodotTheoryElement> elements) {
+		return new FodotTheory(name, vocabulary, elements);
 	}
 
 	public static FodotTheory createTheory(String name, FodotVocabulary voc) {
 		return createTheory(name, voc, null);
 	}
 
-	public static FodotTheory createTheory(FodotVocabulary voc, Set<FodotSentence> sentences) {
-		return createTheory(null, voc, sentences);
+	public static FodotTheory createTheory(FodotVocabulary voc, Collection<? extends IFodotTheoryElement> elements) {
+		return createTheory(null, voc, elements);
 	}
 
 	public static FodotTheory createTheory(FodotVocabulary voc) {
@@ -580,8 +581,8 @@ public class FodotPartBuilder {
 
 
 	//STRUCTURE	
-	public static FodotStructure createStructure(String name, FodotVocabulary vocabulary, List<FodotEnumeration> enumerations) {
-		return new FodotStructure(name, vocabulary, enumerations);
+	public static FodotStructure createStructure(String name, FodotVocabulary vocabulary, Collection<? extends IFodotStructureElement> elements) {
+		return new FodotStructure(name, vocabulary, elements);
 	}
 
 	public static FodotStructure createStructure(String name, FodotVocabulary voc) {
