@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fodot.objects.IFodotElement;
+import fodot.objects.theory.IFodotTheoryElement;
 import fodot.util.CollectionUtil;
 
 
-public class FodotInductiveDefinitionBlock implements IFodotElement {
+public class FodotInductiveDefinitionBlock implements IFodotElement, IFodotTheoryElement {
 
 	private List<FodotInductiveSentence> elements;
 	

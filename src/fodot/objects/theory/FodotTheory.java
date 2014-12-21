@@ -1,6 +1,6 @@
 package fodot.objects.theory;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import fodot.objects.IFodotElement;
@@ -14,6 +14,7 @@ public class FodotTheory implements IFodotElement {
 	private FodotVocabulary vocabulary;
 	private Set<FodotInductiveDefinitionBlock> definitions;
 	private Set<FodotSentence> sentences;
+	
 
 	public FodotTheory(String name,
 					   FodotVocabulary vocabulary,
@@ -31,7 +32,7 @@ public class FodotTheory implements IFodotElement {
 	}
 	
 	public FodotTheory(String name, FodotVocabulary vocabulary) {
-		this(name, vocabulary, new HashSet<FodotSentence>());
+		this(name, vocabulary, null);
 	}
 	
 	private static final String DEFAULT_NAME = "T";
@@ -59,11 +60,11 @@ public class FodotTheory implements IFodotElement {
 	}
 
 	private void setInductiveDefinitions(Set<FodotInductiveDefinitionBlock> def) {
-		this.definitions = (def == null ? new HashSet<FodotInductiveDefinitionBlock>() : def);
+		this.definitions = (def == null ? new LinkedHashSet<FodotInductiveDefinitionBlock>() : def);
 	}
 	
 	public Set<FodotInductiveDefinitionBlock> getInductiveDefinitions() {
-		return new HashSet<FodotInductiveDefinitionBlock>(definitions);
+		return new LinkedHashSet<FodotInductiveDefinitionBlock>(definitions);
 	}
 	
 	/* SENTENCES */
@@ -76,11 +77,11 @@ public class FodotTheory implements IFodotElement {
 	}
 
 	private void setSentences(Set<FodotSentence> sent) {
-		this.sentences = (sent == null ? new HashSet<FodotSentence>() : sent);
+		this.sentences = (sent == null ? new LinkedHashSet<FodotSentence>() : sent);
 	}
 	
 	public Set<FodotSentence> getSentences() {
-		return new HashSet<FodotSentence>(sentences);
+		return new LinkedHashSet<FodotSentence>(sentences);
 	}
 
 	/* NAME */

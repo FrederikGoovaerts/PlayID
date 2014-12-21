@@ -8,7 +8,7 @@ import fodot.objects.sentence.formulas.IFodotFormula;
  * A FO(.) sentence is a FO(.) formula with no free occurences of variables
  * Sentences end with a dot.
  */
-public class FodotSentence implements IFodotElement {
+public class FodotSentence implements IFodotElement, IFodotTheoryElement {
 	private IFodotFormula formula;
 
 	public FodotSentence(IFodotFormula formula) {
