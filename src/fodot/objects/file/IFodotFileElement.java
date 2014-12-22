@@ -7,5 +7,5 @@ import fodot.objects.IFodotElement;
 public interface IFodotFileElement extends IFodotElement {
 	String getName();
 	Set<IFodotFileElement> getPrerequiredElements();
-	void merge(IFodotFileElement other);
+	void mergeWith(IFodotFileElement other);
 }
