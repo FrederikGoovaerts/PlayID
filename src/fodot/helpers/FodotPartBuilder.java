@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fodot.objects.Fodot;
+import fodot.objects.comments.FodotBlankLines;
 import fodot.objects.comments.FodotComment;
 import fodot.objects.includes.FodotInclude;
 import fodot.objects.includes.FodotIncludeFile;
@@ -61,6 +62,10 @@ public class FodotPartBuilder {
 	//COMMENTS
 	public static FodotComment createComment(String... comments) {
 		return new FodotComment(comments);
+	}
+	
+	public static FodotBlankLines createBlankLines(int amountOfLines) {
+		return new FodotBlankLines(amountOfLines);
 	}
 	
 	// FORMULA CONNECTORS
