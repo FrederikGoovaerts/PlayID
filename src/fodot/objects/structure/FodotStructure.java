@@ -7,7 +7,7 @@ import java.util.Set;
 
 import fodot.objects.IFodotElement;
 import fodot.objects.vocabulary.FodotVocabulary;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public class FodotStructure implements IFodotElement {
 
@@ -109,7 +109,7 @@ public class FodotStructure implements IFodotElement {
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("structure "+getName() + " : " + getVocabulary().getName() + " {\n");
-		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(elements,1));
+		builder.append(CollectionPrinter.toNewLinesWithTabsAsCode(elements,1));
 		builder.append("}");
 		return builder.toString();
 	}

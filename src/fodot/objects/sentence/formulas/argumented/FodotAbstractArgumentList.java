@@ -12,7 +12,7 @@ import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public abstract class FodotAbstractArgumentList implements IFodotSentenceElement {
 
@@ -92,11 +92,11 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 
 	@Override
 	public String toCode() {
-		return getName() + (hasArguments() ? CollectionUtil.toCouple(CollectionUtil.toCode(getArguments())) : "");
+		return getName() + (hasArguments() ? CollectionPrinter.toCouple(CollectionPrinter.toCode(getArguments())) : "");
 	}
 	
 	protected String argumentsToString() {
-		return CollectionUtil.toNakedList(CollectionUtil.toString(getArguments()));
+		return CollectionPrinter.toNakedList(CollectionPrinter.toString(getArguments()));
 	}
 	
 	@Override

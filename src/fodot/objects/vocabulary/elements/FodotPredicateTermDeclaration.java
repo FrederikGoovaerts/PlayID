@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public class FodotPredicateTermDeclaration extends
 		FodotArgumentListDeclaration implements IFodotDomainElement {
@@ -35,7 +35,7 @@ public class FodotPredicateTermDeclaration extends
 
 	@Override
 	public String toCode() {
-		return getName() + CollectionUtil.toCoupleAsCode(getArgumentTypes());
+		return getName() + CollectionPrinter.toCoupleAsCode(getArgumentTypes());
 	}
 
 

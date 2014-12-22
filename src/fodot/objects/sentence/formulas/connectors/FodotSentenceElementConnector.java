@@ -9,7 +9,7 @@ import java.util.Set;
 import fodot.exceptions.IllegalConnectorException;
 import fodot.objects.sentence.IFodotSentenceElement;
 import fodot.objects.sentence.terms.FodotVariable;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElement> implements IFodotSentenceElement {
 
@@ -25,7 +25,7 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 		if (!isAssociativeConnector(connector) && args.size() > 2) {
 			throw new RuntimeException(connector
 					+ " has way more than two arguments, which it doesn't seem to be able to handle. "
-					+ CollectionUtil.toCouple(CollectionUtil.toCode(args)));
+					+ CollectionPrinter.toCouple(CollectionPrinter.toCode(args)));
 		}
 		this.connector = connector;	
 		this.arguments = new ArrayList<E>();	
@@ -95,11 +95,11 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 
 	@Override
 	public String toCode() {
-		return CollectionUtil.printStringList(
+		return CollectionPrinter.printStringList(
 				(shouldPrintBrackets() ? "(" : ""),
 				(shouldPrintBrackets() ? ")" : ""),
 				" " + getConnector() + " ",
-				CollectionUtil.toCode(getArguments())
+				CollectionPrinter.toCode(getArguments())
 				);
 	}	
 

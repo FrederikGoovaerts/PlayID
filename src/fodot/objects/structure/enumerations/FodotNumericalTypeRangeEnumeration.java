@@ -2,7 +2,7 @@ package fodot.objects.structure.enumerations;
 
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public class FodotNumericalTypeRangeEnumeration extends FodotEnumeration {
 	private FodotType type;
@@ -44,7 +44,7 @@ public class FodotNumericalTypeRangeEnumeration extends FodotEnumeration {
 	public String toCode() {
 		return getType().getName()
 				+ " = "
-				+ CollectionUtil.toDomain(headValue.toCode(),lastValue.toCode());
+				+ CollectionPrinter.toDomain(headValue.toCode(),lastValue.toCode());
 	}
 
 	@Override

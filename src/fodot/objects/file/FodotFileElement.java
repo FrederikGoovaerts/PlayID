@@ -6,7 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import fodot.objects.IFodotElement;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public abstract class FodotFileElement<E extends IFodotElement> implements IFodotFileElement {
 	private Set<E> elements;
@@ -102,10 +102,10 @@ public abstract class FodotFileElement<E extends IFodotElement> implements IFodo
 		StringBuilder builder = new StringBuilder();
 		builder.append(getFileElementName() + " " + getName());
 		if (!getPrerequiredElements().isEmpty()) {
-			builder.append(" : " + CollectionUtil.toNakedList(CollectionUtil.toCode(getElements())));
+			builder.append(" : " + CollectionPrinter.toNakedList(CollectionPrinter.toCode(getElements())));
 		}
 		builder.append(" {\n");
-		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(elements,1));
+		builder.append(CollectionPrinter.toNewLinesWithTabsAsCode(elements,1));
 		builder.append("}");
 		return builder.toString();
 	}

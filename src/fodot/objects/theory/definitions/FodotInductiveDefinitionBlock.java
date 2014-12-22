@@ -5,7 +5,7 @@ import java.util.List;
 
 import fodot.objects.IFodotElement;
 import fodot.objects.theory.IFodotTheoryElement;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 
 public class FodotInductiveDefinitionBlock implements IFodotElement, IFodotTheoryElement {
@@ -42,7 +42,7 @@ public class FodotInductiveDefinitionBlock implements IFodotElement, IFodotTheor
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{\n");
-		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(elements,2));
+		builder.append(CollectionPrinter.toNewLinesWithTabsAsCode(elements,2));
 		builder.append("\t}");
 		return builder.toString();
 	}

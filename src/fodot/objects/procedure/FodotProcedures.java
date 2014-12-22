@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fodot.objects.IFodotElement;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 import fodot.util.NameUtil;
 
 public class FodotProcedures implements IFodotElement {
@@ -58,8 +58,8 @@ public class FodotProcedures implements IFodotElement {
 	@Override
 	public String toCode() {
 		return "procedure " + getName() +
-				(getArguments() != null ? CollectionUtil.toCouple(getArguments()) : "") + " {\n"
-				+ CollectionUtil.toNewLinesWithTabsAsCode(getProcedures(),1)
+				(getArguments() != null ? CollectionPrinter.toCouple(getArguments()) : "") + " {\n"
+				+ CollectionPrinter.toNewLinesWithTabsAsCode(getProcedures(),1)
 				+ "}";
 	}
 

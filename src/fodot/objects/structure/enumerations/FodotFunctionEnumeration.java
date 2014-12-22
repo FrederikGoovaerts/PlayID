@@ -8,7 +8,7 @@ import java.util.Map;
 
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public class FodotFunctionEnumeration extends FodotEnumeration {
 	private FodotFunctionDeclaration declaration;
@@ -63,7 +63,7 @@ public class FodotFunctionEnumeration extends FodotEnumeration {
 				builder.append(";");
 			}
 			FodotConstant[] key = keys.get(i);
-			builder.append(CollectionUtil.toNakedList(CollectionUtil.toCode(Arrays.asList(key))) + " -> " + values.get(key).toCode());
+			builder.append(CollectionPrinter.toNakedList(CollectionPrinter.toCode(Arrays.asList(key))) + " -> " + values.get(key).toCode());
 		}
 		builder.append("}");
 		return builder.toString();

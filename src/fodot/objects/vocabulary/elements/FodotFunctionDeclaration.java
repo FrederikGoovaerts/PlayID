@@ -2,7 +2,7 @@ package fodot.objects.vocabulary.elements;
 
 import java.util.List;
 
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -33,7 +33,7 @@ public class FodotFunctionDeclaration extends FodotArgumentListDeclaration imple
 	@Override
 	public String toCode() {
 		return (isPartial() ? "partial " : "") + getName()
-				+ (hasArguments() ? CollectionUtil.toCoupleAsCode(getArgumentTypes()) : "")
+				+ (hasArguments() ? CollectionPrinter.toCoupleAsCode(getArgumentTypes()) : "")
 				+ " : " + getReturnType().getName();
 	}
 

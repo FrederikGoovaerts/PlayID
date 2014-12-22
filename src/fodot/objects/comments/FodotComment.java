@@ -12,7 +12,7 @@ import fodot.objects.structure.IFodotStructureElement;
 import fodot.objects.theory.IFodotTheoryElement;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public class FodotComment implements IFodotElement, IFodotTheoryElement, IFodotStructureElement, IFodotVocabularyElement {
 
@@ -67,7 +67,7 @@ public class FodotComment implements IFodotElement, IFodotTheoryElement, IFodotS
 		if (this.comments.size() == 1) {
 			return "// " + comments.get(0);
 		} else {
-			return CollectionUtil.printStringList("/**\n\t * ", "\n\t */", "\n\t * ", comments);
+			return CollectionPrinter.printStringList("/**\n\t * ", "\n\t */", "\n\t * ", comments);
 		}
 	}
 

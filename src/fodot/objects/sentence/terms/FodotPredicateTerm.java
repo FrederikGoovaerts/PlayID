@@ -5,7 +5,7 @@ import java.util.List;
 import fodot.objects.sentence.formulas.argumented.FodotAbstractArgumentList;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public class FodotPredicateTerm extends FodotAbstractArgumentList
 		implements IFodotTerm {
@@ -27,7 +27,7 @@ public class FodotPredicateTerm extends FodotAbstractArgumentList
 	@Override
 	public String toString() {
 		return "FodotPredicateDomainElement ["+getDeclaration().toString()
-				+ ", " + CollectionUtil.toCouple(CollectionUtil.toString(getArguments()))+"]";
+				+ ", " + CollectionPrinter.toCouple(CollectionPrinter.toString(getArguments()))+"]";
 	}
 
 }

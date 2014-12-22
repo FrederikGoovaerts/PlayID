@@ -6,7 +6,7 @@ import java.util.List;
 
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public class FodotPredicateEnumeration extends FodotEnumeration {
 	private FodotPredicateDeclaration declaration;
@@ -54,7 +54,7 @@ public class FodotPredicateEnumeration extends FodotEnumeration {
 			if (i > 0) {
 				builder.append(";");
 			}
-			builder.append(CollectionUtil.toNakedList(CollectionUtil.toCode(Arrays.asList(keys.get(i)))));
+			builder.append(CollectionPrinter.toNakedList(CollectionPrinter.toCode(Arrays.asList(keys.get(i)))));
 		}
 		builder.append("}");
 		return builder.toString();

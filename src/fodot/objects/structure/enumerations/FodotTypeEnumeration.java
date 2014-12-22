@@ -5,7 +5,7 @@ import java.util.List;
 
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public class FodotTypeEnumeration extends FodotEnumeration {
 	private FodotType type;
@@ -45,7 +45,7 @@ public class FodotTypeEnumeration extends FodotEnumeration {
 
 	@Override
 	public String toCode() {
-		return getType().getName() + " = " + CollectionUtil.toDomain(CollectionUtil.toCode(getValues()));
+		return getType().getName() + " = " + CollectionPrinter.toDomain(CollectionPrinter.toCode(getValues()));
 	}
 
 	@Override

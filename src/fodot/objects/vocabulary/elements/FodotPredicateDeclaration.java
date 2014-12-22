@@ -2,7 +2,7 @@ package fodot.objects.vocabulary.elements;
 
 import java.util.List;
 
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 	
 public class FodotPredicateDeclaration extends FodotArgumentListDeclaration implements IFodotVocabularyElement {
     public FodotPredicateDeclaration(String predicateName, List<FodotType> argumentTypes) {
@@ -11,7 +11,7 @@ public class FodotPredicateDeclaration extends FodotArgumentListDeclaration impl
 
 	@Override
 	public String toCode() {
-		return getName() + CollectionUtil.toCoupleAsCode(getArgumentTypes());
+		return getName() + CollectionPrinter.toCoupleAsCode(getArgumentTypes());
 	}
     
 }

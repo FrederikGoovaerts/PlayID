@@ -2,7 +2,7 @@ package fodot.objects.vocabulary.elements;
 
 import java.util.Set;
 
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public class FodotTypeDeclaration implements IFodotVocabularyElement {
 	private FodotType type;
@@ -77,9 +77,9 @@ public class FodotTypeDeclaration implements IFodotVocabularyElement {
 	@Override
 	public String toCode() {
 		return "type " + getType().getName()
-				+ (shouldShowSupertypes() && getType().hasSupertypes() ? " isa " + CollectionUtil.toNakedList(CollectionUtil.toCode(getType().getSupertypes())) : "")
-				+ (shouldShowSubtypes() && getType().hasSubtypes() ? " contains " + CollectionUtil.toNakedList(CollectionUtil.toCode(getType().getSubtypes())) : "")
-				+ (shouldShowDomain() && getType().hasDomainElements() && !getType().hasSupertypes() ? " constructed from " + CollectionUtil.printStringList("{",	"}", ",", CollectionUtil.toCode(getType().getDomainElements())) : "" );
+				+ (shouldShowSupertypes() && getType().hasSupertypes() ? " isa " + CollectionPrinter.toNakedList(CollectionPrinter.toCode(getType().getSupertypes())) : "")
+				+ (shouldShowSubtypes() && getType().hasSubtypes() ? " contains " + CollectionPrinter.toNakedList(CollectionPrinter.toCode(getType().getSubtypes())) : "")
+				+ (shouldShowDomain() && getType().hasDomainElements() && !getType().hasSupertypes() ? " constructed from " + CollectionPrinter.printStringList("{",	"}", ",", CollectionPrinter.toCode(getType().getDomainElements())) : "" );
 	}
     /************************************/
 

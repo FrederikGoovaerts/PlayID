@@ -5,7 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import fodot.objects.IFodotElement;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public class FodotIncludeHolder implements IFodotElement {
 
@@ -33,7 +33,7 @@ public class FodotIncludeHolder implements IFodotElement {
 
 	@Override
 	public String toCode() {		
-		return CollectionUtil.printStringList("", "", "\n", CollectionUtil.toCode(getIncludes())) + "\n";
+		return CollectionPrinter.printStringList("", "", "\n", CollectionPrinter.toCode(getIncludes())) + "\n";
 	}
 
 	@Override

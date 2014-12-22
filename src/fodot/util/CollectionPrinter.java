@@ -6,7 +6,7 @@ import java.util.List;
 
 import fodot.objects.IFodotElement;
 
-public class CollectionUtil {
+public class CollectionPrinter {
 	public static List<String> toCode(Collection<? extends IFodotElement> list) {
 		List<String> toCodify = new ArrayList<String>();
 		for (IFodotElement element : list) {

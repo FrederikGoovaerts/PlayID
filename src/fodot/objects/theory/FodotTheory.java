@@ -7,7 +7,7 @@ import java.util.Set;
 import fodot.objects.IFodotElement;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
 import fodot.objects.vocabulary.FodotVocabulary;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 
 public class FodotTheory implements IFodotElement {
 
@@ -111,7 +111,7 @@ public class FodotTheory implements IFodotElement {
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("theory " + getName() + ": " + getVocabulary().getName() + " {\n");
-		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getElements(),1));		
+		builder.append(CollectionPrinter.toNewLinesWithTabsAsCode(getElements(),1));		
 		builder.append("}");
 		return builder.toString();
 	}

@@ -15,7 +15,7 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
-import fodot.util.CollectionUtil;
+import fodot.util.CollectionPrinter;
 import fodot.util.NameUtil;
 
 public class FodotVocabulary implements IFodotElement {
@@ -182,7 +182,7 @@ public class FodotVocabulary implements IFodotElement {
 
 
 		VocabularyElementPrerequisiteSorter sorter = new VocabularyElementPrerequisiteSorter(getElements());
-		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(sorter.getSortedElements(),1));		
+		builder.append(CollectionPrinter.toNewLinesWithTabsAsCode(sorter.getSortedElements(),1));		
 		
 		//STRINGIFY FUNCTIONS&PREDICATES
 //		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getFunctions(),1));
@@ -227,7 +227,7 @@ public class FodotVocabulary implements IFodotElement {
 			if (alreadyTriedThisRound.contains(current)) {
 				throw new IllegalStateException(
 						"A loop has been detected in the order in which VocabularyElements should be sorted: \n"
-						+ CollectionUtil.toCoupleAsCode(alreadyTriedThisRound));
+						+ CollectionPrinter.toCoupleAsCode(alreadyTriedThisRound));
 			}
 			
 			//Check if printable
@@ -251,14 +251,14 @@ public class FodotVocabulary implements IFodotElement {
 			//Check for errors
 			if (alreadyAdded.contains(currentDecl)) {
 				throw new IllegalStateException("Something has gone wrong in the vocabularyelements block with " + currentDecl
-						+ "\nsorted:\n" + CollectionUtil.toNewLinesWithTabsAsCode(sorted,2)
-						+ "\ntoSort:\n" + CollectionUtil.toNewLinesWithTabsAsCode(toSort,2)
-						+ "\nalreadyAdded:\n" + CollectionUtil.toNewLinesWithTabsAsCode(alreadyAdded,2));
+						+ "\nsorted:\n" + CollectionPrinter.toNewLinesWithTabsAsCode(sorted,2)
+						+ "\ntoSort:\n" + CollectionPrinter.toNewLinesWithTabsAsCode(toSort,2)
+						+ "\nalreadyAdded:\n" + CollectionPrinter.toNewLinesWithTabsAsCode(alreadyAdded,2));
 			}
 			if (!toSort.contains(currentDecl)) {
 				throw new IllegalStateException("A type that wasn't declared is needed to be sorted: " + currentDecl
-						+ "\nsorted:\n" + CollectionUtil.toNewLinesWithTabsAsCode(sorted,2)
-						+ "\ntoSort:\n" + CollectionUtil.toNewLinesWithTabsAsCode(toSort,2));
+						+ "\nsorted:\n" + CollectionPrinter.toNewLinesWithTabsAsCode(sorted,2)
+						+ "\ntoSort:\n" + CollectionPrinter.toNewLinesWithTabsAsCode(toSort,2));
 			}
 			
 			//return
