@@ -1,15 +1,17 @@
 package fodot.objects.structure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.file.IFodotFileElement;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.util.CollectionPrinter;
 
-public class FodotStructure implements IFodotElement {
+public class FodotStructure implements IFodotFileElement {
 
 	private String name;
 	private FodotVocabulary vocabulary;
@@ -117,6 +119,20 @@ public class FodotStructure implements IFodotElement {
 	/* MERGE */
 	public void merge(FodotStructure other) {
 		elements.addAll(other.getElements());
+	}
+
+
+	@Override
+	public Set<IFodotFileElement> getPrerequiredElements() {
+		return new HashSet<IFodotFileElement>(Arrays.asList(getVocabulary()));
+	}
+
+
+	@Override
+	public void mergeWith(IFodotFileElement other) {
+		if (this.getClass().equals(other.getClass())) {
+			merge((FodotStructure) other);
+		}
 	}
 
 	

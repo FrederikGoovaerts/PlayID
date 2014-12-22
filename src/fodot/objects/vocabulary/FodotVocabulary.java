@@ -9,7 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.file.IFodotFileElement;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
@@ -18,7 +18,7 @@ import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionPrinter;
 import fodot.util.NameUtil;
 
-public class FodotVocabulary implements IFodotElement {
+public class FodotVocabulary implements IFodotFileElement {
 
 	private static final String DEFAULT_NAME = "V";
 	
@@ -80,6 +80,17 @@ public class FodotVocabulary implements IFodotElement {
 		}
 	}
 
+	public IFodotVocabularyElement getElementWithName(String name) {
+		if (name == null)
+			return null;
+		for (IFodotVocabularyElement el : elements) {
+			if (name.equals(el.getName())) {
+				return el;
+			}
+		}
+		return null;
+	}
+	
 	public boolean containsElement(IFodotVocabularyElement element) {
 		return this.elements.contains(element);
 	}
@@ -291,5 +302,17 @@ public class FodotVocabulary implements IFodotElement {
 
 	public void merge(FodotVocabulary other) {
 		addAllElements(other.getElements());
+	}
+
+	@Override
+	public Set<IFodotFileElement> getPrerequiredElements() {
+		return null;
+	}
+
+	@Override
+	public void mergeWith(IFodotFileElement other) {
+		if (this.getClass().equals(other.getClass())) {
+			merge((FodotVocabulary) other);
+		}
 	}
 }

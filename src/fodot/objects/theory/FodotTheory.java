@@ -1,15 +1,17 @@
 package fodot.objects.theory;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.file.IFodotFileElement;
 import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.util.CollectionPrinter;
 
-public class FodotTheory implements IFodotElement {
+public class FodotTheory implements IFodotFileElement {
 
 	private String name;
 	private FodotVocabulary vocabulary;
@@ -118,6 +120,18 @@ public class FodotTheory implements IFodotElement {
 
 	public void merge(FodotTheory other) {
 		addAllElements(other.getElements());
+	}
+
+	@Override
+	public Set<IFodotFileElement> getPrerequiredElements() {
+		return new HashSet<IFodotFileElement>(Arrays.asList(getVocabulary()));
+	}
+
+	@Override
+	public void mergeWith(IFodotFileElement other) {
+		if (this.getClass().equals(other.getClass())) {
+			merge((FodotTheory) other);
+		}
 	}
 	
 }
