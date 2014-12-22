@@ -1,10 +1,22 @@
 package fodot.communication;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.collect.Sets.SetView;
+
+import fodot.gdl_parser.Parser;
+import fodot.objects.file.IFodotFile;
+import fodot.objects.file.IFodotFileElement;
+import fodot.objects.vocabulary.FodotVocabulary;
+import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
+import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
+import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
+import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 
 /**
  * This class will read the results of IDP and puts it in useful maps
@@ -12,72 +24,127 @@ import java.util.Map;
  *
  */
 public class IdpResultTransformer {
-	public String input;
+	private String textualResult;
+	private IFodotFile inputFodot;
+	private List<IdpModel> models = new ArrayList<IdpModel>();
+	private String vocName;
+	private FodotVocabulary currentVocabulary; 
 
-	public IdpResultTransformer(String idpResult) {
+	public IdpResultTransformer(IFodotFile inputFodot, String textResult) {
 		super();
-		setInput(idpResult);
+		setInputFodot(inputFodot);
+		setTextualResult(textResult);
 		processResult();
 	}
-	
+
 	//Input	
-	public String getInput() {
-		return input;
+	public String getTextualResult() {
+		return textualResult;
 	}
-	public void setInput(String input) {
-		this.input = input;
+	public void setTextualResult(String result) {
+		this.textualResult = result;
+	}	
+
+	public IFodotFile getInputFodot() {
+		return inputFodot;
 	}
+
+	public void setInputFodot(IFodotFile inputFodot) {
+		this.inputFodot = inputFodot;
+	}
+
+
 
 	//Processor of the answer
 	public void processResult() {
-		
+		List<String> linesToProcess = trimElements(Arrays.asList(getTextualResult().split("\n")));
+
+
+		//Process do
+		IdpModel currentModel = new IdpModel();
+		addModel(currentModel);
+		for (String line : linesToProcess) {
+			if (isThrowAwayLine(line)){
+				//No-op
+			} else if (isNewModelLine(line)) {
+				currentModel = new IdpModel();
+				addModel(currentModel);
+			} else if (declaresNewStructure(line)) {
+				processStructureLine(line);
+			} else if (isAssignment(line)) {
+				processAssignment(currentModel, line);				
+			} else if (isEndOfStructure(line)) {
+				currentModel = null;
+				setCurrentVocabulary(null);
+			} else {
+				throw new IllegalArgumentException("Can't process " + line);
+			}
+		}
+
+
+	}
+
+	private boolean isEndOfStructure(String line) {
+		return line.trim().equals("}");
+	}
+
+	private void processStructureLine(String line) {
+		int beginIndex = line.lastIndexOf(":")+1;
+		int endIndex = line.lastIndexOf("{")-1;
+		this.vocName = line.substring(beginIndex, endIndex).trim();
+		for (IFodotFileElement el : getInputFodot().getElementOf(FodotVocabulary.class)) {
+			if (el.getName().equals(vocName)) {
+				setCurrentVocabulary((FodotVocabulary) el);
+			}
+		}
+	}
+
+	private boolean declaresNewStructure(String line) {
+		return line.startsWith("structure");
+	}
+
+	private boolean isThrowAwayLine(String line) {
+		return line.startsWith("====") || line.startsWith("Number of models");
+	}
+
+	public List<IdpModel> getModels() {
+		return models;
 	}
 	
-	private void addConstantResult(String name,
-			List<String> extractSinglevaluedDomain) {
-		// TODO Auto-generated method stub
-		
+	public void addModel(IdpModel model) {
+		models.add(model);
 	}
 
-	private void addPredicateResult(String name,
-			List<List<String>> extractMultivaluedDomain) {
-		// TODO Auto-generated method stub
-		
+	//New Model
+	private boolean isNewModelLine(String line) {
+		return line.trim().startsWith("Model");
 	}
-
-	private void addFunctionResult(String name,
-			Map<List<String>, String> extractMultivaluedResultDomain) {
-		// TODO Auto-generated method stub
-		
-	}	
 	
 	//Name stuff
 	private static final String ASSIGNMENT_CHARACTER = "=";
+
+	private boolean isAssignment(String line) {
+		return line.contains(ASSIGNMENT_CHARACTER);
+	}
 	
-	public String processAssignment(String line) {
+	public void processAssignment(IdpModel model, String line) {
 		String[] splitted = line.split(ASSIGNMENT_CHARACTER);
 		if (splitted.length != 2) {
 			throw new IllegalArgumentException("Something went wrong when processing assignment: " + line);
 		}
-		
-		String name = splitted[0];
-		String domain = splitted[1];
-		switch (getDomainType(name, domain)) {
+		String name = splitted[0].trim();
+		String domain = splitted[1].trim();
+		switch (getDomainType(name)) {
 		case FUNCTION:
-			addFunctionResult(name, extractMultivaluedResultDomain(domain));
+			model.addFunctionResult(name, extractMultivaluedResultDomain(domain));
 			break;
 		case PREDICATE:
-			addPredicateResult(name, extractMultivaluedDomain(domain));
+			model.addPredicateResult(name, extractMultivaluedDomain(domain));
 			break;
 		case CONSTANT:
-			addConstantResult(name, extractSinglevaluedDomain(domain));
+			model.addConstantResult(name, extractSinglevaluedDomain(domain));
 			break;
 		}
-		
-		int equalsPos = line.indexOf(ASSIGNMENT_CHARACTER);
-		if (equalsPos < 0) {
-		}
-		return line.substring(0, equalsPos).trim();
 	}
 
 
@@ -89,39 +156,44 @@ public class IdpResultTransformer {
 	private static final String MULTIVALUE_DIVIDER = ";";
 	private static final String SINGLEVALUE_DIVIDER = ",";
 	private static final String RESULT_DIVIDER = "->";
-	
+
 	private enum DomainType {FUNCTION, PREDICATE, CONSTANT};
-	
-	private DomainType getDomainType(String name, String domain) {
+
+	private DomainType getDomainType(String name) {
 		//TODO: link with the IDP_transformator to know what type
-		return null;
+
+		IFodotVocabularyElement el = getCurrentVocabulary().getElementWithName(name);
+		if (el.getClass().equals(FodotFunctionDeclaration.class)) {
+			return DomainType.FUNCTION;
+		}
+		if (el.getClass().equals(FodotPredicateDeclaration.class)) {
+			return DomainType.PREDICATE;
+		}
+		if (el.getClass().equals(FodotTypeDeclaration.class)) {
+			return DomainType.CONSTANT;
+		}
 		
-//		if (domain.contains(RESULT_DIVIDER)) {
-//			return DomainType.FUNCTION;
-//		}
-//		if (domain.contains(MULTIVALUE_DIVIDER)) {
-//			return DomainType.PREDICATE;
-//		}
-//		return DomainType.CONSTANT;
+		throw new IllegalArgumentException("Not a recognized class: " + el.getClass());
 	}
-	
+
 	private boolean containsDomain(String line) {
 		return line.contains("{") && line.contains("}");
 	}
-	
+
 	/**
 	 * Returns whatever is between curly braces
 	 */
 	private String extractDomain(String line) {
 		int firstBracket = line.indexOf(OPENING_BRACKET)+1;
 		int lastBracket = line.lastIndexOf(CLOSING_BRACKET);
-		if (firstBracket < 0 || lastBracket < firstBracket) {
-			throw new IllegalArgumentException(line + " does not contain curly braces: no domain can be extracted");
+		if (!containsDomain(line) || firstBracket < 0 || lastBracket < firstBracket) {
+			return line;
+//			throw new IllegalArgumentException(line + " does not contain curly braces: no domain can be extracted");
 		}
 		String domain = line.substring(firstBracket, lastBracket);
 		return domain;
 	}
-	
+
 	private List<String> extractSinglevaluedDomain(String line) {
 		if (line.contains(MULTIVALUE_DIVIDER)) {
 			throw new IllegalArgumentException("Tried parsing a multiargumented line with the constantdomain parser");
@@ -130,10 +202,10 @@ public class IdpResultTransformer {
 
 		//Fill domain elements
 		List<String> domainElements = trimElements(splitOn(domainString, SINGLEVALUE_DIVIDER));	
-		
+
 		return domainElements;
 	}
-	
+
 	private List<List<String>> extractMultivaluedDomain(String line) {
 		if (line.contains(RESULT_DIVIDER)) {
 			throw new IllegalStateException(line + " is a function domain, don't parse it with a predicate domain extractor");
@@ -146,35 +218,35 @@ public class IdpResultTransformer {
 		}
 		return result;
 	}
-	
+
 	private Map<List<String>,String> extractMultivaluedResultDomain(String line) {
-		if (line.contains(RESULT_DIVIDER)) {
-			throw new IllegalStateException(line + " is a function domain, don't parse it with a predicate domain extractor");
-		}
 		String domainString = extractDomain(line);
 		List<String> domainElements = trimElements(splitOn(domainString, MULTIVALUE_DIVIDER));
 		Map<List<String>,String> result = new HashMap<List<String>, String>();
 		for (String element : domainElements) {
-			String[] splitted = element.split(RESULT_DIVIDER);
-			if (splitted.length != 2) {
-				throw new IllegalStateException("No function divider for " + element);
+			if (element.contains(RESULT_DIVIDER)) {
+				String[] splitted = element.split(RESULT_DIVIDER);
+				String elementsToProcess = splitted[0];
+				String resultString = splitted[1].trim();
+				result.put(trimElements(splitOn(elementsToProcess, SINGLEVALUE_DIVIDER)), resultString);
+			} else {
+				result.put(Arrays.asList(""), element);
+				
 			}
-			String elementsToProcess = splitted[0];
-			String resultString = splitted[1].trim();
-			result.put(trimElements(splitOn(elementsToProcess, SINGLEVALUE_DIVIDER)), resultString);
 		}
 		return result;
 	}
-	
+
 	//General helpers
-	
+
 	private List<String> trimElements(List<String> list) {
 		for (int i = 0; i < list.size(); i++) {
 			list.set(i, list.get(i).trim());
 		}
 		return list;
 	}
-	
+
+
 	private List<String> splitOn(String toSplit, String splitter) {
 		List<String> result;
 		if (toSplit.contains(splitter)) {
@@ -182,12 +254,63 @@ public class IdpResultTransformer {
 		} else {
 			result = Arrays.asList(toSplit);
 		}
+
+		result = concatElementsWithBrackets(result);
+
 		return result;
 	}
+
+	/**
+	 * This method concats elements if they contain open brackets so it's not split over multiple elements
+	 * @param result
+	 * @return
+	 */
+	private List<String> concatElementsWithBrackets(List<String> input) {
+		List<String> result = new ArrayList<String>();
+		int openBracketCounter = 0;
+		String currentElement = null;
+		for (String el : input) {
+			openBracketCounter = openBracketCounter + getAmountOfCharInString('(', el) - getAmountOfCharInString(')', el);
+
+			if (currentElement == null) {
+				currentElement = el;
+			} else {
+				currentElement += ", " + el;
+			}
+			if (openBracketCounter == 0) {
+				result.add(currentElement);
+				currentElement = null;
+			}
+		}
+
+		return result;
+	}
+
+	private int getAmountOfCharInString(char splitter, String string) {
+		int result = 0;
+		for (int i = 0; i < string.length(); i++) {
+			if (string.charAt(i) == splitter) {
+				result += 1;
+			}
+		}
+		return result;		
+	}
+
+	//CLASS VARIABLES
+	public FodotVocabulary getCurrentVocabulary() {
+		return currentVocabulary;
+	}
+
+	public void setCurrentVocabulary(FodotVocabulary currentVocabulary) {
+		this.currentVocabulary = currentVocabulary;
+	}
 	
+	//MAIN
 	
 	public static void main(String[] args) {
-		IdpResultTransformer trans = new IdpResultTransformer("Number of models: 1"
+		//		IdpResultTransformer trans = 
+		Parser p = new Parser(new File("resources/games/blocks.kif"));
+		new IdpResultTransformer(p.getParsedFodot(), "Number of models: 1"
 				+ "\nModel 1"
 				+ "\n======="
 				+ "\nstructure  : V {"
@@ -213,5 +336,5 @@ public class IdpResultTransformer {
 				+ "\n  Start = 0"
 				+ "\n	}");
 	}
-	
+
 }
