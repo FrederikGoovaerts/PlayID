@@ -5,7 +5,12 @@ package fodot.gdl_parser.exceptions;
  */
 public class GdlParsingOrderException extends RuntimeException {
 
-    public GdlParsingOrderException() {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public GdlParsingOrderException() {
     }
 
     public GdlParsingOrderException(String message) {

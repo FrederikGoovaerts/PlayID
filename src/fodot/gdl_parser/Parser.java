@@ -24,19 +24,22 @@ public class Parser {
     public static void main(String[] args) {
         File file = new File("resources/games/blocks.kif");
         Parser test = new Parser(file);
+        System.out.println(test.getParsedFodot().toCode());
     }
 
     /***************************************************************************
      * Constructor
      **************************************************************************/
 
+    private Fodot parsedFodot;
+    
     public Parser(File file) {
         String fileContents = FileUtils.readFileAsString(file);
         game = Game.createEphemeralGame(Game.preprocessRulesheet(fileContents));
         List<Gdl> rules = game.getRules();
         GdlInspector inspector = new GdlInspector(rules);
         Fodot builtFodot = inspector.getFodot();
-        System.out.println(builtFodot.toCode());
+        setParsedFodot(builtFodot);
         if(outputToFile) {
             String originalPath = file.getAbsolutePath();
             StringBuilder b = new StringBuilder(originalPath);
@@ -54,6 +57,15 @@ public class Parser {
      * Class Properties
      **************************************************************************/
 
+    public Fodot getParsedFodot() {
+    	return parsedFodot;
+    }
+    
+    private void setParsedFodot(Fodot fodot) {
+    	this.parsedFodot = fodot;
+    }
+    
+    
     /* The game for this parser */
     private final Game game;
 

@@ -1,21 +1,33 @@
 package fodot.gdl_parser.util;
 
-import fodot.gdl_parser.GdlFodotTransformer;
-import fodot.objects.sentence.IFodotSentenceElement;
-import fodot.objects.sentence.formulas.IFodotFormula;
-import fodot.objects.sentence.terms.FodotConstant;
-import fodot.objects.sentence.terms.FodotVariable;
-import fodot.objects.sentence.terms.IFodotTerm;
-import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
-import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
-import fodot.objects.vocabulary.elements.FodotType;
-import org.ggp.base.util.gdl.grammar.*;
+import static fodot.helpers.FodotPartBuilder.createAnd;
+import static fodot.helpers.FodotPartBuilder.createConstant;
+import static fodot.helpers.FodotPartBuilder.createEquals;
+import static fodot.helpers.FodotPartBuilder.createNot;
+import static fodot.helpers.FodotPartBuilder.createPredicate;
+import static fodot.helpers.FodotPartBuilder.createPredicateTerm;
+import static fodot.helpers.FodotPartBuilder.createPredicateTermDeclaration;
+import static fodot.helpers.FodotPartBuilder.createVariable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static fodot.helpers.FodotPartBuilder.*;
+import org.ggp.base.util.gdl.grammar.GdlDistinct;
+import org.ggp.base.util.gdl.grammar.GdlLiteral;
+import org.ggp.base.util.gdl.grammar.GdlNot;
+import org.ggp.base.util.gdl.grammar.GdlRelation;
+import org.ggp.base.util.gdl.grammar.GdlSentence;
+import org.ggp.base.util.gdl.grammar.GdlTerm;
+import org.ggp.base.util.gdl.grammar.GdlVariable;
+
+import fodot.gdl_parser.GdlFodotTransformer;
+import fodot.objects.sentence.formulas.IFodotFormula;
+import fodot.objects.sentence.terms.FodotVariable;
+import fodot.objects.sentence.terms.IFodotTerm;
+import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
+import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
+import fodot.objects.vocabulary.elements.FodotType;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>

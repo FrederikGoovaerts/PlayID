@@ -1,21 +1,29 @@
 package fodot.gdl_parser;
 
+import static fodot.helpers.FodotPartBuilder.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.ggp.base.util.Pair;
+
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.Fodot;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedure;
 import fodot.objects.procedure.FodotProcedures;
-import fodot.objects.sentence.IFodotSentenceElement;
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.terms.FodotConstant;
-import fodot.objects.sentence.terms.FodotPredicateTerm;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.theory.FodotSentence;
 import fodot.objects.theory.FodotTheory;
-import fodot.objects.theory.definitions.FodotInductiveDefinitionConnector;
 import fodot.objects.theory.definitions.FodotInductiveSentence;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
@@ -24,11 +32,6 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.util.FormulaUtil;
-import org.ggp.base.util.Pair;
-
-import java.util.*;
-
-import static fodot.helpers.FodotPartBuilder.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -120,7 +123,7 @@ public class FodotGameFactory {
          * type Player constructed from {*alle roles*}
          */
 
-        toReturn.addType(
+        toReturn.addElement(
                 createTypeDeclaration(
                         source.getPlayerType()
                 )
@@ -132,7 +135,7 @@ public class FodotGameFactory {
          * resultaat:
          * type Unfilled constructed from {*alle constanten*}
          */
-        toReturn.addType(
+        toReturn.addElement(
                 createTypeDeclaration(
                         source.getAllType()
                 )
@@ -147,10 +150,12 @@ public class FodotGameFactory {
          * C_pred(Time,*standaard argumenten*)
          */
         for (FodotPredicateDeclaration declaration : this.pool.getFluentPredicates()) {
-            toReturn.addPredicate(this.pool.getTimedVerionOf(declaration));
-            toReturn.addPredicate(this.pool.getInitialOf(declaration));
-            toReturn.addPredicate(this.pool.getCauseOf(declaration));
-            toReturn.addPredicate(this.pool.getCauseNotOf(declaration));
+        	toReturn.addElement(createBlankLines(1));
+        	toReturn.addElement(createComment("LTC for " + declaration.getName()));
+            toReturn.addElement(this.pool.getTimedVerionOf(declaration));
+            toReturn.addElement(this.pool.getInitialOf(declaration));
+            toReturn.addElement(this.pool.getCauseOf(declaration));
+            toReturn.addElement(this.pool.getCauseNotOf(declaration));
         }
 
         /**
@@ -159,7 +164,7 @@ public class FodotGameFactory {
          * pred(*standaard argumenten*)
          */
         for (FodotPredicateDeclaration declaration : this.pool.getStaticPredicates()) {
-            toReturn.addPredicate(declaration);
+            toReturn.addElement(declaration);
         }
 
         return toReturn;
@@ -224,7 +229,7 @@ public class FodotGameFactory {
                     )
             ));
 
-            toReturn.addInductiveDefinition(createInductiveDefinition(definitions));
+            toReturn.addElement(createInductiveDefinition(definitions));
         }
 
         /**
@@ -241,7 +246,7 @@ public class FodotGameFactory {
             for (Pair<FodotPredicate, IFodotFormula> pair : nextMap.get(predicate)) {
                 definitions.add(createInductiveSentence(createInductiveDefinitionConnector(pair.left, pair.right)));
             }
-            toReturn.addInductiveDefinition(createInductiveDefinition(definitions));
+            toReturn.addElement(createInductiveDefinition(definitions));
         }
 
         /**
@@ -261,7 +266,7 @@ public class FodotGameFactory {
          */
         for (Map.Entry<FodotPredicate, Set<IFodotFormula>> entry : source.getLegalMap().entrySet()) {
             for (IFodotFormula body : entry.getValue()) {
-                toReturn.addSentence(createSentence(
+                toReturn.addElement(createSentence(
                         createImplies(entry.getKey(),body)
                 ));
             }
@@ -295,7 +300,7 @@ public class FodotGameFactory {
                 );
             }
         }
-        toReturn.addInductiveDefinition(createInductiveDefinition(definitions));
+        toReturn.addElement(createInductiveDefinition(definitions));
 
 
         /**
@@ -320,7 +325,7 @@ public class FodotGameFactory {
                     )
             );
         }
-        toReturn.addInductiveDefinition(createInductiveDefinition(definitions));
+        toReturn.addElement(createInductiveDefinition(definitions));
 
         return toReturn;
     }
@@ -336,7 +341,7 @@ public class FodotGameFactory {
         Map<FodotConstant[],FodotConstant> desiredResult = new HashMap<>();
         FodotConstant[] ownRole = {source.getOwnRole()};
         desiredResult.put(ownRole,createConstant("100", getNaturalNumberType()));
-        toReturn.addEnumeration(
+        toReturn.addElement(
                 createFunctionEnumeration(
                         this.scoreFunctionDeclaration, desiredResult
                 )
@@ -351,7 +356,7 @@ public class FodotGameFactory {
         Map<FodotPredicateDeclaration, Set<FodotConstant[]>> initMap
                 = this.source.getInitialValues();
         for (FodotPredicateDeclaration declaration : initMap.keySet()) {
-            toReturn.addEnumeration(
+            toReturn.addElement(
                     createPredicateEnumeration(this.pool.getInitialOf(declaration),
                             new ArrayList<>(initMap.get(declaration)))
             );
@@ -365,7 +370,7 @@ public class FodotGameFactory {
         Map<FodotPredicateDeclaration, Set<FodotConstant[]>> staticMap
                 = this.source.getStaticValues();
         for (FodotPredicateDeclaration declaration : staticMap.keySet()) {
-            toReturn.addEnumeration(
+            toReturn.addElement(
                     createPredicateEnumeration(declaration,
                             new ArrayList<>(staticMap.get(declaration)))
             );
@@ -386,28 +391,28 @@ public class FodotGameFactory {
         FodotLTCVocabulary defaultVoc = createLTCVocabulary();
 
         // type Time isa nat
-        defaultVoc.addType(createTypeDeclaration(source.getTimeType()));
+        defaultVoc.addElement(createTypeDeclaration(source.getTimeType()));
 
         // Start: Time
-        defaultVoc.addFunction(startFunctionDeclaration);
+        defaultVoc.addElement(startFunctionDeclaration);
 
         // partial Next(Time):Time
-        defaultVoc.addFunction(nextFunctionDeclaration);
-
-        // do(Time, Player, Action)
-        defaultVoc.addPredicate(doPredicateDeclaration);
+        defaultVoc.addElement(nextFunctionDeclaration);
 
         // type Action constructed from {*action*}
-        defaultVoc.addType(createTypeDeclaration(source.getActionType()));
+        defaultVoc.addElement(createTypeDeclaration(source.getActionType()));
 
         // terminalTime(Time)
-        defaultVoc.addPredicate(terminalTimePredicateDeclaration);
+        defaultVoc.addElement(terminalTimePredicateDeclaration);
 
         // type ScoreType isa nat
-        defaultVoc.addType(scoreTypeDeclaration);
+        defaultVoc.addElement(scoreTypeDeclaration);
 
         // Score(Player): ScoreType
-        defaultVoc.addFunction(scoreFunctionDeclaration);
+        defaultVoc.addElement(scoreFunctionDeclaration);
+
+        // do(Time, Player, Action)
+        defaultVoc.addElement(doPredicateDeclaration);
 
         return defaultVoc;
     }
@@ -425,7 +430,7 @@ public class FodotGameFactory {
         variables.add(a_Action);
         variables.add(p_Player);
         variables.add(t_Time);
-        defaultTheory.addSentence(createSentence(createForAll(variables,
+        defaultTheory.addElement(createSentence(createForAll(variables,
                 createImplies(
                         createPredicate(this.doPredicateDeclaration
                                 , new ArrayList<IFodotTerm>(Arrays.asList(t_Time,
@@ -446,7 +451,7 @@ public class FodotGameFactory {
 
         //! t [Time] p [Player]: ~terminalTime(t) & (?t2 [Time]: Next(t) = t2) => ?1 a [Action]: do(t,p,a).
         variables = new HashSet<>(Arrays.asList(t_Time,p_Player));
-        defaultTheory.addSentence(createSentence(createForAll(variables,
+        defaultTheory.addElement(createSentence(createForAll(variables,
                 createImplies(
                         createAnd(
                                 createNot(createPredicate(
@@ -502,7 +507,7 @@ public class FodotGameFactory {
                         )
                 )
         );
-        defaultTheory.addInductiveDefinition(createInductiveDefinition(definitions));
+        defaultTheory.addElement(createInductiveDefinition(definitions));
 
         return defaultTheory;
     }
@@ -511,7 +516,7 @@ public class FodotGameFactory {
         FodotStructure defaultStructure = createStructure(voc);
 
         //Start=0
-        defaultStructure.addEnumeration(
+        defaultStructure.addElement(
                 createConstantFunctionEnumeration(
                         this.startFunctionDeclaration,
                         createInteger(0)
@@ -519,7 +524,7 @@ public class FodotGameFactory {
         );
 
         //Time={0..Constant(timeLimit)}
-        defaultStructure.addEnumeration(
+        defaultStructure.addElement(
                 createNumericalTypeRangeEnumeration(
                         source.getTimeType(),
                         createInteger(0),
@@ -528,7 +533,7 @@ public class FodotGameFactory {
         );
 
         //ScoreType={0..100}
-        defaultStructure.addEnumeration(
+        defaultStructure.addElement(
                 createNumericalTypeRangeEnumeration(
                         source.getScoreType(),
                         createInteger(0),

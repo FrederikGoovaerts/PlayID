@@ -24,7 +24,6 @@ public class FodotVocabulary implements IFodotElement {
 	
 	//Maybe convert the three sets in just a set of FodotDeclarations?
 	private String name;
-	private Set<FodotTypeDeclaration> types;
 	private Set<IFodotVocabularyElement> elements;
 	
 	public FodotVocabulary(String name, Collection<? extends IFodotVocabularyElement> elements) {
@@ -68,7 +67,7 @@ public class FodotVocabulary implements IFodotElement {
 	}
 
 	public void addElement(IFodotVocabularyElement argElement) {
-		if (containsElementWithName(argElement.getName()))
+		if (!containsElement(argElement) && containsElementWithName(argElement.getName()))
 			throw new RuntimeException("Vocabulary " + this + " already contains an element with name " + argElement.getName());
 		this.elements.add(argElement);
 	}
