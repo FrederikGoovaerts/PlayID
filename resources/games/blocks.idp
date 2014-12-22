@@ -4,22 +4,34 @@ LTCvocabulary V {
 	type Time isa nat
 	Start : Time
 	partial Next(Time) : Time
-	type Player constructed from {p_robot}
 	type all constructed from {c_c,c_b,c_a,c_4,c_3,c_2,c_1}
 	type Action constructed from {u(all,all),s(all,all)}
-	do(Time,Player,Action)
 	terminalTime(Time)
 	type ScoreType isa nat
+	type Player constructed from {p_robot}
 	Score(Player) : ScoreType
+	do(Time,Player,Action)
+	
+
+	// LTC for clear
 	clear(Time,all)
 	I_clear(all)
 	C_clear(Time,all)
+	
+
+	// LTC for on
 	on(Time,all,all)
 	I_on(all,all)
 	C_on(Time,all,all)
+	
+
+	// LTC for table
 	table(Time,all)
 	I_table(all)
 	C_table(Time,all)
+	
+
+	// LTC for step
 	step(Time,all)
 	I_step(all)
 	C_step(Time,all)
@@ -83,11 +95,11 @@ structure S : V {
 	Time = {0..20}
 	ScoreType = {0..100}
 	Score = {p_robot -> 100}
-	I_table = {c_b;c_a}
+	I_table = {c_a;c_b}
 	I_step = {c_1}
 	I_on = {c_c,c_a}
-	I_clear = {c_c;c_b}
-	succ = {c_3,c_4;c_2,c_3;c_1,c_2}
+	I_clear = {c_b;c_c}
+	succ = {c_2,c_3;c_3,c_4;c_1,c_2}
 }
 procedure main() {
 	stdoptions.nbmodels=5
