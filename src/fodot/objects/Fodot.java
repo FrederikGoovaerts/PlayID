@@ -1,12 +1,13 @@
 package fodot.objects;
 
+import fodot.objects.file.IFodotFile;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.vocabulary.FodotVocabulary;
 
-public class Fodot implements IFodotElement {
+public class Fodot implements IFodotFile {
 	private FodotIncludeHolder includes;
 	private FodotVocabulary vocabulary;
 	private FodotTheory theory;
