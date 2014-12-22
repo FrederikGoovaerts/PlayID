@@ -68,6 +68,20 @@ public abstract class FodotFileElement<E extends IFodotElement> implements IFodo
 	public int getAmountOfElements() {
 		return this.elements.size();
 	}
+	
+	public Set<E> getElementsOfClass(Class<?> clazz) {
+		if (clazz == null) {
+			return new HashSet<E>();
+		}
+		Set<E> result = new LinkedHashSet<E>();
+		for (E el : elements) {
+			if (clazz.isInstance(el)) {
+				result.add(el);
+			}
+		}
+		return result;
+	}
+	
 	/**********************************************/
 	
 	//Prerequisites
