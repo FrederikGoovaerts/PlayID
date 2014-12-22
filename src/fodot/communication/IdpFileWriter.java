@@ -7,7 +7,7 @@ import org.ggp.base.util.files.FileUtils;
 
 import fodot.objects.file.IFodotFile;
 
-public class IDPFileWriter {
+public class IdpFileWriter {
 
 	public static File writeToIDPFile(IFodotFile fodot, File outputFile) {
         try {

@@ -7,7 +7,7 @@ import org.ggp.base.util.files.FileUtils;
 import org.ggp.base.util.game.Game;
 import org.ggp.base.util.gdl.grammar.Gdl;
 
-import fodot.communication.IDPFileWriter;
+import fodot.communication.IdpFileWriter;
 import fodot.objects.Fodot;
 
 /**
@@ -51,8 +51,8 @@ public class Parser {
         	System.out.println(builtFodot.toCode());
         }        
         if(outputToFile) {
-        	File outputFile = IDPFileWriter.createIDPFileBasedOn(inputFile);
-        	IDPFileWriter.writeToIDPFile(builtFodot, outputFile);
+        	File outputFile = IdpFileWriter.createIDPFileBasedOn(inputFile);
+        	IdpFileWriter.writeToIDPFile(builtFodot, outputFile);
         }
     }
 
