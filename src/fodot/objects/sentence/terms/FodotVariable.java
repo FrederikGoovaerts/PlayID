@@ -14,8 +14,8 @@ public class FodotVariable implements IFodotTerm {
 	
 	public FodotVariable(String name, FodotType type) {
 		super();
-		setName(name);
 		this.type = type;
+		setName(name);
 	}
 
 	public void setName(String name) {

@@ -323,7 +323,7 @@ public class FodotPartBuilder {
 	}
 
 	public static FodotVariable createVariable(String name, FodotType type) {
-		return new FodotVariable(name, type);
+		return new FodotVariable(NameUtil.convertToValidName(name, type), type);
 	}
 
 	public static FodotVariable createVariable(FodotType type) {

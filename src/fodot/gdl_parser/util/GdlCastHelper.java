@@ -72,7 +72,21 @@ public class GdlCastHelper {
             GdlFodotTransformer trans) {
         if(relation.getName().toString().equals("does")) {
             // process (does *player* *actionpred*)
-            String playerName = relation.get(0).toSentence().getName().getValue();
+        	
+        	/*
+        	 * NOTE: toSentence geeft exceptions wanneer je dit op een variabele doet!
+        	 */
+        	String playerName;
+        	IFodotTerm playerTerm;
+        	try {
+        		playerName = relation.get(0).toSentence().getName().getValue();
+        		playerTerm = createConstant("p_" + playerName,trans.getPlayerType());
+        	} catch (RuntimeException e) {
+        		playerName = relation.get(0).toString();
+        		playerTerm = createVariable(playerName, trans.getPlayerType());
+        	}
+        	
+        	
             GdlSentence actionPredSentence = relation.get(1).toSentence();
             List<FodotType> types = new ArrayList<>();
             for (int i = 0; i < actionPredSentence.arity(); i++) {
@@ -118,7 +132,7 @@ public class GdlCastHelper {
             return createPredicate(
                     trans.getDoPredicate(),
                     createVariable("t",trans.getTimeType()),
-                    createConstant("p_" + playerName,trans.getPlayerType()),
+                    playerTerm,
                     createPredicateTerm(actionPred, actionVariables)
             );
         } else if(relation.getName().toString().equals("true")) {
