@@ -22,9 +22,17 @@ public class IdpModel {
 		
 	}
 	
+	public List<String> getConstantResult(String name) {
+		return constants.get(name);
+	}
+	
 	public void addPredicateResult(String name, List<List<String>> extractMultivaluedDomain) {
 		predicates.put(name, extractMultivaluedDomain);
 		
+	}
+	
+	public List<List<String>> getPredicateResult(String name) {
+		return predicates.get(name);
 	}
 
 	public void addFunctionResult(String name,	Map<List<String>, String> extractMultivaluedResultDomain) {
@@ -32,6 +40,9 @@ public class IdpModel {
 		
 	}	
 	
+	public Map<List<String>, String> getFunctionResult(String name) {
+		return functions.get(name);
+	}
 
 
 }

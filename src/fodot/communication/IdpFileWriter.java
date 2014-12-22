@@ -9,13 +9,12 @@ import fodot.objects.file.IFodotFile;
 
 public class IdpFileWriter {
 
-	public static File writeToIDPFile(IFodotFile fodot, File outputFile) {
+	public static void writeToIDPFile(IFodotFile fodot, File outputFile) {
         try {
             FileUtils.writeStringToFile(outputFile, fodot.toCode());
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        return outputFile;		
+        }	
 	}
 	
 	public static File createIDPFile(String directory, String name) {
