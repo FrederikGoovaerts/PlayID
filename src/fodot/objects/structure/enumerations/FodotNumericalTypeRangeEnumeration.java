@@ -2,6 +2,7 @@ package fodot.objects.structure.enumerations;
 
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionPrinter;
 
 public class FodotNumericalTypeRangeEnumeration extends FodotEnumeration {
@@ -82,6 +83,11 @@ public class FodotNumericalTypeRangeEnumeration extends FodotEnumeration {
 		} else if (!lastValue.equals(other.lastValue))
 			return false;
 		return true;
+	}
+
+	@Override
+	public IFodotVocabularyElement getDeclaration() {
+		return getType().getDeclaration();
 	}
 		
 }

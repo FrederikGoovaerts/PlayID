@@ -5,6 +5,7 @@ import java.util.List;
 
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionPrinter;
 
 public class FodotTypeEnumeration extends FodotEnumeration {
@@ -77,6 +78,11 @@ public class FodotTypeEnumeration extends FodotEnumeration {
 		} else if (!values.equals(other.values))
 			return false;
 		return true;
+	}
+
+	@Override
+	public IFodotVocabularyElement getDeclaration() {
+		return getType().getDeclaration();
 	}
 		
 }
