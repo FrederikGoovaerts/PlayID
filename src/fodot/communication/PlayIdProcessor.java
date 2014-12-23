@@ -3,11 +3,13 @@ package fodot.communication;
 import java.io.File;
 import java.util.List;
 
+import fodot.communication.input.IdpFileWriter;
 import fodot.communication.output.GdlAction;
 import fodot.communication.output.GdlAnswerer;
 import fodot.communication.output.IdpModel;
 import fodot.communication.output.IdpResultTransformer;
 import fodot.gdl_parser.Parser;
+import fodot.objects.file.IFodotFile;
 
 public class PlayIdProcessor {
 	

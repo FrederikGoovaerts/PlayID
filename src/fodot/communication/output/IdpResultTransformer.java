@@ -1,13 +1,11 @@
 package fodot.communication.output;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fodot.gdl_parser.Parser;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.file.IFodotFileElement;
 import fodot.objects.vocabulary.FodotVocabulary;
