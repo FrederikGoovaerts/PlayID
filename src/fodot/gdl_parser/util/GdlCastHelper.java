@@ -1,7 +1,6 @@
 package fodot.gdl_parser.util;
 
 import static fodot.helpers.FodotPartBuilder.createAnd;
-import static fodot.helpers.FodotPartBuilder.createConstant;
 import static fodot.helpers.FodotPartBuilder.createEquals;
 import static fodot.helpers.FodotPartBuilder.createNot;
 import static fodot.helpers.FodotPartBuilder.createPredicate;
@@ -23,6 +22,7 @@ import org.ggp.base.util.gdl.grammar.GdlVariable;
 
 import fodot.gdl_parser.GdlFodotTransformer;
 import fodot.objects.sentence.formulas.IFodotFormula;
+import fodot.objects.sentence.formulas.argumented.FodotPredicate;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
@@ -80,7 +80,7 @@ public class GdlCastHelper {
         	IFodotTerm playerTerm;
         	try {
         		playerName = relation.get(0).toSentence().getName().getValue();
-        		playerTerm = createConstant("p_" + playerName,trans.getPlayerType());
+        		playerTerm = trans.convertRawRole(playerName);
         	} catch (RuntimeException e) {
         		playerName = relation.get(0).toString();
         		playerTerm = createVariable(playerName, trans.getPlayerType());
@@ -88,36 +88,22 @@ public class GdlCastHelper {
         	
         	
             GdlSentence actionPredSentence = relation.get(1).toSentence();
-            List<FodotType> types = new ArrayList<>();
-            for (int i = 0; i < actionPredSentence.arity(); i++) {
-                types.add(trans.getAllType());
-            }
-            FodotPredicateTermDeclaration actionPred = createPredicateTermDeclaration(
+            FodotPredicateTermDeclaration actionTermDecl = createPredicateTermDeclaration(
                     actionPredSentence.getName().getValue(),
-                    types,
-                    trans.getActionType()
-            );
-//            FodotConstant action = createConstant(
-//                    buildActionPredicateRepresentation(
-//                            actionPred,
-//                            trans.getAllType()
-//                    ),
-//                    trans.getActionType()
-//            );
-            FodotPredicateTermDeclaration actionTerm = createPredicateTermDeclaration(
-                    actionPred.getName(),
                     FodotType.getSameTypeList(
-                            actionPred.getAmountOfArgumentTypes(),
+                    		actionPredSentence.arity(),
                             trans.getAllType()
                     ),
                     trans.getActionType()
             );
+            
+            
             List<IFodotTerm> actionVariables = new ArrayList<>();
             for (GdlTerm term : actionPredSentence.getBody()) {
                 //GdlSentence sentence = gdlTerm.toSentence();
                 IFodotTerm actionVar;
                 if(term.isGround()){
-                    actionVar = createConstant("c_" + term.toString(),trans.getAllType());
+                    actionVar = trans.convertRawConstantName(term.toString());
                 } else {
                     if(variables.containsKey(term)){
                         actionVar = variables.get(term);
@@ -129,12 +115,14 @@ public class GdlCastHelper {
                 }
                 actionVariables.add(actionVar);
             }
-            return createPredicate(
+            FodotPredicate actionPredicate = createPredicate(
                     trans.getDoPredicate(),
                     createVariable("t",trans.getTimeType()),
                     playerTerm,
-                    createPredicateTerm(actionPred, actionVariables)
+                    createPredicateTerm(actionTermDecl, actionVariables)
             );
+            trans.addTranslation(actionPredicate, actionPredSentence.toString());
+            return actionPredicate;
         } else if(relation.getName().toString().equals("true")) {
             // process (true (*fluentpred*))
             GdlSentence fluentPredSentence = relation.get(0).toSentence();
@@ -149,8 +137,7 @@ public class GdlCastHelper {
                 GdlTerm term = fluentPredSentence.get(i);
                 IFodotTerm element;
                 if(term.isGround()){
-                    element = createConstant("c_" + term.toSentence().getName().getValue(),
-                            trans.getAllType());
+                    element = trans.convertRawConstantName(term.toSentence().getName().getValue());
                 } else {
                     if(variables.containsKey(term)){
                         element = variables.get(term);
@@ -179,8 +166,7 @@ public class GdlCastHelper {
                 GdlTerm term = relation.get(i);
                 IFodotTerm element;
                 if(term.isGround()){
-                    element = createConstant("c_" + term.toSentence().getName().getValue(),
-                            trans.getAllType());
+                    element = trans.convertRawConstantName(term.toSentence().getName().getValue());
                 } else {
                     if(variables.containsKey(term)){
                         element = variables.get(term);
@@ -213,7 +199,7 @@ public class GdlCastHelper {
         IFodotTerm arg2Fodot;
 
         if(arg1.isGround()){
-            arg1Fodot = createConstant("c_" + arg1.toString(),trans.getAllType());
+            arg1Fodot = trans.convertRawConstantName(arg1.toString());
         } else {
             if(variables.containsKey(distinct.getArg1())){
                 arg1Fodot = variables.get(distinct.getArg1());
@@ -225,7 +211,7 @@ public class GdlCastHelper {
         }
 
         if(arg2.isGround()){
-            arg2Fodot = createConstant("c_" + arg2.toString(),trans.getAllType());
+            arg2Fodot = trans.convertRawConstantName(arg2.toString());
         } else {
             if(variables.containsKey(distinct.getArg2())){
                 arg2Fodot = variables.get(distinct.getArg2());

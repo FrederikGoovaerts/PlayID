@@ -134,7 +134,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         }
     }
 
-    private FodotConstant convertRawRole(String rawName){
+    public FodotConstant convertRawRole(String rawName){
     	FodotConstant toReturn = createConstant("p_" + rawName, this.getPlayerType());
     	addTranslation(toReturn, rawName);
         return toReturn;
@@ -201,7 +201,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         return allType.containsElement(constant);
     }
 
-    private FodotConstant convertRawConstantName(String rawName){
+    public FodotConstant convertRawConstantName(String rawName){
     	FodotConstant toReturn = createConstant("c_" + rawName, allType);
     	addTranslation(toReturn, rawName);
         return toReturn;
