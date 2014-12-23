@@ -39,13 +39,15 @@ public class Parser {
      **************************************************************************/
 
     private Fodot parsedFodot;
+    private GdlInspector inspector;
     
     public Parser(File inputFile) {
         String fileContents = FileUtils.readFileAsString(inputFile);
         game = Game.createEphemeralGame(Game.preprocessRulesheet(fileContents));
         List<Gdl> rules = game.getRules();
-        GdlInspector inspector = new GdlInspector(rules);
-        Fodot builtFodot = inspector.getFodot();
+        
+        setInspector(new GdlInspector(rules));
+        Fodot builtFodot = getInspector().getFodot();
         setParsedFodot(builtFodot);
         
         if (printBuiltFodot) {
@@ -68,4 +70,18 @@ public class Parser {
     private void setParsedFodot(Fodot fodot) {
     	this.parsedFodot = fodot;
     }
+
+	public GdlInspector getInspector() {
+		return inspector;
+	}
+
+	private void setInspector(GdlInspector inspector) {
+		this.inspector = inspector;
+	}
+	
+	public GdlTransformer getTransformer() {
+		return getInspector().getTransformer();
+	}
+    
+    
 }

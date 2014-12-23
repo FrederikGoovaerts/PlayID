@@ -41,7 +41,7 @@ public class GdlInspector extends GdlVisitor{
 
     private GdlTransformer transformer;
 
-    private GdlTransformer getTransformer() {
+    public GdlTransformer getTransformer() {
         return transformer;
     }
 

@@ -135,7 +135,9 @@ public class GdlFodotTransformer implements GdlTransformer{
     }
 
     private FodotConstant convertRawRole(String rawName){
-        return createConstant("p_" + rawName, this.getPlayerType());
+    	FodotConstant toReturn = createConstant("p_" + rawName, this.getPlayerType());
+    	addTranslation(toReturn, rawName);
+        return toReturn;
     }
 
     /*** End of Roles subsection ***/
@@ -200,7 +202,9 @@ public class GdlFodotTransformer implements GdlTransformer{
     }
 
     private FodotConstant convertRawConstantName(String rawName){
-        return createConstant("c_" + rawName, allType);
+    	FodotConstant toReturn = createConstant("c_" + rawName, allType);
+    	addTranslation(toReturn, rawName);
+        return toReturn;
     }
 
     /*** End of Constants subsection ***/
@@ -482,7 +486,7 @@ public class GdlFodotTransformer implements GdlTransformer{
             //GdlSentence sentence = gdlTerm.toSentence();
             IFodotTerm var;
             if(term.isGround()){
-                var = createConstant("c_" + term.toString(), getAllType());
+                var = convertRawConstantName(term.toString());
             } else {
                 if(variableMap.containsKey(term)){
                     var = variableMap.get(term);
@@ -530,7 +534,7 @@ public class GdlFodotTransformer implements GdlTransformer{
             //GdlSentence sentence = gdlTerm.toSentence();
             IFodotTerm actionVar;
             if(term.isGround()){
-                actionVar = createConstant("c_" + term.toString(),getAllType());
+                actionVar = convertRawConstantName(term.toString());
             } else {
                 if(variableMap.containsKey(term)){
                     actionVar = variableMap.get(term);
@@ -552,7 +556,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         List<IFodotTerm> list =
                 Arrays.asList(
                         createVariable("t", timeType),
-                        createConstant("p_" + player, playerType),
+                        convertRawRole(player),
                         actionTerm
                 );
 
@@ -665,4 +669,20 @@ public class GdlFodotTransformer implements GdlTransformer{
         return pred;
     }
 
+    Map<IFodotEnumerationElement, String> translationsFromFodot = new HashMap<IFodotEnumerationElement, String>();
+    Map<String, IFodotEnumerationElement> translationsFromGdl = new HashMap<String, IFodotEnumerationElement>();
+    
+    public void addTranslation(IFodotEnumerationElement fodot, String gdl) {
+    	translationsFromFodot.put(fodot, gdl);
+    	translationsFromGdl.put(gdl, fodot);
+    }
+    
+    public String translateToGdl(IFodotEnumerationElement fodot) {
+    	return translationsFromFodot.get(fodot);
+    }
+    
+    public IFodotEnumerationElement translateToFodot(String gdl) {
+    	return translationsFromGdl.get(gdl);
+    }
+    
 }
