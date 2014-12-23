@@ -1,4 +1,4 @@
-package fodot.communication;
+package fodot.communication.output;
 
 import java.util.ArrayList;
 import java.util.HashMap;

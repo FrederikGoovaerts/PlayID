@@ -98,8 +98,8 @@ structure S : V {
 	I_table = {c_a;c_b}
 	I_step = {c_1}
 	I_on = {c_c,c_a}
-	I_clear = {c_b;c_c}
-	succ = {c_2,c_3;c_3,c_4;c_1,c_2}
+	I_clear = {c_c;c_b}
+	succ = {c_1,c_2;c_3,c_4;c_2,c_3}
 }
 procedure main() {
 	stdoptions.nbmodels=5

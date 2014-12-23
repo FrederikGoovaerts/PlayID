@@ -7,7 +7,7 @@ import org.ggp.base.util.files.FileUtils;
 import org.ggp.base.util.game.Game;
 import org.ggp.base.util.gdl.grammar.Gdl;
 
-import fodot.communication.IdpFileWriter;
+import fodot.communication.input.IdpFileWriter;
 import fodot.objects.Fodot;
 
 /**

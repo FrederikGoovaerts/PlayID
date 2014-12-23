@@ -1,4 +1,4 @@
-package fodot.communication;
+package fodot.communication.input;
 
 import java.io.File;
 import java.io.IOException;
