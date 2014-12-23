@@ -26,5 +26,13 @@ public class PlayIdProcessor {
 		IdpResultTransformer transformer = new IdpResultTransformer(parsedFodotFile, idpResult);
 		List<IdpModel> models = transformer.getModels();
 		
+		//Do something if we didn't find any models
+		if (models.size() == 0) {
+			System.out.println("No models found");
+		}
+		
+		
 	}
+	
+	
 }

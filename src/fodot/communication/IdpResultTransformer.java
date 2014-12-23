@@ -24,6 +24,7 @@ import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 public class IdpResultTransformer {
 	private String textualResult;
 	private IFodotFile inputFodot;
+	IdpModel currentModel;
 	private List<IdpModel> models = new ArrayList<IdpModel>();
 	private String vocName;
 	private FodotVocabulary currentVocabulary; 
@@ -59,20 +60,15 @@ public class IdpResultTransformer {
 
 
 		//Process do
-		IdpModel currentModel = new IdpModel();
-		addModel(currentModel);
 		for (String line : linesToProcess) {
 			if (isThrowAwayLine(line)){
 				//No-op
-			} else if (isNewModelLine(line)) {
-				currentModel = new IdpModel();
-				addModel(currentModel);
 			} else if (declaresNewStructure(line)) {
 				processStructureLine(line);
 			} else if (isAssignment(line)) {
-				processAssignment(currentModel, line);				
+				processAssignment(getCurrentModel(), line);				
 			} else if (isEndOfStructure(line)) {
-				currentModel = null;
+				setCurrentModel(null);
 				setCurrentVocabulary(null);
 			} else {
 				throw new IllegalArgumentException("Can't process " + line);
@@ -95,6 +91,8 @@ public class IdpResultTransformer {
 				setCurrentVocabulary((FodotVocabulary) el);
 			}
 		}
+		setCurrentModel(new IdpModel(getCurrentVocabulary()));
+
 	}
 
 	private boolean declaresNewStructure(String line) {
@@ -102,29 +100,35 @@ public class IdpResultTransformer {
 	}
 
 	private boolean isThrowAwayLine(String line) {
-		return line.startsWith("====") || line.startsWith("Number of models");
+		return line.trim().startsWith("====") || line.trim().startsWith("Number of models") || line.trim().startsWith("Model");
 	}
 
 	public List<IdpModel> getModels() {
 		return models;
 	}
-	
+
+	private void setCurrentModel(IdpModel idpModel) {
+		if (idpModel != null) {
+			addModel(idpModel);
+		}
+		this.currentModel = idpModel;
+	}
+
+	private IdpModel getCurrentModel() {
+		return currentModel;
+	}
+
 	public void addModel(IdpModel model) {
 		models.add(model);
 	}
 
-	//New Model
-	private boolean isNewModelLine(String line) {
-		return line.trim().startsWith("Model");
-	}
-	
 	//Name stuff
 	private static final String ASSIGNMENT_CHARACTER = "=";
 
 	private boolean isAssignment(String line) {
 		return line.contains(ASSIGNMENT_CHARACTER);
 	}
-	
+
 	public void processAssignment(IdpModel model, String line) {
 		String[] splitted = line.split(ASSIGNMENT_CHARACTER);
 		if (splitted.length != 2) {
@@ -134,13 +138,17 @@ public class IdpResultTransformer {
 		String domain = splitted[1].trim();
 		switch (getDomainType(name)) {
 		case FUNCTION:
-			model.addFunctionResult(name, extractMultivaluedResultDomain(domain));
+			if (containsDomain(domain)) {
+				model.addFunctionResult(name, extractMultivaluedResultDomain(domain));
+			} else {
+				model.addConstantFunctionResult(name, domain.trim());
+			}
 			break;
 		case PREDICATE:
 			model.addPredicateResult(name, extractMultivaluedDomain(domain));
 			break;
 		case CONSTANT:
-			model.addConstantResult(name, extractSinglevaluedDomain(domain));
+			model.addTypeResult(name, extractSinglevaluedDomain(domain));
 			break;
 		}
 	}
@@ -170,7 +178,7 @@ public class IdpResultTransformer {
 		if (el.getClass().equals(FodotTypeDeclaration.class)) {
 			return DomainType.CONSTANT;
 		}
-		
+
 		throw new IllegalArgumentException("Not a recognized class: " + el.getClass());
 	}
 
@@ -186,7 +194,7 @@ public class IdpResultTransformer {
 		int lastBracket = line.lastIndexOf(CLOSING_BRACKET);
 		if (!containsDomain(line) || firstBracket < 0 || lastBracket < firstBracket) {
 			return line;
-//			throw new IllegalArgumentException(line + " does not contain curly braces: no domain can be extracted");
+			//			throw new IllegalArgumentException(line + " does not contain curly braces: no domain can be extracted");
 		}
 		String domain = line.substring(firstBracket, lastBracket);
 		return domain;
@@ -229,7 +237,7 @@ public class IdpResultTransformer {
 				result.put(trimElements(splitOn(elementsToProcess, SINGLEVALUE_DIVIDER)), resultString);
 			} else {
 				result.put(Arrays.asList(""), element);
-				
+
 			}
 		}
 		return result;
@@ -302,13 +310,13 @@ public class IdpResultTransformer {
 	public void setCurrentVocabulary(FodotVocabulary currentVocabulary) {
 		this.currentVocabulary = currentVocabulary;
 	}
-	
+
 	//MAIN
-	
+
 	public static void main(String[] args) {
-		//		IdpResultTransformer trans = 
 		Parser p = new Parser(new File("resources/games/blocks.kif"));
-		new IdpResultTransformer(p.getParsedFodot(), "Number of models: 1"
+
+		IdpResultTransformer trans = new IdpResultTransformer(p.getParsedFodot(), "Number of models: 1"
 				+ "\nModel 1"
 				+ "\n======="
 				+ "\nstructure  : V {"

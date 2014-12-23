@@ -35,6 +35,18 @@ public class FodotStructure extends FodotFileElement<IFodotStructureElement> imp
 		return "structure";
 	}
 	
+	/* ELEMENTS */
+	public IFodotStructureElement getElementWithName(String name) {
+		if (name == null)
+			return null;
+		for (IFodotStructureElement el : getElements()) {
+			if (name.equals(el.getName())) {
+				return el;
+			}
+		}
+		return null;
+	}
+	
 	/* VOCABULARY */
 
 	public FodotVocabulary getVocabulary() {

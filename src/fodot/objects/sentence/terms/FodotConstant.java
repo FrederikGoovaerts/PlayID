@@ -58,6 +58,7 @@ public class FodotConstant implements IFodotTerm, IFodotDomainElement {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
@@ -71,6 +72,11 @@ public class FodotConstant implements IFodotTerm, IFodotDomainElement {
 		if (getClass() != obj.getClass())
 			return false;
 		FodotConstant other = (FodotConstant) obj;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
 		if (value == null) {
 			if (other.value != null)
 				return false;

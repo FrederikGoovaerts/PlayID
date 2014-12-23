@@ -1,48 +1,83 @@
 package fodot.communication;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fodot.objects.sentence.terms.FodotConstant;
+import fodot.objects.structure.FodotStructure;
+import fodot.objects.structure.enumerations.FodotConstantFunctionEnumeration;
+import fodot.objects.structure.enumerations.FodotFunctionEnumeration;
+import fodot.objects.structure.enumerations.FodotPredicateEnumeration;
+import fodot.objects.structure.enumerations.FodotTypeEnumeration;
+import fodot.objects.vocabulary.FodotVocabulary;
+import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
+import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
+import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
+
 public class IdpModel {
 
-	private Map<String, List<String>> constants;
-	private Map<String, List<List<String>>> predicates;
-	private Map<String, Map<List<String>, String>> functions;
-	
-	public IdpModel() {
+	private FodotStructure structure;
+	private FodotVocabulary vocabulary;
+
+	public IdpModel(FodotVocabulary vocabulary) {
 		super();
-		this.constants = new HashMap<String, List<String>>();
-		this.predicates = new HashMap<String, List<List<String>>>();
-		this.functions = new HashMap<String, Map<List<String>, String>>();
+		this.vocabulary = vocabulary;
+		this.structure = new FodotStructure(vocabulary);
 	}
-	
-	public void addConstantResult(String name,	List<String> extractSinglevaluedDomain) {
-		constants.put(name, extractSinglevaluedDomain);
-		
+
+	public void addTypeResult(String name,	List<String> extractSinglevaluedDomain) {
+		FodotType type = ((FodotTypeDeclaration) getVocabulary().getElementWithName(name)).getType();
+		List<FodotConstant> domain = new ArrayList<FodotConstant>();
+		for (String s : extractSinglevaluedDomain) {
+			domain.add(new FodotConstant(s, type));
+		}
+		structure.addElement(new FodotTypeEnumeration(type, domain));
 	}
-	
-	public List<String> getConstantResult(String name) {
-		return constants.get(name);
-	}
-	
+
 	public void addPredicateResult(String name, List<List<String>> extractMultivaluedDomain) {
-		predicates.put(name, extractMultivaluedDomain);
-		
-	}
-	
-	public List<List<String>> getPredicateResult(String name) {
-		return predicates.get(name);
+		FodotPredicateDeclaration decl = (FodotPredicateDeclaration) getVocabulary().getElementWithName(name);
+		List<FodotConstant[]> domain = new ArrayList<FodotConstant[]>();
+		for (List<String> s : extractMultivaluedDomain) {
+			FodotConstant[] domainEl = new FodotConstant[s.size()];
+			for (int i = 0; i < domainEl.length; i++) {
+				domainEl[i] = new FodotConstant(s.get(i), decl.getArgumentType(i));
+			}
+			domain.add(domainEl);
+		}
+		structure.addElement(new FodotPredicateEnumeration(decl, domain));
+
 	}
 
 	public void addFunctionResult(String name,	Map<List<String>, String> extractMultivaluedResultDomain) {
-		functions.put(name, extractMultivaluedResultDomain);
-		
+		FodotFunctionDeclaration decl = (FodotFunctionDeclaration) getVocabulary().getElementWithName(name);
+		Map<FodotConstant[], FodotConstant> domain = new HashMap<FodotConstant[], FodotConstant>();
+		for (List<String> s : extractMultivaluedResultDomain.keySet()) {
+			FodotConstant[] domainEl = new FodotConstant[s.size()];
+			FodotConstant returnVal = new FodotConstant(extractMultivaluedResultDomain.get(s), decl.getReturnType());
+			domainEl = new FodotConstant[s.size()];
+			for (int i = 0; i < s.size(); i++) {
+				domainEl[i] = new FodotConstant(s.get(i), decl.getArgumentType(i));
+			}
+			domain.put(domainEl,returnVal);
+		}
+		structure.addElement(new FodotFunctionEnumeration(decl, domain));
 	}	
-	
-	public Map<List<String>, String> getFunctionResult(String name) {
-		return functions.get(name);
+
+	public void addConstantFunctionResult(String name, String value) {
+		FodotFunctionDeclaration decl = (FodotFunctionDeclaration) getVocabulary().getElementWithName(name);
+		structure.addElement(new FodotConstantFunctionEnumeration(decl, new FodotConstant(value, decl.getReturnType())));
+		
 	}
 
+	public FodotStructure getStructure() {
+		return structure;
+	}
+
+	public FodotVocabulary getVocabulary() {
+		return vocabulary;
+	}
 
 }
