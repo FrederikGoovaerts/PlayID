@@ -121,7 +121,8 @@ public class GdlCastHelper {
                     playerTerm,
                     createPredicateTerm(actionTermDecl, actionVariables)
             );
-            trans.addTranslation(actionPredicate, actionPredSentence.toString());
+            //TODO: uncomment this as soon as translations are working
+//            trans.addTranslation(actionPredicate, actionPredSentence.toString());
             return actionPredicate;
         } else if(relation.getName().toString().equals("true")) {
             // process (true (*fluentpred*))
