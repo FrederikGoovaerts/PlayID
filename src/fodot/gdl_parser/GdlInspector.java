@@ -76,6 +76,9 @@ public class GdlInspector extends GdlVisitor{
             case "base":
                 //ignore this for now
                 break;
+            case "input":
+                //ignore this for now
+                break;
             default:
                 this.getTransformer().processStaticPredicateRelation(relation);
                 break;

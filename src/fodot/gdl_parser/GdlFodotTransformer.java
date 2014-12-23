@@ -1,14 +1,5 @@
 package fodot.gdl_parser;
 
-import static fodot.helpers.FodotPartBuilder.createConstant;
-import static fodot.helpers.FodotPartBuilder.createImplies;
-import static fodot.helpers.FodotPartBuilder.createPredicate;
-import static fodot.helpers.FodotPartBuilder.createPredicateDeclaration;
-import static fodot.helpers.FodotPartBuilder.createPredicateTerm;
-import static fodot.helpers.FodotPartBuilder.createPredicateTermDeclaration;
-import static fodot.helpers.FodotPartBuilder.createVariable;
-import static fodot.helpers.FodotPartBuilder.getNaturalNumberType;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,6 +30,8 @@ import fodot.objects.structure.enumerations.IFodotEnumerationElement;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+
+import static fodot.helpers.FodotPartBuilder.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -573,6 +566,12 @@ public class GdlFodotTransformer implements GdlTransformer{
                 this
         );
 
+        if(!removeTimeVars(condition.getFreeVariables()).isEmpty()
+                && removeTimeVars(doPred.getFreeVariables()).isEmpty()){
+            condition = createExists(removeTimeVars(condition.getFreeVariables()),
+                    condition);
+        }
+
         //add the combination as a next rule
         this.addLegal(doPred, condition);
     }
@@ -594,12 +593,17 @@ public class GdlFodotTransformer implements GdlTransformer{
                 this
         );
 
+        if(!removeTimeVars(condition.getFreeVariables()).isEmpty()){
+            condition = createExists(removeTimeVars(condition.getFreeVariables()),
+                    condition);
+        }
+
         IFodotFormula extendedCondition =
                 createImplies(
-                    createPredicate(
-                            terminalTimePredicateDeclaration,
-                            createVariable("t",timeType)
-                    ), condition
+                        createPredicate(
+                                terminalTimePredicateDeclaration,
+                                createVariable("t", timeType)
+                        ), condition
                 );
 
         this.addScore(score,extendedCondition);
@@ -683,6 +687,19 @@ public class GdlFodotTransformer implements GdlTransformer{
     
     public IFodotEnumerationElement translateToFodot(String gdl) {
     	return translationsFromGdl.get(gdl);
+    }
+
+    /***************************************************************************
+     * Helper methods
+     **************************************************************************/
+
+    public Set<FodotVariable> removeTimeVars(Set<FodotVariable> vars){
+        Set<FodotVariable> toReturn = new HashSet<>();
+        for (FodotVariable var : vars) {
+            if(!var.getType().equals(timeType))
+                toReturn.add(var);
+        }
+        return toReturn;
     }
     
 }

@@ -60,7 +60,7 @@ public class PlayIdProcessor {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println((new PlayIdProcessor()).process( new File("resources/games/blocks.kif")));
+		System.out.println((new PlayIdProcessor()).process( new File("resources/games/maze.kif")));
 	}
 	
 	
