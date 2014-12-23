@@ -17,29 +17,13 @@ public class IdpFileWriter {
         }	
 	}
 	
-	public static File createIDPFile(String directory, String name) {
-        return new File(addBackslash(directory), name + ".idp");
-	}
-	
 	public static File createIDPFileBasedOn(File otherFile) {
-		//Determine directory
-		String directory = addBackslash(otherFile.getParent());
-		
-		//Determine name
-		String name = otherFile.getName();
-		if (name.contains(".")) {
-			name = otherFile.getName().substring(0, name.lastIndexOf('.'));
+		String path = otherFile.getAbsolutePath();
+		if (path.contains(".")) {
+			path = path.substring(0, path.lastIndexOf('.'));
 		}
 		
-		return new File(directory + name + ".idp");
-	}
-	
-	private static String addBackslash(String directory) {
-		char lastChar = directory.charAt(directory.length()-1);
-		if (lastChar == '\\' || lastChar == '/') {
-			return directory;
-		}
-		return directory + '\\';
+		return new File(path + ".idp");
 	}
 	
 }
