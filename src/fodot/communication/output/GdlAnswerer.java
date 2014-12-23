@@ -65,6 +65,9 @@ public class GdlAnswerer {
 	
 	public List<GdlAction> generateActionSequence() {
 		IdpModel model = getBestModel();
+		if (model == null) {
+			return new ArrayList<GdlAction>();
+		}
 		FodotStructure struc = model.getStructure();
 		FodotVocabulary voc = model.getVocabulary();
 		FodotPredicateEnumeration actionEnum = (FodotPredicateEnumeration) struc.getElementWithName(ACTION_PREDICATE_NAME);
@@ -81,6 +84,9 @@ public class GdlAnswerer {
 	}
 	
 	public IdpModel getBestModel() {
+		if (getModels().isEmpty()) {
+			return null;
+		}
 		return getModels().get(0);
 	}
 

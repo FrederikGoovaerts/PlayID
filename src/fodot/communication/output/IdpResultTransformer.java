@@ -26,6 +26,7 @@ public class IdpResultTransformer {
 	private List<IdpModel> models = new ArrayList<IdpModel>();
 	private String vocName;
 	private FodotVocabulary currentVocabulary; 
+	private boolean errorOccured;
 
 	public IdpResultTransformer(IFodotFile inputFodot, String textResult) {
 		super();
@@ -59,7 +60,10 @@ public class IdpResultTransformer {
 
 		//Process do
 		for (String line : linesToProcess) {
-			if (isThrowAwayLine(line)){
+			if (isError(line)) {
+				setErrorOccured(true);
+				break;
+			} if (isThrowAwayLine(line)){
 				//No-op
 			} else if (declaresNewStructure(line)) {
 				processStructureLine(line);
@@ -74,6 +78,10 @@ public class IdpResultTransformer {
 		}
 
 
+	}
+
+	private boolean isError(String line) {
+		return line.startsWith("Error: ");
 	}
 
 	private boolean isEndOfStructure(String line) {
@@ -98,7 +106,15 @@ public class IdpResultTransformer {
 	}
 
 	private boolean isThrowAwayLine(String line) {
-		return line.trim().startsWith("====") || line.trim().startsWith("Number of models") || line.trim().startsWith("Model");
+		if (line == null)
+			return true;
+		
+		line = line.trim();
+		return line.equals("")
+				|| line.startsWith("Warning:")
+				|| line.startsWith("====")
+				|| line.startsWith("Number of models")
+				|| line.startsWith("Model");
 	}
 
 	public List<IdpModel> getModels() {
@@ -309,6 +325,11 @@ public class IdpResultTransformer {
 		this.currentVocabulary = currentVocabulary;
 	}
 
-	//MAIN
+	public boolean hasErrorOccured() {
+		return errorOccured;
+	}
 
+	private void setErrorOccured(boolean errorOccured) {
+		this.errorOccured = errorOccured;
+	}
 }

@@ -21,8 +21,8 @@ public class Parser {
     /* The game for this parser */
     private final Game game;
 
-    private static boolean outputToFile = true;
-    private static boolean printBuiltFodot = true;
+    private static boolean outputToFile = false;
+    private static boolean printBuiltFodot = false;
     
     /***************************************************************************
      * Main Method
@@ -31,6 +31,7 @@ public class Parser {
     public static void main(String[] args) {
         File file = new File("resources/games/blocks.kif");
         Parser test = new Parser(file);
+        System.out.println(test.getParsedFodot().toCode());
     }
 
     /***************************************************************************
