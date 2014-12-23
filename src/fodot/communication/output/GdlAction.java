@@ -63,6 +63,9 @@ public class GdlAction {
 	}
 	
 	public String translateTerm(IFodotTerm constant) {
+		if (constant == null) {
+			return null;
+		}
 		//TODO: link met vertaler van GDL->FO(.)
 		return constant.toCode();
 	}

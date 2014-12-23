@@ -3,12 +3,13 @@ package fodot.objects.sentence.terms;
 import java.util.List;
 
 import fodot.objects.sentence.formulas.argumented.FodotAbstractArgumentList;
+import fodot.objects.structure.enumerations.IFodotEnumerationElement;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.CollectionPrinter;
 
 public class FodotPredicateTerm extends FodotAbstractArgumentList
-		implements IFodotTerm {
+		implements IFodotTerm, IFodotEnumerationElement {
 
 	public FodotPredicateTerm(FodotPredicateTermDeclaration decl, List<IFodotTerm> arguments) {
 		super(decl, arguments);
@@ -28,6 +29,11 @@ public class FodotPredicateTerm extends FodotAbstractArgumentList
 	public String toString() {
 		return "FodotPredicateDomainElement ["+getDeclaration().toString()
 				+ ", " + CollectionPrinter.toCouple(CollectionPrinter.toString(getArguments()))+"]";
+	}
+
+	@Override
+	public String getValue() {
+		return toCode();
 	}
 
 }

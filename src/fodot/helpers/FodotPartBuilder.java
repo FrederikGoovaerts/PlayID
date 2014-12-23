@@ -36,6 +36,7 @@ import fodot.objects.structure.enumerations.FodotFunctionEnumeration;
 import fodot.objects.structure.enumerations.FodotNumericalTypeRangeEnumeration;
 import fodot.objects.structure.enumerations.FodotPredicateEnumeration;
 import fodot.objects.structure.enumerations.FodotTypeEnumeration;
+import fodot.objects.structure.enumerations.IFodotEnumerationElement;
 import fodot.objects.theory.FodotSentence;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.IFodotTheoryElement;
@@ -357,23 +358,30 @@ public class FodotPartBuilder {
 	//ENUMERATIONS
 
 	public static FodotFunctionEnumeration createFunctionEnumeration(
-			FodotFunctionDeclaration declaration, Map<FodotConstant[], FodotConstant> values) {
+			FodotFunctionDeclaration declaration, Map<IFodotEnumerationElement[], IFodotEnumerationElement> values) {
+		//TODO
 		return new FodotFunctionEnumeration(declaration, values);
 	}
-
+	
 	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionDeclaration declaration) {
 		return new FodotFunctionEnumeration(declaration);
 	}
 
 	public static FodotConstantFunctionEnumeration createConstantFunctionEnumeration(
-			FodotFunctionDeclaration declaration, FodotConstant value) {
+			FodotFunctionDeclaration declaration, IFodotEnumerationElement value) {
 		return new FodotConstantFunctionEnumeration(declaration,value);
 	}
-
+	
 	public static FodotPredicateEnumeration createPredicateEnumeration(
-			FodotPredicateDeclaration declaration, List<FodotConstant[]> values) {
+			FodotPredicateDeclaration declaration, List<IFodotEnumerationElement[]> values) {
 		return new FodotPredicateEnumeration(declaration, values);
 	}
+//	
+//	public static FodotPredicateEnumeration createPredicateEnumeration(
+//			FodotPredicateDeclaration declaration, List<FodotConstant[]> values) {
+//		//TODO
+//		return createPredicateEnumeration(declaration, values);
+//	}
 
 	public static FodotPredicateEnumeration createPredicateEnumeration(FodotPredicateDeclaration declaration) {
 		return new FodotPredicateEnumeration(declaration);
@@ -383,7 +391,7 @@ public class FodotPartBuilder {
 		return new FodotTypeEnumeration(type, values);
 	}
 
-	public static FodotTypeEnumeration createTypeEnumeration(FodotTypeDeclaration type, List<FodotConstant> values) {
+	public static FodotTypeEnumeration createTypeEnumeration(FodotTypeDeclaration type, List<? extends IFodotEnumerationElement> values) {
 		return new FodotTypeEnumeration(type.getType(), values);
 	}
 

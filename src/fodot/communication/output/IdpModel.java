@@ -11,6 +11,7 @@ import fodot.objects.structure.enumerations.FodotConstantFunctionEnumeration;
 import fodot.objects.structure.enumerations.FodotFunctionEnumeration;
 import fodot.objects.structure.enumerations.FodotPredicateEnumeration;
 import fodot.objects.structure.enumerations.FodotTypeEnumeration;
+import fodot.objects.structure.enumerations.IFodotEnumerationElement;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
@@ -39,7 +40,7 @@ public class IdpModel {
 
 	public void addPredicateResult(String name, List<List<String>> extractMultivaluedDomain) {
 		FodotPredicateDeclaration decl = (FodotPredicateDeclaration) getVocabulary().getElementWithName(name);
-		List<FodotConstant[]> domain = new ArrayList<FodotConstant[]>();
+		List<IFodotEnumerationElement[]> domain = new ArrayList<IFodotEnumerationElement[]>();
 		for (List<String> s : extractMultivaluedDomain) {
 			FodotConstant[] domainEl = new FodotConstant[s.size()];
 			for (int i = 0; i < domainEl.length; i++) {
@@ -53,7 +54,7 @@ public class IdpModel {
 
 	public void addFunctionResult(String name,	Map<List<String>, String> extractMultivaluedResultDomain) {
 		FodotFunctionDeclaration decl = (FodotFunctionDeclaration) getVocabulary().getElementWithName(name);
-		Map<FodotConstant[], FodotConstant> domain = new HashMap<FodotConstant[], FodotConstant>();
+		Map<IFodotEnumerationElement[], IFodotEnumerationElement> domain = new HashMap<IFodotEnumerationElement[], IFodotEnumerationElement>();
 		for (List<String> s : extractMultivaluedResultDomain.keySet()) {
 			FodotConstant[] domainEl = new FodotConstant[s.size()];
 			FodotConstant returnVal = new FodotConstant(extractMultivaluedResultDomain.get(s), decl.getReturnType());

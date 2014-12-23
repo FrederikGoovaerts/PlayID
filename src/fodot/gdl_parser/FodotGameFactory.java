@@ -1,6 +1,41 @@
 package fodot.gdl_parser;
 
-import static fodot.helpers.FodotPartBuilder.*;
+import static fodot.helpers.FodotPartBuilder.createAddition;
+import static fodot.helpers.FodotPartBuilder.createAnd;
+import static fodot.helpers.FodotPartBuilder.createBlankLines;
+import static fodot.helpers.FodotPartBuilder.createComment;
+import static fodot.helpers.FodotPartBuilder.createCompleteFunctionDeclaration;
+import static fodot.helpers.FodotPartBuilder.createConstant;
+import static fodot.helpers.FodotPartBuilder.createConstantFunctionEnumeration;
+import static fodot.helpers.FodotPartBuilder.createEquals;
+import static fodot.helpers.FodotPartBuilder.createExists;
+import static fodot.helpers.FodotPartBuilder.createExistsExactly;
+import static fodot.helpers.FodotPartBuilder.createForAll;
+import static fodot.helpers.FodotPartBuilder.createFunction;
+import static fodot.helpers.FodotPartBuilder.createFunctionEnumeration;
+import static fodot.helpers.FodotPartBuilder.createImplies;
+import static fodot.helpers.FodotPartBuilder.createIncludeHolder;
+import static fodot.helpers.FodotPartBuilder.createIncludeLTC;
+import static fodot.helpers.FodotPartBuilder.createInductiveDefinition;
+import static fodot.helpers.FodotPartBuilder.createInductiveDefinitionConnector;
+import static fodot.helpers.FodotPartBuilder.createInductiveFunctionHead;
+import static fodot.helpers.FodotPartBuilder.createInductiveQuantifier;
+import static fodot.helpers.FodotPartBuilder.createInductiveSentence;
+import static fodot.helpers.FodotPartBuilder.createInteger;
+import static fodot.helpers.FodotPartBuilder.createLTCVocabulary;
+import static fodot.helpers.FodotPartBuilder.createNot;
+import static fodot.helpers.FodotPartBuilder.createNumericalTypeRangeEnumeration;
+import static fodot.helpers.FodotPartBuilder.createPartialFunctionDeclaration;
+import static fodot.helpers.FodotPartBuilder.createPredicate;
+import static fodot.helpers.FodotPartBuilder.createPredicateEnumeration;
+import static fodot.helpers.FodotPartBuilder.createProcedure;
+import static fodot.helpers.FodotPartBuilder.createProcedures;
+import static fodot.helpers.FodotPartBuilder.createSentence;
+import static fodot.helpers.FodotPartBuilder.createStructure;
+import static fodot.helpers.FodotPartBuilder.createTheory;
+import static fodot.helpers.FodotPartBuilder.createTypeDeclaration;
+import static fodot.helpers.FodotPartBuilder.createVariable;
+import static fodot.helpers.FodotPartBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +58,7 @@ import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.sentence.terms.FodotVariable;
 import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
+import fodot.objects.structure.enumerations.IFodotEnumerationElement;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.definitions.FodotInductiveSentence;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
@@ -338,8 +374,8 @@ public class FodotGameFactory {
          * resultaat:
          * Score={*naam*()->100}
          */
-        Map<FodotConstant[],FodotConstant> desiredResult = new HashMap<>();
-        FodotConstant[] ownRole = {source.getOwnRole()};
+        Map<IFodotEnumerationElement[],IFodotEnumerationElement> desiredResult = new HashMap<>();
+        IFodotEnumerationElement[] ownRole = {source.getOwnRole()};
         desiredResult.put(ownRole,createConstant("100", getNaturalNumberType()));
         toReturn.addElement(
                 createFunctionEnumeration(
@@ -353,7 +389,7 @@ public class FodotGameFactory {
          * I_*predicaat* = {*waarden()*}
          * OPGEPAST: in de structure moet achter elke constante een ()
          */
-        Map<FodotPredicateDeclaration, Set<FodotConstant[]>> initMap
+        Map<FodotPredicateDeclaration, Set<IFodotEnumerationElement[]>> initMap
                 = this.source.getInitialValues();
         for (FodotPredicateDeclaration declaration : initMap.keySet()) {
             toReturn.addElement(
@@ -367,7 +403,7 @@ public class FodotGameFactory {
          * resultaat:
          * *predicaat*={*waarden()*}
          */
-        Map<FodotPredicateDeclaration, Set<FodotConstant[]>> staticMap
+        Map<FodotPredicateDeclaration, Set<IFodotEnumerationElement[]>> staticMap
                 = this.source.getStaticValues();
         for (FodotPredicateDeclaration declaration : staticMap.keySet()) {
             toReturn.addElement(

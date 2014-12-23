@@ -4,19 +4,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.util.CollectionPrinter;
 
 public class FodotPredicateEnumeration extends FodotEnumeration {
 	private FodotPredicateDeclaration declaration;
-	private List<FodotConstant[]> values;
+	private List<IFodotEnumerationElement[]> values;
 	
 	public FodotPredicateEnumeration(FodotPredicateDeclaration predicate) {
-		this(predicate, new ArrayList<FodotConstant[]>());
+		this(predicate, new ArrayList<IFodotEnumerationElement[]>());
 	}
 	
-	public FodotPredicateEnumeration(FodotPredicateDeclaration declaration, List<FodotConstant[]> values) {
+	public FodotPredicateEnumeration(FodotPredicateDeclaration declaration, List<IFodotEnumerationElement[]> values) {
 		super();
 		this.declaration = declaration;
 		this.values = values;
@@ -28,28 +27,28 @@ public class FodotPredicateEnumeration extends FodotEnumeration {
 
 	/* VALUES */
 	
-	public void addValue(FodotConstant[] value) {
+	public void addValue(IFodotEnumerationElement[] value) {
 		//TODO: some kind of validator for the amount of and type of arguments
 		values.add(value);
 	}
 	
-	public void removeValue(FodotConstant[] value) {
+	public void removeValue(IFodotEnumerationElement[] value) {
 		values.remove(value);
 	}
 	
-	public boolean containsValue(FodotConstant[] value) {
+	public boolean containsValue(IFodotEnumerationElement[] value) {
 		return values.contains(value);
 	}
 	
-	public List<FodotConstant[]> getValues() {
-		return new ArrayList<FodotConstant[]>(values);
+	public List<IFodotEnumerationElement[]> getValues() {
+		return new ArrayList<IFodotEnumerationElement[]>(values);
 	}
 
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(declaration.getName() + " = {");
-		List<FodotConstant[]> keys = new ArrayList<FodotConstant[]>(getValues());
+		List<IFodotEnumerationElement[]> keys = new ArrayList<IFodotEnumerationElement[]>(getValues());
 		for (int i = 0; i < keys.size(); i++) {
 			if (i > 0) {
 				builder.append(";");

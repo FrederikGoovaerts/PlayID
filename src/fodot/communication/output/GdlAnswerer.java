@@ -7,7 +7,9 @@ import java.util.List;
 import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.enumerations.FodotPredicateEnumeration;
+import fodot.objects.structure.enumerations.IFodotEnumerationElement;
 import fodot.objects.vocabulary.FodotVocabulary;
+import fodot.objects.vocabulary.elements.FodotType;
 
 public class GdlAnswerer {
 
@@ -73,12 +75,12 @@ public class GdlAnswerer {
 		FodotPredicateEnumeration actionEnum = (FodotPredicateEnumeration) struc.getElementWithName(ACTION_PREDICATE_NAME);
 		
 		List<GdlAction> actions = new ArrayList<GdlAction>();
-		for (FodotConstant[] c : actionEnum.getValues()) {
+		for (IFodotEnumerationElement[] c : actionEnum.getValues()) {
 			int time = Integer.valueOf(c[0].getValue());
-			FodotConstant player = c[1];
-			FodotConstant action = c[2];
+			FodotConstant player = (FodotConstant) c[1];
+			FodotConstant action = new FodotConstant(c[2].getValue(), new FodotType("null"));
 			
-			actions.add(new GdlAction(time, player,action));
+			actions.add(new GdlAction(time, player, action));
 		}
 		return actions;
 	}

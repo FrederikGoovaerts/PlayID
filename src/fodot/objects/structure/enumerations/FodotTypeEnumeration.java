@@ -3,23 +3,22 @@ package fodot.objects.structure.enumerations;
 import java.util.ArrayList;
 import java.util.List;
 
-import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionPrinter;
 
 public class FodotTypeEnumeration extends FodotEnumeration {
 	private FodotType type;
-	private List<FodotConstant> values;
+	private List<IFodotEnumerationElement> values;
 	
 	public FodotTypeEnumeration(FodotType type) {
-		this(type, new ArrayList<FodotConstant>());
+		this(type, new ArrayList<IFodotEnumerationElement>());
 	}
 	
-	public FodotTypeEnumeration(FodotType type, List<FodotConstant> values) {
+	public FodotTypeEnumeration(FodotType type, List<? extends IFodotEnumerationElement> values) {
 		super();
 		this.type = type;
-		this.values = values;
+		this.values = new ArrayList<IFodotEnumerationElement>(values);
 	}
 
 	public FodotType getType() {
@@ -28,7 +27,7 @@ public class FodotTypeEnumeration extends FodotEnumeration {
 
 	/* VALUES */
 	
-	public void addValue(FodotConstant value) {
+	public void addValue(IFodotEnumerationElement value) {
 		values.add(value);
 	}
 	
@@ -40,8 +39,8 @@ public class FodotTypeEnumeration extends FodotEnumeration {
 		return values.contains(value);
 	}
 	
-	public List<FodotConstant> getValues() {
-		return new ArrayList<FodotConstant>(values);
+	public List<IFodotEnumerationElement> getValues() {
+		return new ArrayList<IFodotEnumerationElement>(values);
 	}
 
 	@Override

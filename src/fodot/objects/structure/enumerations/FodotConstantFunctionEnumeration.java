@@ -1,13 +1,12 @@
 package fodot.objects.structure.enumerations;
 
-import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 
 public class FodotConstantFunctionEnumeration extends FodotEnumeration {
 	private FodotFunctionDeclaration declaration;
-	private FodotConstant value;
+	private IFodotEnumerationElement value;
 
-	public FodotConstantFunctionEnumeration(FodotFunctionDeclaration declaration, FodotConstant value) {
+	public FodotConstantFunctionEnumeration(FodotFunctionDeclaration declaration, IFodotEnumerationElement value) {
 		super();
 		this.declaration = declaration;
 		this.value = value;
@@ -19,11 +18,11 @@ public class FodotConstantFunctionEnumeration extends FodotEnumeration {
 
 	/* VALUE */
 	
-	public void setValue(FodotConstant value) {
+	public void setValue(IFodotEnumerationElement value) {
 		this.value = value;
 	}
 	
-	public FodotConstant getValue() {
+	public IFodotEnumerationElement getValue() {
 		return value;
 	}
 

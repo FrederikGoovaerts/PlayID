@@ -6,19 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.util.CollectionPrinter;
 
 public class FodotFunctionEnumeration extends FodotEnumeration {
 	private FodotFunctionDeclaration declaration;
-	private Map<FodotConstant[], FodotConstant> values;
+	private Map<IFodotEnumerationElement[], IFodotEnumerationElement> values;
 
 	public FodotFunctionEnumeration(FodotFunctionDeclaration function) {
-		this(function, new HashMap<FodotConstant[], FodotConstant>());
+		this(function, new HashMap<IFodotEnumerationElement[], IFodotEnumerationElement>());
 	}
 
-	public FodotFunctionEnumeration(FodotFunctionDeclaration declaraion, Map<FodotConstant[], FodotConstant> values) {
+	public FodotFunctionEnumeration(FodotFunctionDeclaration declaraion, Map<IFodotEnumerationElement[], IFodotEnumerationElement> values) {
 		super();
 		this.declaration = declaraion;
 		this.values = values;
@@ -30,21 +29,21 @@ public class FodotFunctionEnumeration extends FodotEnumeration {
 
 	/* VALUES */
 
-	public void addValue(FodotConstant[] input, FodotConstant value) {
+	public void addValue(IFodotEnumerationElement[] input, IFodotEnumerationElement value) {
 		//TODO: some kind of validator for the amount of and type of arguments
 		values.put(input, value);
 	}
 
-	public void removeValue(FodotConstant[] input) {
+	public void removeValue(IFodotEnumerationElement[] input) {
 		values.remove(input);
 	}
 
-	public boolean containsValue(FodotConstant[] input) {
+	public boolean containsValue(IFodotEnumerationElement[] input) {
 		return values.containsKey(input);
 	}
 
-	public Map<FodotConstant[], FodotConstant> getValues() {
-		return new HashMap<FodotConstant[], FodotConstant>(values);
+	public Map<IFodotEnumerationElement[], IFodotEnumerationElement> getValues() {
+		return new HashMap<IFodotEnumerationElement[], IFodotEnumerationElement>(values);
 	}
 
 	public boolean hasValues() {
@@ -57,12 +56,12 @@ public class FodotFunctionEnumeration extends FodotEnumeration {
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(declaration.getName() + " = {");
-		List<FodotConstant[]> keys = new ArrayList<FodotConstant[]>(getValues().keySet());
+		List<IFodotEnumerationElement[]> keys = new ArrayList<IFodotEnumerationElement[]>(getValues().keySet());
 		for (int i = 0; i < keys.size(); i++) {
 			if (i > 0) {
 				builder.append(";");
 			}
-			FodotConstant[] key = keys.get(i);
+			IFodotEnumerationElement[] key = keys.get(i);
 			builder.append(CollectionPrinter.toNakedList(CollectionPrinter.toCode(Arrays.asList(key))) + " -> " + values.get(key).toCode());
 		}
 		builder.append("}");
