@@ -214,7 +214,7 @@ public class LTCPool {
         return new ArrayList<>(compoundStatic.values());
     }
 
-    private FodotPredicateDeclaration getCompoundStaticPredicate(String predName) {
+    public FodotPredicateDeclaration getCompoundStaticPredicate(String predName) {
         if(!isCompoundStaticPredicateRegistered(predName))
             throw new IllegalArgumentException();
         return compoundStatic.get(predName);

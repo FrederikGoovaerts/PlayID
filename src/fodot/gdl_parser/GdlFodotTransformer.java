@@ -179,6 +179,18 @@ public class GdlFodotTransformer implements GdlTransformer{
         this.pool.addStaticPredicate(staticPred);
     }
 
+    private FodotPredicateDeclaration getCompoundStaticPredicate(String predName) {
+        return this.pool.getCompoundStaticPredicate(predName);
+    }
+
+    private void addCompoundStaticPredicate(FodotPredicateDeclaration pred) {
+        this.pool.addCompoundStaticPredicate(pred);
+    }
+
+    private boolean isCompoundStaticPredicateRegistered(String predName) {
+        return this.pool.isCompoundStaticPredicateRegistered(predName);
+    }
+
 
     /*** End of Predicate Pool subsection ***/
 
@@ -629,7 +641,12 @@ public class GdlFodotTransformer implements GdlTransformer{
     @Override
     public void processDefinitionRule(GdlRule rule) {
         this.processingRules = true;
-        //TODO
+        HashMap<GdlVariable,FodotVariable> variableMap = new HashMap<>();
+
+        //process (compound static) predicate in head
+        GdlSentence predSentence = rule.getHead();
+        FodotPredicateDeclaration originalPredicate =
+                this.processCompoundStaticPredicate(predSentence);
     }
 
     //TODO: nakijken waar deze return niet gebruikt wordt
@@ -669,6 +686,44 @@ public class GdlFodotTransformer implements GdlTransformer{
                     addConstant(constantName);
         	}
 		}
+
+        return pred;
+    }
+
+    private FodotPredicateDeclaration processCompoundStaticPredicate(GdlSentence predSentence) {
+        //Predicate: (pred x1 .. xn)
+
+        String predName = predSentence.getName().getValue();
+        int amountOfArguments = predSentence.arity();
+
+        FodotPredicateDeclaration pred;
+
+        //If necessary, register predicate
+        if(!isCompoundStaticPredicateRegistered(predName)) {
+            pred = new FodotPredicateDeclaration(
+                    predName,
+                    FodotType.getSameTypeList(amountOfArguments, allType)
+            );
+            this.addCompoundStaticPredicate(pred);
+        } else {
+            pred = this.getCompoundStaticPredicate(predName);
+            if(pred.getAmountOfArgumentTypes() != amountOfArguments)
+                throw new IllegalStateException("Predicate differs in arity from before!");
+        }
+
+        //Scan all body elements, if they are constants (ground in a non-built-in
+        // predicate is equivalent with being a constant), add them as a constant
+        // with the same type as its place in the predicate. Predicate should
+        // be registered by now.
+        for (int i = 0; i < amountOfArguments; i++) {
+            GdlTerm term = predSentence.get(i);
+            if(term.isGround()) {
+                //Term is a constant, and only has a name, and arity 0
+                FodotConstant constantName = convertRawConstantName(term.toSentence().getName().getValue());
+                if(!isConstantRegistered(constantName))
+                    addConstant(constantName);
+            }
+        }
 
         return pred;
     }

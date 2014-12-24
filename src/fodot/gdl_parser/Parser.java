@@ -29,7 +29,7 @@ public class Parser {
      **************************************************************************/
 
     public static void main(String[] args) {
-        File file = new File("resources/games/maze.kif");
+        File file = new File("resources/games/asteroids.kif");
         Parser test = new Parser(file);
         System.out.println(test.getParsedFodot().toCode());
     }
