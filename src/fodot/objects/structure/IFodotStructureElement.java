@@ -1,7 +1,7 @@
 package fodot.objects.structure;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.IFodotNamedElement;
 
-public interface IFodotStructureElement extends IFodotElement {
-	String getName();
+public interface IFodotStructureElement extends IFodotNamedElement {
+	
 }

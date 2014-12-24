@@ -2,10 +2,9 @@ package fodot.objects.file;
 
 import java.util.Set;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.IFodotNamedElement;
 
-public interface IFodotFileElement extends IFodotElement {
-	String getName();
+public interface IFodotFileElement extends IFodotNamedElement {
 	Set<IFodotFileElement> getPrerequiredElements();
 	void mergeWith(IFodotFileElement other);
 }

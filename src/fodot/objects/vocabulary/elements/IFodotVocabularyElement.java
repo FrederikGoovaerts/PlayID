@@ -2,9 +2,8 @@ package fodot.objects.vocabulary.elements;
 
 import java.util.Set;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.IFodotNamedElement;
 
-public interface IFodotVocabularyElement extends IFodotElement {
+public interface IFodotVocabularyElement extends IFodotNamedElement {
 	Set<FodotType> getPrerequiredTypes();
-	String getName();
 }
