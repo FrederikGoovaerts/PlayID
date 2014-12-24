@@ -199,4 +199,64 @@ public class LTCPool {
     }
 
     /*** End of Static Predicates subsection ***/
+
+    /*************************************
+     * Compound Static Predicates
+     *
+     * These are defined at each moment as true or false by external conditions
+     * this makes them both static in a way, but timed, since their value can
+     * change, depending on the state of the world.
+     */
+
+    private HashMap<String,FodotPredicateDeclaration> compoundStatic;
+
+    public List<FodotPredicateDeclaration> getCompoundStaticPredicates() {
+        return new ArrayList<>(compoundStatic.values());
+    }
+
+    private FodotPredicateDeclaration getCompoundStaticPredicate(String predName) {
+        if(!isCompoundStaticPredicateRegistered(predName))
+            throw new IllegalArgumentException();
+        return compoundStatic.get(predName);
+    }
+
+    public boolean isCompoundStaticPredicateRegistered(String predName) {
+        return (compoundStatic.containsKey(predName));
+    }
+
+    public void addCompoundStaticPredicate(FodotPredicateDeclaration pred){
+        if(pred == null)
+            throw new IllegalArgumentException();
+        compoundStatic.put(pred.getName(), pred);
+    }
+
+    private void removeCompoundStaticPredicate(FodotPredicateDeclaration pred){
+        if(pred == null)
+            throw new IllegalArgumentException();
+        if(!compoundStatic.containsKey(pred.getName()))
+            throw new IllegalArgumentException();
+        this.removeCompoundTimedPredicateOf(pred);
+        compoundStatic.remove(pred.getName());
+    }
+
+    private HashMap<FodotPredicateDeclaration,FodotPredicateDeclaration> compoundTimedVersions;
+
+    public FodotPredicateDeclaration getCoumpoundTimedVerionOf(FodotPredicateDeclaration pred){
+        if(pred == null)
+            throw new IllegalArgumentException();
+        if(!compoundStatic.containsKey(pred.getName()))
+            throw new IllegalArgumentException();
+        if(!compoundTimedVersions.containsKey(pred)) {
+            List<FodotType> timedList = pred.getArgumentTypes();
+            timedList.add(0, this.timeType);
+            compoundTimedVersions.put(pred, createPredicateDeclaration(pred.getName(), timedList));
+        }
+        return this.compoundTimedVersions.get(pred);
+    }
+
+    private void removeCompoundTimedPredicateOf(FodotPredicateDeclaration pred) {
+        this.compoundTimedVersions.remove(pred);
+    }
+
+    /*** End of Compound Static Predicates subsection ***/
 }
