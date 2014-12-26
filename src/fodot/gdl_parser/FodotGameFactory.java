@@ -202,6 +202,15 @@ public class FodotGameFactory {
             toReturn.addElement(declaration);
         }
 
+        /**
+         * nodig: alle compound static predicaten
+         * resultaat:
+         * pred(*standaard argumenten*)
+         */
+        for (FodotPredicateDeclaration declaration : this.pool.getCompoundTimedDeclarations()) {
+            toReturn.addElement(declaration);
+        }
+
         return toReturn;
     }
 
@@ -292,7 +301,14 @@ public class FodotGameFactory {
          *     *dit voor elke causation van hetzelfde predicaat*
          * }
          */
-        //TODO
+        Map<FodotPredicateDeclaration, Set<Pair<FodotPredicate, IFodotFormula>>> compoundMap = source.getCompoundMap();
+        for (FodotPredicateDeclaration predicate : compoundMap.keySet()) {
+            List<FodotInductiveSentence> definitions = new ArrayList<>();
+            for (Pair<FodotPredicate, IFodotFormula> pair : compoundMap.get(predicate)) {
+                definitions.add(createInductiveSentence(createInductiveDefinitionConnector(pair.left, pair.right)));
+            }
+            toReturn.addElement(createInductiveDefinition(definitions));
+        }
 
         /**
          * nodig: alle legals, als legal head en legal body

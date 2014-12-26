@@ -17,9 +17,6 @@ import fodot.objects.Fodot;
  * and forming data objects which can be used to inspect and adapt the game.
  */
 public class Parser {
-    
-    /* The game for this parser */
-    private final Game game;
 
     private static boolean outputToFile = true;
     private static boolean printBuiltFodot = false;
@@ -29,9 +26,9 @@ public class Parser {
      **************************************************************************/
 
     public static void main(String[] args) {
-        File file = new File("resources/games/asteroids.kif");
+        File file = new File("resources/games/brain_teaser_extended.kif");
         Parser test = new Parser(file);
-        System.out.println(test.getParsedFodot().toCode());
+        test.run();
     }
 
     /***************************************************************************
@@ -42,20 +39,30 @@ public class Parser {
     private GdlInspector inspector;
     
     public Parser(File inputFile) {
+        if(inputFile == null || !inputFile.exists())
+            throw new IllegalArgumentException("Bad file!");
+        input = inputFile;
         String fileContents = FileUtils.readFileAsString(inputFile);
         game = Game.createEphemeralGame(Game.preprocessRulesheet(fileContents));
+    }
+
+    /***************************************************************************
+     * Class Methods
+     **************************************************************************/
+
+    public void run(){
         List<Gdl> rules = game.getRules();
-        
+
         setInspector(new GdlInspector(rules));
         Fodot builtFodot = getInspector().getFodot();
         setParsedFodot(builtFodot);
-        
+
         if (printBuiltFodot) {
-        	System.out.println(builtFodot.toCode());
-        }        
+            System.out.println(builtFodot.toCode());
+        }
         if(outputToFile) {
-        	File outputFile = IdpFileWriter.createIDPFileBasedOn(inputFile);
-        	IdpFileWriter.writeToIDPFile(builtFodot, outputFile);
+            File outputFile = IdpFileWriter.createIDPFileBasedOn(input);
+            IdpFileWriter.writeToIDPFile(builtFodot, outputFile);
         }
     }
 
@@ -82,6 +89,9 @@ public class Parser {
 	public GdlTransformer getTransformer() {
 		return getInspector().getTransformer();
 	}
-    
-    
+
+    private final File input;
+
+    /* The game for this parser */
+    private final Game game;
 }

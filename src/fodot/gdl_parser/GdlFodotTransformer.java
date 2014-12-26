@@ -357,6 +357,29 @@ public class GdlFodotTransformer implements GdlTransformer{
 
     /*** End of Score subsection ***/
 
+    /*************************************
+     * Compound Static Predicates
+     */
+    private Map<FodotPredicateDeclaration,Set<Pair<FodotPredicate, IFodotFormula>>> compoundMap;
+
+    public Map<FodotPredicateDeclaration,Set<Pair<FodotPredicate, IFodotFormula>>> getCompoundMap() {
+        return new HashMap<>(compoundMap);
+    }
+
+    private void addCompound(
+            FodotPredicateDeclaration predicate,
+            Pair<FodotPredicate, IFodotFormula> pair) {
+        if(compoundMap.containsKey(predicate)){
+            compoundMap.get(predicate).add(pair);
+        } else {
+            Set<Pair<FodotPredicate, IFodotFormula>> newSet = new HashSet<>();
+            newSet.add(pair);
+            compoundMap.put(predicate,newSet);
+        }
+    }
+
+    /*** End of Compound Static Predicates subsection ***/
+
     /***************************************************************************
      * Class Methods
      **************************************************************************/
@@ -368,6 +391,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         this.nextMap = new HashMap<>();
         this.legalMap = new HashMap<>();
         this.terminalSet = new HashSet<>();
+        this.compoundMap = new HashMap<>();
         this.processingRules = false;
         this.buildDefaultTypes();
         this.pool = new LTCPool(this.timeType);
@@ -647,6 +671,39 @@ public class GdlFodotTransformer implements GdlTransformer{
         GdlSentence predSentence = rule.getHead();
         FodotPredicateDeclaration originalPredicate =
                 this.processCompoundStaticPredicate(predSentence);
+
+        List<IFodotTerm> variables = new ArrayList<>();
+        variables.add(createVariable("t",timeType));
+        for (GdlTerm term : predSentence.getBody()) {
+            //GdlSentence sentence = gdlTerm.toSentence();
+            IFodotTerm var;
+            if(term.isGround()){
+                var = convertRawConstantName(term.toString());
+            } else {
+                if(variableMap.containsKey(term)){
+                    var = variableMap.get(term);
+                } else {
+                    FodotVariable temp = createVariable(getAllType());
+                    variableMap.put((GdlVariable) term, temp);
+                    var = temp;
+                }
+            }
+            variables.add(var);
+        }
+        FodotPredicate compoundStaticPred = createPredicate(
+                pool.getCompoundTimedVerionOf(originalPredicate),
+                variables
+        );
+
+        //generate IFodotFormula from the body
+        IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
+                rule.getBody(),
+                variableMap,
+                this
+        );
+
+        //add the combination as a next rule
+        this.addCompound(originalPredicate, Pair.of(compoundStaticPred, condition));
     }
 
     //TODO: nakijken waar deze return niet gebruikt wordt
@@ -690,7 +747,7 @@ public class GdlFodotTransformer implements GdlTransformer{
         return pred;
     }
 
-    private FodotPredicateDeclaration processCompoundStaticPredicate(GdlSentence predSentence) {
+    public FodotPredicateDeclaration processCompoundStaticPredicate(GdlSentence predSentence) {
         //Predicate: (pred x1 .. xn)
 
         String predName = predSentence.getName().getValue();

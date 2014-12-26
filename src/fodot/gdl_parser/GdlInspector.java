@@ -73,6 +73,10 @@ public class GdlInspector extends GdlVisitor{
             case "init":
                 this.getTransformer().processInitRelation(relation);
                 break;
+            case "legal":
+                //TODO: see if legals without conditions need a mapping
+                //so ignore this for now
+                break;
             case "base":
                 //ignore this for now
                 break;

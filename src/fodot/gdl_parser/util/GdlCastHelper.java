@@ -1,24 +1,10 @@
 package fodot.gdl_parser.util;
 
-import static fodot.helpers.FodotPartBuilder.createAnd;
-import static fodot.helpers.FodotPartBuilder.createEquals;
-import static fodot.helpers.FodotPartBuilder.createNot;
-import static fodot.helpers.FodotPartBuilder.createPredicate;
-import static fodot.helpers.FodotPartBuilder.createPredicateTerm;
-import static fodot.helpers.FodotPartBuilder.createPredicateTermDeclaration;
-import static fodot.helpers.FodotPartBuilder.createVariable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.ggp.base.util.gdl.grammar.GdlDistinct;
-import org.ggp.base.util.gdl.grammar.GdlLiteral;
-import org.ggp.base.util.gdl.grammar.GdlNot;
-import org.ggp.base.util.gdl.grammar.GdlRelation;
-import org.ggp.base.util.gdl.grammar.GdlSentence;
-import org.ggp.base.util.gdl.grammar.GdlTerm;
-import org.ggp.base.util.gdl.grammar.GdlVariable;
+import org.ggp.base.util.gdl.grammar.*;
 
 import fodot.gdl_parser.GdlFodotTransformer;
 import fodot.objects.sentence.formulas.IFodotFormula;
@@ -28,6 +14,8 @@ import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+
+import static fodot.helpers.FodotPartBuilder.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -55,9 +43,47 @@ public class GdlCastHelper {
             return generateRelation((GdlRelation) literal, variables, trans);
         } else if(literal instanceof GdlNot){
             return generateNot((GdlNot) literal, variables, trans);
+        } else if (literal instanceof GdlProposition) {
+            return generateProposition((GdlProposition) literal, variables, trans);
         }
         throw new UnsupportedOperationException("Not yet implemented. ( ͡° ͜ʖ ͡°)");
     }
+
+    private static IFodotFormula generateProposition(
+            GdlProposition literal,
+            HashMap<GdlVariable, FodotVariable> variables,
+            GdlFodotTransformer trans) {
+        // process (*compoundStatic* *vars*)
+
+        FodotPredicateDeclaration decl = trans.processCompoundStaticPredicate(literal);
+
+        List<IFodotTerm> elements = new ArrayList<>();
+        elements.add(createVariable("t",trans.getTimeType()));
+
+        for (int i = 0; i < literal.arity(); i++) {
+            GdlTerm term = literal.get(i);
+            IFodotTerm element;
+            if(term.isGround()){
+                element = trans.convertRawConstantName(term.toSentence().getName().getValue());
+            } else {
+                if(variables.containsKey(term)){
+                    element = variables.get(term);
+                } else {
+                    FodotVariable temp = createVariable(
+                            trans.getAllType());
+                    variables.put((GdlVariable) term,temp);
+                    element = temp;
+                }
+            }
+            elements.add(element);
+        }
+
+        return createPredicate(
+                trans.getPool().getCompoundTimedVerionOf(decl),
+                elements
+        );
+    }
+
 
     private static IFodotFormula generateNot(
             GdlNot not,
@@ -157,11 +183,24 @@ public class GdlCastHelper {
                     elements
             );
         } else {
-            // process (*staticpred*)
-            FodotPredicateDeclaration decl = trans.getPool().getPredicate(
-                    relation.getName().getValue());
+            // process (*staticpred*) or (*compoundstaticpred*)
 
             List<IFodotTerm> elements = new ArrayList<>();
+
+            String predName = relation.getName().getValue();
+
+            FodotPredicateDeclaration decl;
+
+            if(trans.getPool().isStaticPredicateRegistered(predName)) {
+                 decl = trans.getPool().getPredicate(predName);
+            } else if (trans.getPool().isCompoundStaticPredicateRegistered(predName)){
+                 decl = trans.getPool().getCompoundTimedVerionOf(
+                                trans.getPool().getCompoundStaticPredicate(predName)
+                        );
+                elements.add(createVariable(trans.getTimeType()));
+            } else {
+                decl = trans.processCompoundStaticPredicate(relation);
+            }
 
             for (int i = 0; i < relation.arity(); i++) {
                 GdlTerm term = relation.get(i);

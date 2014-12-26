@@ -5,9 +5,7 @@ import fodot.objects.vocabulary.elements.FodotType;
 
 import static fodot.helpers.FodotPartBuilder.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -27,6 +25,8 @@ public class LTCPool {
         this.initials = new HashMap<>();
         this.causes = new HashMap<>();
         this.causeNots = new HashMap<>();
+        this.compoundStatic = new HashMap<>();
+        this.compoundTimedVersions = new HashMap<>();
     }
 
     /***************************************************************************
@@ -241,7 +241,7 @@ public class LTCPool {
 
     private HashMap<FodotPredicateDeclaration,FodotPredicateDeclaration> compoundTimedVersions;
 
-    public FodotPredicateDeclaration getCoumpoundTimedVerionOf(FodotPredicateDeclaration pred){
+    public FodotPredicateDeclaration getCompoundTimedVerionOf(FodotPredicateDeclaration pred){
         if(pred == null)
             throw new IllegalArgumentException();
         if(!compoundStatic.containsKey(pred.getName()))
@@ -256,6 +256,10 @@ public class LTCPool {
 
     private void removeCompoundTimedPredicateOf(FodotPredicateDeclaration pred) {
         this.compoundTimedVersions.remove(pred);
+    }
+
+    public Set<FodotPredicateDeclaration> getCompoundTimedDeclarations(){
+        return new HashSet<>(compoundTimedVersions.values());
     }
 
     /*** End of Compound Static Predicates subsection ***/
