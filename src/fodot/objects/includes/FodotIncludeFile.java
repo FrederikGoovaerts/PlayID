@@ -1,6 +1,6 @@
 package fodot.objects.includes;
 
-public class FodotIncludeFile extends FodotInclude {
+public class FodotIncludeFile extends FodotIncludeStatement {
 
 	public FodotIncludeFile(String path) {
 		super(path);

@@ -1,7 +1,7 @@
 package fodot.objects.includes;
 
 
-public class FodotIncludeLibrary extends FodotInclude {
+public class FodotIncludeLibrary extends FodotIncludeStatement {
 	
 	public static final FodotIncludeLibrary LTC = new FodotIncludeLibrary("LTC");
 	

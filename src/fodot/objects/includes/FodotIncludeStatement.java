@@ -2,11 +2,11 @@ package fodot.objects.includes;
 
 import fodot.objects.general.IFodotElement;
 
-public abstract class FodotInclude implements IFodotElement {
+public abstract class FodotIncludeStatement implements IFodotElement {
 
 	private String toInclude;
 	
-	public FodotInclude(String toInclude) {
+	public FodotIncludeStatement(String toInclude) {
 		super();
 		this.toInclude = toInclude;
 	}
@@ -38,7 +38,7 @@ public abstract class FodotInclude implements IFodotElement {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		FodotInclude other = (FodotInclude) obj;
+		FodotIncludeStatement other = (FodotIncludeStatement) obj;
 		if (toInclude == null) {
 			if (other.toInclude != null)
 				return false;

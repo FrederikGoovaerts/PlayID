@@ -82,7 +82,7 @@ public class Fodot implements IFodotFile {
 	}	
 	
 	public void merge(Fodot other) {
-		getIncludes().merge(other.getIncludes());
+		getIncludes().mergeWith(other.getIncludes());
 		getVocabulary().mergeWith(other.getVocabulary());
 		getTheory().mergeWith(other.getTheory());
 		getStructure().mergeWith(other.getStructure());

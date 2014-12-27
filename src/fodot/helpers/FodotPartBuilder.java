@@ -11,7 +11,7 @@ import java.util.Set;
 import fodot.objects.Fodot;
 import fodot.objects.comments.FodotBlankLines;
 import fodot.objects.comments.FodotComment;
-import fodot.objects.includes.FodotInclude;
+import fodot.objects.includes.FodotIncludeStatement;
 import fodot.objects.includes.FodotIncludeFile;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.includes.FodotIncludeLibrary;
@@ -568,18 +568,18 @@ public class FodotPartBuilder {
 		return new FodotIncludeFile(path);
 	}
 
-	public static FodotIncludeHolder createIncludeHolder(Collection<? extends FodotInclude> includes) {
+	public static FodotIncludeHolder createIncludeHolder(Collection<? extends FodotIncludeStatement> includes) {
 		return new FodotIncludeHolder(includes);
 	}
 
-	public static FodotIncludeHolder createIncludeHolder(FodotInclude initElement) {
-		Set<FodotInclude> toAdd = new HashSet<FodotInclude>();
+	public static FodotIncludeHolder createIncludeHolder(FodotIncludeStatement initElement) {
+		Set<FodotIncludeStatement> toAdd = new HashSet<FodotIncludeStatement>();
 		toAdd.add(initElement);
 		return createIncludeHolder(toAdd);
 	}
 
 	public static FodotIncludeHolder createIncludeHolder() {
-		return createIncludeHolder(new HashSet<FodotInclude>());
+		return createIncludeHolder(new HashSet<FodotIncludeStatement>());
 	}
 
 	//FODOT THEORY
