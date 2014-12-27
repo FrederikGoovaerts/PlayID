@@ -6,7 +6,6 @@ import java.util.List;
 
 import fodot.objects.sentence.formulas.IFodotFormula;
 import fodot.objects.sentence.terms.IFodotTerm;
-import fodot.util.CollectionPrinter;
 
 public class FodotTermConnector extends FodotSentenceElementConnector<IFodotTerm> implements IFodotFormula {
 	
@@ -32,7 +31,7 @@ public class FodotTermConnector extends FodotSentenceElementConnector<IFodotTerm
 
 	@Override
 	public String toString() {
-		return "[termconnector "+getConnector()+":" + CollectionPrinter.toNakedList(CollectionPrinter.toString(getArguments())) + "]";
+		return "[termconnector "+toCode()+ "]";
 	}
 
 	@Override

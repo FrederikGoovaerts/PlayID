@@ -43,8 +43,12 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 	}
 
 	//Arguments
-
+	@Deprecated
 	public List<E> getArguments() {
+		return getElements();
+	}
+	
+	public List<E> getElements() {
 		return new ArrayList<E>(arguments);
 	}
 
