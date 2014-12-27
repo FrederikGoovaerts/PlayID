@@ -11,9 +11,9 @@ public class NameUtil {
 	/* STATIC HELPERS */
 
 	// TODO: this is crudely fixed to allow for "-"
-	private static String validNameRegex = "^[a-zA-Z$][a-zA-Z_$0-9]*$";
+	private static String validNameRegex = "^[a-zA-Z$][a-zA-Z_0-9]*$";
 	private static List<String> allowedSpecialNames = Arrays.asList("-");
-	private static String alphanumericRegex = "[^a-zA-Z0-9]";
+	private static String nonAlphanumericRegex = "[^a-zA-Z0-9]";
 
 	private static Map<String, Integer> prefixCounter = new HashMap<String, Integer>();
 
@@ -39,7 +39,7 @@ public class NameUtil {
 			if (isValidName(name)) {
 				return name;
 			}
-			String newName = name.replaceAll(alphanumericRegex, "");
+			String newName = name.replaceAll(nonAlphanumericRegex, "");
 			if (isValidName(newName)) {
 				return newName;
 			}
