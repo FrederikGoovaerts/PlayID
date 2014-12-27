@@ -1,6 +1,6 @@
 package fodot.exceptions;
 
-import fodot.objects.sentence.formulas.IFodotFormula;
+import fodot.objects.theory.elements.formulas.IFodotFormula;
 
 public class NonVariablefreeSentenceException extends RuntimeException {
 	

@@ -11,41 +11,41 @@ import java.util.Set;
 import fodot.objects.Fodot;
 import fodot.objects.comments.FodotBlankLines;
 import fodot.objects.comments.FodotComment;
-import fodot.objects.includes.FodotIncludeStatement;
-import fodot.objects.includes.FodotIncludeFile;
 import fodot.objects.includes.FodotIncludeHolder;
-import fodot.objects.includes.FodotIncludeLibrary;
-import fodot.objects.procedure.FodotProcedure;
+import fodot.objects.includes.elements.FodotIncludeFile;
+import fodot.objects.includes.elements.FodotIncludeLibrary;
+import fodot.objects.includes.elements.FodotIncludeStatement;
+import fodot.objects.procedure.FodotProcedureStatement;
 import fodot.objects.procedure.FodotProcedures;
-import fodot.objects.sentence.formulas.IFodotFormula;
-import fodot.objects.sentence.formulas.argumented.FodotPredicate;
-import fodot.objects.sentence.formulas.connectors.FodotFormulaConnector;
-import fodot.objects.sentence.formulas.connectors.FodotTermConnector;
-import fodot.objects.sentence.formulas.quantifiers.FodotQuantifier;
-import fodot.objects.sentence.formulas.unary.FodotNot;
-import fodot.objects.sentence.terms.FodotArithmeticConnector;
-import fodot.objects.sentence.terms.FodotConstant;
-import fodot.objects.sentence.terms.FodotFunction;
-import fodot.objects.sentence.terms.FodotPredicateTerm;
-import fodot.objects.sentence.terms.FodotVariable;
-import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.structure.IFodotStructureElement;
-import fodot.objects.structure.enumerations.FodotConstantFunctionEnumeration;
-import fodot.objects.structure.enumerations.FodotFunctionEnumeration;
-import fodot.objects.structure.enumerations.FodotNumericalTypeRangeEnumeration;
-import fodot.objects.structure.enumerations.FodotPredicateEnumeration;
-import fodot.objects.structure.enumerations.FodotTypeEnumeration;
-import fodot.objects.structure.enumerations.IFodotEnumerationElement;
-import fodot.objects.theory.FodotSentence;
+import fodot.objects.structure.elements.FodotConstantFunctionEnumeration;
+import fodot.objects.structure.elements.FodotFunctionEnumeration;
+import fodot.objects.structure.elements.FodotNumericalTypeRangeEnumeration;
+import fodot.objects.structure.elements.FodotPredicateEnumeration;
+import fodot.objects.structure.elements.FodotTypeEnumeration;
+import fodot.objects.structure.elements.IFodotEnumerationElement;
+import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.theory.FodotTheory;
-import fodot.objects.theory.IFodotTheoryElement;
-import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
-import fodot.objects.theory.definitions.FodotInductiveDefinitionConnector;
-import fodot.objects.theory.definitions.FodotInductiveFunction;
-import fodot.objects.theory.definitions.FodotInductiveQuantifier;
-import fodot.objects.theory.definitions.FodotInductiveSentence;
-import fodot.objects.theory.definitions.IFodotInductiveDefinitionElement;
+import fodot.objects.theory.elements.FodotSentence;
+import fodot.objects.theory.elements.IFodotTheoryElement;
+import fodot.objects.theory.elements.formulas.FodotFormulaConnector;
+import fodot.objects.theory.elements.formulas.FodotNot;
+import fodot.objects.theory.elements.formulas.FodotPredicate;
+import fodot.objects.theory.elements.formulas.FodotQuantifier;
+import fodot.objects.theory.elements.formulas.FodotTermConnector;
+import fodot.objects.theory.elements.formulas.IFodotFormula;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionBlock;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionConnector;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveFunction;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveQuantifier;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveSentence;
+import fodot.objects.theory.elements.inductivedefinitions.IFodotInductiveDefinitionElement;
+import fodot.objects.theory.elements.terms.FodotArithmeticConnector;
+import fodot.objects.theory.elements.terms.FodotConstant;
+import fodot.objects.theory.elements.terms.FodotFunction;
+import fodot.objects.theory.elements.terms.FodotPredicateTerm;
+import fodot.objects.theory.elements.terms.FodotVariable;
+import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
@@ -622,15 +622,15 @@ public class FodotPartBuilder {
 	}
 
 	//PROCEDURES
-	public static FodotProcedures createProcedures(String name, List<String> arguments, List<FodotProcedure> procedures) {
+	public static FodotProcedures createProcedures(String name, List<String> arguments, List<FodotProcedureStatement> procedures) {
 		return new FodotProcedures(name, arguments, procedures);
 	}
 
-	public static FodotProcedures createProcedures(String name, List<FodotProcedure> procedures) {
+	public static FodotProcedures createProcedures(String name, List<FodotProcedureStatement> procedures) {
 		return createProcedures(name, null, procedures);
 	}
 
-	public static FodotProcedures createProcedures(List<FodotProcedure> procedures) {
+	public static FodotProcedures createProcedures(List<FodotProcedureStatement> procedures) {
 		return createProcedures(null, null, procedures);
 	}
 
@@ -642,8 +642,8 @@ public class FodotPartBuilder {
 		return createProcedures(null, null, null);
 	}
 
-	public static FodotProcedure createProcedure(String procedure) {
-		return new FodotProcedure(procedure);
+	public static FodotProcedureStatement createProcedure(String procedure) {
+		return new FodotProcedureStatement(procedure);
 	}
 
 	//VOCABULARY

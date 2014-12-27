@@ -1,7 +1,7 @@
 package fodot.communication.output;
 
-import fodot.objects.sentence.terms.FodotConstant;
-import fodot.objects.sentence.terms.IFodotTerm;
+import fodot.objects.theory.elements.terms.FodotConstant;
+import fodot.objects.theory.elements.terms.IFodotTerm;
 
 public class GdlAction {
 	private int time;

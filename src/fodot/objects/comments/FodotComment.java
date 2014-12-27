@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 import fodot.objects.general.IFodotElement;
-import fodot.objects.structure.IFodotStructureElement;
-import fodot.objects.theory.IFodotTheoryElement;
+import fodot.objects.structure.elements.IFodotStructureElement;
+import fodot.objects.theory.elements.IFodotTheoryElement;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionPrinter;

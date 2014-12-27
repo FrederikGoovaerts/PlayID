@@ -7,7 +7,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import fodot.objects.file.IFodotFileElement;
-import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
+import fodot.objects.theory.elements.FodotSentence;
+import fodot.objects.theory.elements.IFodotTheoryElement;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionBlock;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.util.CollectionPrinter;
 

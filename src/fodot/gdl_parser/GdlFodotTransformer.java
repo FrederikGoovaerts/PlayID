@@ -20,17 +20,16 @@ import fodot.gdl_parser.exceptions.GdlParsingOrderException;
 import fodot.gdl_parser.util.GdlCastHelper;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.Fodot;
-import fodot.objects.sentence.formulas.IFodotFormula;
-import fodot.objects.sentence.formulas.argumented.FodotPredicate;
-import fodot.objects.sentence.terms.FodotConstant;
-import fodot.objects.sentence.terms.FodotPredicateTerm;
-import fodot.objects.sentence.terms.FodotVariable;
-import fodot.objects.sentence.terms.IFodotTerm;
-import fodot.objects.structure.enumerations.IFodotEnumerationElement;
+import fodot.objects.structure.elements.IFodotEnumerationElement;
+import fodot.objects.theory.elements.formulas.FodotPredicate;
+import fodot.objects.theory.elements.formulas.IFodotFormula;
+import fodot.objects.theory.elements.terms.FodotConstant;
+import fodot.objects.theory.elements.terms.FodotPredicateTerm;
+import fodot.objects.theory.elements.terms.FodotVariable;
+import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
-
 import static fodot.helpers.FodotPartBuilder.*;
 
 /**

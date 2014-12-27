@@ -50,16 +50,16 @@ import org.ggp.base.util.Pair;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.Fodot;
 import fodot.objects.includes.FodotIncludeHolder;
-import fodot.objects.procedure.FodotProcedure;
+import fodot.objects.procedure.FodotProcedureStatement;
 import fodot.objects.procedure.FodotProcedures;
-import fodot.objects.sentence.formulas.IFodotFormula;
-import fodot.objects.sentence.formulas.argumented.FodotPredicate;
-import fodot.objects.sentence.terms.FodotVariable;
-import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.structure.enumerations.IFodotEnumerationElement;
+import fodot.objects.structure.elements.IFodotEnumerationElement;
 import fodot.objects.theory.FodotTheory;
-import fodot.objects.theory.definitions.FodotInductiveSentence;
+import fodot.objects.theory.elements.formulas.FodotPredicate;
+import fodot.objects.theory.elements.formulas.IFodotFormula;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveSentence;
+import fodot.objects.theory.elements.terms.FodotVariable;
+import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
@@ -591,7 +591,7 @@ public class FodotGameFactory {
 
         //stdoptions.nbmodels=5
         //printmodels(modelexpand(T,S))
-        List<FodotProcedure> proc = new ArrayList<>(
+        List<FodotProcedureStatement> proc = new ArrayList<>(
                 Arrays.asList(
                         createProcedure("stdoptions.nbmodels=5"),
                         createProcedure("printmodels(modelexpand(T,S))")

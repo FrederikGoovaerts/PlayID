@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Set;
 
 import fodot.helpers.FodotPartBuilder;
-import fodot.objects.sentence.formulas.IFodotFormula;
-import fodot.objects.sentence.terms.FodotVariable;
-import fodot.objects.theory.definitions.IFodotInductiveDefinitionElement;
+import fodot.objects.theory.elements.formulas.IFodotFormula;
+import fodot.objects.theory.elements.inductivedefinitions.IFodotInductiveDefinitionElement;
+import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotType;
 
 public class FormulaUtil {

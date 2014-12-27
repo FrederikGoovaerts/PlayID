@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import fodot.objects.sentence.terms.FodotConstant;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.structure.enumerations.FodotPredicateEnumeration;
-import fodot.objects.structure.enumerations.IFodotEnumerationElement;
+import fodot.objects.structure.elements.FodotPredicateEnumeration;
+import fodot.objects.structure.elements.IFodotEnumerationElement;
+import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotType;
 

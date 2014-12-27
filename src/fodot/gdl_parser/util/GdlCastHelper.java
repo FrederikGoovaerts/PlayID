@@ -21,10 +21,10 @@ import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
 import fodot.gdl_parser.GdlFodotTransformer;
-import fodot.objects.sentence.formulas.IFodotFormula;
-import fodot.objects.sentence.formulas.argumented.FodotPredicate;
-import fodot.objects.sentence.terms.FodotVariable;
-import fodot.objects.sentence.terms.IFodotTerm;
+import fodot.objects.theory.elements.formulas.FodotPredicate;
+import fodot.objects.theory.elements.formulas.IFodotFormula;
+import fodot.objects.theory.elements.terms.FodotVariable;
+import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;

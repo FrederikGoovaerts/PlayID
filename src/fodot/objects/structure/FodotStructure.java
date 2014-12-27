@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import fodot.objects.file.FodotFileElementWithNamedElements;
 import fodot.objects.file.IFodotFileElement;
+import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.vocabulary.FodotVocabulary;
 
 public class FodotStructure extends FodotFileElementWithNamedElements<IFodotStructureElement> implements IFodotFileElement {

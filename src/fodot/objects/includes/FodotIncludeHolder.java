@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import fodot.objects.general.FodotElementContainer;
 import fodot.objects.general.IFodotElement;
+import fodot.objects.includes.elements.FodotIncludeStatement;
 import fodot.util.CollectionPrinter;
 
 public class FodotIncludeHolder extends FodotElementContainer<FodotIncludeStatement> implements IFodotElement {
