@@ -10,6 +10,7 @@ import java.util.Set;
 import fodot.objects.general.FodotElementContainer;
 import fodot.objects.general.IFodotElement;
 import fodot.util.CollectionPrinter;
+import fodot.util.NameUtil;
 
 public abstract class FodotFileElement<E extends IFodotElement> extends FodotElementContainer<E> implements IFodotFileElement {
 	private String name;
@@ -57,7 +58,7 @@ public abstract class FodotFileElement<E extends IFodotElement> extends FodotEle
 	}
 
 	public void setName(String name) {
-		this.name = (name == null? getDefaultName() : name);
+		this.name = (NameUtil.isValidName(name)? name : getDefaultName());
 	}
 	
 	public abstract String getDefaultName();

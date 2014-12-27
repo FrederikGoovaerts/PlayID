@@ -41,5 +41,9 @@ public abstract class FodotFileElementWithNamedElements<E extends IFodotNamedEle
 	public boolean containsElementWithName(String name) {
 		return getElementWithName(name) != null;
 	}
+	
+	public boolean isValidElement(E el) {
+		return containsElement(el) || !containsElementWithName(el.getName());
+	}
 
 }

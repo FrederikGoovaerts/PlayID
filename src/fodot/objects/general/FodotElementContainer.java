@@ -31,12 +31,20 @@ public abstract class FodotElementContainer<E extends IFodotElement> implements 
 	}
 
 	public void addElement(E argElement) {
+		if (!isValidElement(argElement)) {
+			throw new RuntimeException(argElement + " is not a valid argument for " + this);
+		
+		}
 		this.elements.add(argElement);
 	}
 
+	public abstract boolean isValidElement(E argElement);
+	
 	public void addAllElements(Collection<? extends E> argElements) {
 		if (argElements != null) {
-			this.elements.addAll(argElements);
+			for (E el : argElements) {
+				addElement(el);
+			}
 		}
 	}
 

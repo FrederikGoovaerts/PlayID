@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import fodot.objects.file.FodotFileElementWithNamedElements;
 import fodot.objects.file.IFodotFileElement;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
@@ -16,26 +17,23 @@ import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionPrinter;
-import fodot.util.NameUtil;
 
-public class FodotVocabulary implements IFodotFileElement {
+public class FodotVocabulary extends FodotFileElementWithNamedElements<IFodotVocabularyElement> implements IFodotFileElement {
 
 	private static final String DEFAULT_NAME = "V";
 	
 	//Maybe convert the three sets in just a set of FodotDeclarations?
-	private String name;
-	private Set<IFodotVocabularyElement> elements;
+//	private String name;
+//	private Set<IFodotVocabularyElement> elements;
 	
 	public FodotVocabulary(String name, Collection<? extends IFodotVocabularyElement> elements) {
-		setName(name);
-		setElements(elements);
+		super(name, elements);
 	}
 	
 	@Deprecated
 	public FodotVocabulary(String name, Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
 			Set<FodotFunctionDeclaration> functions) {
-		setName(name);
-		setElements(null);
+		super(name, null);
 		addAllElements(types);
 		addAllElements(predicates);
 		addAllElements(functions);
@@ -49,77 +47,6 @@ public class FodotVocabulary implements IFodotFileElement {
 		this(null, null);
 	}
 
-
-	/**********************************************
-	 *  Elements methods
-	 ***********************************************/
-	private void setElements(Collection<? extends IFodotVocabularyElement> argElements) {
-		this.elements = (isValidElements(argElements) ? new LinkedHashSet<IFodotVocabularyElement>(argElements)
-				: new LinkedHashSet<IFodotVocabularyElement>());
-	}
-
-	private boolean isValidElements(Collection<? extends IFodotVocabularyElement> argElements) {
-		return argElements != null;
-	}
-
-	public Set<IFodotVocabularyElement> getElements() {
-		return new LinkedHashSet<IFodotVocabularyElement>(elements);
-	}
-
-	public void addElement(IFodotVocabularyElement argElement) {
-		if (!containsElement(argElement) && containsElementWithName(argElement.getName()))
-			throw new RuntimeException("Vocabulary " + this + " already contains an element with name " + argElement.getName());
-		this.elements.add(argElement);
-	}
-
-	public void addAllElements(Collection<? extends IFodotVocabularyElement> argElements) {
-		if (argElements != null) {
-			for (IFodotVocabularyElement el : argElements) {
-				this.elements.add(el);				
-			}
-		}
-	}
-
-	public IFodotVocabularyElement getElementWithName(String name) {
-		if (name == null)
-			return null;
-		for (IFodotVocabularyElement el : elements) {
-			if (name.equals(el.getName())) {
-				return el;
-			}
-		}
-		return null;
-	}
-	
-	public boolean containsElement(IFodotVocabularyElement element) {
-		return this.elements.contains(element);
-	}
-
-	public boolean containsElementWithName(String name) {
-		if (name == null) {
-			return false;
-		}
-		for (IFodotVocabularyElement el : elements) {
-			if (el.getName() != null && name.equals(el.getName())) {
-				return true;
-			}
-		}
-		return false;
-	}	
-
-	public boolean hasElements() {
-		return !elements.isEmpty();
-	}
-
-	public void removeElement(IFodotVocabularyElement argElement) {
-		this.elements.remove(argElement);
-	}
-
-	public int getAmountOfElements() {
-		return this.elements.size();
-	}
-	
-	/**********************************************/
 
 	
 	/* TYPES */
@@ -140,19 +67,19 @@ public class FodotVocabulary implements IFodotFileElement {
 
 	@Deprecated
 	public boolean containsType(FodotTypeDeclaration type) {
-		return elements.contains(type);
+		return containsElement(type);
 	}
 
 	/* PREDICATES */
 
 	@Deprecated
 	public void addPredicate(FodotPredicateDeclaration predicate) {
-		elements.add(predicate);
+		addElement(predicate);
 	}
 
 	@Deprecated
 	public void removePredicate(FodotPredicateDeclaration predicate) {
-		elements.remove(predicate);
+		removeElement(predicate);
 	}
 
 
@@ -161,28 +88,12 @@ public class FodotVocabulary implements IFodotFileElement {
 
 	@Deprecated
 	public void addFunction(FodotFunctionDeclaration function) {
-		elements.add(function);
+		addElement(function);
 	}
 
 	@Deprecated
 	public void removeFunction(FodotFunctionDeclaration function) {
-		elements.remove(function);
-	}
-
-	/* NAMES */
-
-	public String getName() {
-		return name;
-	}
-
-	private void setName(String name) {
-		if (NameUtil.isValidName(name)) {
-			this.name = name;
-		} else {
-			this.name = DEFAULT_NAME;
-		}
-
-
+		removeElement(function);
 	}
 
 	/* FODOT ELEMENT */
@@ -314,5 +225,15 @@ public class FodotVocabulary implements IFodotFileElement {
 		if (this.getClass().equals(other.getClass())) {
 			merge((FodotVocabulary) other);
 		}
+	}
+
+	@Override
+	public String getFileElementName() {
+		return "vocabulary";
+	}
+
+	@Override
+	public String getDefaultName() {
+		return DEFAULT_NAME;
 	}
 }
