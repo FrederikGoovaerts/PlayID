@@ -1,6 +1,6 @@
 package fodot.objects.includes;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.general.IFodotElement;
 
 public abstract class FodotInclude implements IFodotElement {
 

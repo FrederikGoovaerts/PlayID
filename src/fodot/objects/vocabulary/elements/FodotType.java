@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.general.IFodotElement;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>

@@ -3,7 +3,7 @@ package fodot.objects.comments;
 import java.util.HashSet;
 import java.util.Set;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.IFodotStructureElement;
 import fodot.objects.theory.IFodotTheoryElement;
 import fodot.objects.vocabulary.elements.FodotType;

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import fodot.exceptions.InvalidTermNameException;
-import fodot.objects.IFodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.util.NameUtil;
 
 public abstract class FodotArgumentListDeclaration implements IFodotElement {

@@ -1,7 +1,7 @@
 package fodot.objects.theory;
 
 import fodot.exceptions.NonVariablefreeSentenceException;
-import fodot.objects.IFodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.sentence.formulas.IFodotFormula;
 
 /**

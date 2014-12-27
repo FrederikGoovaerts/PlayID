@@ -1,6 +1,6 @@
 package fodot.objects.procedure;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.general.IFodotElement;
 
 public class FodotProcedure implements IFodotElement {
 	//TODO: better structure for this?

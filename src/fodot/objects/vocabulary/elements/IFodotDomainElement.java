@@ -2,7 +2,7 @@ package fodot.objects.vocabulary.elements;
 
 import java.util.Set;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.general.IFodotElement;
 
 public interface IFodotDomainElement extends IFodotElement {
 	/**

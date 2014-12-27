@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.util.CollectionPrinter;
 
 public class FodotIncludeHolder implements IFodotElement {

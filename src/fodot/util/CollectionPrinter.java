@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.general.IFodotElement;
 
 public class CollectionPrinter {
 	public static List<String> toCode(Collection<? extends IFodotElement> list) {

@@ -3,7 +3,7 @@ package fodot.objects.theory.definitions;
 import java.util.ArrayList;
 import java.util.List;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.IFodotTheoryElement;
 import fodot.util.CollectionPrinter;
 

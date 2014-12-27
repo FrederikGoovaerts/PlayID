@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
-import fodot.objects.IFodotNamedElement;
+import fodot.objects.general.IFodotNamedElement;
 
 public abstract class FodotFileElementNamed<E extends IFodotNamedElement> extends FodotFileElement<E> {
 
