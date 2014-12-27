@@ -99,19 +99,9 @@ public class FodotVocabulary extends FodotFileElementWithNamedElements<IFodotVoc
 	/* FODOT ELEMENT */
 	@Override
 	public String toCode() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("vocabulary " + getName() + " {\n");
-
-
 		VocabularyElementPrerequisiteSorter sorter = new VocabularyElementPrerequisiteSorter(getElements());
-		builder.append(CollectionPrinter.toNewLinesWithTabsAsCode(sorter.getSortedElements(),1));		
-		
-		//STRINGIFY FUNCTIONS&PREDICATES
-//		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getFunctions(),1));
-//		builder.append(CollectionUtil.toNewLinesWithTabsAsCode(getPredicates(),1));
-
-		builder.append("}");
-		return builder.toString();
+		setElements(sorter.getSortedElements());
+		return super.toCode();
 	}
 	
  
@@ -216,11 +206,6 @@ public class FodotVocabulary extends FodotFileElementWithNamedElements<IFodotVoc
 	}
 
 	@Override
-	public Set<IFodotFileElement> getPrerequiredElements() {
-		return null;
-	}
-
-	@Override
 	public void mergeWith(IFodotFileElement other) {
 		if (this.getClass().equals(other.getClass())) {
 			merge((FodotVocabulary) other);
@@ -236,4 +221,6 @@ public class FodotVocabulary extends FodotFileElementWithNamedElements<IFodotVoc
 	public String getDefaultName() {
 		return DEFAULT_NAME;
 	}
+	
+	
 }

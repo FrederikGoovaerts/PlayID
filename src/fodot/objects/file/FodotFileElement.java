@@ -13,6 +13,7 @@ import fodot.util.CollectionPrinter;
 import fodot.util.NameUtil;
 
 public abstract class FodotFileElement<E extends IFodotElement> extends FodotElementContainer<E> implements IFodotFileElement {
+
 	private String name;
 	private Set<IFodotFileElement> prerequired;
 
@@ -83,5 +84,39 @@ public abstract class FodotFileElement<E extends IFodotElement> extends FodotEle
 		builder.append("}");
 		return builder.toString();
 	}
+	
+	//Hashcode&Equals
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result
+				+ ((prerequired == null) ? 0 : prerequired.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FodotFileElement<?> other = (FodotFileElement<?>) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (prerequired == null) {
+			if (other.prerequired != null)
+				return false;
+		} else if (!prerequired.equals(other.prerequired))
+			return false;
+		return true;
+	}
+
 	
 }
