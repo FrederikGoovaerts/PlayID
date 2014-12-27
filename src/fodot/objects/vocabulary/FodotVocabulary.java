@@ -11,8 +11,6 @@ import java.util.Set;
 
 import fodot.objects.file.FodotFileElementWithNamedElements;
 import fodot.objects.file.IFodotFileElement;
-import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
-import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
@@ -22,21 +20,8 @@ public class FodotVocabulary extends FodotFileElementWithNamedElements<IFodotVoc
 
 	private static final String DEFAULT_NAME = "V";
 	
-	//Maybe convert the three sets in just a set of FodotDeclarations?
-//	private String name;
-//	private Set<IFodotVocabularyElement> elements;
-	
 	public FodotVocabulary(String name, Collection<? extends IFodotVocabularyElement> elements) {
 		super(name, elements);
-	}
-	
-	@Deprecated
-	public FodotVocabulary(String name, Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
-			Set<FodotFunctionDeclaration> functions) {
-		super(name, null);
-		addAllElements(types);
-		addAllElements(predicates);
-		addAllElements(functions);
 	}
 
 	public FodotVocabulary(String name) {
@@ -45,55 +30,6 @@ public class FodotVocabulary extends FodotFileElementWithNamedElements<IFodotVoc
 
 	public FodotVocabulary() {
 		this(null, null);
-	}
-
-
-	
-	/* TYPES */
-	@Deprecated
-	public void addType(FodotTypeDeclaration type) {
-		addElement(type);
-	}
-
-	@Deprecated
-	public void removeType(FodotTypeDeclaration type) {
-		removeElement(type);
-	}
-
-	@Deprecated
-	public boolean containsTypeWithName(String name) {
-		return containsElementWithName(name);
-	}
-
-	@Deprecated
-	public boolean containsType(FodotTypeDeclaration type) {
-		return containsElement(type);
-	}
-
-	/* PREDICATES */
-
-	@Deprecated
-	public void addPredicate(FodotPredicateDeclaration predicate) {
-		addElement(predicate);
-	}
-
-	@Deprecated
-	public void removePredicate(FodotPredicateDeclaration predicate) {
-		removeElement(predicate);
-	}
-
-
-	/* FUNCTIONS */
-
-
-	@Deprecated
-	public void addFunction(FodotFunctionDeclaration function) {
-		addElement(function);
-	}
-
-	@Deprecated
-	public void removeFunction(FodotFunctionDeclaration function) {
-		removeElement(function);
 	}
 
 	/* FODOT ELEMENT */

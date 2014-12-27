@@ -647,18 +647,6 @@ public class FodotPartBuilder {
 	}
 
 	//VOCABULARY
-	@Deprecated
-	public static FodotVocabulary createVocabulary(String name, Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
-			Set<FodotFunctionDeclaration> functions) {
-		return new FodotVocabulary(name, types, predicates, functions);
-	}
-
-	@Deprecated
-	public static FodotVocabulary createVocabulary(Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
-			Set<FodotFunctionDeclaration> functions) {
-		return createVocabulary(null, types, predicates, functions);
-	}
-	
 	public static FodotVocabulary createVocabulary(String name, Collection<? extends IFodotVocabularyElement> elements) {
 		return new FodotVocabulary(name, elements);
 	}
@@ -669,18 +657,6 @@ public class FodotPartBuilder {
 
 	public static FodotVocabulary createVocabulary() {
 		return createVocabulary(null, null);
-	}
-
-	@Deprecated
-	public static FodotLTCVocabulary createLTCVocabulary(String name, Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
-			Set<FodotFunctionDeclaration> functions) {
-		return new FodotLTCVocabulary(name, types, predicates, functions);
-	}
-
-	@Deprecated
-	public static FodotLTCVocabulary creatLTCeVocabulary(Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
-			Set<FodotFunctionDeclaration> functions) {
-		return createLTCVocabulary(null, types, predicates, functions);
 	}
 	
 	public static FodotLTCVocabulary createLTCVocabulary(String name, Collection<? extends IFodotVocabularyElement> elements) {

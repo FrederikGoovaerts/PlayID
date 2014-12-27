@@ -24,4 +24,22 @@ public abstract class FodotNamedElementContainer<E extends IFodotNamedElement> e
 	public boolean containsElementWithName(String name) {
 		return getElementWithName(name) != null;
 	}
+	
+	public boolean containsElementWithNameOfClass(String name, Class<?> clazz) {
+		//Check for invalid inputs
+		if (clazz == null) {
+			throw new IllegalArgumentException("Class can not be null");
+		}
+		if (name == null) {
+			throw new IllegalArgumentException("Name can not be null");
+		}
+		
+		//Search
+		for (E el : getElements()) {
+			if (clazz.isInstance(el) && name.equals(el.getName())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
