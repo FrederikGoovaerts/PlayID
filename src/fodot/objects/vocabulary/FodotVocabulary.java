@@ -32,17 +32,6 @@ public class FodotVocabulary extends FodotFileElementWithNamedElements<IFodotVoc
 
 	/* MERGE */
 
-	public void merge(FodotVocabulary other) {
-		addAllElements(other.getElements());
-	}
-
-	@Override
-	public void mergeWith(IFodotFileElement other) {
-		if (this.getClass().equals(other.getClass())) {
-			merge((FodotVocabulary) other);
-		}
-	}
-
 	@Override
 	public String getFileElementName() {
 		return "vocabulary";

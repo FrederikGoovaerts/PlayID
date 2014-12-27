@@ -41,21 +41,6 @@ public class FodotStructure extends FodotFileElementWithNamedElements<IFodotStru
 	private void setVocabulary(FodotVocabulary voc) {
 		this.vocabulary = (voc == null? new FodotVocabulary() : voc);
 		
-	}
-
-	/* FODOT FILE ELEMENT */
-	
-	public void merge(FodotStructure other) {
-		addAllElements(other.getElements());
-	}
-
-	@Override
-	public void mergeWith(IFodotFileElement other) {
-		if (this.getClass().equals(other.getClass())) {
-			merge((FodotStructure) other);
-		}
-	}
-
-	
+	}	
 	
 }

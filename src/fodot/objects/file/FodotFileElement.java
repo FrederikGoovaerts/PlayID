@@ -64,6 +64,7 @@ public abstract class FodotFileElement<E extends IFodotElement> extends FodotEle
 	
 	public abstract String getDefaultName();
 	
+	//Tocode
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
@@ -84,6 +85,17 @@ public abstract class FodotFileElement<E extends IFodotElement> extends FodotEle
 		builder.append("}");
 		return builder.toString();
 	}
+	
+	//Merging
+	@Override
+	public void mergeWith(IFodotFileElement other) {
+		if (this.getClass().equals(other.getClass())) {
+			@SuppressWarnings("unchecked")
+			FodotFileElement<E> casted = (FodotFileElement<E>) other;
+			addAllElements(casted.getElements());
+		}
+	}
+	
 	
 	//Hashcode&Equals
 	@Override

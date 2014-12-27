@@ -20,13 +20,11 @@ public abstract class FodotFileElementWithNamedElements<E extends IFodotNamedEle
 		super(name, elements, Arrays.asList(prerequired));
 	}
 
-
 	public FodotFileElementWithNamedElements(String name, Collection<? extends E> elements) {
 		this(name, elements, new HashSet<IFodotFileElement>());
 	}
 	
 	//NAMED STUFF
-
 	public E getElementWithName(String name) {
 		if (name != null) {
 			for (E el : getElements()) {
