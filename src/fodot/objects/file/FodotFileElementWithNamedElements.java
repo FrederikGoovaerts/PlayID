@@ -6,22 +6,22 @@ import java.util.HashSet;
 
 import fodot.objects.general.IFodotNamedElement;
 
-public abstract class FodotFileElementNamed<E extends IFodotNamedElement> extends FodotFileElement<E> {
+public abstract class FodotFileElementWithNamedElements<E extends IFodotNamedElement> extends FodotFileElement<E> {
 
 	//CONSTRUCTORS
 
-	public FodotFileElementNamed(String name, Collection<? extends E> elements,
+	public FodotFileElementWithNamedElements(String name, Collection<? extends E> elements,
 			Collection<? extends IFodotFileElement> prerequired) {
 		super(name, elements, prerequired);
 	}
 
-	public FodotFileElementNamed(String name, Collection<? extends E> elements,
+	public FodotFileElementWithNamedElements(String name, Collection<? extends E> elements,
 			IFodotFileElement... prerequired) {
 		super(name, elements, Arrays.asList(prerequired));
 	}
 
 
-	public FodotFileElementNamed(String name, Collection<? extends E> elements) {
+	public FodotFileElementWithNamedElements(String name, Collection<? extends E> elements) {
 		this(name, elements, new HashSet<IFodotFileElement>());
 	}
 	

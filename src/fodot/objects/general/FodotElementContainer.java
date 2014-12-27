@@ -17,7 +17,7 @@ public abstract class FodotElementContainer<E extends IFodotElement> implements 
 	/**********************************************
 	 *  Elements methods
 	 ***********************************************/
-	private void setElements(Collection<? extends E> argElements) {
+	protected void setElements(Collection<? extends E> argElements) {
 		this.elements = (isValidElements(argElements) ? new LinkedHashSet<E>(argElements)
 				: new LinkedHashSet<E>());
 	}

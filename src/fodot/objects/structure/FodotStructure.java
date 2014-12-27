@@ -1,15 +1,12 @@
 package fodot.objects.structure;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
-import fodot.objects.file.FodotFileElement;
+import fodot.objects.file.FodotFileElementWithNamedElements;
 import fodot.objects.file.IFodotFileElement;
 import fodot.objects.vocabulary.FodotVocabulary;
 
-public class FodotStructure extends FodotFileElement<IFodotStructureElement> implements IFodotFileElement {
+public class FodotStructure extends FodotFileElementWithNamedElements<IFodotStructureElement> implements IFodotFileElement {
 
 	private FodotVocabulary vocabulary;
 	private static final String DEFAULT_NAME = "S";
@@ -26,25 +23,13 @@ public class FodotStructure extends FodotFileElement<IFodotStructureElement> imp
 	
 	/* NAMES */
 	@Override
-	public String getDefaultName() {
-		return DEFAULT_NAME;
-	}
-	
-	@Override
 	public String getFileElementName() {
 		return "structure";
 	}
 	
-	/* ELEMENTS */
-	public IFodotStructureElement getElementWithName(String name) {
-		if (name == null)
-			return null;
-		for (IFodotStructureElement el : getElements()) {
-			if (name.equals(el.getName())) {
-				return el;
-			}
-		}
-		return null;
+	@Override
+	public String getDefaultName() {
+		return DEFAULT_NAME;
 	}
 	
 	/* VOCABULARY */
@@ -63,13 +48,6 @@ public class FodotStructure extends FodotFileElement<IFodotStructureElement> imp
 	public void merge(FodotStructure other) {
 		addAllElements(other.getElements());
 	}
-
-
-	@Override
-	public Set<IFodotFileElement> getPrerequiredElements() {
-		return new HashSet<IFodotFileElement>(Arrays.asList(getVocabulary()));
-	}
-
 
 	@Override
 	public void mergeWith(IFodotFileElement other) {

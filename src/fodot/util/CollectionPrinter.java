@@ -8,6 +8,9 @@ import fodot.objects.general.IFodotElement;
 
 public class CollectionPrinter {
 	public static List<String> toCode(Collection<? extends IFodotElement> list) {
+		if (list == null) {
+			throw new IllegalArgumentException("Not a valid list to convert to code: " + list);
+		}
 		List<String> toCodify = new ArrayList<String>();
 		for (IFodotElement element : list) {
 			toCodify.add(element.toCode());

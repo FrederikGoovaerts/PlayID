@@ -12,7 +12,6 @@ import fodot.objects.general.IFodotElement;
 import fodot.util.CollectionPrinter;
 
 public abstract class FodotFileElement<E extends IFodotElement> extends FodotElementContainer<E> implements IFodotFileElement {
-	private Set<E> elements;
 	private String name;
 	private Set<IFodotFileElement> prerequired;
 
@@ -47,6 +46,11 @@ public abstract class FodotFileElement<E extends IFodotElement> extends FodotEle
 	}
 	
 	//Name
+	/**
+	 * For example: vocabulary, theory, structure etc
+	 */
+	public abstract String getFileElementName();
+		
 
 	public String getName() {
 		return name;
@@ -57,11 +61,6 @@ public abstract class FodotFileElement<E extends IFodotElement> extends FodotEle
 	}
 	
 	public abstract String getDefaultName();
-
-	/**
-	 * For example: vocabulary, theory, structure etc
-	 */
-	public abstract String getFileElementName();
 	
 	@Override
 	public String toCode() {
@@ -79,7 +78,7 @@ public abstract class FodotFileElement<E extends IFodotElement> extends FodotEle
 		
 		//Print elements
 		builder.append(" {\n");
-		builder.append(CollectionPrinter.toNewLinesWithTabsAsCode(elements,1));
+		builder.append(CollectionPrinter.toNewLinesWithTabsAsCode(getElements(),1));
 		builder.append("}");
 		return builder.toString();
 	}
