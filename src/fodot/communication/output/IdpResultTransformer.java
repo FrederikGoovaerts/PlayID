@@ -196,8 +196,10 @@ public class IdpResultTransformer {
 		throw new IllegalArgumentException("Not a recognized class: " + el.getClass());
 	}
 
+	private static String DOMAIN_REGEX = "^[{][a-zA-Z0-9_();,.\\->\\s]*[}]$";
+	
 	private boolean containsDomain(String line) {
-		return line.contains("{") && line.contains("}");
+		return line.trim().matches(DOMAIN_REGEX);
 	}
 
 	/**
@@ -214,6 +216,7 @@ public class IdpResultTransformer {
 		return domain;
 	}
 
+	
 	private List<String> extractSinglevaluedDomain(String line) {
 		if (line.contains(MULTIVALUE_DIVIDER)) {
 			throw new IllegalArgumentException("Tried parsing a multiargumented line with the constantdomain parser");

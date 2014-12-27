@@ -8,7 +8,6 @@ import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.IFodotEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
-import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotType;
 
 public class GdlAnswerer {
@@ -71,7 +70,7 @@ public class GdlAnswerer {
 			return new ArrayList<GdlAction>();
 		}
 		FodotStructure struc = model.getStructure();
-		FodotVocabulary voc = model.getVocabulary();
+//		FodotVocabulary voc = model.getVocabulary();
 		FodotPredicateEnumeration actionEnum = (FodotPredicateEnumeration) struc.getElementWithName(ACTION_PREDICATE_NAME);
 		
 		List<GdlAction> actions = new ArrayList<GdlAction>();
