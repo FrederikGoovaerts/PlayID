@@ -16,8 +16,10 @@ import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnum
 import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typenum.FodotNumericalTypeRangeEnumeration;
 import fodot.objects.structure.elements.typenum.FodotTypeEnumeration;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
+import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
@@ -162,19 +164,20 @@ public class IdpResultTransformer {
 		}
 		String name = splitted[0].trim();
 		String domain = splitted[1].trim();
+		String extractedDomain = extractDomain(domain);
 
 		IFodotStructureElement elementToAdd = null;
 		IFodotVocabularyElement elementVocElement = getCurrentVocabulary().getElementWithName(name);
 		switch (getDomainType(name)) {
 		case FUNCTION:
 			FodotFunctionDeclaration funcDeclaration = (FodotFunctionDeclaration) elementVocElement;
-			if (containsDomain(domain)) {
-				elementToAdd = new FodotFunctionEnumeration(funcDeclaration, 
-						extractFunctionEnumerationElements(funcDeclaration, domain));
-			} else {
+			if (!containsDomain(domain)) {
 				elementToAdd = new FodotConstantFunctionEnumeration(
 						funcDeclaration,
 						EnumerationUtil.toTypeEnumerationElement(domain.trim(), funcDeclaration.getReturnType()));
+			} else {
+				elementToAdd = new FodotFunctionEnumeration(funcDeclaration, 
+						extractFunctionEnumerationElements(funcDeclaration, extractedDomain));
 			}
 			break;
 		case PREDICATE:
@@ -184,8 +187,17 @@ public class IdpResultTransformer {
 			break;
 		case TYPE:
 			FodotTypeDeclaration typeDeclaration = (FodotTypeDeclaration) elementVocElement;
-			elementToAdd = new FodotTypeEnumeration(typeDeclaration,
-					extractSinglevaluedDomain(typeDeclaration, domain));
+			if (containsRange(extractedDomain)) {
+				
+				elementToAdd = new FodotNumericalTypeRangeEnumeration(
+						typeDeclaration,
+						new FodotConstant(extractedDomain.split("..")[0], typeDeclaration.getType()),
+						new FodotConstant(extractedDomain.split("..")[1], typeDeclaration.getType())
+						);
+			} else {
+				elementToAdd = new FodotTypeEnumeration(typeDeclaration,
+						extractSinglevaluedDomain(typeDeclaration, domain));
+			}
 			break;
 		default:
 			throw new IllegalStateException("Not yet implemented :c");
@@ -194,6 +206,13 @@ public class IdpResultTransformer {
 			model.getStructure().addElement(elementToAdd);
 	}
 
+	//Range stuff
+	private static String RANGE_REGEX = "^[{][0-9]*..[0-9]*[}]$";
+
+	private boolean containsRange(String line) {
+		return line.trim().matches(RANGE_REGEX);
+	}
+	
 	//Domain stuff
 
 	private static final String OPENING_BRACKET = "{";
@@ -234,11 +253,10 @@ public class IdpResultTransformer {
 		int firstBracket = line.indexOf(OPENING_BRACKET)+1;
 		int lastBracket = line.lastIndexOf(CLOSING_BRACKET);
 		if (!containsDomain(line) || firstBracket < 0 || lastBracket < firstBracket) {
-			return line;
-			//			throw new IllegalArgumentException(line + " does not contain curly braces: no domain can be extracted");
+			return line.trim();
 		}
 		String domain = line.substring(firstBracket, lastBracket);
-		return domain;
+		return domain.trim();
 	}
 
 
@@ -267,9 +285,9 @@ public class IdpResultTransformer {
 		for (String element : domainElements) {
 			result.add(
 					new FodotPredicateEnumerationElement(
-					EnumerationUtil.toTypeEnumerationElement(
-							trimElements(splitOn(element, SINGLEVALUE_DIVIDER)),
-							decl.getArgumentTypes())));
+							EnumerationUtil.toTypeEnumerationElement(
+									trimElements(splitOn(element, SINGLEVALUE_DIVIDER)),
+									decl.getArgumentTypes())));
 		}
 		return result;
 	}
@@ -284,20 +302,20 @@ public class IdpResultTransformer {
 				String[] splitted = element.split(RESULT_DIVIDER);
 				String elementsToProcess = splitted[0];
 				String resultString = splitted[1].trim();
-				
+
 				List<IFodotTypeEnumerationElement> functionValues =
 						EnumerationUtil.toTypeEnumerationElement(
 								trimElements(splitOn(elementsToProcess, SINGLEVALUE_DIVIDER)),
 								decl.getArgumentTypes()); 
 				IFodotTypeEnumerationElement functionReturn =
 						EnumerationUtil.toTypeEnumerationElement(resultString, decl.getReturnType());
-				
+
 				result.add(new FodotFunctionEnumerationElement(functionValues, functionReturn));
 			}
-//			else {
-//				result.add(new FodotConstantFunctionEnumeration(decl, new FodotConstant(element, decl.getReturnType())));
-//
-//			}
+			//			else {
+			//				result.add(new FodotConstantFunctionEnumeration(decl, new FodotConstant(element, decl.getReturnType())));
+			//
+			//			}
 		}
 		return result;
 	}

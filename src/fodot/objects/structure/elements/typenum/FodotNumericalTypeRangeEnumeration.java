@@ -1,8 +1,9 @@
-package fodot.objects.structure.elements.functionenum;
+package fodot.objects.structure.elements.typenum;
 
 import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionPrinter;
 
@@ -20,6 +21,10 @@ public class FodotNumericalTypeRangeEnumeration implements IFodotStructureElemen
 		this.lastValue = last;
 	}
 
+	public FodotNumericalTypeRangeEnumeration(FodotTypeDeclaration typeDecl,
+			  FodotConstant head, FodotConstant last) {
+		this(typeDecl==null ? null : typeDecl.getType(), head, last);
+	}
 	public FodotType getType() {
 		return type;
 	}
