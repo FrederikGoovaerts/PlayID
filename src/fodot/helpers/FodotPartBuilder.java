@@ -18,13 +18,19 @@ import fodot.objects.includes.elements.FodotIncludeStatement;
 import fodot.objects.procedure.FodotProcedureStatement;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.structure.elements.FodotConstantFunctionEnumeration;
-import fodot.objects.structure.elements.FodotFunctionEnumeration;
-import fodot.objects.structure.elements.FodotNumericalTypeRangeEnumeration;
-import fodot.objects.structure.elements.FodotPredicateEnumeration;
-import fodot.objects.structure.elements.FodotTypeEnumeration;
 import fodot.objects.structure.elements.IFodotEnumerationElement;
 import fodot.objects.structure.elements.IFodotStructureElement;
+import fodot.objects.structure.elements.functionenum.FodotConstantFunctionEnumeration;
+import fodot.objects.structure.elements.functionenum.FodotFunctionEnumeration;
+import fodot.objects.structure.elements.functionenum.FodotNumericalTypeRangeEnumeration;
+import fodot.objects.structure.elements.functionenum.elements.FodotFunctionEnumerationElement;
+import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
+import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
+import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typenum.FodotTypeEnumeration;
+import fodot.objects.structure.elements.typenum.elements.FodotPredicateTermTypeEnumerationElement;
+import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.elements.FodotSentence;
 import fodot.objects.theory.elements.IFodotTheoryElement;
@@ -356,43 +362,57 @@ public class FodotPartBuilder {
 	}
 
 	//ENUMERATIONS
-
-	public static FodotFunctionEnumeration createFunctionEnumeration(
-			FodotFunctionDeclaration declaration, Map<IFodotEnumerationElement[], IFodotEnumerationElement> values) {
-		//TODO
-		return new FodotFunctionEnumeration(declaration, values);
+	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionDeclaration declaration, 
+			Collection<? extends IFodotFunctionEnumerationElement> elements) {
+		return new FodotFunctionEnumeration(declaration, elements);
 	}
 	
 	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionDeclaration declaration) {
-		return new FodotFunctionEnumeration(declaration);
+		return createFunctionEnumeration(declaration, new HashSet<FodotFunctionEnumerationElement>()); //TODO: zet null hier
+	}
+	
+	public static FodotFunctionEnumerationElement createFunctionEnumerationElement(
+			Collection<? extends IFodotTypeEnumerationElement> elements, IFodotTypeEnumerationElement returnValue) {
+		return new FodotFunctionEnumerationElement(elements, returnValue);
+	}
+	
+	
+	@Deprecated
+	public static FodotFunctionEnumeration createFunctionEnumeration(
+			FodotFunctionDeclaration declaration, Map<IFodotEnumerationElement[], IFodotEnumerationElement> values) {
+		return new FodotFunctionEnumeration(declaration, values);
 	}
 
 	public static FodotConstantFunctionEnumeration createConstantFunctionEnumeration(
-			FodotFunctionDeclaration declaration, IFodotEnumerationElement value) {
+			FodotFunctionDeclaration declaration, IFodotTypeEnumerationElement value) {
 		return new FodotConstantFunctionEnumeration(declaration,value);
 	}
-	
+
 	public static FodotPredicateEnumeration createPredicateEnumeration(
-			FodotPredicateDeclaration declaration, List<IFodotEnumerationElement[]> values) {
-		return new FodotPredicateEnumeration(declaration, values);
+			FodotPredicateDeclaration declaration, List<IFodotPredicateEnumerationElement> elements) {
+		return new FodotPredicateEnumeration(declaration, elements);
 	}
-//	
-//	public static FodotPredicateEnumeration createPredicateEnumeration(
-//			FodotPredicateDeclaration declaration, List<FodotConstant[]> values) {
-//		//TODO
-//		return createPredicateEnumeration(declaration, values);
-//	}
-
+	
 	public static FodotPredicateEnumeration createPredicateEnumeration(FodotPredicateDeclaration declaration) {
-		return new FodotPredicateEnumeration(declaration);
+		return createPredicateEnumeration(declaration, null);
+	}
+	
+	public static FodotPredicateEnumerationElement createPredicateEnumerationElement(
+			FodotPredicateDeclaration declaration, List<? extends IFodotTypeEnumerationElement> elements) {
+		return new FodotPredicateEnumerationElement(elements);
 	}
 
-	public static FodotTypeEnumeration createTypeEnumeration(FodotType type, List<FodotConstant> values) {
+	public static FodotTypeEnumeration createTypeEnumeration(FodotType type, Collection<? extends IFodotTypeEnumerationElement> values) {
 		return new FodotTypeEnumeration(type, values);
 	}
 
-	public static FodotTypeEnumeration createTypeEnumeration(FodotTypeDeclaration type, List<? extends IFodotEnumerationElement> values) {
+	public static FodotTypeEnumeration createTypeEnumeration(FodotTypeDeclaration type, Collection<? extends IFodotTypeEnumerationElement> values) {
 		return new FodotTypeEnumeration(type.getType(), values);
+	}
+	
+	public static FodotPredicateTermTypeEnumerationElement createPredicateTermTypeEnumerationElement(FodotPredicateTermDeclaration declaration,
+			List<? extends IFodotTypeEnumerationElement> elements) {
+		return new FodotPredicateTermTypeEnumerationElement(declaration,elements);
 	}
 
 	public static FodotNumericalTypeRangeEnumeration createNumericalTypeRangeEnumeration(

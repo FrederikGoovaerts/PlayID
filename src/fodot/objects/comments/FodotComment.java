@@ -81,4 +81,9 @@ public class FodotComment implements IFodotElement, IFodotTheoryElement, IFodotS
 		return null;
 	}
 
+	@Override
+	public IFodotVocabularyElement getDeclaration() {
+		return null;
+	}
+
 }

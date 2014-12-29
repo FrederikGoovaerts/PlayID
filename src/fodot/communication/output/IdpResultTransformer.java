@@ -2,17 +2,29 @@ package fodot.communication.output;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import fodot.objects.file.IFodotFile;
 import fodot.objects.file.IFodotFileElement;
+import fodot.objects.structure.elements.IFodotStructureElement;
+import fodot.objects.structure.elements.functionenum.FodotConstantFunctionEnumeration;
+import fodot.objects.structure.elements.functionenum.FodotFunctionEnumeration;
+import fodot.objects.structure.elements.functionenum.elements.FodotFunctionEnumerationElement;
+import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
+import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
+import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typenum.FodotTypeEnumeration;
+import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
+import fodot.util.EnumerationUtil;
+import fodot.util.FormulaUtil;
 
 /**
  * This class will read the results of IDP and puts it in useful maps
@@ -108,7 +120,7 @@ public class IdpResultTransformer {
 	private boolean isThrowAwayLine(String line) {
 		if (line == null)
 			return true;
-		
+
 		line = line.trim();
 		return line.equals("")
 				|| line.startsWith("Warning:")
@@ -150,24 +162,37 @@ public class IdpResultTransformer {
 		}
 		String name = splitted[0].trim();
 		String domain = splitted[1].trim();
+
+		IFodotStructureElement elementToAdd = null;
+		IFodotVocabularyElement elementVocElement = getCurrentVocabulary().getElementWithName(name);
 		switch (getDomainType(name)) {
 		case FUNCTION:
+			FodotFunctionDeclaration funcDeclaration = (FodotFunctionDeclaration) elementVocElement;
 			if (containsDomain(domain)) {
-				model.addFunctionResult(name, extractMultivaluedResultDomain(domain));
+				elementToAdd = new FodotFunctionEnumeration(funcDeclaration, 
+						extractFunctionEnumerationElements(funcDeclaration, domain));
 			} else {
-				model.addConstantFunctionResult(name, domain.trim());
+				elementToAdd = new FodotConstantFunctionEnumeration(
+						funcDeclaration,
+						EnumerationUtil.toTypeEnumerationElement(domain.trim(), funcDeclaration.getReturnType()));
 			}
 			break;
 		case PREDICATE:
-			model.addPredicateResult(name, extractMultivaluedDomain(domain));
+			FodotPredicateDeclaration predDeclaration = (FodotPredicateDeclaration) elementVocElement;
+			elementToAdd = new FodotPredicateEnumeration( predDeclaration,
+					extractPredicateEnumerationElements(predDeclaration, domain));
 			break;
-		case CONSTANT:
-			model.addTypeResult(name, extractSinglevaluedDomain(domain));
+		case TYPE:
+			FodotTypeDeclaration typeDeclaration = (FodotTypeDeclaration) elementVocElement;
+			elementToAdd = new FodotTypeEnumeration(typeDeclaration,
+					extractSinglevaluedDomain(typeDeclaration, domain));
 			break;
+		default:
+			throw new IllegalStateException("Not yet implemented :c");
 		}
+		if (elementToAdd != null)
+			model.getStructure().addElement(elementToAdd);
 	}
-
-
 
 	//Domain stuff
 
@@ -177,7 +202,7 @@ public class IdpResultTransformer {
 	private static final String SINGLEVALUE_DIVIDER = ",";
 	private static final String RESULT_DIVIDER = "->";
 
-	private enum DomainType {FUNCTION, PREDICATE, CONSTANT};
+	private enum DomainType {FUNCTION, PREDICATE, TYPE};
 
 	private DomainType getDomainType(String name) {
 		//TODO: link with the IDP_transformator to know what type
@@ -190,14 +215,14 @@ public class IdpResultTransformer {
 			return DomainType.PREDICATE;
 		}
 		if (el.getClass().equals(FodotTypeDeclaration.class)) {
-			return DomainType.CONSTANT;
+			return DomainType.TYPE;
 		}
 
 		throw new IllegalArgumentException("Not a recognized class: " + el.getClass());
 	}
 
 	private static String DOMAIN_REGEX = "^[{][a-zA-Z0-9_();,.\\->\\s]*[}]$";
-	
+
 	private boolean containsDomain(String line) {
 		return line.trim().matches(DOMAIN_REGEX);
 	}
@@ -216,46 +241,63 @@ public class IdpResultTransformer {
 		return domain;
 	}
 
-	
-	private List<String> extractSinglevaluedDomain(String line) {
+
+	private List<IFodotTypeEnumerationElement> extractSinglevaluedDomain(FodotTypeDeclaration decl, String line) {
 		if (line.contains(MULTIVALUE_DIVIDER)) {
 			throw new IllegalArgumentException("Tried parsing a multiargumented line with the constantdomain parser");
 		}
 		String domainString = extractDomain(line);
 
 		//Fill domain elements
-		List<String> domainElements = trimElements(splitOn(domainString, SINGLEVALUE_DIVIDER));	
+		List<String> elementsToConvert = trimElements(splitOn(domainString, SINGLEVALUE_DIVIDER));
+		List<IFodotTypeEnumerationElement> domainElements = 
+				EnumerationUtil.toTypeEnumerationElement(
+						elementsToConvert, FormulaUtil.createTypeList(decl.getType(), elementsToConvert.size()));	
 
 		return domainElements;
 	}
 
-	private List<List<String>> extractMultivaluedDomain(String line) {
+	private Set<IFodotPredicateEnumerationElement> extractPredicateEnumerationElements(FodotPredicateDeclaration decl, String line) {
 		if (line.contains(RESULT_DIVIDER)) {
 			throw new IllegalStateException(line + " is a function domain, don't parse it with a predicate domain extractor");
 		}
 		String domainString = extractDomain(line);
 		List<String> domainElements = trimElements(splitOn(domainString, MULTIVALUE_DIVIDER));
-		List<List<String>> result = new ArrayList<List<String>>();
+		Set<IFodotPredicateEnumerationElement> result = new LinkedHashSet<IFodotPredicateEnumerationElement>();
 		for (String element : domainElements) {
-			result.add(trimElements(splitOn(element, SINGLEVALUE_DIVIDER)));
+			result.add(
+					new FodotPredicateEnumerationElement(
+					EnumerationUtil.toTypeEnumerationElement(
+							trimElements(splitOn(element, SINGLEVALUE_DIVIDER)),
+							decl.getArgumentTypes())));
 		}
 		return result;
 	}
 
-	private Map<List<String>,String> extractMultivaluedResultDomain(String line) {
+	private Set<IFodotFunctionEnumerationElement> extractFunctionEnumerationElements(FodotFunctionDeclaration decl, String line) {
 		String domainString = extractDomain(line);
 		List<String> domainElements = trimElements(splitOn(domainString, MULTIVALUE_DIVIDER));
-		Map<List<String>,String> result = new HashMap<List<String>, String>();
+		Set<IFodotFunctionEnumerationElement> result = new LinkedHashSet<IFodotFunctionEnumerationElement>();
+		//		Map<List<String>,String> result = new HashMap<List<String>, String>();
 		for (String element : domainElements) {
 			if (element.contains(RESULT_DIVIDER)) {
 				String[] splitted = element.split(RESULT_DIVIDER);
 				String elementsToProcess = splitted[0];
 				String resultString = splitted[1].trim();
-				result.put(trimElements(splitOn(elementsToProcess, SINGLEVALUE_DIVIDER)), resultString);
-			} else {
-				result.put(Arrays.asList(""), element);
-
+				
+				List<IFodotTypeEnumerationElement> functionValues =
+						EnumerationUtil.toTypeEnumerationElement(
+								trimElements(splitOn(elementsToProcess, SINGLEVALUE_DIVIDER)),
+								decl.getArgumentTypes()); 
+				IFodotTypeEnumerationElement functionReturn =
+						EnumerationUtil.toTypeEnumerationElement(resultString, decl.getReturnType());
+				
+				result.add(new FodotFunctionEnumerationElement(functionValues, functionReturn));
 			}
+//			else {
+//				result.add(new FodotConstantFunctionEnumeration(decl, new FodotConstant(element, decl.getReturnType())));
+//
+//			}
 		}
 		return result;
 	}

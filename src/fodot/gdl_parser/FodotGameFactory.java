@@ -13,6 +13,7 @@ import static fodot.helpers.FodotPartBuilder.createExistsExactly;
 import static fodot.helpers.FodotPartBuilder.createForAll;
 import static fodot.helpers.FodotPartBuilder.createFunction;
 import static fodot.helpers.FodotPartBuilder.createFunctionEnumeration;
+import static fodot.helpers.FodotPartBuilder.createFunctionEnumerationElement;
 import static fodot.helpers.FodotPartBuilder.createImplies;
 import static fodot.helpers.FodotPartBuilder.createIncludeHolder;
 import static fodot.helpers.FodotPartBuilder.createIncludeLTC;
@@ -39,7 +40,6 @@ import static fodot.helpers.FodotPartBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +53,9 @@ import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedureStatement;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.structure.elements.IFodotEnumerationElement;
+import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
+import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
@@ -373,9 +375,10 @@ public class FodotGameFactory {
          * resultaat:
          * Score={*naam*()->100}
          */
-        Map<IFodotEnumerationElement[],IFodotEnumerationElement> desiredResult = new HashMap<>();
-        IFodotEnumerationElement[] ownRole = {source.getOwnRole()};
-        desiredResult.put(ownRole,createConstant("100", getNaturalNumberType()));
+       	List<IFodotFunctionEnumerationElement> desiredResult = new ArrayList<IFodotFunctionEnumerationElement>();
+       	List<? extends IFodotTypeEnumerationElement> ownRole = Arrays.asList(source.getOwnRole());
+        desiredResult.add(
+        		createFunctionEnumerationElement(ownRole,createConstant("100", getNaturalNumberType())) );
         toReturn.addElement(
                 createFunctionEnumeration(
                         this.scoreFunctionDeclaration, desiredResult
@@ -388,7 +391,7 @@ public class FodotGameFactory {
          * I_*predicaat* = {*waarden()*}
          * OPGEPAST: in de structure moet achter elke constante een ()
          */
-        Map<FodotPredicateDeclaration, Set<IFodotEnumerationElement[]>> initMap
+        Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> initMap
                 = this.source.getInitialValues();
         for (FodotPredicateDeclaration declaration : initMap.keySet()) {
             toReturn.addElement(
@@ -402,7 +405,7 @@ public class FodotGameFactory {
          * resultaat:
          * *predicaat*={*waarden()*}
          */
-        Map<FodotPredicateDeclaration, Set<IFodotEnumerationElement[]>> staticMap
+        Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> staticMap
                 = this.source.getStaticValues();
         for (FodotPredicateDeclaration declaration : staticMap.keySet()) {
             toReturn.addElement(

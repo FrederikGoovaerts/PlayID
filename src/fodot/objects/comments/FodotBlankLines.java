@@ -35,4 +35,9 @@ public class FodotBlankLines implements IFodotElement, IFodotTheoryElement, IFod
 		}
 		return builder.toString();
 	}
+
+	@Override
+	public IFodotVocabularyElement getDeclaration() {
+		return null;
+	}
 }

@@ -1,12 +1,14 @@
-package fodot.objects.structure.elements;
+package fodot.objects.structure.elements.functionenum;
 
+import fodot.objects.structure.elements.IFodotStructureElement;
+import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 
-public class FodotConstantFunctionEnumeration extends FodotEnumeration {
+public class FodotConstantFunctionEnumeration implements IFodotStructureElement {
 	private FodotFunctionDeclaration declaration;
-	private IFodotEnumerationElement value;
+	private IFodotTypeEnumerationElement value;
 
-	public FodotConstantFunctionEnumeration(FodotFunctionDeclaration declaration, IFodotEnumerationElement value) {
+	public FodotConstantFunctionEnumeration(FodotFunctionDeclaration declaration, IFodotTypeEnumerationElement value) {
 		super();
 		this.declaration = declaration;
 		this.value = value;
@@ -18,17 +20,17 @@ public class FodotConstantFunctionEnumeration extends FodotEnumeration {
 
 	/* VALUE */
 	
-	public void setValue(IFodotEnumerationElement value) {
+	public void setValue(IFodotTypeEnumerationElement value) {
 		this.value = value;
 	}
 	
-	public IFodotEnumerationElement getValue() {
+	public IFodotTypeEnumerationElement getValue() {
 		return value;
 	}
 
 	@Override
 	public String toCode() {
-		return declaration.getName() + " = " + value.getValue();
+		return getName() + " = " + value.getValue();
 	}
 
 	@Override
@@ -67,6 +69,11 @@ public class FodotConstantFunctionEnumeration extends FodotEnumeration {
 	public String toString() {
 		return "FodotConstantFunctionEnumeration [function=" + declaration + ", value="
 				+ value + "]";
+	}
+
+	@Override
+	public String getName() {
+		return getDeclaration().getName();
 	}
 	
 	

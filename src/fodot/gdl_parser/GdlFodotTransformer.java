@@ -1,5 +1,15 @@
 package fodot.gdl_parser;
 
+import static fodot.helpers.FodotPartBuilder.createConstant;
+import static fodot.helpers.FodotPartBuilder.createExists;
+import static fodot.helpers.FodotPartBuilder.createImplies;
+import static fodot.helpers.FodotPartBuilder.createPredicate;
+import static fodot.helpers.FodotPartBuilder.createPredicateDeclaration;
+import static fodot.helpers.FodotPartBuilder.createPredicateTerm;
+import static fodot.helpers.FodotPartBuilder.createPredicateTermDeclaration;
+import static fodot.helpers.FodotPartBuilder.createVariable;
+import static fodot.helpers.FodotPartBuilder.getNaturalNumberType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,6 +31,9 @@ import fodot.gdl_parser.util.GdlCastHelper;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.Fodot;
 import fodot.objects.structure.elements.IFodotEnumerationElement;
+import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
 import fodot.objects.theory.elements.terms.FodotConstant;
@@ -30,7 +43,6 @@ import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
-import static fodot.helpers.FodotPartBuilder.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -206,20 +218,20 @@ public class GdlFodotTransformer implements GdlTransformer{
      */
 
     //Looks intriguing, but have no fear.
-    private Map<FodotPredicateDeclaration,Set<IFodotEnumerationElement[]>>
+    private Map<FodotPredicateDeclaration,Set<IFodotPredicateEnumerationElement>>
             initialValues;
 
-    private void addInitialValue(FodotPredicateDeclaration pred, FodotConstant[] arguments){
+    private void addInitialValue(FodotPredicateDeclaration pred, IFodotPredicateEnumerationElement arguments){
         if(initialValues.containsKey(pred)) {
             initialValues.get(pred).add(arguments);
         } else {
-            Set<IFodotEnumerationElement[]> newSet = new HashSet<>();
+            Set<IFodotPredicateEnumerationElement> newSet = new HashSet<>();
             newSet.add(arguments);
             initialValues.put(pred,newSet);
         }
     }
 
-    public Map<FodotPredicateDeclaration, Set<IFodotEnumerationElement[]>> getInitialValues() {
+    public Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> getInitialValues() {
         return new HashMap<>(initialValues);
     }
 
@@ -229,20 +241,20 @@ public class GdlFodotTransformer implements GdlTransformer{
      * Static values
      */
 
-    private Map<FodotPredicateDeclaration,Set<IFodotEnumerationElement[]>>
+    private Map<FodotPredicateDeclaration,Set<IFodotPredicateEnumerationElement>>
         staticValues;
 
-    private void addStaticValue(FodotPredicateDeclaration pred, FodotConstant[] arguments){
+    private void addStaticValue(FodotPredicateDeclaration pred, IFodotPredicateEnumerationElement arguments){
         if(staticValues.containsKey(pred)) {
             staticValues.get(pred).add(arguments);
         } else {
-            Set<IFodotEnumerationElement[]> newSet = new HashSet<>();
+            Set<IFodotPredicateEnumerationElement> newSet = new HashSet<>();
             newSet.add(arguments);
             staticValues.put(pred,newSet);
         }
     }
 
-    public Map<FodotPredicateDeclaration, Set<IFodotEnumerationElement[]>> getStaticValues() {
+    public Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> getStaticValues() {
         return new HashMap<>(staticValues);
     }
 
@@ -405,15 +417,15 @@ public class GdlFodotTransformer implements GdlTransformer{
         FodotPredicateDeclaration fodotPredicate = processPredicate(predicate);
         int predArity = predicate.arity();
 
-        FodotConstant[] initValues = new FodotConstant[predArity];
+        List<IFodotTypeEnumerationElement> initValues = new ArrayList<IFodotTypeEnumerationElement>();
 
         for (int i = 0; i < predArity; i++) {
             //PLS TRUST ME
             String constant = predicate.get(i).toSentence().getName().getValue();
-            initValues[i] = convertRawConstantName(constant);
+            initValues.add(convertRawConstantName(constant));
         }
 
-        this.addInitialValue(fodotPredicate, initValues);
+        this.addInitialValue(fodotPredicate, new FodotPredicateEnumerationElement(initValues));
     }
 
     @Override
@@ -444,19 +456,20 @@ public class GdlFodotTransformer implements GdlTransformer{
                 throw new IllegalStateException("Predicate differs in arity from before!");
         }
 
-        FodotConstant[] staticValues = new FodotConstant[predArity];
+        
+        List<IFodotTypeEnumerationElement> staticValues = new ArrayList<IFodotTypeEnumerationElement>();
 
         for (int i = 0; i < predArity; i++) {
             //PLS TRUST ME
             String constantName = relation.get(i).toSentence().getName().getValue();
             FodotConstant newConstant = convertRawConstantName(constantName);
-            staticValues[i] = newConstant;
+            staticValues.add(newConstant);
             if(!isConstantRegistered(newConstant)) {
                 this.addConstant(newConstant);
             }
         }
 
-        this.addStaticValue(pred, staticValues);
+        this.addStaticValue(pred, new FodotPredicateEnumerationElement(staticValues));
 
     }
 

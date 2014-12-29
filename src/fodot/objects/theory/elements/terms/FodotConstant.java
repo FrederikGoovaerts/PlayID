@@ -3,11 +3,11 @@ package fodot.objects.theory.elements.terms;
 import java.util.HashSet;
 import java.util.Set;
 
-import fodot.objects.structure.elements.IFodotEnumerationElement;
+import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
 
-public class FodotConstant implements IFodotTerm, IFodotDomainElement, IFodotEnumerationElement {
+public class FodotConstant implements IFodotTerm, IFodotDomainElement, IFodotTypeEnumerationElement {
 
 	private String value;
 	private FodotType type;

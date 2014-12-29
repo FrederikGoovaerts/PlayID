@@ -1,11 +1,12 @@
-package fodot.objects.structure.elements;
+package fodot.objects.structure.elements.functionenum;
 
+import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionPrinter;
 
-public class FodotNumericalTypeRangeEnumeration extends FodotEnumeration {
+public class FodotNumericalTypeRangeEnumeration implements IFodotStructureElement {
 	private FodotType type;
 	private FodotConstant headValue;
 	private FodotConstant lastValue;
@@ -88,6 +89,11 @@ public class FodotNumericalTypeRangeEnumeration extends FodotEnumeration {
 	@Override
 	public IFodotVocabularyElement getDeclaration() {
 		return getType().getDeclaration();
+	}
+
+	@Override
+	public String getName() {
+		return getDeclaration().getName();
 	}
 		
 }
