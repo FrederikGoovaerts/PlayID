@@ -18,7 +18,6 @@ import fodot.objects.includes.elements.FodotIncludeStatement;
 import fodot.objects.procedure.FodotProcedureStatement;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.structure.elements.IFodotEnumerationElement;
 import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.structure.elements.functionenum.FodotConstantFunctionEnumeration;
 import fodot.objects.structure.elements.functionenum.FodotFunctionEnumeration;
@@ -376,13 +375,6 @@ public class FodotPartBuilder {
 		return new FodotFunctionEnumerationElement(elements, returnValue);
 	}
 	
-	
-	@Deprecated
-	public static FodotFunctionEnumeration createFunctionEnumeration(
-			FodotFunctionDeclaration declaration, Map<IFodotEnumerationElement[], IFodotEnumerationElement> values) {
-		return new FodotFunctionEnumeration(declaration, values);
-	}
-
 	public static FodotConstantFunctionEnumeration createConstantFunctionEnumeration(
 			FodotFunctionDeclaration declaration, IFodotTypeEnumerationElement value) {
 		return new FodotConstantFunctionEnumeration(declaration,value);
