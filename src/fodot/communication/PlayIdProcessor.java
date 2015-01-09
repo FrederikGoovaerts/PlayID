@@ -8,7 +8,7 @@ import fodot.communication.input.IIdpCaller;
 import fodot.communication.input.IdpCaller;
 import fodot.communication.input.IdpFileWriter;
 import fodot.communication.output.GdlAction;
-import fodot.communication.output.GdlAnswerer;
+import fodot.communication.output.GdlAnswerCalculator;
 import fodot.communication.output.IdpResultTransformer;
 import fodot.gdl_parser.Parser;
 import fodot.objects.file.IFodotFile;
@@ -49,7 +49,7 @@ public class PlayIdProcessor {
 		}
 		
 		//Transform a solution 
-		GdlAnswerer answerer = new GdlAnswerer(models);
+		GdlAnswerCalculator answerer = new GdlAnswerCalculator(models);
 		List<GdlAction> actions = answerer.generateActionSequence();
 		
 		StringBuilder builder = new StringBuilder();

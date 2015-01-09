@@ -10,11 +10,11 @@ import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEn
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
 
-public class GdlAnswerer {
+public class GdlAnswerCalculator {
 
 	private List<FodotStructure> models;
 
-	public GdlAnswerer(Collection<? extends FodotStructure> models) {
+	public GdlAnswerCalculator(Collection<? extends FodotStructure> models) {
 		setModels(models);
 	}
 
