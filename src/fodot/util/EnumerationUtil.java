@@ -3,14 +3,17 @@ package fodot.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import fodot.objects.structure.elements.typenum.elements.FodotPredicateTermTypeEnumerationElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
+import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.IFodotDomainElement;
 
 public class EnumerationUtil {
 	
-	
-	private final static String PREDICATE_TERM_REGEX = "[a-zA-Z0-9_\\s]*[(][a-zA-Z0-9_()\\s]*[)][\\s]*";
+	private final static String VAR_NAME = "[a-zA-Z0-9_()\\s]*";
+	private final static String PREDICATE_TERM_REGEX = "^" + VAR_NAME + "[(]([\\s]*"+VAR_NAME+"[\\s]*[,])*[\\s]*"+VAR_NAME+"[\\s]*[)][\\s]*";
 	
 	public static List<IFodotTypeEnumerationElement> toTypeEnumerationElements(List<String> values, List<FodotType> types) {
 		if (values.size() != types.size()) {
@@ -30,10 +33,27 @@ public class EnumerationUtil {
 	
 	public static IFodotTypeEnumerationElement toTypeEnumerationElement(String value, FodotType type) {
 		if (value.matches(PREDICATE_TERM_REGEX)) {
-			throw new IllegalStateException("No predicate term converter yet :c");
+			
+			int firstBracketPosition = value.indexOf("(");
+			String termName = value.substring(0, firstBracketPosition).trim();
+			FodotPredicateTermDeclaration termDecl = getPredicateTermDeclaration(termName, type);
+			
+			String allElementsString = value.substring(firstBracketPosition+1, value.lastIndexOf(")")).trim();
+			List<IFodotTypeEnumerationElement> elements = toTypeEnumerationElements(ParserUtil.splitOnTrimmed(allElementsString, ","), termDecl.getArgumentTypes());
+			return new FodotPredicateTermTypeEnumerationElement(termDecl, elements);		
 		}
 		return new FodotConstant(value, type);
 	}
 	
-	
+	private static FodotPredicateTermDeclaration getPredicateTermDeclaration(String name, FodotType type) {
+		for (IFodotDomainElement el : type.getDomainElements()) {
+			if (el instanceof FodotPredicateTermDeclaration) {
+				FodotPredicateTermDeclaration casted = (FodotPredicateTermDeclaration) el;
+				if (casted.getName().equals(name)) {
+					return casted;
+				}
+			}
+		}
+		return null;
+	}
 }
