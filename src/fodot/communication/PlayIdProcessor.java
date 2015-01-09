@@ -9,10 +9,10 @@ import fodot.communication.input.IdpCaller;
 import fodot.communication.input.IdpFileWriter;
 import fodot.communication.output.GdlAction;
 import fodot.communication.output.GdlAnswerer;
-import fodot.communication.output.IdpModel;
 import fodot.communication.output.IdpResultTransformer;
 import fodot.gdl_parser.Parser;
 import fodot.objects.file.IFodotFile;
+import fodot.objects.structure.FodotStructure;
 
 public class PlayIdProcessor {
 	
@@ -39,7 +39,7 @@ public class PlayIdProcessor {
 
 		//Process results
 		IdpResultTransformer transformer = new IdpResultTransformer(parsedFodotFile, idpResult);
-		List<IdpModel> models = transformer.getModels();
+		List<FodotStructure> models = transformer.getModels();
 		
 		//Do something if we didn't find any models
 		if (transformer.hasErrorOccured()) {
