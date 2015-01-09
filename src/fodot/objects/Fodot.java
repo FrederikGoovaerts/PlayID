@@ -2,7 +2,7 @@ package fodot.objects;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import fodot.objects.file.IFodotFile;
 import fodot.objects.file.IFodotFileElement;
@@ -18,7 +18,7 @@ public class Fodot implements IFodotFile {
 	private FodotTheory theory;
 	private FodotStructure structure;
 	private FodotProcedures procedures;
-	
+
 	public Fodot(FodotVocabulary vocabulary, FodotTheory theory,
 			FodotStructure structure, FodotProcedures procedures, FodotIncludeHolder includes) {
 		super();
@@ -28,12 +28,12 @@ public class Fodot implements IFodotFile {
 		setProcedures(procedures);
 		setIncludes(includes);
 	}
-	
+
 	public Fodot(FodotVocabulary vocabulary, FodotTheory theory,
 			FodotStructure structure, FodotProcedures procedures) {
 		this(vocabulary, theory, structure, procedures, new FodotIncludeHolder());
 	}
-	
+
 	public FodotVocabulary getVocabulary() {
 		return vocabulary;
 	}
@@ -46,7 +46,7 @@ public class Fodot implements IFodotFile {
 	public FodotProcedures getProcedures() {
 		return procedures;
 	}
-	
+
 	public FodotIncludeHolder getIncludes() {
 		return includes;
 	}
@@ -80,7 +80,7 @@ public class Fodot implements IFodotFile {
 				+ getStructure().toCode() + "\n"
 				+ getProcedures().toCode() + "\n";
 	}	
-	
+
 	public void merge(Fodot other) {
 		getIncludes().mergeWith(other.getIncludes());
 		getVocabulary().mergeWith(other.getVocabulary());
@@ -90,7 +90,7 @@ public class Fodot implements IFodotFile {
 	}
 
 	@Override
-	public List<? extends IFodotFileElement> getElementOf(Class<?> claz) {
+	public Collection<? extends IFodotFileElement> getElementsOf(Class<?> claz) {
 		if (FodotVocabulary.class.equals(claz)) {
 			return Arrays.asList(getVocabulary());
 		}
@@ -105,7 +105,26 @@ public class Fodot implements IFodotFile {
 		}
 		return new ArrayList<IFodotFileElement>();
 	}
-	
-	
-	
+
+	@Override
+	public IFodotFileElement getElementWithName(String name) {
+		if (name == null) {
+			return null;
+		}
+		if (name.equals(getVocabulary().getName())) {
+			return getVocabulary();
+		}
+		if (name.equals(getStructure().getName())) {
+			return getStructure();
+		}
+		if (name.equals(getProcedures().getName())) {
+			return getProcedures();
+		}
+		if (name.equals(getTheory().getName())) {
+			return getTheory();
+		}
+		
+		return null;
+		
+	}
 }
