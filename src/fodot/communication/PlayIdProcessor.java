@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import fodot.communication.gdloutput.GdlActionPrinter;
+import fodot.communication.gdloutput.IActionOutputter;
 import fodot.communication.input.IIdpCaller;
 import fodot.communication.input.IdpCaller;
 import fodot.communication.input.IdpFileWriter;
@@ -16,7 +18,7 @@ import fodot.objects.structure.FodotStructure;
 
 public class PlayIdProcessor {
 	
-	public String process(File gdlFile) {
+	public void process(File gdlFile) {
 		
 		//Convert GDL to IDP
 		Parser parser = new Parser(gdlFile);
@@ -52,15 +54,13 @@ public class PlayIdProcessor {
 		GdlAnswerCalculator answerer = new GdlAnswerCalculator(models);
 		List<GdlAction> actions = answerer.generateActionSequence();
 		
-		StringBuilder builder = new StringBuilder();
-		for(GdlAction ac : actions) {
-			builder.append(ac.toString() + "\n");
-		}
-		return builder.toString();
+		//Output it
+		IActionOutputter outputter = new GdlActionPrinter(actions);
+		outputter.output();
 	}
 	
 	public static void main(String[] args) {
-		System.out.println((new PlayIdProcessor()).process( new File("resources/games/maze.kif")));
+		new PlayIdProcessor().process( new File("resources/games/maze.kif"));
 	}
 	
 	
