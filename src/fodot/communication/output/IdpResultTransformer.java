@@ -18,7 +18,6 @@ import fodot.util.ParserUtil;
 public class IdpResultTransformer {
 	private String textualResult;
 	private IFodotFile inputFodot;
-	FodotStructure currentModel;
 	private List<FodotStructure> models = new ArrayList<FodotStructure>();
 	private boolean errorOccured;
 
@@ -65,11 +64,12 @@ public class IdpResultTransformer {
 	/**********************************************/
 
 
-	//Processor of the answer
+	/**********************************************
+	 *  Processing of the given text
+	 ***********************************************/
 	public void processResult() {
 		List<String> linesToProcess = ParserUtil.trimElements(Arrays.asList(getTextualResult().split("\n")));
 
-		//Process do
 		Iterator<String> it = linesToProcess.iterator();
 		while(it.hasNext()) {
 			
@@ -78,7 +78,7 @@ public class IdpResultTransformer {
 			if (isError(line)) {
 				setErrorOccured(true);
 				break;
-			} if (isThrowAwayLine(line)){
+			} else if (isThrowAwayLine(line)){
 				//No-op
 			} else if (declaresNewStructure(line)) {
 				
@@ -91,7 +91,6 @@ public class IdpResultTransformer {
 				structureToParse.add(line);
 				
 				addModel(FodotStructureParser.parse(getInputFodot(), structureToParse));
-				
 			} else {
 				throw new IllegalArgumentException("Can't process " + line);
 			}
@@ -99,7 +98,11 @@ public class IdpResultTransformer {
 
 
 	}
+	/**********************************************/
 
+	/**********************************************
+	 *  Line recognizers
+	 ***********************************************/
 	private boolean isError(String line) {
 		return line.startsWith("Error: ");
 	}
@@ -123,9 +126,11 @@ public class IdpResultTransformer {
 				|| line.startsWith("Number of models")
 				|| line.startsWith("Model");
 	}
+	/**********************************************/
  
-	//CLASS VARIABLES
-
+	/**********************************************
+	 *  Error checkers
+	 ***********************************************/
 	public boolean hasErrorOccured() {
 		return errorOccured;
 	}
@@ -133,4 +138,5 @@ public class IdpResultTransformer {
 	private void setErrorOccured(boolean errorOccured) {
 		this.errorOccured = errorOccured;
 	}
+	/**********************************************/
 }

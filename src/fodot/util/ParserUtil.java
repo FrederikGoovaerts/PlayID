@@ -1,11 +1,9 @@
 package fodot.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ParserUtil {
-
 
 	public static List<String> trimElements(List<String> list) {
 		for (int i = 0; i < list.size(); i++) {
@@ -14,20 +12,28 @@ public class ParserUtil {
 		return list;
 	}
 
+	/**********************************************
+	 *  Splitters
+	 ***********************************************/
 
 	public static List<String> splitOn(String toSplit, String splitter) {
-		List<String> result;
-		if (toSplit.contains(splitter)) {
-			result = Arrays.asList(toSplit.split(splitter));
-		} else {
-			result = Arrays.asList(toSplit);
+		List<String> result = new ArrayList<String>();
+
+		//don't use String's .split, it uses regexes!
+
+		String processedToSplit = toSplit;
+		while (processedToSplit.contains(splitter)) {
+			int firstOccurance = processedToSplit.indexOf(splitter);
+			result.add(processedToSplit.substring(0,firstOccurance));
+			processedToSplit = processedToSplit.substring(firstOccurance+splitter.length());
 		}
+		result.add(processedToSplit);
 
 		result = concatElementsWithBrackets(result);
 
 		return result;
 	}
-	
+
 	public static List<String> splitOn(List<String> toSplit, String splitter) {
 		ArrayList<String> result = new ArrayList<String>();
 		for (String s : toSplit) {
@@ -35,6 +41,17 @@ public class ParserUtil {
 		}
 		return result;
 	}
+
+	public static List<String> splitOnTrimmed(String toSplit, String splitter) {
+		return trimElements(splitOn(toSplit, splitter));
+	}
+
+	public static List<String> splitOnTrimmed(List<String> toSplit, String splitter) {
+		return trimElements(splitOn(toSplit, splitter));
+	}
+
+
+	/**********************************************/
 
 	/**
 	 * This method concats elements if they contain open brackets so it's not split over multiple elements
@@ -62,13 +79,29 @@ public class ParserUtil {
 		return result;
 	}
 
-	public static int getAmountOfCharInString(char splitter, String string) {
+	/**********************************************
+	 *  Element counters
+	 ***********************************************/
+
+	public static int getAmountOfCharInString(char toCount, String string) {
 		int result = 0;
 		for (int i = 0; i < string.length(); i++) {
-			if (string.charAt(i) == splitter) {
+			if (string.charAt(i) == toCount) {
 				result += 1;
 			}
 		}
 		return result;		
 	}
+
+	public static int getAmountOfStringInString(String toCount, String string) {
+		int result = 0;
+		for (int i = 0; i < string.length(); i++) {
+			if (string.substring(i).startsWith(toCount)) {
+				result += 1;
+			}
+		}
+		return result;		
+	}
+
+	/**********************************************/
 }

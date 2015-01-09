@@ -12,7 +12,7 @@ public class EnumerationUtil {
 	
 	private final static String PREDICATE_TERM_REGEX = "[a-zA-Z0-9_\\s]*[(][a-zA-Z0-9_()\\s]*[)][\\s]*";
 	
-	public static List<IFodotTypeEnumerationElement> toTypeEnumerationElement(List<String> values, List<FodotType> types) {
+	public static List<IFodotTypeEnumerationElement> toTypeEnumerationElements(List<String> values, List<FodotType> types) {
 		if (values.size() != types.size()) {
 			throw new IllegalArgumentException("Not equal sizes of arguments \nValues: " + values + "\nTypes: " + types);
 		}
@@ -22,6 +22,10 @@ public class EnumerationUtil {
 		}
 		
 		return result;
+	}
+	
+	public static List<IFodotTypeEnumerationElement> toTypeEnumerationElements(List<String> values, FodotType type) {
+		 return toTypeEnumerationElements(values, FormulaUtil.createTypeList(type, values.size()));
 	}
 	
 	public static IFodotTypeEnumerationElement toTypeEnumerationElement(String value, FodotType type) {
