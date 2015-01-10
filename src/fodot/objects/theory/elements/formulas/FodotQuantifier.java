@@ -1,20 +1,39 @@
 package fodot.objects.theory.elements.formulas;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import fodot.exceptions.IllegalConnectorException;
+import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 
 public class FodotQuantifier implements IFodotFormula {
 	private String symbol;
 	private Set<FodotVariable> variables;
 	private IFodotFormula formula;
-	private boolean shouldShowBrackets = true;
 
-	/* VALID SYMBOL */
-//	private static final List<String> VALID_SYMBOLS =
-//			Arrays.asList(new String[]{"!", "?"});
+	/**********************************************
+	 *  Static map with bindingorder
+	 ***********************************************/
+	
 	private static final String VALID_QUANTIFIER_REGEX = "!|([\\?]([=][<]|[<>]|=)?[0-9]*)|\\?";
+
+	private static final Map<String, Integer> BINDING_ORDERS;
+    static {
+        Map<String, Integer> connectorsMap = new HashMap<String, Integer>();
+	    connectorsMap.put("!", 26);
+	    connectorsMap.put("?", 27);
+        BINDING_ORDERS = Collections.unmodifiableMap(connectorsMap);
+    }
+
+	public static boolean isValidSymbol(String symbol) {
+		return symbol.matches(VALID_QUANTIFIER_REGEX);
+	}
+	
+	/**********************************************/
 	
 	public FodotQuantifier(String symbol, Set<FodotVariable> variable, IFodotFormula formula) {
 		super();
@@ -26,13 +45,16 @@ public class FodotQuantifier implements IFodotFormula {
 		this.variables = variable;
 	}
 
-	//Symbol
+	/**********************************************
+	 *  Data getters
+	 ***********************************************/
+
 	public String getSymbol() {
 		return symbol;
 	}
 
 	//Variable
-	public Set<FodotVariable> getVariable() {
+	public Set<FodotVariable> getVariables() {
 		return variables;
 	}
 
@@ -41,51 +63,72 @@ public class FodotQuantifier implements IFodotFormula {
 		return formula;
 	}
 
-	//Brackets
+	/**********************************************/
+	
 
-	protected boolean shouldShowBrackets() {
-		return shouldShowBrackets;
+	/**********************************************
+	 *  Sentence element obligatories
+	 ***********************************************/
+	@Override
+	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
+		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
+		
+		//Check for all elements
+		for (IFodotSentenceElement var : getVariables()) {
+			result.addAll(var.getElementsOfClass(clazz));
+		}
+		result.addAll(getFormula().getElementsOfClass(clazz));
+		
+		//Check for this itself
+		if (clazz.isAssignableFrom(this.getClass())) {
+			result.add(this);
+		}
+		
+		return result;
 	}
-
-	protected void setShouldShowBrackets(boolean shouldShowBrackets) {
-		this.shouldShowBrackets = shouldShowBrackets;
-	}
-
-
+	
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		Set<FodotVariable> formulaVars = getFormula().getFreeVariables();
 		//Remove the var that is being quantized by this formula
-		formulaVars.removeAll(getVariable());
+		formulaVars.removeAll(getVariables());
 		return formulaVars;
 	}
 
 	@Override
+	public int getBindingOrder() {
+		return BINDING_ORDERS.get(getSymbol().trim().substring(0, 1));
+	}
+
+	/**********************************************/
+
+
+	
+	
+	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		if (shouldShowBrackets()) {
-			builder.append("(");
-		}
 		
 		builder.append(getSymbol() + " ");
 		for (FodotVariable var : variables) {
 			builder.append(var.getName() + " [" + var.getType().getName() + "] ");
 		}
-		builder.append(" : " + getFormula().toCode());
 		
-		if (shouldShowBrackets()) {
-			builder.append(")");
+		builder.append(" : ");
+		
+		if (getBindingOrder() >= 0
+				&& getFormula().getBindingOrder() >= getBindingOrder()) {
+			builder.append( "(" + getFormula().toCode() + ")");
+		} else {
+			builder.append( getFormula().toCode());
 		}
+		
 		return builder.toString();
-	}
-
-	public boolean isValidSymbol(String symbol) {
-		return symbol.matches(VALID_QUANTIFIER_REGEX);
 	}
 
 	@Override
 	public String toString() {
-		return "[quantifier ("+ getSymbol() +") "+getVariable()+" in "+getFormula()+"]";
+		return "[quantifier ("+ getSymbol() +") "+getVariables()+" in "+getFormula()+"]";
 	}
 
 	@Override

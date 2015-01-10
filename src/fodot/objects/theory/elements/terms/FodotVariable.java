@@ -4,11 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fodot.exceptions.InvalidTermNameException;
+import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.NameUtil;
 
 public class FodotVariable implements IFodotTerm {
 
+	private static final int BINDING_ORDER = -1;
+	
 	private String name;
 	private FodotType type;
 	
@@ -32,7 +35,19 @@ public class FodotVariable implements IFodotTerm {
 	public FodotType getType() {
 		return type;
 	}
+	
+	@Override
+	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
+		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
 
+		//Check for this itself
+		if (clazz.isAssignableFrom(this.getClass())) {
+			result.add(this);
+		}
+		
+		return result;
+	}
+	
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		Set<FodotVariable> result = new HashSet<FodotVariable>();
@@ -80,7 +95,10 @@ public class FodotVariable implements IFodotTerm {
 			return false;
 		return true;
 	}
-	
-	
+
+	@Override
+	public int getBindingOrder() {
+		return BINDING_ORDER;
+	}
 	
 }

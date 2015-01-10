@@ -15,7 +15,9 @@ import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.CollectionPrinter;
 
 public abstract class FodotAbstractArgumentList implements IFodotSentenceElement {
-
+	
+	private static final int BINDING_ORDER = -1;
+	
 	private FodotArgumentListDeclaration declaration;
 	private List<IFodotTerm> arguments;
 	
@@ -80,7 +82,24 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	}
 	
 	//Sentence element stuff
-
+	
+	@Override
+	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
+		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
+		
+		//Check for all elements
+		for (IFodotSentenceElement el : getArguments()) {
+			result.addAll(el.getElementsOfClass(clazz));
+		}
+		
+		//Check for this itself
+		if (clazz.isAssignableFrom(this.getClass())) {
+			result.add(this);
+		}
+		
+		return result;
+	}
+	
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		Set<FodotVariable> result = new HashSet<FodotVariable>();
@@ -89,10 +108,15 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 		}
 		return result;
 	}
+	
+	@Override
+	public int getBindingOrder() {
+		return BINDING_ORDER;
+	}
 
 	@Override
 	public String toCode() {
-		return getName() + (hasArguments() ? CollectionPrinter.toCouple(CollectionPrinter.toCode(getArguments())) : "");
+		return getName() + (hasArguments() ? CollectionPrinter.toCouple(CollectionPrinter.toCode(getArguments(), getBindingOrder())) : "");
 	}
 	
 	protected String argumentsToString() {

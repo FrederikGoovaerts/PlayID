@@ -15,7 +15,6 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 
 	private List<E> arguments;
 	private String connector;
-	private boolean shouldPrintBrackets = true;
 
 	public FodotSentenceElementConnector(String connector, Collection<? extends E> args) {
 		super();
@@ -43,12 +42,7 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 	}
 
 	//Arguments
-	@Deprecated
 	public List<E> getArguments() {
-		return getElements();
-	}
-	
-	public List<E> getElements() {
 		return new ArrayList<E>(arguments);
 	}
 
@@ -56,16 +50,6 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 		return connector;
 	}
 
-	//Brackets
-	
-	protected boolean shouldPrintBrackets() {
-		return shouldPrintBrackets;
-	}
-
-	protected void setShouldPrintBrackets(boolean shouldPrintBrackets) {
-		this.shouldPrintBrackets = shouldPrintBrackets;
-	}
-	
 	//Mergeability
 	private boolean isMergeableWith(E arg) {
 		if (!isAssociativeConnector(connector))
@@ -96,14 +80,30 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 		}
 		return formVars;
 	}
+	
+	@Override
+	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
+		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
+		
+		//Check for all elements
+		for (IFodotSentenceElement el : getArguments()) {
+			result.addAll(el.getElementsOfClass(clazz));
+		}
+		
+		//Check for this itself
+		if (clazz.isAssignableFrom(this.getClass())) {
+			result.add(this);
+		}
+		
+		return result;
+	}
 
 	@Override
 	public String toCode() {
 		return CollectionPrinter.printStringList(
-				(shouldPrintBrackets() ? "(" : ""),
-				(shouldPrintBrackets() ? ")" : ""),
+				"", "",
 				" " + getConnector() + " ",
-				CollectionPrinter.toCode(getArguments())
+				CollectionPrinter.toCode(getArguments(), getBindingOrder())
 				);
 	}	
 

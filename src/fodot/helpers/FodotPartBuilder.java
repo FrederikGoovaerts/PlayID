@@ -37,7 +37,7 @@ import fodot.objects.theory.elements.formulas.FodotFormulaConnector;
 import fodot.objects.theory.elements.formulas.FodotNot;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.FodotQuantifier;
-import fodot.objects.theory.elements.formulas.FodotTermConnector;
+import fodot.objects.theory.elements.formulas.FodotTermComparator;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
 import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionBlock;
 import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionConnector;
@@ -116,20 +116,20 @@ public class FodotPartBuilder {
 	//TERM CONNECTORS
 	private static final String EQUALS_SYMBOL = "=";
 
-	public static FodotTermConnector createEquals(IFodotTerm term1, IFodotTerm term2) {
-		return new FodotTermConnector(term1, EQUALS_SYMBOL, term2);
+	public static FodotTermComparator createEquals(IFodotTerm term1, IFodotTerm term2) {
+		return new FodotTermComparator(term1, EQUALS_SYMBOL, term2);
 	}
 
 	private static final String DISTINCT_SYMBOL = "~=";
 
-	public static FodotTermConnector createDistinct(IFodotTerm term1, IFodotTerm term2) {
-		return new FodotTermConnector(term1, DISTINCT_SYMBOL, term2);
+	public static FodotTermComparator createDistinct(IFodotTerm term1, IFodotTerm term2) {
+		return new FodotTermComparator(term1, DISTINCT_SYMBOL, term2);
 	}
 
 	private static final String LESS_THAN = "<";
 
-	public static FodotTermConnector createLessThan(IFodotTerm term1, IFodotTerm term2) {
-		return new FodotTermConnector(term1, LESS_THAN, term2);
+	public static FodotTermComparator createLessThan(IFodotTerm term1, IFodotTerm term2) {
+		return new FodotTermComparator(term1, LESS_THAN, term2);
 	}
 
 	public static IFodotFormula createLessThanOrEqualTo(IFodotTerm term1, IFodotTerm term2) {
@@ -138,8 +138,8 @@ public class FodotPartBuilder {
 
 	private static final String GREATER_THAN = ">";
 
-	public static FodotTermConnector createGreaterThan(IFodotTerm term1, IFodotTerm term2) {
-		return new FodotTermConnector(term1, GREATER_THAN, term2);
+	public static FodotTermComparator createGreaterThan(IFodotTerm term1, IFodotTerm term2) {
+		return new FodotTermComparator(term1, GREATER_THAN, term2);
 	}
 
 	public static IFodotFormula createGreaterThanOrEqualTo(IFodotTerm term1, IFodotTerm term2) {
@@ -448,7 +448,7 @@ public class FodotPartBuilder {
 					"This is not an inductive definition element: " + quantifier.getFormula());
 		}
 		return new FodotInductiveQuantifier(
-				quantifier.getSymbol(), quantifier.getVariable(),
+				quantifier.getSymbol(), quantifier.getVariables(),
 				(IFodotInductiveDefinitionElement) quantifier.getFormula());
 	}
 

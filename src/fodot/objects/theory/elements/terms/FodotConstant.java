@@ -4,11 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
+import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
 
 public class FodotConstant implements IFodotTerm, IFodotDomainElement, IFodotTypeEnumerationElement {
 
+	private static final int BINDING_ORDER = -1;
+	
 	private String value;
 	private FodotType type;
 	
@@ -41,8 +44,25 @@ public class FodotConstant implements IFodotTerm, IFodotDomainElement, IFodotTyp
 	}
 	//FODOT SENTENCE ELEMENT
 	@Override
+	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
+		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
+		
+		//Check for this itself
+		if (clazz.isAssignableFrom(this.getClass())) {
+			result.add(this);
+		}
+		
+		return result;
+	}
+	
+	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		return new HashSet<FodotVariable>();
+	}
+
+	@Override
+	public int getBindingOrder() {
+		return BINDING_ORDER;
 	}
 
 	@Override
