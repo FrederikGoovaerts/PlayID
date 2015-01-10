@@ -448,7 +448,7 @@ public class FodotPartBuilder {
 					"This is not an inductive definition element: " + quantifier.getFormula());
 		}
 		return new FodotInductiveQuantifier(
-				quantifier.getSymbol(), quantifier.getVariable(),
+				quantifier.getSymbol(), quantifier.getVariables(),
 				(IFodotInductiveDefinitionElement) quantifier.getFormula());
 	}
 

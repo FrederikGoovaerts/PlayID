@@ -2,10 +2,12 @@ package fodot.objects.theory.elements.formulas;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import fodot.exceptions.IllegalConnectorException;
+import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 
 public class FodotQuantifier implements IFodotFormula {
@@ -46,7 +48,7 @@ public class FodotQuantifier implements IFodotFormula {
 	}
 
 	//Variable
-	public Set<FodotVariable> getVariable() {
+	public Set<FodotVariable> getVariables() {
 		return variables;
 	}
 
@@ -65,12 +67,29 @@ public class FodotQuantifier implements IFodotFormula {
 		this.shouldShowBrackets = shouldShowBrackets;
 	}
 
-
+	@Override
+	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
+		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
+		
+		//Check for all elements
+		for (IFodotSentenceElement var : getVariables()) {
+			result.addAll(var.getElementsOfClass(clazz));
+		}
+		result.addAll(getFormula().getElementsOfClass(clazz));
+		
+		//Check for this itself
+		if (clazz.isAssignableFrom(this.getClass())) {
+			result.add(this);
+		}
+		
+		return result;
+	}
+	
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		Set<FodotVariable> formulaVars = getFormula().getFreeVariables();
 		//Remove the var that is being quantized by this formula
-		formulaVars.removeAll(getVariable());
+		formulaVars.removeAll(getVariables());
 		return formulaVars;
 	}
 
@@ -106,7 +125,7 @@ public class FodotQuantifier implements IFodotFormula {
 
 	@Override
 	public String toString() {
-		return "[quantifier ("+ getSymbol() +") "+getVariable()+" in "+getFormula()+"]";
+		return "[quantifier ("+ getSymbol() +") "+getVariables()+" in "+getFormula()+"]";
 	}
 
 	@Override

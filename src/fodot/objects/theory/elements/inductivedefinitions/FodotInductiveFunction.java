@@ -1,8 +1,10 @@
 package fodot.objects.theory.elements.inductivedefinitions;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import fodot.exceptions.IllegalTypeException;
+import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.theory.elements.terms.FodotFunction;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
@@ -23,6 +25,10 @@ public class FodotInductiveFunction implements IFodotInductiveDefinitionElement 
 		setFunctionResult(functionResult);
 	}
 
+	private FodotFunction getFunction() {
+		return function;
+	}
+	
 	private void setFunctionResult(IFodotTerm functionRes) {
 		if (functionRes == null) {
 			throw new IllegalArgumentException("Functionresult can't be null");
@@ -35,6 +41,21 @@ public class FodotInductiveFunction implements IFodotInductiveDefinitionElement 
 		this.functionResult = functionRes;
 	}
 
+	@Override
+	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
+		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
+		
+		//Check for all elements
+		result.addAll(getFunction().getElementsOfClass(clazz));
+		
+		//Check for this itself
+		if (clazz.isAssignableFrom(this.getClass())) {
+			result.add(this);
+		}
+		
+		return result;
+	}
+	
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		Set<FodotVariable> result = function.getFreeVariables();

@@ -91,6 +91,23 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 		}
 		return formVars;
 	}
+	
+	@Override
+	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
+		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
+		
+		//Check for all elements
+		for (IFodotSentenceElement el : getArguments()) {
+			result.addAll(el.getElementsOfClass(clazz));
+		}
+		
+		//Check for this itself
+		if (clazz.isAssignableFrom(this.getClass())) {
+			result.add(this);
+		}
+		
+		return result;
+	}
 
 	@Override
 	public String toCode() {
