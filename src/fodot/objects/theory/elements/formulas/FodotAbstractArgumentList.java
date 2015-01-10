@@ -99,7 +99,7 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 
 	@Override
 	public String toCode() {
-		return getName() + (hasArguments() ? CollectionPrinter.toCouple(CollectionPrinter.toCode(getArguments())) : "");
+		return getName() + (hasArguments() ? CollectionPrinter.toCouple(CollectionPrinter.toCode(getArguments(), getBindingOrder())) : "");
 	}
 	
 	protected String argumentsToString() {

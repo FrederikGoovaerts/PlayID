@@ -43,12 +43,7 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 	}
 
 	//Arguments
-	@Deprecated
 	public List<E> getArguments() {
-		return getElements();
-	}
-	
-	public List<E> getElements() {
 		return new ArrayList<E>(arguments);
 	}
 
@@ -100,10 +95,9 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 	@Override
 	public String toCode() {
 		return CollectionPrinter.printStringList(
-				(shouldPrintBrackets() ? "(" : ""),
-				(shouldPrintBrackets() ? ")" : ""),
+				"", "",
 				" " + getConnector() + " ",
-				CollectionPrinter.toCode(getArguments())
+				CollectionPrinter.toCode(getArguments(), getBindingOrder())
 				);
 	}	
 

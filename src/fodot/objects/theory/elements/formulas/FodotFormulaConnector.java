@@ -19,11 +19,11 @@ public class FodotFormulaConnector extends FodotSentenceElementConnector<IFodotF
 	private static final Map<String, Integer> BINDING_ORDERS;
     static {
         Map<String, Integer> connectorsMap = new HashMap<String, Integer>();
-	    connectorsMap.put("&", 1);
-	    connectorsMap.put("|", 2);
-	    connectorsMap.put("<=", 3);
-	    connectorsMap.put("=>", 4);
-	    connectorsMap.put("<=>", 5);
+	    connectorsMap.put("&", 21);
+	    connectorsMap.put("|", 22);
+	    connectorsMap.put("<=", 23);
+	    connectorsMap.put("=>", 24);
+	    connectorsMap.put("<=>", 25);
         BINDING_ORDERS = Collections.unmodifiableMap(connectorsMap);
     }
 

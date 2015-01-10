@@ -8,7 +8,7 @@ import fodot.objects.theory.elements.terms.IFodotTerm;
 
 public class FodotTermConnector extends FodotSentenceElementConnector<IFodotTerm> implements IFodotFormula {
 	
-	private static final int BINDING_ORDER = 100;
+	private static final int BINDING_ORDER = 10;
 	
 	protected FodotTermConnector(String connector, Collection<IFodotTerm> terms) {
 		super(connector, terms);

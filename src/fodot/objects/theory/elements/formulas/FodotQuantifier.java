@@ -23,8 +23,8 @@ public class FodotQuantifier implements IFodotFormula {
 	private static final Map<String, Integer> BINDING_ORDERS;
     static {
         Map<String, Integer> connectorsMap = new HashMap<String, Integer>();
-	    connectorsMap.put("!", 6);
-	    connectorsMap.put("?", 7);
+	    connectorsMap.put("!", 26);
+	    connectorsMap.put("?", 27);
         BINDING_ORDERS = Collections.unmodifiableMap(connectorsMap);
     }
 	
@@ -82,19 +82,21 @@ public class FodotQuantifier implements IFodotFormula {
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		if (shouldShowBrackets()) {
-			builder.append("(");
-		}
 		
 		builder.append(getSymbol() + " ");
 		for (FodotVariable var : variables) {
 			builder.append(var.getName() + " [" + var.getType().getName() + "] ");
 		}
-		builder.append(" : " + getFormula().toCode());
 		
-		if (shouldShowBrackets()) {
-			builder.append(")");
+		builder.append(" : ");
+		
+		if (getBindingOrder() >= 0
+				&& getFormula().getBindingOrder() >= getBindingOrder()) {
+			builder.append( "(" + getFormula().toCode() + ")");
+		} else {
+			builder.append( getFormula().toCode());
 		}
+		
 		return builder.toString();
 	}
 
