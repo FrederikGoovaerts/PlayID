@@ -6,19 +6,19 @@ import java.util.List;
 
 import fodot.objects.theory.elements.terms.IFodotTerm;
 
-public class FodotTermConnector extends FodotSentenceElementConnector<IFodotTerm> implements IFodotFormula {
+public class FodotTermComparator extends FodotSentenceElementConnector<IFodotTerm> implements IFodotFormula {
 	
 	private static final int BINDING_ORDER = 10;
 	
-	protected FodotTermConnector(String connector, Collection<IFodotTerm> terms) {
+	protected FodotTermComparator(String connector, Collection<IFodotTerm> terms) {
 		super(connector, terms);
 	}
 	
-	public FodotTermConnector(IFodotTerm term1, String connector, IFodotTerm term2) {
+	public FodotTermComparator(IFodotTerm term1, String connector, IFodotTerm term2) {
 		this(connector, Arrays.asList(new IFodotTerm[]{term1, term2}));
 	}
 	
-	protected FodotTermConnector(String connector, IFodotTerm... terms) {
+	protected FodotTermComparator(String connector, IFodotTerm... terms) {
 		this(connector, Arrays.asList(terms));
 	}
 	
