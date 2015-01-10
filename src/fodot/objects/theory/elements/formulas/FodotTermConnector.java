@@ -8,6 +8,8 @@ import fodot.objects.theory.elements.terms.IFodotTerm;
 
 public class FodotTermConnector extends FodotSentenceElementConnector<IFodotTerm> implements IFodotFormula {
 	
+	private static final int BINDING_ORDER = 100;
+	
 	protected FodotTermConnector(String connector, Collection<IFodotTerm> terms) {
 		super(connector, terms);
 	}
@@ -36,5 +38,10 @@ public class FodotTermConnector extends FodotSentenceElementConnector<IFodotTerm
 	@Override
 	protected boolean isAssociativeConnector(String connector) {
 		return false;
+	}
+	
+	@Override
+	public int getBindingOrder() {
+		return BINDING_ORDER;
 	}
 }

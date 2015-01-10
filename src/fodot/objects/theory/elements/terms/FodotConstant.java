@@ -9,6 +9,8 @@ import fodot.objects.vocabulary.elements.IFodotDomainElement;
 
 public class FodotConstant implements IFodotTerm, IFodotDomainElement, IFodotTypeEnumerationElement {
 
+	private static final int BINDING_ORDER = -1;
+	
 	private String value;
 	private FodotType type;
 	
@@ -43,6 +45,11 @@ public class FodotConstant implements IFodotTerm, IFodotDomainElement, IFodotTyp
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		return new HashSet<FodotVariable>();
+	}
+
+	@Override
+	public int getBindingOrder() {
+		return BINDING_ORDER;
 	}
 
 	@Override

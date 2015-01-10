@@ -6,6 +6,7 @@ import fodot.objects.theory.elements.terms.FodotVariable;
 
 public class FodotNot implements IFodotFormula {
 	private IFodotFormula formula;
+	private static final int BINDING_ORDER = 0;
 
 	public FodotNot(IFodotFormula formula) {
 		super();
@@ -19,6 +20,11 @@ public class FodotNot implements IFodotFormula {
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		return formula.getFreeVariables();
+	}
+	
+	@Override
+	public int getBindingOrder() {
+		return BINDING_ORDER;
 	}
 
 	@Override

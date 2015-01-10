@@ -15,7 +15,9 @@ import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.CollectionPrinter;
 
 public abstract class FodotAbstractArgumentList implements IFodotSentenceElement {
-
+	
+	private static final int BINDING_ORDER = -1;
+	
 	private FodotArgumentListDeclaration declaration;
 	private List<IFodotTerm> arguments;
 	
@@ -88,6 +90,11 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 			result.addAll(arg.getFreeVariables());
 		}
 		return result;
+	}
+	
+	@Override
+	public int getBindingOrder() {
+		return BINDING_ORDER;
 	}
 
 	@Override

@@ -1,5 +1,8 @@
 package fodot.objects.theory.elements.formulas;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import fodot.exceptions.IllegalConnectorException;
@@ -11,10 +14,21 @@ public class FodotQuantifier implements IFodotFormula {
 	private IFodotFormula formula;
 	private boolean shouldShowBrackets = true;
 
-	/* VALID SYMBOL */
-//	private static final List<String> VALID_SYMBOLS =
-//			Arrays.asList(new String[]{"!", "?"});
+	/**********************************************
+	 *  Static map with bindingorder
+	 ***********************************************/
+	
 	private static final String VALID_QUANTIFIER_REGEX = "!|([\\?]([=][<]|[<>]|=)?[0-9]*)|\\?";
+
+	private static final Map<String, Integer> BINDING_ORDERS;
+    static {
+        Map<String, Integer> connectorsMap = new HashMap<String, Integer>();
+	    connectorsMap.put("!", 6);
+	    connectorsMap.put("?", 7);
+        BINDING_ORDERS = Collections.unmodifiableMap(connectorsMap);
+    }
+	
+	/**********************************************/
 	
 	public FodotQuantifier(String symbol, Set<FodotVariable> variable, IFodotFormula formula) {
 		super();
@@ -60,6 +74,11 @@ public class FodotQuantifier implements IFodotFormula {
 		return formulaVars;
 	}
 
+	@Override
+	public int getBindingOrder() {
+		return BINDING_ORDERS.get(getSymbol().trim().substring(0, 1));
+	}
+	
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();

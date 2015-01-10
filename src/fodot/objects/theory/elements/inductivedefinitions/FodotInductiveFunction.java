@@ -10,6 +10,9 @@ import fodot.objects.vocabulary.elements.FodotType;
 
 
 public class FodotInductiveFunction implements IFodotInductiveDefinitionElement {
+
+	private static final int BINDING_ORDER = -1;
+	
 	private FodotFunction function;
 	private IFodotTerm functionResult;
 	
@@ -37,6 +40,11 @@ public class FodotInductiveFunction implements IFodotInductiveDefinitionElement 
 		Set<FodotVariable> result = function.getFreeVariables();
 		result.addAll(functionResult.getFreeVariables());
 		return result;
+	}
+	
+	@Override
+	public int getBindingOrder() {
+		return BINDING_ORDER;
 	}
 	
 	@Override

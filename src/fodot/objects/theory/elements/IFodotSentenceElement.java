@@ -7,6 +7,7 @@ import fodot.objects.theory.elements.terms.FodotVariable;
 
 public interface IFodotSentenceElement extends IFodotElement {
 	Set<FodotVariable> getFreeVariables();
+	int getBindingOrder();
 	
 	@Override
 	boolean equals(Object obj);

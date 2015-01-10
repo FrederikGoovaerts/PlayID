@@ -8,6 +8,7 @@ import fodot.objects.theory.elements.formulas.IFodotFormula;
 
 public class FodotInductiveDefinitionConnector extends FodotSentenceElementConnector<IFodotFormula> implements IFodotInductiveDefinitionElement {
 
+	private static final int BINDING_ORDER = -1;
 	private static final String INDUCTIVE_ARROW = "<-";
 	
 	/**
@@ -28,6 +29,11 @@ public class FodotInductiveDefinitionConnector extends FodotSentenceElementConne
 	
 	public FodotInductiveDefinitionConnector(FodotInductiveFunction head, IFodotFormula body) {
 		this(INDUCTIVE_ARROW, head, body);
+	}
+	
+	@Override
+	public int getBindingOrder() {
+		return BINDING_ORDER;
 	}
 	
 	@Override

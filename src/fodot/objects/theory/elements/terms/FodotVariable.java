@@ -9,6 +9,8 @@ import fodot.util.NameUtil;
 
 public class FodotVariable implements IFodotTerm {
 
+	private static final int BINDING_ORDER = -1;
+	
 	private String name;
 	private FodotType type;
 	
@@ -80,7 +82,10 @@ public class FodotVariable implements IFodotTerm {
 			return false;
 		return true;
 	}
-	
-	
+
+	@Override
+	public int getBindingOrder() {
+		return BINDING_ORDER;
+	}
 	
 }
