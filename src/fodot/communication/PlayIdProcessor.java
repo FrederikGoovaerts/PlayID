@@ -35,8 +35,8 @@ public class PlayIdProcessor {
 		try {
 			idpResult = caller.callIDP(idpFile);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new IllegalStateException("Failed to connect to IDP");
 		}
 
 		//Process results

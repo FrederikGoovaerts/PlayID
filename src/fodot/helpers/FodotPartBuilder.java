@@ -246,69 +246,62 @@ public class FodotPartBuilder {
 		return createFunction(NEGATE_INTEGER_DECLARATION, term);
 	}
 
-	//QUANTIFIERS	
-
-	//Lil' helper
-	private static Set<FodotVariable> wrapVariableInSet(FodotVariable var) {
-		HashSet<FodotVariable> variables = new HashSet<FodotVariable>();
-		variables.add(var);
-		return variables;		
-	}
+	//QUANTIFIERS
 
 	private static final String FORALL_SYMBOL = "!";
 
-	public static FodotQuantifier createForAll(Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(FORALL_SYMBOL, set, formula);
+	public static FodotQuantifier createForAll(Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+		return new FodotQuantifier(FORALL_SYMBOL, variables, formula);
 	}
 	public static FodotQuantifier createForAll(FodotVariable variable, IFodotFormula formula) {
-		return createForAll(wrapVariableInSet(variable), formula);
+		return createForAll(Arrays.asList(variable), formula);
 	}
 
 	private static final String EXISTS_SYMBOL = "?";	
 
-	public static FodotQuantifier createExists(Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(EXISTS_SYMBOL, set, formula);
+	public static FodotQuantifier createExists(Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_SYMBOL, variables, formula);
 	}
 
 	public static FodotQuantifier createExists(FodotVariable variable, IFodotFormula formula) {
-		return createExists(wrapVariableInSet(variable), formula);
+		return createExists(Arrays.asList(variable), formula);
 	}
 
 	//Awesome exists
 	private static final String EXISTS_EXACTLY_SYMBOL = EXISTS_SYMBOL + "=";
-	public static FodotQuantifier createExistsExactly(int amount, Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(EXISTS_EXACTLY_SYMBOL + amount, set, formula);
+	public static FodotQuantifier createExistsExactly(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_EXACTLY_SYMBOL + amount, variables, formula);
 	}
 
 	public static FodotQuantifier createExistsExactly(int amount, FodotVariable var, IFodotFormula formula) {
-		return createExistsExactly(amount, wrapVariableInSet(var), formula);		
+		return createExistsExactly(amount, Arrays.asList(var), formula);		
 	}
 
 	private static final String EXISTS_LESS_THAN_SYMBOL = EXISTS_SYMBOL + "<";
-	public static FodotQuantifier createExistsLessThan(int amount, Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(EXISTS_LESS_THAN_SYMBOL + amount, set, formula);
+	public static FodotQuantifier createExistsLessThan(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_LESS_THAN_SYMBOL + amount, variables, formula);
 	}
 
 	public static FodotQuantifier createExistsLessThan(int amount, FodotVariable var, IFodotFormula formula) {
-		return createExistsLessThan(amount, wrapVariableInSet(var), formula);		
+		return createExistsLessThan(amount, Arrays.asList(var), formula);		
 	}
 
 	private static final String EXISTS_AT_MOST_SYMBOL = EXISTS_SYMBOL + "=<";
-	public static FodotQuantifier createExistsAtMost(int amount, Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(EXISTS_AT_MOST_SYMBOL + amount, set, formula);
+	public static FodotQuantifier createExistsAtMost(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_AT_MOST_SYMBOL + amount, variables, formula);
 	}
 
 	public static FodotQuantifier createExistsAtMost(int amount, FodotVariable var, IFodotFormula formula) {
-		return createExistsAtMost(amount, wrapVariableInSet(var), formula);		
+		return createExistsAtMost(amount, Arrays.asList(var), formula);		
 	}
 
 	private static final String EXISTS_MORE_THAN_SYMBOL = EXISTS_SYMBOL + ">";
-	public static FodotQuantifier createExistsMoreThan(int amount, Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(EXISTS_MORE_THAN_SYMBOL + amount, set, formula);
+	public static FodotQuantifier createExistsMoreThan(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_MORE_THAN_SYMBOL + amount, variables, formula);
 	}
 
 	public static FodotQuantifier createExistsMoreThan(int amount, FodotVariable var, IFodotFormula formula) {
-		return createExistsMoreThan(amount, wrapVariableInSet(var), formula);		
+		return createExistsMoreThan(amount, Arrays.asList(var), formula);		
 	}
 
 	//TERM RELATED	
@@ -367,7 +360,7 @@ public class FodotPartBuilder {
 	}
 	
 	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionDeclaration declaration) {
-		return createFunctionEnumeration(declaration, new HashSet<FodotFunctionEnumerationElement>()); //TODO: zet null hier
+		return createFunctionEnumeration(declaration, null);
 	}
 	
 	public static FodotFunctionEnumerationElement createFunctionEnumerationElement(
@@ -420,7 +413,6 @@ public class FodotPartBuilder {
 
 	//INDUCTIVE DEFINITIONS
 
-	//TODO: rename this to "inductivedefinitionblock"?
 	public static FodotInductiveDefinitionBlock createInductiveDefinition(List<FodotInductiveSentence> sentences) {
 		return new FodotInductiveDefinitionBlock(sentences);
 	}
@@ -498,31 +490,6 @@ public class FodotPartBuilder {
 	} 
 
 	//Type declaration
-	@Deprecated
-	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<IFodotDomainElement> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
-		type.addAllSubtypes(subtypes);
-		type.addAllSupertypes(supertypes);
-		type.addAllDomainElements(domain);
-		return new FodotTypeDeclaration(type);
-	}
-
-	@Deprecated
-	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<IFodotDomainElement> domain, Set<FodotType> supertypes) {
-		return createTypeDeclaration(type, domain, supertypes, null);
-	}
-
-	@Deprecated
-	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, FodotType supertype) {
-		Set<FodotType> supertypes = new HashSet<FodotType>();
-		supertypes.add(supertype);
-		return createTypeDeclaration(type, null, supertypes, null);
-	}
-
-	@Deprecated
-	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<IFodotDomainElement> domain) {
-		return createTypeDeclaration(type, domain, null, null);
-	}
-
 	public static FodotTypeDeclaration createTypeDeclaration(FodotType type) {
 		if (type == null)
 			throw new IllegalArgumentException(type + " is not a valid type!");

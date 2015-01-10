@@ -14,7 +14,6 @@ import fodot.objects.vocabulary.elements.FodotType;
 public class NameUtil {
 	/* STATIC HELPERS */
 
-	// TODO: this is crudely fixed to allow for "-"
 	private static String validNameRegex = "^[a-zA-Z$][a-zA-Z_0-9]*$";
 	private static List<String> allowedSpecialNames = Arrays.asList("-");
 	private static String nonAlphanumericRegex = "[^a-zA-Z0-9]";
@@ -67,7 +66,7 @@ public class NameUtil {
 		if (type == null) {
 			return generateVariableName();
 		}
-		return generateVariableName(type.getName().toLowerCase());
+		return generateVariableName(type.getName().toLowerCase().substring(0, 1));
 	}
 
 	public static String generateVariableName() {

@@ -143,4 +143,11 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "[FodotSentenceElementConnector "+toCode()+ "]";
+	}
+	
+	
+
 }

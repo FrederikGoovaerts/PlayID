@@ -60,7 +60,7 @@ public class FodotFormulaConnector extends FodotSentenceElementConnector<IFodotF
 
 	@Override
 	public String toString() {
-		return "[formulaconnector "+toCode()+ "]";
+		return "[Formulaconnector: "+toCode()+ "]";
 	}
 
 	@Override

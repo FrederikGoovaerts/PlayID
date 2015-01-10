@@ -5,7 +5,7 @@ import fodot.objects.theory.elements.formulas.IFodotFormula;
 public class NonVariablefreeSentenceException extends RuntimeException {
 	
 	public NonVariablefreeSentenceException(IFodotFormula formula) {
-		super(formula + "is not variablefree: " + formula.getFreeVariables()
+		super("\n" + formula + "is not variablefree: \n" + formula.getFreeVariables()
 				+ "\n Perhaps you should consider using FormulaUtil's 'makeVariableFree' method");
 	}
 

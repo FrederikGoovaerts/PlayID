@@ -1,8 +1,10 @@
 package fodot.objects.theory.elements.formulas;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,27 +32,32 @@ public class FodotQuantifier implements IFodotFormula {
     }
 
 	public static boolean isValidSymbol(String symbol) {
-		return symbol.matches(VALID_QUANTIFIER_REGEX);
+		return symbol != null && symbol.matches(VALID_QUANTIFIER_REGEX);
 	}
 	
 	/**********************************************/
 	
-	public FodotQuantifier(String symbol, Set<FodotVariable> variable, IFodotFormula formula) {
+	public FodotQuantifier(String argSymbol, Collection<? extends FodotVariable>  argVariables, IFodotFormula argFormula) {
 		super();
-		if (!isValidSymbol(symbol)) {
-			throw new IllegalConnectorException(this, symbol);
-		}
-		this.symbol = symbol;
-		this.formula = formula;
-		this.variables = variable;
+		setSymbol(argSymbol);
+		setVariables(argVariables);
+		setFormula(argFormula);
 	}
 
 	/**********************************************
-	 *  Data getters
+	 *  Data getters&setters
 	 ***********************************************/
 
+	//Symbol
 	public String getSymbol() {
 		return symbol;
+	}
+	
+	public void setSymbol(String argSymbol) {
+		if (!isValidSymbol(argSymbol)) {
+			throw new IllegalConnectorException(this, symbol);
+		}
+		this.symbol = argSymbol;
 	}
 
 	//Variable
@@ -58,9 +65,17 @@ public class FodotQuantifier implements IFodotFormula {
 		return variables;
 	}
 
+	private void setVariables(Collection<? extends FodotVariable> argVariables) {
+		this.variables = new LinkedHashSet<FodotVariable>(argVariables);
+	}
+	
 	//Formula	
 	public IFodotFormula getFormula() {
 		return formula;
+	}
+	
+	public void setFormula(IFodotFormula argFormula) {
+		this.formula = argFormula;
 	}
 
 	/**********************************************/
@@ -102,8 +117,6 @@ public class FodotQuantifier implements IFodotFormula {
 
 	/**********************************************/
 
-
-	
 	
 	@Override
 	public String toCode() {
@@ -128,7 +141,7 @@ public class FodotQuantifier implements IFodotFormula {
 
 	@Override
 	public String toString() {
-		return "[quantifier ("+ getSymbol() +") "+getVariables()+" in "+getFormula()+"]";
+		return "[quantifier: "+toCode()+"]";
 	}
 
 	@Override
