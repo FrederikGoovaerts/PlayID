@@ -12,7 +12,6 @@ public class FodotInductiveQuantifier extends FodotQuantifier implements IFodotI
 	public FodotInductiveQuantifier(String symbol, Set<FodotVariable> variable,
 			IFodotInductiveDefinitionElement formula) {
 		super(symbol, variable, formula);
-		setShouldShowBrackets(false);
 	}
 	
 	@Override

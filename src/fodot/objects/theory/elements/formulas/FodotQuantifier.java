@@ -14,7 +14,6 @@ public class FodotQuantifier implements IFodotFormula {
 	private String symbol;
 	private Set<FodotVariable> variables;
 	private IFodotFormula formula;
-	private boolean shouldShowBrackets = true;
 
 	/**********************************************
 	 *  Static map with bindingorder
@@ -29,6 +28,10 @@ public class FodotQuantifier implements IFodotFormula {
 	    connectorsMap.put("?", 27);
         BINDING_ORDERS = Collections.unmodifiableMap(connectorsMap);
     }
+
+	public static boolean isValidSymbol(String symbol) {
+		return symbol.matches(VALID_QUANTIFIER_REGEX);
+	}
 	
 	/**********************************************/
 	
@@ -42,7 +45,10 @@ public class FodotQuantifier implements IFodotFormula {
 		this.variables = variable;
 	}
 
-	//Symbol
+	/**********************************************
+	 *  Data getters
+	 ***********************************************/
+
 	public String getSymbol() {
 		return symbol;
 	}
@@ -57,16 +63,12 @@ public class FodotQuantifier implements IFodotFormula {
 		return formula;
 	}
 
-	//Brackets
+	/**********************************************/
+	
 
-	protected boolean shouldShowBrackets() {
-		return shouldShowBrackets;
-	}
-
-	protected void setShouldShowBrackets(boolean shouldShowBrackets) {
-		this.shouldShowBrackets = shouldShowBrackets;
-	}
-
+	/**********************************************
+	 *  Sentence element obligatories
+	 ***********************************************/
 	@Override
 	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
 		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
@@ -97,6 +99,11 @@ public class FodotQuantifier implements IFodotFormula {
 	public int getBindingOrder() {
 		return BINDING_ORDERS.get(getSymbol().trim().substring(0, 1));
 	}
+
+	/**********************************************/
+
+
+	
 	
 	@Override
 	public String toCode() {
@@ -117,10 +124,6 @@ public class FodotQuantifier implements IFodotFormula {
 		}
 		
 		return builder.toString();
-	}
-
-	public boolean isValidSymbol(String symbol) {
-		return symbol.matches(VALID_QUANTIFIER_REGEX);
 	}
 
 	@Override

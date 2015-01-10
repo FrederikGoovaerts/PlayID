@@ -15,7 +15,6 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 
 	private List<E> arguments;
 	private String connector;
-	private boolean shouldPrintBrackets = true;
 
 	public FodotSentenceElementConnector(String connector, Collection<? extends E> args) {
 		super();
@@ -51,16 +50,6 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 		return connector;
 	}
 
-	//Brackets
-	
-	protected boolean shouldPrintBrackets() {
-		return shouldPrintBrackets;
-	}
-
-	protected void setShouldPrintBrackets(boolean shouldPrintBrackets) {
-		this.shouldPrintBrackets = shouldPrintBrackets;
-	}
-	
 	//Mergeability
 	private boolean isMergeableWith(E arg) {
 		if (!isAssociativeConnector(connector))
