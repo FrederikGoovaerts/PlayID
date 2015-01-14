@@ -42,5 +42,11 @@ public class FodotVocabulary extends FodotFileElementWithNamedElements<IFodotVoc
 		return DEFAULT_NAME;
 	}
 	
+
+	@Override
+	public String toString() {
+		return "[FodotVocabulary: " + toCode() + "]";
+	}
+	
 	
 }

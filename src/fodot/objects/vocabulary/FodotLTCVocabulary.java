@@ -18,4 +18,9 @@ public class FodotLTCVocabulary extends FodotVocabulary {
 	public String toCode() {
 		return "LTC" + super.toCode();
 	}
+	
+	@Override
+	public String toString() {
+		return "[LTCFodotVocabulary: " + toCode() + "]";
+	}
 }
