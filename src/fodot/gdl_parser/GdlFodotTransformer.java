@@ -355,13 +355,13 @@ public class GdlFodotTransformer implements GdlTransformer{
 	 * Score
 	 */
 
-	private Map<Pair<String, Integer>,Set<IFodotFormula>> scoreMap;
+	private Map<Pair<IFodotTerm, Integer>,Set<IFodotFormula>> scoreMap;
 
-	public Map<Pair<String, Integer>,Set<IFodotFormula>> getScoreMap(){
+	public Map<Pair<IFodotTerm, Integer>,Set<IFodotFormula>> getScoreMap(){
 		return new HashMap<>(scoreMap);
 	}
 
-	private void addScore(Pair<String, Integer> score, IFodotFormula condition) {
+	private void addScore(Pair<IFodotTerm, Integer> score, IFodotFormula condition) {
 		if(scoreMap.containsKey(score)){
 			scoreMap.get(score).add(condition);
 		} else {
@@ -469,6 +469,11 @@ public class GdlFodotTransformer implements GdlTransformer{
 		return fodotTerm;
 	}
 
+	
+	/**********************************************
+	 *  Processing of Sentence Arguments to List of Fodot Terms
+	 ***********************************************/
+	
 	/**
 	 * This method can process all GdlTerms of a GdlSentence and converts them to FodotTerms
 	 * All variables will be added to the variablemap
@@ -502,7 +507,28 @@ public class GdlFodotTransformer implements GdlTransformer{
 		}
 		return elements;
 	}
+	
+	public List<IFodotTerm> processSentenceArguments(
+			GdlSentence sentence,FodotArgumentListDeclaration declaration,
+			HashMap<GdlVariable,FodotVariable> variableMap) {
+		return processSentenceArguments(sentence, declaration, 0, variableMap);
+	}
+	
+	public List<IFodotTerm> processSentenceArgumentsTimed(GdlSentence sentence,
+			FodotArgumentListDeclaration declaration, HashMap<GdlVariable,FodotVariable> variableMap) {
+		List<IFodotTerm> arguments = new ArrayList<IFodotTerm>();		
+		arguments.add(createVariable("t",timeType));
+		arguments.addAll(processSentenceArguments(sentence, declaration, arguments.size(), variableMap));
+		return arguments;
+	}
+	
+	
+	
+	/**********************************************/
 
+	
+	
+	
 	@Override
 	public void processRoleRelation(GdlRelation relation) {
 		if(processingRules)
@@ -593,32 +619,34 @@ public class GdlFodotTransformer implements GdlTransformer{
 		HashMap<GdlVariable,FodotVariable> variableMap = new HashMap<>();
 
 		//process (fluent) predicate in head
-		GdlSentence predSentence = rule.getHead().get(0).toSentence();
-		FodotPredicateDeclaration originalPredicate = this.processPredicate(predSentence);
+		GdlTerm nextGdlTerm = rule.getHead().get(0);
+		IFodotTerm nextFodotTerm;
+		if (nextGdlTerm instanceof GdlVariable) {
+			nextFodotTerm = processTerm(nextGdlTerm, variableMap);
+			throw new IllegalStateException("You can't give a variable as argument for 'next', dummy!");
+		} else {
+		
+			GdlSentence predSentence = nextGdlTerm.toSentence();
+			FodotPredicateDeclaration originalPredicateDecl = this.processPredicate(predSentence);
+			FodotPredicateDeclaration causePredDecl = pool.getCauseOf(originalPredicateDecl);
 
-		List<IFodotTerm> variables = new ArrayList<>();
-		variables.add(createVariable("t",timeType));
-		for (GdlTerm term : predSentence.getBody()) {
-			//GdlSentence sentence = gdlTerm.toSentence();
-			IFodotTerm fodotTerm = processTerm(term, variableMap);
-			variables.add(fodotTerm);
+			List<IFodotTerm> arguments = processSentenceArgumentsTimed(predSentence, causePredDecl, variableMap);
 
+			FodotPredicate causePred = createPredicate(
+					causePredDecl,
+					arguments
+					);
+
+			//generate IFodotFormula from the body
+			IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
+					rule.getBody(),
+					variableMap,
+					this
+					);
+
+			//add the combination as a next rule
+			this.addNext(originalPredicateDecl, Pair.of(causePred, condition));
 		}
-
-		FodotPredicate causePred = createPredicate(
-				pool.getCauseOf(originalPredicate),
-				variables
-				);
-
-		//generate IFodotFormula from the body
-		IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
-				rule.getBody(),
-				variableMap,
-				this
-				);
-
-		//add the combination as a next rule
-		this.addNext(originalPredicate, Pair.of(causePred, condition));
 	}
 
 	@Override
@@ -694,8 +722,21 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		HashMap<GdlVariable, FodotVariable> variableMap = new HashMap<>();
 
-		Pair<String, Integer> score = Pair.of(rule.getHead().get(0).toSentence().getName().getValue(),
-				Integer.parseInt(rule.getHead().get(1).toSentence().getName().getValue()));
+		GdlTerm playerGdlTerm = rule.getHead().get(0);
+		GdlTerm scoreGdlTerm = rule.getHead().get(1);
+		
+		IFodotTerm playerTerm;
+		if (playerGdlTerm instanceof GdlVariable) {
+			playerTerm = processTerm(playerGdlTerm, variableMap);	
+		} else {
+			playerTerm = convertRawRole(playerGdlTerm.toSentence().getName().getValue());
+		}
+//		if (scoreGdlTerm instanceof GdlVariable) {
+//			IFodotTerm scoreTerm = processTerm(scoreGdlTerm, variableMap);			
+//		}
+		
+		Pair<IFodotTerm, Integer> score = Pair.of(playerTerm,
+				Integer.parseInt(scoreGdlTerm.toSentence().getName().getValue()));
 
 		IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
 				rule.getBody(),

@@ -58,11 +58,8 @@ public class GdlCastHelper {
 
         FodotPredicateDeclaration decl = trans.processCompoundStaticPredicate(literal);
 
-        List<IFodotTerm> elements = new ArrayList<>();
-        elements.add(createVariable("t",trans.getTimeType()));
+        List<IFodotTerm> elements = trans.processSentenceArgumentsTimed(literal, decl, variables);
 
-        List<IFodotTerm> arguments = trans.processSentenceArguments(literal, decl, elements.size(), variables);
-        elements.addAll(arguments);
 
         return createPredicate(
                 trans.getPool().getCompoundTimedVerionOf(decl),
@@ -141,13 +138,7 @@ public class GdlCastHelper {
         		trans.getPool().getTimedVerionOf(
         				trans.getPool().getPredicate(fluentPredSentence.getName().getValue()));
 
-        List<IFodotTerm> elements = new ArrayList<>();
-        elements.add(createVariable("t",trans.getTimeType()));
-
-        List<IFodotTerm> arguments = 
-        		trans.processSentenceArguments(fluentPredSentence, decl, elements.size(), variables);
-        elements.addAll(arguments);
-        
+        List<IFodotTerm> elements = trans.processSentenceArgumentsTimed(fluentPredSentence, decl, variables);
 
         return createPredicate(
                 decl,
@@ -191,7 +182,7 @@ public class GdlCastHelper {
     						trans.getActionType()
     				);
 
-    		List<IFodotTerm> actionVariables = trans.processSentenceArguments(actionPredSentence, actionTermDecl, 0, variables);
+    		List<IFodotTerm> actionVariables = trans.processSentenceArguments(actionPredSentence, actionTermDecl, variables);
     	
     		actionFodotTerm = createPredicateTerm(actionTermDecl, actionVariables);
     	}

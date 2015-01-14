@@ -333,10 +333,10 @@ public class FodotGameFactory {
          *    *en dit voor elk tripel*
          * }
          */
-        Map<Pair<String, Integer>, Set<IFodotFormula>> scoreMap = source.getScoreMap();
+        Map<Pair<IFodotTerm, Integer>, Set<IFodotFormula>> scoreMap = source.getScoreMap();
         List<FodotInductiveSentence> definitions = new ArrayList<>();
-        for (Pair<String, Integer> scorePair: scoreMap.keySet()) {
-            String playerName = scorePair.left;
+        for (Pair<IFodotTerm, Integer> scorePair: scoreMap.keySet()) {
+        	IFodotTerm playerTerm = scorePair.left;
             int score = scorePair.right;
             for (IFodotFormula formula : scoreMap.get(scorePair)) {
                 definitions.add(
@@ -344,7 +344,7 @@ public class FodotGameFactory {
                                         createInductiveFunctionHead(
                                                 createFunction(
                                                         scoreFunctionDeclaration,
-                                                        createConstant("p_" + playerName, source.getPlayerType())
+                                                        playerTerm
                                                 ),
                                                 createConstant(Integer.toString(score), source.getScoreType())
                                         ), FormulaUtil.makeVariableFree(formula)
