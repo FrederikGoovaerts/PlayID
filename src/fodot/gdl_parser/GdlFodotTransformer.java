@@ -457,7 +457,7 @@ public class GdlFodotTransformer implements GdlTransformer{
     public void processRoleRelation(GdlRelation relation) {
         if(processingRules)
             throw new GdlParsingOrderException("A rule has already been processed," +
-                    "processing realtions is not allowed anymore.");
+                    "processing relations is not allowed anymore.");
 
         // Role: (role player)
         GdlConstant player = relation.getBody().get(0).toSentence().getName();
@@ -468,7 +468,7 @@ public class GdlFodotTransformer implements GdlTransformer{
     public void processInitRelation(GdlRelation relation) {
         if(processingRules)
             throw new GdlParsingOrderException("A rule has already been processed," +
-                    "processing realtions is not allowed anymore.");
+                    "processing relations is not allowed anymore.");
 
         // Init: (init (pred x1 .. xn))
 
@@ -493,7 +493,7 @@ public class GdlFodotTransformer implements GdlTransformer{
     public void processStaticPredicateRelation(GdlRelation relation) {
         if(processingRules)
             throw new GdlParsingOrderException("A rule has already been processed," +
-                    "processing realtions is not allowed anymore.");
+                    "processing relations is not allowed anymore.");
 
         // Static: (pred x1 .. xn)
         String predName = relation.getName().getValue();
