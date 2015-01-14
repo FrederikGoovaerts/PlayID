@@ -82,24 +82,24 @@ public class FodotGameFactory {
     public FodotGameFactory(GdlFodotTransformer source,
                             LTCPool pool,
                             FodotPredicateDeclaration doPred,
-                            FodotPredicateDeclaration terminalPred) {
+                            FodotPredicateDeclaration terminalPred,
+                            int timeLimit) {
+
         if(!source.isInternalPool(pool))
             throw new IllegalArgumentException("Pool and source are not a match.");
         this.source = source;
         this.pool = pool;
         this.doPredicateDeclaration = doPred;
         this.terminalTimePredicateDeclaration = terminalPred;
+        this.timeLimit = timeLimit;
         buildDefaultVocItems();
     }
-
 
     public FodotGameFactory(GdlFodotTransformer source,
                             LTCPool pool,
                             FodotPredicateDeclaration doPred,
-                            FodotPredicateDeclaration terminalPred,
-                            int timeLimit) {
-        this(source, pool, doPred, terminalPred);
-        this.timeLimit = timeLimit;
+                            FodotPredicateDeclaration terminalPred) {
+        this(source, pool, doPred, terminalPred, DEFAULT_TIME);
     }
 
     /***************************************************************************
@@ -124,7 +124,7 @@ public class FodotGameFactory {
      * Class Methods
      **************************************************************************/
 
-    Fodot createFodot(){
+    public Fodot createFodot(){
         FodotVocabulary voc = this.buildVocabulary();
         FodotTheory theo = this.buildTheory(voc);
         FodotStructure struc = this.buildStructure(voc);
