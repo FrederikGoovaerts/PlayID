@@ -42,6 +42,7 @@ import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.util.FormulaUtil;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -774,18 +775,18 @@ public class GdlFodotTransformer implements GdlTransformer{
 		String predName = predSentence.getName().getValue();
 		int amountOfArguments = predSentence.arity();
 
-		FodotPredicateDeclaration pred;
+		FodotPredicateDeclaration predDecl;
 
 		//If necessary, register predicate
 		if(!isCompoundStaticPredicateRegistered(predName)) {
-			pred = new FodotPredicateDeclaration(
+			predDecl = new FodotPredicateDeclaration(
 					predName,
-					FodotType.getSameTypeList(amountOfArguments, allType)
+					FormulaUtil.createTypeList(allType, amountOfArguments)
 					);
-			this.addCompoundStaticPredicate(pred);
+			this.addCompoundStaticPredicate(predDecl);
 		} else {
-			pred = this.getCompoundStaticPredicate(predName);
-			if(pred.getAmountOfArgumentTypes() != amountOfArguments)
+			predDecl = this.getCompoundStaticPredicate(predName);
+			if(predDecl.getAmountOfArgumentTypes() != amountOfArguments)
 				throw new IllegalStateException("Predicate differs in arity from before!");
 		}
 
@@ -803,7 +804,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 			}
 		}
 
-		return pred;
+		return predDecl;
 	}
 
 	Map<IFodotEnumerationElement, String> translationsFromFodot = new HashMap<IFodotEnumerationElement, String>();

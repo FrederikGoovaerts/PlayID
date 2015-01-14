@@ -14,7 +14,6 @@ import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
-
 import static fodot.helpers.FodotPartBuilder.*;
 
 /**
@@ -99,57 +98,9 @@ public class GdlCastHelper {
             HashMap<GdlVariable, FodotVariable> variables,
             GdlFodotTransformer trans) {
         if(relation.getName().toString().equals("does")) {
-            // process (does *player* *actionpred*)
         	
-        	/*
-        	 * NOTE: toSentence geeft exceptions wanneer je dit op een variabele doet!
-        	 */
-        	String playerName;
-        	try {
-        		playerName = relation.get(0).toSentence().getName().getValue();
-        	} catch (RuntimeException e) {
-        		playerName = relation.get(0).toString();
-        	}
-        	IFodotTerm playerTerm = trans.convertRawRole(playerName);
+        	return generateDoes(relation, variables, trans);    
         	
-        	
-            GdlSentence actionPredSentence = relation.get(1).toSentence();
-            FodotPredicateTermDeclaration actionTermDecl = createPredicateTermDeclaration(
-                    actionPredSentence.getName().getValue(),
-                    FodotType.getSameTypeList(
-                    		actionPredSentence.arity(),
-                            trans.getAllType()
-                    ),
-                    trans.getActionType()
-            );
-            
-            
-            List<IFodotTerm> actionVariables = new ArrayList<>();
-            for (GdlTerm term : actionPredSentence.getBody()) {
-                //GdlSentence sentence = gdlTerm.toSentence();
-                IFodotTerm actionVar;
-                if(term.isGround()){
-                    actionVar = trans.convertRawConstantName(term.toString());
-                } else {
-                    if(variables.containsKey(term)){
-                        actionVar = variables.get(term);
-                    } else {
-                        FodotVariable temp = createVariable(trans.getAllType());
-                        variables.put((GdlVariable) term,temp);
-                        actionVar = temp;
-                    }
-                }
-                actionVariables.add(actionVar);
-            }
-            FodotPredicate actionPredicate = createPredicate(
-                    trans.getDoPredicate(),
-                    createVariable("t",trans.getTimeType()),
-                    playerTerm,
-                    createPredicateTerm(actionTermDecl, actionVariables)
-            );
-            //TODO: uncomment this as soon as translations are working
-//            trans.addTranslation(actionPredicate, actionPredSentence.toString());
-            return actionPredicate;
         } else if(relation.getName().toString().equals("true")) {
             // process (true (*fluentpred*))
             GdlSentence fluentPredSentence = relation.get(0).toSentence();
@@ -227,7 +178,68 @@ public class GdlCastHelper {
             );
         }
     }
-    private static IFodotFormula generateDistinct(
+    private static IFodotFormula generateDoes(GdlRelation relation,
+			HashMap<GdlVariable, FodotVariable> variables,
+			GdlFodotTransformer trans) {
+        // process (does *player* *actionpred*)
+    	
+    	/*
+    	 * NOTE: toSentence geeft exceptions wanneer je dit op een variabele doet!
+    	 */
+    	
+    	GdlTerm playerGdlTerm = relation.get(0);
+    	IFodotTerm playerTerm;
+    	if (playerGdlTerm instanceof GdlVariable) {
+    		playerTerm = trans.processTerm(playerGdlTerm, trans.getPlayerType(), variables);
+    	} else {
+    		String playerName = relation.get(0).toSentence().getName().getValue();
+        	playerTerm = trans.convertRawRole(playerName);
+    	}
+
+    	//IFodotTerm playerTerm = trans.processTerm(relation.get(0), trans.getPlayerType(), variables);
+    	
+        GdlSentence actionPredSentence = relation.get(1).toSentence();
+        FodotPredicateTermDeclaration actionTermDecl = createPredicateTermDeclaration(
+                actionPredSentence.getName().getValue(),
+                FodotType.getSameTypeList(
+                		actionPredSentence.arity(),
+                        trans.getAllType()
+                ),
+                trans.getActionType()
+        );
+        
+        
+        List<IFodotTerm> actionVariables = new ArrayList<>();
+        for (GdlTerm term : actionPredSentence.getBody()) {
+            //GdlSentence sentence = gdlTerm.toSentence();
+            IFodotTerm actionVar;
+            if(term.isGround()){
+                actionVar = trans.convertRawConstantName(term.toString());
+            } else {
+                if(variables.containsKey(term)){
+                    actionVar = variables.get(term);
+                } else {
+                    FodotVariable temp = createVariable(trans.getAllType());
+                    variables.put((GdlVariable) term,temp);
+                    actionVar = temp;
+                }
+            }
+            actionVariables.add(actionVar);
+        }
+        FodotPredicate actionPredicate = createPredicate(
+                trans.getDoPredicate(),
+                createVariable("t",trans.getTimeType()),
+                playerTerm,
+                createPredicateTerm(actionTermDecl, actionVariables)
+        );
+        //TODO: uncomment this as soon as translations are working
+//        trans.addTranslation(actionPredicate, actionPredSentence.toString());
+        return actionPredicate;
+    
+		
+	}
+
+	private static IFodotFormula generateDistinct(
             GdlDistinct distinct,
             HashMap<GdlVariable,FodotVariable> variables,
             GdlFodotTransformer trans) {

@@ -66,8 +66,6 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
     }
 
     public void setArgumentType(int i, FodotType t){
-        if(!getArgumentType(i).getName().equals("Unfilled"))
-            throw new IllegalArgumentException("Can't replace a legal type!");
         this.argumentTypes.set(i, t);
     }
     
