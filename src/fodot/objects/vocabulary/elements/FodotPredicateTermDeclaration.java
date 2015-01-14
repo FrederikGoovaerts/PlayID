@@ -78,9 +78,7 @@ public class FodotPredicateTermDeclaration extends
 
 	@Override
 	public String toString() {
-		return "FodotPredicateTermDeclaration [getType()=" + getType()
-				+ ", getName()=" + getName() + ", getArgumentTypes()="
-				+ getArgumentTypes() + "]";
+		return "[FodotPredicateTermDeclaration "+toCode()+"]";
 	}
 
 

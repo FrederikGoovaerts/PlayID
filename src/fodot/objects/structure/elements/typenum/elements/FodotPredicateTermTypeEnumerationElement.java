@@ -14,7 +14,7 @@ public class FodotPredicateTermTypeEnumerationElement extends
 	
 	public FodotPredicateTermTypeEnumerationElement(FodotPredicateTermDeclaration decl, Collection<? extends IFodotTypeEnumerationElement> elements) {
 		super(elements);
-		setDeclaration(declaration);
+		setDeclaration(decl);
 	}
 
 	/**********************************************
