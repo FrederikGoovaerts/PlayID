@@ -4,13 +4,39 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.general.IFodotElement;
+import fodot.objects.theory.elements.IFodotSentenceElement;
 
 public class CollectionPrinter {
 	public static List<String> toCode(Collection<? extends IFodotElement> list) {
+		if (list == null) {
+			throw new IllegalArgumentException("Not a valid list to convert to code: " + list);
+		}
 		List<String> toCodify = new ArrayList<String>();
 		for (IFodotElement element : list) {
 			toCodify.add(element.toCode());
+		}
+		return toCodify;
+	}
+	
+	/**
+	 * This method codifies sentence elements and adds necessary brackets
+	 * @param list
+	 * @param bindingorder	The bindingorder of the caller
+	 * @return	List of codified elements
+	 */
+	public static List<String> toCode(Collection<? extends IFodotSentenceElement> list, int bindingorder) {
+		if (list == null) {
+			throw new IllegalArgumentException("Not a valid list to convert to code: " + list);
+		}
+		List<String> toCodify = new ArrayList<String>();
+		for (IFodotSentenceElement element : list) {
+			String stringified = element.toCode();
+			if (bindingorder >= 0
+					&& element.getBindingOrder() >= bindingorder) {
+				stringified = "(" + stringified + ")";
+			}
+			toCodify.add(stringified);
 		}
 		return toCodify;
 	}

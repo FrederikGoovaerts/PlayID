@@ -11,10 +11,10 @@ import fodot.util.NameUtil;
 public class FodotProcedures implements IFodotFileElement {
 	private String name;
 	private List<String> arguments;
-	private List<FodotProcedure> procedures;
+	private List<FodotProcedureStatement> procedures;
 	private static final String DEFAULT_NAME = "main";
 	
-	public FodotProcedures(String name, List<String> arguments, List<FodotProcedure> procedures) {
+	public FodotProcedures(String name, List<String> arguments, List<FodotProcedureStatement> procedures) {
 		super();
 		setName(name);
 		setArguments(arguments);
@@ -39,12 +39,12 @@ public class FodotProcedures implements IFodotFileElement {
 	}
 
 	//PRODECURES
-	public List<FodotProcedure> getProcedures() {
-		return new ArrayList<FodotProcedure>(procedures);
+	public List<FodotProcedureStatement> getProcedures() {
+		return new ArrayList<FodotProcedureStatement>(procedures);
 	}
 
-	private void setProcedures(List<FodotProcedure> procs) {
-		this.procedures = (procs == null ? new ArrayList<FodotProcedure>() : procs);
+	private void setProcedures(List<FodotProcedureStatement> procs) {
+		this.procedures = (procs == null ? new ArrayList<FodotProcedureStatement>() : procs);
 	}
 	
 	//ARGUMENTS

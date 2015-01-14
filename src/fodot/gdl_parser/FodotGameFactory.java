@@ -13,6 +13,7 @@ import static fodot.helpers.FodotPartBuilder.createExistsExactly;
 import static fodot.helpers.FodotPartBuilder.createForAll;
 import static fodot.helpers.FodotPartBuilder.createFunction;
 import static fodot.helpers.FodotPartBuilder.createFunctionEnumeration;
+import static fodot.helpers.FodotPartBuilder.createFunctionEnumerationElement;
 import static fodot.helpers.FodotPartBuilder.createImplies;
 import static fodot.helpers.FodotPartBuilder.createIncludeHolder;
 import static fodot.helpers.FodotPartBuilder.createIncludeLTC;
@@ -39,7 +40,6 @@ import static fodot.helpers.FodotPartBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,16 +50,18 @@ import org.ggp.base.util.Pair;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.Fodot;
 import fodot.objects.includes.FodotIncludeHolder;
-import fodot.objects.procedure.FodotProcedure;
+import fodot.objects.procedure.FodotProcedureStatement;
 import fodot.objects.procedure.FodotProcedures;
-import fodot.objects.sentence.formulas.IFodotFormula;
-import fodot.objects.sentence.formulas.argumented.FodotPredicate;
-import fodot.objects.sentence.terms.FodotVariable;
-import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.structure.enumerations.IFodotEnumerationElement;
+import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
+import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.FodotTheory;
-import fodot.objects.theory.definitions.FodotInductiveSentence;
+import fodot.objects.theory.elements.formulas.FodotPredicate;
+import fodot.objects.theory.elements.formulas.IFodotFormula;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveSentence;
+import fodot.objects.theory.elements.terms.FodotVariable;
+import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
@@ -389,9 +391,10 @@ public class FodotGameFactory {
          * resultaat:
          * Score={*naam*()->100}
          */
-        Map<IFodotEnumerationElement[],IFodotEnumerationElement> desiredResult = new HashMap<>();
-        IFodotEnumerationElement[] ownRole = {source.getOwnRole()};
-        desiredResult.put(ownRole,createConstant("100", getNaturalNumberType()));
+       	List<IFodotFunctionEnumerationElement> desiredResult = new ArrayList<IFodotFunctionEnumerationElement>();
+       	List<? extends IFodotTypeEnumerationElement> ownRole = Arrays.asList(source.getOwnRole());
+        desiredResult.add(
+        		createFunctionEnumerationElement(ownRole,createConstant("100", getNaturalNumberType())) );
         toReturn.addElement(
                 createFunctionEnumeration(
                         this.scoreFunctionDeclaration, desiredResult
@@ -404,7 +407,7 @@ public class FodotGameFactory {
          * I_*predicaat* = {*waarden()*}
          * OPGEPAST: in de structure moet achter elke constante een ()
          */
-        Map<FodotPredicateDeclaration, Set<IFodotEnumerationElement[]>> initMap
+        Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> initMap
                 = this.source.getInitialValues();
         for (FodotPredicateDeclaration declaration : initMap.keySet()) {
             toReturn.addElement(
@@ -418,7 +421,7 @@ public class FodotGameFactory {
          * resultaat:
          * *predicaat*={*waarden()*}
          */
-        Map<FodotPredicateDeclaration, Set<IFodotEnumerationElement[]>> staticMap
+        Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> staticMap
                 = this.source.getStaticValues();
         for (FodotPredicateDeclaration declaration : staticMap.keySet()) {
             toReturn.addElement(
@@ -607,7 +610,7 @@ public class FodotGameFactory {
 
         //stdoptions.nbmodels=5
         //printmodels(modelexpand(T,S))
-        List<FodotProcedure> proc = new ArrayList<>(
+        List<FodotProcedureStatement> proc = new ArrayList<>(
                 Arrays.asList(
                         createProcedure("stdoptions.nbmodels=5"),
                         createProcedure("printmodels(modelexpand(T,S))")

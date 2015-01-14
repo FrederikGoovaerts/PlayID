@@ -1,7 +1,7 @@
 package fodot.communication.output;
 
-import fodot.objects.sentence.terms.FodotConstant;
-import fodot.objects.sentence.terms.IFodotTerm;
+import fodot.objects.theory.elements.terms.FodotConstant;
+import fodot.objects.theory.elements.terms.IFodotTerm;
 
 public class GdlAction {
 	private int time;
@@ -47,9 +47,9 @@ public class GdlAction {
 	
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("(does ");
-		builder.append(translateTerm(player) + " ");
-		builder.append(translateTerm(action) + " )");
+		builder.append("( does ");
+		builder.append(translateTerm(player).trim() + " ");
+		builder.append("( " + translateTerm(action).trim() + " ) )");
 		
 		//This is for when action is a predicateterm
 //		builder.append(" (" + action.getName());
@@ -67,7 +67,14 @@ public class GdlAction {
 			return null;
 		}
 		//TODO: link met vertaler van GDL->FO(.)
-		return constant.toCode();
+		
+		//Temporal cheaty way of translating:
+		return constant.toCode().trim()
+				//Replace all typical action stuff by spaces
+				.replaceAll("[(]|[)]", " ")
+				.replaceAll("[,]|[,][\b]", "")
+				//Replace the typical c_ and p_ by nothing to translate our conventions
+				.replaceAll("[a-zA-Z][_]", "");
 	}
 	
 }

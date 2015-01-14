@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.general.FodotElementContainer;
+import fodot.objects.general.IFodotElement;
 import fodot.util.CollectionPrinter;
+import fodot.util.NameUtil;
 
-public abstract class FodotFileElement<E extends IFodotElement> implements IFodotFileElement {
-	private Set<E> elements;
+public abstract class FodotFileElement<E extends IFodotElement> extends FodotElementContainer<E> implements IFodotFileElement {
+
 	private String name;
 	private Set<IFodotFileElement> prerequired;
 
 	public FodotFileElement(String name, Collection<? extends E> elements,
 			Collection<? extends IFodotFileElement> prerequired) {
-		super();
-		setElements(elements);
+		super(elements);
 		setName(name);
 		setPrerequiredElements(prerequired);
 	}
@@ -32,64 +32,6 @@ public abstract class FodotFileElement<E extends IFodotElement> implements IFodo
 		this(name, elements, new HashSet<IFodotFileElement>());
 	}
 	
-	
-
-	/**********************************************
-	 *  Elements methods
-	 ***********************************************/
-	private void setElements(Collection<? extends E> argElements) {
-		this.elements = (isValidElements(argElements) ? new LinkedHashSet<E>(argElements)
-				: new LinkedHashSet<E>());
-	}
-
-	private boolean isValidElements(Collection<? extends E> argElements) {
-		return argElements != null;
-	}
-
-	public Set<E> getElements() {
-		return new LinkedHashSet<E>(elements);
-	}
-
-	public void addElement(E argElement) {
-		this.elements.add(argElement);
-	}
-
-	public void addAllElements(Collection<? extends E> argElements) {
-		if (argElements != null) {
-			this.elements.addAll(argElements);
-		}
-	}
-
-	public boolean containsElement(E element) {
-		return this.elements.contains(element);
-	}
-
-	public boolean hasElements() {
-		return !elements.isEmpty();
-	}
-
-	public void removeElement(E argElement) {
-		this.elements.remove(argElement);
-	}
-
-	public int getAmountOfElements() {
-		return this.elements.size();
-	}
-	
-	public Set<E> getElementsOfClass(Class<?> clazz) {
-		if (clazz == null) {
-			return new HashSet<E>();
-		}
-		Set<E> result = new LinkedHashSet<E>();
-		for (E el : elements) {
-			if (clazz.isInstance(el)) {
-				result.add(el);
-			}
-		}
-		return result;
-	}
-	
-	/**********************************************/
 	
 	//Prerequisites
 	@Override
@@ -106,22 +48,23 @@ public abstract class FodotFileElement<E extends IFodotElement> implements IFodo
 	}
 	
 	//Name
+	/**
+	 * For example: vocabulary, theory, structure etc
+	 */
+	public abstract String getFileElementName();
+		
 
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
-		this.name = (name == null? getDefaultName() : name);
+		this.name = (NameUtil.isValidName(name)? name : getDefaultName());
 	}
 	
 	public abstract String getDefaultName();
-
-	/**
-	 * For example: vocabulary, theory, structure etc
-	 */
-	public abstract String getFileElementName();
 	
+	//Tocode
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
@@ -138,9 +81,54 @@ public abstract class FodotFileElement<E extends IFodotElement> implements IFodo
 		
 		//Print elements
 		builder.append(" {\n");
-		builder.append(CollectionPrinter.toNewLinesWithTabsAsCode(elements,1));
+		builder.append(CollectionPrinter.toNewLinesWithTabsAsCode(getElements(),1));
 		builder.append("}");
 		return builder.toString();
 	}
+	
+	//Merging
+	@Override
+	public void mergeWith(IFodotFileElement other) {
+		if (this.getClass().equals(other.getClass())) {
+			@SuppressWarnings("unchecked")
+			FodotFileElement<E> casted = (FodotFileElement<E>) other;
+			addAllElements(casted.getElements());
+		}
+	}
+	
+	
+	//Hashcode&Equals
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result
+				+ ((prerequired == null) ? 0 : prerequired.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FodotFileElement<?> other = (FodotFileElement<?>) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (prerequired == null) {
+			if (other.prerequired != null)
+				return false;
+		} else if (!prerequired.equals(other.prerequired))
+			return false;
+		return true;
+	}
+
 	
 }

@@ -11,41 +11,46 @@ import java.util.Set;
 import fodot.objects.Fodot;
 import fodot.objects.comments.FodotBlankLines;
 import fodot.objects.comments.FodotComment;
-import fodot.objects.includes.FodotInclude;
-import fodot.objects.includes.FodotIncludeFile;
 import fodot.objects.includes.FodotIncludeHolder;
-import fodot.objects.includes.FodotIncludeLibrary;
-import fodot.objects.procedure.FodotProcedure;
+import fodot.objects.includes.elements.FodotIncludeFile;
+import fodot.objects.includes.elements.FodotIncludeLibrary;
+import fodot.objects.includes.elements.FodotIncludeStatement;
+import fodot.objects.procedure.FodotProcedureStatement;
 import fodot.objects.procedure.FodotProcedures;
-import fodot.objects.sentence.formulas.IFodotFormula;
-import fodot.objects.sentence.formulas.argumented.FodotPredicate;
-import fodot.objects.sentence.formulas.connectors.FodotFormulaConnector;
-import fodot.objects.sentence.formulas.connectors.FodotTermConnector;
-import fodot.objects.sentence.formulas.quantifiers.FodotQuantifier;
-import fodot.objects.sentence.formulas.unary.FodotNot;
-import fodot.objects.sentence.terms.FodotArithmeticConnector;
-import fodot.objects.sentence.terms.FodotConstant;
-import fodot.objects.sentence.terms.FodotFunction;
-import fodot.objects.sentence.terms.FodotPredicateTerm;
-import fodot.objects.sentence.terms.FodotVariable;
-import fodot.objects.sentence.terms.IFodotTerm;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.structure.IFodotStructureElement;
-import fodot.objects.structure.enumerations.FodotConstantFunctionEnumeration;
-import fodot.objects.structure.enumerations.FodotFunctionEnumeration;
-import fodot.objects.structure.enumerations.FodotNumericalTypeRangeEnumeration;
-import fodot.objects.structure.enumerations.FodotPredicateEnumeration;
-import fodot.objects.structure.enumerations.FodotTypeEnumeration;
-import fodot.objects.structure.enumerations.IFodotEnumerationElement;
-import fodot.objects.theory.FodotSentence;
+import fodot.objects.structure.elements.IFodotStructureElement;
+import fodot.objects.structure.elements.functionenum.FodotConstantFunctionEnumeration;
+import fodot.objects.structure.elements.functionenum.FodotFunctionEnumeration;
+import fodot.objects.structure.elements.functionenum.elements.FodotFunctionEnumerationElement;
+import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
+import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
+import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typenum.FodotNumericalTypeRangeEnumeration;
+import fodot.objects.structure.elements.typenum.FodotTypeEnumeration;
+import fodot.objects.structure.elements.typenum.elements.FodotPredicateTermTypeEnumerationElement;
+import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.FodotTheory;
-import fodot.objects.theory.IFodotTheoryElement;
-import fodot.objects.theory.definitions.FodotInductiveDefinitionBlock;
-import fodot.objects.theory.definitions.FodotInductiveDefinitionConnector;
-import fodot.objects.theory.definitions.FodotInductiveFunction;
-import fodot.objects.theory.definitions.FodotInductiveQuantifier;
-import fodot.objects.theory.definitions.FodotInductiveSentence;
-import fodot.objects.theory.definitions.IFodotInductiveDefinitionElement;
+import fodot.objects.theory.elements.FodotSentence;
+import fodot.objects.theory.elements.IFodotTheoryElement;
+import fodot.objects.theory.elements.formulas.FodotFormulaConnector;
+import fodot.objects.theory.elements.formulas.FodotNot;
+import fodot.objects.theory.elements.formulas.FodotPredicate;
+import fodot.objects.theory.elements.formulas.FodotQuantifier;
+import fodot.objects.theory.elements.formulas.FodotTermComparator;
+import fodot.objects.theory.elements.formulas.IFodotFormula;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionBlock;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionConnector;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveFunction;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveQuantifier;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveSentence;
+import fodot.objects.theory.elements.inductivedefinitions.IFodotInductiveDefinitionElement;
+import fodot.objects.theory.elements.terms.FodotArithmeticConnector;
+import fodot.objects.theory.elements.terms.FodotConstant;
+import fodot.objects.theory.elements.terms.FodotFunction;
+import fodot.objects.theory.elements.terms.FodotPredicateTerm;
+import fodot.objects.theory.elements.terms.FodotVariable;
+import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
@@ -111,20 +116,20 @@ public class FodotPartBuilder {
 	//TERM CONNECTORS
 	private static final String EQUALS_SYMBOL = "=";
 
-	public static FodotTermConnector createEquals(IFodotTerm term1, IFodotTerm term2) {
-		return new FodotTermConnector(term1, EQUALS_SYMBOL, term2);
+	public static FodotTermComparator createEquals(IFodotTerm term1, IFodotTerm term2) {
+		return new FodotTermComparator(term1, EQUALS_SYMBOL, term2);
 	}
 
 	private static final String DISTINCT_SYMBOL = "~=";
 
-	public static FodotTermConnector createDistinct(IFodotTerm term1, IFodotTerm term2) {
-		return new FodotTermConnector(term1, DISTINCT_SYMBOL, term2);
+	public static FodotTermComparator createDistinct(IFodotTerm term1, IFodotTerm term2) {
+		return new FodotTermComparator(term1, DISTINCT_SYMBOL, term2);
 	}
 
 	private static final String LESS_THAN = "<";
 
-	public static FodotTermConnector createLessThan(IFodotTerm term1, IFodotTerm term2) {
-		return new FodotTermConnector(term1, LESS_THAN, term2);
+	public static FodotTermComparator createLessThan(IFodotTerm term1, IFodotTerm term2) {
+		return new FodotTermComparator(term1, LESS_THAN, term2);
 	}
 
 	public static IFodotFormula createLessThanOrEqualTo(IFodotTerm term1, IFodotTerm term2) {
@@ -133,8 +138,8 @@ public class FodotPartBuilder {
 
 	private static final String GREATER_THAN = ">";
 
-	public static FodotTermConnector createGreaterThan(IFodotTerm term1, IFodotTerm term2) {
-		return new FodotTermConnector(term1, GREATER_THAN, term2);
+	public static FodotTermComparator createGreaterThan(IFodotTerm term1, IFodotTerm term2) {
+		return new FodotTermComparator(term1, GREATER_THAN, term2);
 	}
 
 	public static IFodotFormula createGreaterThanOrEqualTo(IFodotTerm term1, IFodotTerm term2) {
@@ -241,69 +246,62 @@ public class FodotPartBuilder {
 		return createFunction(NEGATE_INTEGER_DECLARATION, term);
 	}
 
-	//QUANTIFIERS	
-
-	//Lil' helper
-	private static Set<FodotVariable> wrapVariableInSet(FodotVariable var) {
-		HashSet<FodotVariable> variables = new HashSet<FodotVariable>();
-		variables.add(var);
-		return variables;		
-	}
+	//QUANTIFIERS
 
 	private static final String FORALL_SYMBOL = "!";
 
-	public static FodotQuantifier createForAll(Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(FORALL_SYMBOL, set, formula);
+	public static FodotQuantifier createForAll(Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+		return new FodotQuantifier(FORALL_SYMBOL, variables, formula);
 	}
 	public static FodotQuantifier createForAll(FodotVariable variable, IFodotFormula formula) {
-		return createForAll(wrapVariableInSet(variable), formula);
+		return createForAll(Arrays.asList(variable), formula);
 	}
 
 	private static final String EXISTS_SYMBOL = "?";	
 
-	public static FodotQuantifier createExists(Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(EXISTS_SYMBOL, set, formula);
+	public static FodotQuantifier createExists(Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_SYMBOL, variables, formula);
 	}
 
 	public static FodotQuantifier createExists(FodotVariable variable, IFodotFormula formula) {
-		return createExists(wrapVariableInSet(variable), formula);
+		return createExists(Arrays.asList(variable), formula);
 	}
 
 	//Awesome exists
 	private static final String EXISTS_EXACTLY_SYMBOL = EXISTS_SYMBOL + "=";
-	public static FodotQuantifier createExistsExactly(int amount, Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(EXISTS_EXACTLY_SYMBOL + amount, set, formula);
+	public static FodotQuantifier createExistsExactly(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_EXACTLY_SYMBOL + amount, variables, formula);
 	}
 
 	public static FodotQuantifier createExistsExactly(int amount, FodotVariable var, IFodotFormula formula) {
-		return createExistsExactly(amount, wrapVariableInSet(var), formula);		
+		return createExistsExactly(amount, Arrays.asList(var), formula);		
 	}
 
 	private static final String EXISTS_LESS_THAN_SYMBOL = EXISTS_SYMBOL + "<";
-	public static FodotQuantifier createExistsLessThan(int amount, Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(EXISTS_LESS_THAN_SYMBOL + amount, set, formula);
+	public static FodotQuantifier createExistsLessThan(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_LESS_THAN_SYMBOL + amount, variables, formula);
 	}
 
 	public static FodotQuantifier createExistsLessThan(int amount, FodotVariable var, IFodotFormula formula) {
-		return createExistsLessThan(amount, wrapVariableInSet(var), formula);		
+		return createExistsLessThan(amount, Arrays.asList(var), formula);		
 	}
 
 	private static final String EXISTS_AT_MOST_SYMBOL = EXISTS_SYMBOL + "=<";
-	public static FodotQuantifier createExistsAtMost(int amount, Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(EXISTS_AT_MOST_SYMBOL + amount, set, formula);
+	public static FodotQuantifier createExistsAtMost(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_AT_MOST_SYMBOL + amount, variables, formula);
 	}
 
 	public static FodotQuantifier createExistsAtMost(int amount, FodotVariable var, IFodotFormula formula) {
-		return createExistsAtMost(amount, wrapVariableInSet(var), formula);		
+		return createExistsAtMost(amount, Arrays.asList(var), formula);		
 	}
 
 	private static final String EXISTS_MORE_THAN_SYMBOL = EXISTS_SYMBOL + ">";
-	public static FodotQuantifier createExistsMoreThan(int amount, Set<FodotVariable> set, IFodotFormula formula) {
-		return new FodotQuantifier(EXISTS_MORE_THAN_SYMBOL + amount, set, formula);
+	public static FodotQuantifier createExistsMoreThan(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+		return new FodotQuantifier(EXISTS_MORE_THAN_SYMBOL + amount, variables, formula);
 	}
 
 	public static FodotQuantifier createExistsMoreThan(int amount, FodotVariable var, IFodotFormula formula) {
-		return createExistsMoreThan(amount, wrapVariableInSet(var), formula);		
+		return createExistsMoreThan(amount, Arrays.asList(var), formula);		
 	}
 
 	//TERM RELATED	
@@ -356,43 +354,50 @@ public class FodotPartBuilder {
 	}
 
 	//ENUMERATIONS
-
-	public static FodotFunctionEnumeration createFunctionEnumeration(
-			FodotFunctionDeclaration declaration, Map<IFodotEnumerationElement[], IFodotEnumerationElement> values) {
-		//TODO
-		return new FodotFunctionEnumeration(declaration, values);
+	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionDeclaration declaration, 
+			Collection<? extends IFodotFunctionEnumerationElement> elements) {
+		return new FodotFunctionEnumeration(declaration, elements);
 	}
 	
 	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionDeclaration declaration) {
-		return new FodotFunctionEnumeration(declaration);
-	}
-
-	public static FodotConstantFunctionEnumeration createConstantFunctionEnumeration(
-			FodotFunctionDeclaration declaration, IFodotEnumerationElement value) {
-		return new FodotConstantFunctionEnumeration(declaration,value);
+		return createFunctionEnumeration(declaration, null);
 	}
 	
+	public static FodotFunctionEnumerationElement createFunctionEnumerationElement(
+			Collection<? extends IFodotTypeEnumerationElement> elements, IFodotTypeEnumerationElement returnValue) {
+		return new FodotFunctionEnumerationElement(elements, returnValue);
+	}
+	
+	public static FodotConstantFunctionEnumeration createConstantFunctionEnumeration(
+			FodotFunctionDeclaration declaration, IFodotTypeEnumerationElement value) {
+		return new FodotConstantFunctionEnumeration(declaration,value);
+	}
+
 	public static FodotPredicateEnumeration createPredicateEnumeration(
-			FodotPredicateDeclaration declaration, List<IFodotEnumerationElement[]> values) {
-		return new FodotPredicateEnumeration(declaration, values);
+			FodotPredicateDeclaration declaration, List<IFodotPredicateEnumerationElement> elements) {
+		return new FodotPredicateEnumeration(declaration, elements);
 	}
-//	
-//	public static FodotPredicateEnumeration createPredicateEnumeration(
-//			FodotPredicateDeclaration declaration, List<FodotConstant[]> values) {
-//		//TODO
-//		return createPredicateEnumeration(declaration, values);
-//	}
-
+	
 	public static FodotPredicateEnumeration createPredicateEnumeration(FodotPredicateDeclaration declaration) {
-		return new FodotPredicateEnumeration(declaration);
+		return createPredicateEnumeration(declaration, null);
+	}
+	
+	public static FodotPredicateEnumerationElement createPredicateEnumerationElement(
+			FodotPredicateDeclaration declaration, List<? extends IFodotTypeEnumerationElement> elements) {
+		return new FodotPredicateEnumerationElement(elements);
 	}
 
-	public static FodotTypeEnumeration createTypeEnumeration(FodotType type, List<FodotConstant> values) {
+	public static FodotTypeEnumeration createTypeEnumeration(FodotType type, Collection<? extends IFodotTypeEnumerationElement> values) {
 		return new FodotTypeEnumeration(type, values);
 	}
 
-	public static FodotTypeEnumeration createTypeEnumeration(FodotTypeDeclaration type, List<? extends IFodotEnumerationElement> values) {
+	public static FodotTypeEnumeration createTypeEnumeration(FodotTypeDeclaration type, Collection<? extends IFodotTypeEnumerationElement> values) {
 		return new FodotTypeEnumeration(type.getType(), values);
+	}
+	
+	public static FodotPredicateTermTypeEnumerationElement createPredicateTermTypeEnumerationElement(FodotPredicateTermDeclaration declaration,
+			List<? extends IFodotTypeEnumerationElement> elements) {
+		return new FodotPredicateTermTypeEnumerationElement(declaration,elements);
 	}
 
 	public static FodotNumericalTypeRangeEnumeration createNumericalTypeRangeEnumeration(
@@ -408,7 +413,6 @@ public class FodotPartBuilder {
 
 	//INDUCTIVE DEFINITIONS
 
-	//TODO: rename this to "inductivedefinitionblock"?
 	public static FodotInductiveDefinitionBlock createInductiveDefinition(List<FodotInductiveSentence> sentences) {
 		return new FodotInductiveDefinitionBlock(sentences);
 	}
@@ -436,7 +440,7 @@ public class FodotPartBuilder {
 					"This is not an inductive definition element: " + quantifier.getFormula());
 		}
 		return new FodotInductiveQuantifier(
-				quantifier.getSymbol(), quantifier.getVariable(),
+				quantifier.getSymbol(), quantifier.getVariables(),
 				(IFodotInductiveDefinitionElement) quantifier.getFormula());
 	}
 
@@ -486,31 +490,6 @@ public class FodotPartBuilder {
 	} 
 
 	//Type declaration
-	@Deprecated
-	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<IFodotDomainElement> domain, Set<FodotType> supertypes, Set<FodotType> subtypes) {
-		type.addAllSubtypes(subtypes);
-		type.addAllSupertypes(supertypes);
-		type.addAllDomainElements(domain);
-		return new FodotTypeDeclaration(type);
-	}
-
-	@Deprecated
-	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<IFodotDomainElement> domain, Set<FodotType> supertypes) {
-		return createTypeDeclaration(type, domain, supertypes, null);
-	}
-
-	@Deprecated
-	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, FodotType supertype) {
-		Set<FodotType> supertypes = new HashSet<FodotType>();
-		supertypes.add(supertype);
-		return createTypeDeclaration(type, null, supertypes, null);
-	}
-
-	@Deprecated
-	public static FodotTypeDeclaration createTypeDeclaration(FodotType type, Set<IFodotDomainElement> domain) {
-		return createTypeDeclaration(type, domain, null, null);
-	}
-
 	public static FodotTypeDeclaration createTypeDeclaration(FodotType type) {
 		if (type == null)
 			throw new IllegalArgumentException(type + " is not a valid type!");
@@ -568,18 +547,18 @@ public class FodotPartBuilder {
 		return new FodotIncludeFile(path);
 	}
 
-	public static FodotIncludeHolder createIncludeHolder(Collection<? extends FodotInclude> includes) {
+	public static FodotIncludeHolder createIncludeHolder(Collection<? extends FodotIncludeStatement> includes) {
 		return new FodotIncludeHolder(includes);
 	}
 
-	public static FodotIncludeHolder createIncludeHolder(FodotInclude initElement) {
-		Set<FodotInclude> toAdd = new HashSet<FodotInclude>();
+	public static FodotIncludeHolder createIncludeHolder(FodotIncludeStatement initElement) {
+		Set<FodotIncludeStatement> toAdd = new HashSet<FodotIncludeStatement>();
 		toAdd.add(initElement);
 		return createIncludeHolder(toAdd);
 	}
 
 	public static FodotIncludeHolder createIncludeHolder() {
-		return createIncludeHolder(new HashSet<FodotInclude>());
+		return createIncludeHolder(new HashSet<FodotIncludeStatement>());
 	}
 
 	//FODOT THEORY
@@ -622,15 +601,15 @@ public class FodotPartBuilder {
 	}
 
 	//PROCEDURES
-	public static FodotProcedures createProcedures(String name, List<String> arguments, List<FodotProcedure> procedures) {
+	public static FodotProcedures createProcedures(String name, List<String> arguments, List<FodotProcedureStatement> procedures) {
 		return new FodotProcedures(name, arguments, procedures);
 	}
 
-	public static FodotProcedures createProcedures(String name, List<FodotProcedure> procedures) {
+	public static FodotProcedures createProcedures(String name, List<FodotProcedureStatement> procedures) {
 		return createProcedures(name, null, procedures);
 	}
 
-	public static FodotProcedures createProcedures(List<FodotProcedure> procedures) {
+	public static FodotProcedures createProcedures(List<FodotProcedureStatement> procedures) {
 		return createProcedures(null, null, procedures);
 	}
 
@@ -642,23 +621,11 @@ public class FodotPartBuilder {
 		return createProcedures(null, null, null);
 	}
 
-	public static FodotProcedure createProcedure(String procedure) {
-		return new FodotProcedure(procedure);
+	public static FodotProcedureStatement createProcedure(String procedure) {
+		return new FodotProcedureStatement(procedure);
 	}
 
 	//VOCABULARY
-	@Deprecated
-	public static FodotVocabulary createVocabulary(String name, Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
-			Set<FodotFunctionDeclaration> functions) {
-		return new FodotVocabulary(name, types, predicates, functions);
-	}
-
-	@Deprecated
-	public static FodotVocabulary createVocabulary(Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
-			Set<FodotFunctionDeclaration> functions) {
-		return createVocabulary(null, types, predicates, functions);
-	}
-	
 	public static FodotVocabulary createVocabulary(String name, Collection<? extends IFodotVocabularyElement> elements) {
 		return new FodotVocabulary(name, elements);
 	}
@@ -669,18 +636,6 @@ public class FodotPartBuilder {
 
 	public static FodotVocabulary createVocabulary() {
 		return createVocabulary(null, null);
-	}
-
-	@Deprecated
-	public static FodotLTCVocabulary createLTCVocabulary(String name, Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
-			Set<FodotFunctionDeclaration> functions) {
-		return new FodotLTCVocabulary(name, types, predicates, functions);
-	}
-
-	@Deprecated
-	public static FodotLTCVocabulary creatLTCeVocabulary(Set<FodotTypeDeclaration> types, Set<FodotPredicateDeclaration> predicates,
-			Set<FodotFunctionDeclaration> functions) {
-		return createLTCVocabulary(null, types, predicates, functions);
 	}
 	
 	public static FodotLTCVocabulary createLTCVocabulary(String name, Collection<? extends IFodotVocabularyElement> elements) {

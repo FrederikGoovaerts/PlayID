@@ -1,7 +1,7 @@
 package fodot.gdl_parser;
 
 import fodot.objects.Fodot;
-import fodot.objects.structure.enumerations.IFodotEnumerationElement;
+import fodot.objects.structure.elements.IFodotEnumerationElement;
 
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;

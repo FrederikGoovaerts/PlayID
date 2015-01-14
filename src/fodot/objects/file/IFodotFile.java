@@ -1,9 +1,10 @@
 package fodot.objects.file;
 
-import java.util.List;
+import java.util.Collection;
 
-import fodot.objects.IFodotElement;
+import fodot.objects.general.IFodotElement;
 
 public interface IFodotFile extends IFodotElement {
-	List<? extends IFodotFileElement> getElementOf(Class<?> claz);
+	Collection<? extends IFodotFileElement> getElementsOf(Class<?> claz);
+	IFodotFileElement getElementWithName(String name);
 }
