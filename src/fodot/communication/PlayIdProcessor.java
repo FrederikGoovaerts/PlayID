@@ -46,9 +46,9 @@ public class PlayIdProcessor {
 		
 		//Do something if we didn't find any models
 		if (transformer.hasErrorOccured()) {
-			System.out.println("An error has occured when running IDP");
+			throw new IllegalStateException("An error has occured when running IDP"); //TODO aparte errors hiervoor definieren
 		} else if (models.size() == 0) {
-			System.out.println("No models found");
+			throw new IllegalStateException("No models found");
 		}
 		
 		//Transform a solution 
