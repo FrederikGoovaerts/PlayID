@@ -2,8 +2,8 @@ package fodot.exceptions;
 
 public class IllegalAmountOfArguments extends IllegalArgumentException {
 	
-	public IllegalAmountOfArguments(int given, int expected) {
-		super("The amount of arguments don't match."
+	public IllegalAmountOfArguments(Object caller, int given, int expected) {
+		super("\nThe amount of arguments don't match in "+caller.getClass()+"."
 					+ "\n Given: " + given
 					+ "\n Expected: " + expected);
 	}

@@ -58,7 +58,7 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 		List<FodotType> argumentTypes = getDeclaration().getArgumentTypes();
 		//Check amount of arguments
 		if (arguments.size() != argumentTypes.size()) {
-			throw new IllegalAmountOfArguments(arguments.size(), argumentTypes.size());
+			throw new IllegalAmountOfArguments(this, arguments.size(), argumentTypes.size());
 		}
 		
 		//Check types of arguments

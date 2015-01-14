@@ -42,6 +42,7 @@ import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.util.FormulaUtil;
 
 /**
@@ -451,17 +452,36 @@ public class GdlFodotTransformer implements GdlTransformer{
 			if(variableMap != null && variableMap.containsKey(term)){
 				fodotTerm = variableMap.get(term);
 			} else {
-				GdlVariable gdlVar = (GdlVariable) term;
-				FodotVariable temp = createVariable(gdlVar.getName(),type);
-				if (variableMap != null) {
-					variableMap.put(gdlVar, temp);
+				if (term instanceof GdlVariable) {
+					GdlVariable gdlVar = (GdlVariable) term;
+					FodotVariable temp = createVariable(gdlVar.getName(),type);
+					if (variableMap != null) {
+						variableMap.put(gdlVar, temp);
+					}
+					fodotTerm = temp;
+				} else {
+					System.out.println(term + "\n-->" + term.getClass());
+					throw new IllegalArgumentException("We're dealing with a function?!");
 				}
-				fodotTerm = temp;
 			}
 		}
 		return fodotTerm;
 	}
 
+	
+	public List<IFodotTerm> processSentenceArguments(
+			GdlSentence sentence, FodotArgumentListDeclaration declaration,
+			HashMap<GdlVariable,FodotVariable> variableMap) {
+		
+		List<IFodotTerm> elements = new ArrayList<IFodotTerm>(); 
+		for (int i = 0; i < sentence.arity(); i++) {
+             GdlTerm term = sentence.get(i);
+             IFodotTerm element = processTerm(term, variableMap);
+             elements.add(element);
+         }
+		return elements;
+	}
+	
 	@Override
 	public void processRoleRelation(GdlRelation relation) {
 		if(processingRules)

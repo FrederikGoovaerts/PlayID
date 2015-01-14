@@ -102,37 +102,9 @@ public class GdlCastHelper {
         	return generateDoes(relation, variables, trans);    
         	
         } else if(relation.getName().toString().equals("true")) {
-            // process (true (*fluentpred*))
-            GdlSentence fluentPredSentence = relation.get(0).toSentence();
-            trans.processPredicate(fluentPredSentence);
-            FodotPredicateDeclaration decl = trans.getPool().getPredicate(
-                    fluentPredSentence.getName().getValue());
-
-            List<IFodotTerm> elements = new ArrayList<>();
-            elements.add(createVariable("t",trans.getTimeType()));
-
-            for (int i = 0; i < fluentPredSentence.arity(); i++) {
-                GdlTerm term = fluentPredSentence.get(i);
-                IFodotTerm element;
-                if(term.isGround()){
-                    element = trans.convertRawConstantName(term.toSentence().getName().getValue());
-                } else {
-                    if(variables.containsKey(term)){
-                        element = variables.get(term);
-                    } else {
-                        FodotVariable temp = createVariable(
-                                trans.getAllType());
-                        variables.put((GdlVariable) term,temp);
-                        element = temp;
-                    }
-                }
-                elements.add(element);
-            }
-
-            return createPredicate(
-                    trans.getPool().getTimedVerionOf(decl),
-                    elements
-            );
+        	
+        	return generateTrue(relation, variables, trans);
+        	
         } else {
             // process (*staticpred*) or (*compoundstaticpred*)
 
@@ -153,24 +125,8 @@ public class GdlCastHelper {
                 decl = trans.processCompoundStaticPredicate(relation);
             }
 
-            for (int i = 0; i < relation.arity(); i++) {
-                GdlTerm term = relation.get(i);
-                IFodotTerm element;
-                if(term.isGround()){
-                    element = trans.convertRawConstantName(term.toSentence().getName().getValue());
-                } else {
-                    if(variables.containsKey(term)){
-                        element = variables.get(term);
-                    } else {
-                        FodotVariable temp = createVariable(
-                                term.toString(),
-                                trans.getAllType());
-                        variables.put((GdlVariable) term,temp);
-                        element = temp;
-                    }
-                }
-                elements.add(element);
-            }
+            List<IFodotTerm> arguments = trans.processSentenceArguments(relation, decl, variables);
+            elements.addAll(arguments);
 
             return createPredicate(
                     decl,
@@ -178,7 +134,43 @@ public class GdlCastHelper {
             );
         }
     }
-    private static IFodotFormula generateDoes(GdlRelation relation,
+    private static IFodotFormula generateTrue(GdlRelation relation,
+			HashMap<GdlVariable, FodotVariable> variables,
+			GdlFodotTransformer trans) {
+        // process (true (*fluentpred*))
+        GdlSentence fluentPredSentence = relation.get(0).toSentence();
+        trans.processPredicate(fluentPredSentence);
+        FodotPredicateDeclaration decl = trans.getPool().getPredicate(
+                fluentPredSentence.getName().getValue());
+
+        List<IFodotTerm> elements = new ArrayList<>();
+        elements.add(createVariable("t",trans.getTimeType()));
+
+        for (int i = 0; i < fluentPredSentence.arity(); i++) {
+            GdlTerm term = fluentPredSentence.get(i);
+            IFodotTerm element;
+            if(term.isGround()){
+                element = trans.convertRawConstantName(term.toSentence().getName().getValue());
+            } else {
+                if(variables.containsKey(term)){
+                    element = variables.get(term);
+                } else {
+                    FodotVariable temp = createVariable(
+                            trans.getAllType());
+                    variables.put((GdlVariable) term,temp);
+                    element = temp;
+                }
+            }
+            elements.add(element);
+        }
+
+        return createPredicate(
+                trans.getPool().getTimedVerionOf(decl),
+                elements
+        );
+	}
+
+	private static IFodotFormula generateDoes(GdlRelation relation,
 			HashMap<GdlVariable, FodotVariable> variables,
 			GdlFodotTransformer trans) {
         // process (does *player* *actionpred*)
@@ -209,9 +201,9 @@ public class GdlCastHelper {
         );
         
         
-        List<IFodotTerm> actionVariables = new ArrayList<>();
+//        List<IFodotTerm> actionVariables = trans.processSentenceArguments(relation, actionTermDecl, variables); //TODO
+        List<IFodotTerm> actionVariables = new ArrayList<IFodotTerm>();
         for (GdlTerm term : actionPredSentence.getBody()) {
-            //GdlSentence sentence = gdlTerm.toSentence();
             IFodotTerm actionVar;
             if(term.isGround()){
                 actionVar = trans.convertRawConstantName(term.toString());

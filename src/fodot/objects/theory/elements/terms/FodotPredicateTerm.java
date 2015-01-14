@@ -6,7 +6,6 @@ import fodot.objects.structure.elements.IFodotEnumerationElement;
 import fodot.objects.theory.elements.formulas.FodotAbstractArgumentList;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
-import fodot.util.CollectionPrinter;
 
 public class FodotPredicateTerm extends FodotAbstractArgumentList
 		implements IFodotTerm, IFodotEnumerationElement {
@@ -27,8 +26,7 @@ public class FodotPredicateTerm extends FodotAbstractArgumentList
 
 	@Override
 	public String toString() {
-		return "FodotPredicateDomainElement ["+getDeclaration().toString()
-				+ ", " + CollectionPrinter.toCouple(CollectionPrinter.toString(getArguments()))+"]";
+		return "FodotPredicateTerm ["+toCode()+"]";
 	}
 
 	@Override
