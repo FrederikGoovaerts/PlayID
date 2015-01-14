@@ -22,6 +22,7 @@ public class PlayIdProcessor {
 		
 		//Convert GDL to IDP
 		Parser parser = new Parser(gdlFile);
+		parser.run();
 		IFodotFile parsedFodotFile = parser.getParsedFodot();
 		
 		

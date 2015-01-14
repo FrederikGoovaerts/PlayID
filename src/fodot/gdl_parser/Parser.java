@@ -26,7 +26,7 @@ public class Parser {
      **************************************************************************/
 
     public static void main(String[] args) {
-        File file = new File("resources/games/brain_teaser_extended.kif");
+        File file = new File("resources/games/maze.kif");
         Parser test = new Parser(file);
         test.run();
     }
@@ -50,7 +50,7 @@ public class Parser {
      * Class Methods
      **************************************************************************/
 
-    public void run(){
+    public void run() {
         List<Gdl> rules = game.getRules();
 
         setInspector(new GdlInspector(rules));
