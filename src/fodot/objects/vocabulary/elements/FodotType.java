@@ -305,7 +305,7 @@ public class FodotType implements IFodotElement {
 
 	@Override
 	public String toString() {
-		return "FodotType: [" + toCode() + "]";
+		return "[FodotType: " + toCode() + "]";
 	}
 	
 	public Set<FodotType> getPrerequiredTypes() {

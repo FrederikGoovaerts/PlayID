@@ -428,7 +428,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 	public Fodot buildFodot() {
 		FodotGameFactory factory = new FodotGameFactory(this,
 				pool,
-				doPredicateDeclaration,
+				getDoPredicate(),
 				terminalTimePredicateDeclaration);
 		return factory.createFodot();
 	}
@@ -661,7 +661,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		FodotPredicate doPred =
 				createPredicate(
-						this.doPredicateDeclaration,
+						this.getDoPredicate(),
 						doArguments
 						);
 
