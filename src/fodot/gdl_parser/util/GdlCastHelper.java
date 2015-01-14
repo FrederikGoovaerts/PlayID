@@ -62,19 +62,7 @@ public class GdlCastHelper {
 
         for (int i = 0; i < literal.arity(); i++) {
             GdlTerm term = literal.get(i);
-            IFodotTerm element;
-            if(term.isGround()){
-                element = trans.convertRawConstantName(term.toSentence().getName().getValue());
-            } else {
-                if(variables.containsKey(term)){
-                    element = variables.get(term);
-                } else {
-                    FodotVariable temp = createVariable(
-                            trans.getAllType());
-                    variables.put((GdlVariable) term,temp);
-                    element = temp;
-                }
-            }
+            IFodotTerm element = trans.processTerm(term, variables);
             elements.add(element);
         }
 
@@ -103,14 +91,12 @@ public class GdlCastHelper {
         	 * NOTE: toSentence geeft exceptions wanneer je dit op een variabele doet!
         	 */
         	String playerName;
-        	IFodotTerm playerTerm;
         	try {
         		playerName = relation.get(0).toSentence().getName().getValue();
-        		playerTerm = trans.convertRawRole(playerName);
         	} catch (RuntimeException e) {
         		playerName = relation.get(0).toString();
-        		playerTerm = createVariable(playerName, trans.getPlayerType());
         	}
+        	IFodotTerm playerTerm = trans.convertRawRole(playerName);
         	
         	
             GdlSentence actionPredSentence = relation.get(1).toSentence();
@@ -235,39 +221,13 @@ public class GdlCastHelper {
         GdlTerm arg1 = distinct.getArg1();
         GdlTerm arg2 = distinct.getArg2();
 
-        IFodotTerm arg1Fodot;
-        IFodotTerm arg2Fodot;
+        IFodotTerm arg1Fodot = trans.processTerm(arg1, variables);
+        IFodotTerm arg2Fodot = trans.processTerm(arg2, variables);
 
-        if(arg1.isGround()){
-            arg1Fodot = trans.convertRawConstantName(arg1.toString());
-        } else {
-            if(variables.containsKey(distinct.getArg1())){
-                arg1Fodot = variables.get(distinct.getArg1());
-            } else {
-                FodotVariable temp = createVariable(arg1.toString(), trans.getAllType());
-                variables.put((GdlVariable) distinct.getArg1(),temp);
-                arg1Fodot = temp;
-            }
-        }
-
-        if(arg2.isGround()){
-            arg2Fodot = trans.convertRawConstantName(arg2.toString());
-        } else {
-            if(variables.containsKey(distinct.getArg2())){
-                arg2Fodot = variables.get(distinct.getArg2());
-            } else {
-                FodotVariable temp = createVariable(arg2.toString(), trans.getAllType());
-                variables.put((GdlVariable) distinct.getArg2(),temp);
-                arg2Fodot = temp;
-            }
-        }
-
-        return createNot(
-                createEquals(
-                        arg1Fodot,
-                        arg2Fodot
-                )
-        );
+        return createDistinct(
+                    arg1Fodot,
+                    arg2Fodot
+        		);
     }
 
 }
