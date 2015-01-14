@@ -444,16 +444,20 @@ public class GdlFodotTransformer implements GdlTransformer{
 	 * @param variableMap	Term to add to variablemap
 	 * @return				Converted IFodotTerm
 	 */
-	public IFodotTerm processTerm(GdlTerm term, FodotType type, HashMap<GdlVariable,FodotVariable> variableMap) {
+	public IFodotTerm processTerm(GdlTerm term, FodotType argType, HashMap<GdlVariable,FodotVariable> variableMap) {
 		IFodotTerm fodotTerm;
 
 		if (term.isGround()) { //Term is a constant
-			fodotTerm = convertConstantName(term.toString(), type);
+			fodotTerm = convertConstantName(term.toString(), argType);
 		} else if(variableMap != null && variableMap.containsKey(term)) { //Term is already known in the variablemapping
 			fodotTerm = variableMap.get(term);
+			if (fodotTerm.getType() != argType && argType != getAllType()) {
+				((FodotVariable) fodotTerm).setType(argType); //TODO: Something should probably signal all other instances using this variable so they update their types!
+			}
+			
 		} else if (term instanceof GdlVariable) { //Term is an new variable
 			GdlVariable gdlVar = (GdlVariable) term;
-			FodotVariable temp = createVariable(gdlVar.getName(),type);
+			FodotVariable temp = createVariable(gdlVar.getName(),argType);
 			if (variableMap != null) {
 				variableMap.put(gdlVar, temp);
 			}
