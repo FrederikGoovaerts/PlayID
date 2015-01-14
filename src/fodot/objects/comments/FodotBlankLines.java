@@ -30,7 +30,7 @@ public class FodotBlankLines implements IFodotElement, IFodotTheoryElement, IFod
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < amount; i++) {
+		for (int i = 0; i < amount-1; i++) {
 			builder.append("\n");
 		}
 		return builder.toString();

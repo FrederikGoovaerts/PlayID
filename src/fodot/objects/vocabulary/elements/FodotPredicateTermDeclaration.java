@@ -35,7 +35,7 @@ public class FodotPredicateTermDeclaration extends
 
 	@Override
 	public String toCode() {
-		return getName() + CollectionPrinter.toCoupleAsCode(getArgumentTypes());
+		return getName() + (hasArguments() ? CollectionPrinter.toCoupleAsCode(getArgumentTypes()) : "");
 	}
 
 

@@ -194,6 +194,7 @@ public class FodotGameFactory {
             toReturn.addElement(this.pool.getCauseOf(declaration));
             toReturn.addElement(this.pool.getCauseNotOf(declaration));
         }
+    	toReturn.addElement(createBlankLines(1));
 
         /**
          * nodig: alle static predicaten
