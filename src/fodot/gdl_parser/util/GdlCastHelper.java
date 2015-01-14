@@ -116,7 +116,12 @@ public class GdlCastHelper {
                         );
                 elements.add(createVariable(trans.getTimeType()));
             } else {
-                decl = trans.processCompoundStaticPredicate(relation);
+                decl = trans.getPool().getCompoundTimedVerionOf(trans.processCompoundStaticPredicate(relation));
+                elements.add(createVariable(trans.getTimeType())); 
+                /*TODO: choice is unsatisifiable if we don't take the compoundtimedversion
+                 * and add the time element.
+                 * If we don't do this, it's not parseable because it does not have a time variable the first time
+                 */
             }
 
             List<IFodotTerm> arguments = trans.processSentenceArguments(relation, decl, elements.size(), variables);
