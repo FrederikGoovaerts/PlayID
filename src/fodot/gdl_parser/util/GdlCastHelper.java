@@ -45,6 +45,8 @@ public class GdlCastHelper {
             return generateNot((GdlNot) literal, variables, trans);
         } else if (literal instanceof GdlProposition) {
             return generateProposition((GdlProposition) literal, variables, trans);
+        } else if (literal instanceof GdlOr) {
+        	return generateOr((GdlOr) literal, variables, trans);
         }
         throw new UnsupportedOperationException("Not yet implemented. ( ͡° ͜ʖ ͡°)");
     }
@@ -78,6 +80,19 @@ public class GdlCastHelper {
             HashMap<GdlVariable, FodotVariable> variables,
             GdlFodotTransformer trans) {
         return createNot(generateFodot(not.getBody(),variables,trans));
+    }
+    
+    private static IFodotFormula generateOr(
+            GdlOr or,
+            HashMap<GdlVariable, FodotVariable> variables,
+            GdlFodotTransformer trans) {
+    	
+    	List<IFodotFormula> disjuncts = new ArrayList<IFodotFormula>();
+    	for (GdlLiteral disj : or.getDisjuncts()) {
+    		disjuncts.add( generateFodot(disj, variables, trans) );
+    	}
+    	
+        return createOr(disjuncts);
     }
 
     private static IFodotFormula generateRelation(
