@@ -727,7 +727,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 		
 		IFodotTerm playerTerm;
 		if (playerGdlTerm instanceof GdlVariable) {
-			playerTerm = processTerm(playerGdlTerm, variableMap);	
+			playerTerm = processTerm(playerGdlTerm, getPlayerType(), variableMap);	
 		} else {
 			playerTerm = convertRawRole(playerGdlTerm.toSentence().getName().getValue());
 		}
