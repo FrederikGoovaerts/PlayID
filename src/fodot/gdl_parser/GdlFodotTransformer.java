@@ -446,42 +446,58 @@ public class GdlFodotTransformer implements GdlTransformer{
 	 */
 	public IFodotTerm processTerm(GdlTerm term, FodotType type, HashMap<GdlVariable,FodotVariable> variableMap) {
 		IFodotTerm fodotTerm;
-		if(term.isGround()){
+
+		if (term.isGround()) { //Term is a constant
 			fodotTerm = convertConstantName(term.toString(), type);
-		} else {
-			if(variableMap != null && variableMap.containsKey(term)){
-				fodotTerm = variableMap.get(term);
-			} else {
-				if (term instanceof GdlVariable) {
-					GdlVariable gdlVar = (GdlVariable) term;
-					FodotVariable temp = createVariable(gdlVar.getName(),type);
-					if (variableMap != null) {
-						variableMap.put(gdlVar, temp);
-					}
-					fodotTerm = temp;
-				} else {
-					System.out.println(term + "\n-->" + term.getClass());
-					throw new IllegalArgumentException("We're dealing with a function?!");
-				}
+		} else if(variableMap != null && variableMap.containsKey(term)) { //Term is already known in the variablemapping
+			fodotTerm = variableMap.get(term);
+		} else if (term instanceof GdlVariable) { //Term is an new variable
+			GdlVariable gdlVar = (GdlVariable) term;
+			FodotVariable temp = createVariable(gdlVar.getName(),type);
+			if (variableMap != null) {
+				variableMap.put(gdlVar, temp);
 			}
+			fodotTerm = temp;
+		} else { //Term is something else, is it a function?
+			System.out.println(term + "\n-->" + term.getClass());
+			throw new IllegalArgumentException("We're dealing with a function?!");
 		}
 		return fodotTerm;
 	}
 
-	
+	/**
+	 * This method can process all GdlTerms of a GdlSentence and converts them to FodotTerms
+	 * All variables will be added to the variablemap
+	 * If a variablemap contains a variable who's type is more specific than the "all"-type,
+	 * it will replace that type in th given FodotDeclaration
+	 * @param sentence
+	 * @param declaration
+	 * @param variableMap
+	 * @return
+	 */
 	public List<IFodotTerm> processSentenceArguments(
 			GdlSentence sentence, FodotArgumentListDeclaration declaration,
 			HashMap<GdlVariable,FodotVariable> variableMap) {
-		
+
 		List<IFodotTerm> elements = new ArrayList<IFodotTerm>(); 
 		for (int i = 0; i < sentence.arity(); i++) {
-             GdlTerm term = sentence.get(i);
-             IFodotTerm element = processTerm(term, variableMap);
-             elements.add(element);
-         }
+			GdlTerm term = sentence.get(i);
+			IFodotTerm element = processTerm(term, variableMap);
+			elements.add(element);
+
+			//Improve declaration types!
+			if (declaration != null) {
+				FodotType currentArgType = declaration.getArgumentType(i);
+				if (element.getType() != currentArgType && currentArgType == getAllType()) {
+					declaration.setArgumentType(i, element.getType());
+				}
+			}
+
+
+		}
 		return elements;
 	}
-	
+
 	@Override
 	public void processRoleRelation(GdlRelation relation) {
 		if(processingRules)
