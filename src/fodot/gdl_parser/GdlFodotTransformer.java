@@ -459,7 +459,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 			}
 			fodotTerm = temp;
 		} else { //Term is something else, is it a function?
-			System.out.println(term + "\n-->" + term.getClass());
+			System.out.println("Unresolved term: " + term + "\n-->" + term.getClass());
 			throw new IllegalArgumentException("We're dealing with a function?!");
 		}
 		return fodotTerm;
@@ -477,20 +477,21 @@ public class GdlFodotTransformer implements GdlTransformer{
 	 */
 	public List<IFodotTerm> processSentenceArguments(
 			GdlSentence sentence, FodotArgumentListDeclaration declaration,
-			HashMap<GdlVariable,FodotVariable> variableMap) {
+			int argumentOffset, HashMap<GdlVariable,FodotVariable> variableMap) {
 
 		List<IFodotTerm> elements = new ArrayList<IFodotTerm>(); 
 		for (int i = 0; i < sentence.arity(); i++) {
+			FodotType currentArgType = declaration.getArgumentType(i+argumentOffset);
+			
 			GdlTerm term = sentence.get(i);
-			IFodotTerm element = processTerm(term, variableMap);
+			IFodotTerm element = processTerm(term, currentArgType, variableMap);
 			elements.add(element);
 
-			//Improve declaration types!
-			if (declaration != null) {
-				FodotType currentArgType = declaration.getArgumentType(i);
-				if (element.getType() != currentArgType && currentArgType == getAllType()) {
-					declaration.setArgumentType(i, element.getType());
-				}
+			//Improve declaration types (if variable was already mapped)
+			FodotType actualType = element.getType();
+			if (currentArgType != actualType && currentArgType == getAllType()) {
+				System.out.println("fixed " + declaration.getName() + " arg("+i+") to " + actualType);
+				declaration.setArgumentType(i+argumentOffset, actualType);
 			}
 
 

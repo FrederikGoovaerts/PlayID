@@ -14,4 +14,8 @@ public class FodotPredicateDeclaration extends FodotArgumentListDeclaration impl
 		return getName() + CollectionPrinter.toCoupleAsCode(getArgumentTypes());
 	}
     
+	@Override
+	public String toString() {
+		return "[ FodotPredicateDeclaration: "+ toCode() +"]";
+	}
 }

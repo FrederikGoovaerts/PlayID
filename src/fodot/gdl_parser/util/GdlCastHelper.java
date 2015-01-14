@@ -61,7 +61,7 @@ public class GdlCastHelper {
         List<IFodotTerm> elements = new ArrayList<>();
         elements.add(createVariable("t",trans.getTimeType()));
 
-        List<IFodotTerm> arguments = trans.processSentenceArguments(literal, decl, variables);
+        List<IFodotTerm> arguments = trans.processSentenceArguments(literal, decl, elements.size(), variables);
         elements.addAll(arguments);
 
         return createPredicate(
@@ -122,7 +122,7 @@ public class GdlCastHelper {
                 decl = trans.processCompoundStaticPredicate(relation);
             }
 
-            List<IFodotTerm> arguments = trans.processSentenceArguments(relation, decl, variables);
+            List<IFodotTerm> arguments = trans.processSentenceArguments(relation, decl, elements.size(), variables);
             elements.addAll(arguments);
 
             return createPredicate(
@@ -137,18 +137,20 @@ public class GdlCastHelper {
         // process (true (*fluentpred*))
         GdlSentence fluentPredSentence = relation.get(0).toSentence();
         trans.processPredicate(fluentPredSentence);
-        FodotPredicateDeclaration decl = trans.getPool().getPredicate(
-                fluentPredSentence.getName().getValue());
+        FodotPredicateDeclaration decl = 
+        		trans.getPool().getTimedVerionOf(
+        				trans.getPool().getPredicate(fluentPredSentence.getName().getValue()));
 
         List<IFodotTerm> elements = new ArrayList<>();
         elements.add(createVariable("t",trans.getTimeType()));
 
-        List<IFodotTerm> arguments = trans.processSentenceArguments(fluentPredSentence, decl, variables);
+        List<IFodotTerm> arguments = 
+        		trans.processSentenceArguments(fluentPredSentence, decl, elements.size(), variables);
         elements.addAll(arguments);
         
 
         return createPredicate(
-                trans.getPool().getTimedVerionOf(decl),
+                decl,
                 elements
         );
 	}
@@ -162,6 +164,7 @@ public class GdlCastHelper {
     	 * NOTE: toSentence geeft exceptions wanneer je dit op een variabele doet!
     	 */
     	
+		//ProcessPlayer
     	GdlTerm playerGdlTerm = relation.get(0);
     	IFodotTerm playerTerm;
     	if (playerGdlTerm instanceof GdlVariable) {
@@ -171,28 +174,37 @@ public class GdlCastHelper {
         	playerTerm = trans.convertRawRole(playerName);
     	}
     	
-        GdlSentence actionPredSentence = relation.get(1).toSentence();
-        FodotPredicateTermDeclaration actionTermDecl = createPredicateTermDeclaration(
-                actionPredSentence.getName().getValue(),
-                FodotType.getSameTypeList(
-                		actionPredSentence.arity(),
-                        trans.getAllType()
-                ),
-                trans.getActionType()
-        );
-        
-        
-        List<IFodotTerm> actionVariables = trans.processSentenceArguments(actionPredSentence, actionTermDecl, variables);
-        
-        FodotPredicate actionPredicate = createPredicate(
-                trans.getDoPredicate(),
-                createVariable("t",trans.getTimeType()),
-                playerTerm,
-                createPredicateTerm(actionTermDecl, actionVariables)
-        );
-        //TODO: uncomment this as soon as translations are working
-//        trans.addTranslation(actionPredicate, actionPredSentence.toString());
-        return actionPredicate;
+    	
+    	//ProcessAction
+    	GdlTerm actionGdlTerm = relation.get(1);
+    	IFodotTerm actionFodotTerm;
+    	if (actionGdlTerm instanceof GdlVariable) {
+    		actionFodotTerm = trans.processTerm(actionGdlTerm, trans.getActionType(), variables);
+    	} else {
+    		GdlSentence actionPredSentence = actionGdlTerm.toSentence();
+    		FodotPredicateTermDeclaration actionTermDecl = createPredicateTermDeclaration(
+    				actionPredSentence.getName().getValue(),
+    				FodotType.getSameTypeList(
+    						actionPredSentence.arity(),
+    						trans.getAllType()
+    						),
+    						trans.getActionType()
+    				);
+
+    		List<IFodotTerm> actionVariables = trans.processSentenceArguments(actionPredSentence, actionTermDecl, 0, variables);
+    	
+    		actionFodotTerm = createPredicateTerm(actionTermDecl, actionVariables);
+    	}
+    	
+    	FodotPredicate actionPredicate = createPredicate(
+				trans.getDoPredicate(),
+				createVariable("t",trans.getTimeType()),
+				playerTerm,
+				actionFodotTerm
+				);
+		//TODO: uncomment this as soon as translations are working
+		//        trans.addTranslation(actionPredicate, actionPredSentence.toString());
+		return actionPredicate;
     
 		
 	}
