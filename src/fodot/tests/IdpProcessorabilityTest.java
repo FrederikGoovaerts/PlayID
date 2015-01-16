@@ -12,7 +12,7 @@ public class IdpProcessorabilityTest {
 	private static final String GAMES_LOCATION = "resources/games/";
 	private static final String DEFAULT_EXTENSION = ".kif";
 	
-	private void process(String gameName) {
+	protected void process(String gameName) {
 		File toParse = new File(GAMES_LOCATION + gameName + DEFAULT_EXTENSION);
 		PlayIdProcessor processor = new PlayIdProcessor();
 		processor.process(toParse);

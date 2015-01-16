@@ -25,137 +25,140 @@ public class ParserExceptionsTest {
 	 * Just parses to see if it throws an exception
 	 * @param path	path to the file
 	 */
-	private void parse(String gameName) {
-		File toParse = new File(GAMES_LOCATION + gameName + DEFAULT_EXTENSION);
+	protected void testFor(String gameName) {
+		File toParse = toFile(gameName);
 		Parser parser = new Parser(toParse);
 		parser.run();
+	}
+	
+	protected File toFile(String gameName) {
+		return new File(GAMES_LOCATION + gameName + DEFAULT_EXTENSION);
 	}
 
 	@Test
 	public void noexception_blocks() {
-		parse("blocks");
+		testFor("blocks");
 	}
 
 	@Test
 	public void noexception_choice() {
-		parse("choice");
+		testFor("choice");
 	}
 
 	@Test
 	public void noexception_connectFour() {
-		parse("connectFour");
+		testFor("connectFour");
 	}
 
 	@Test
 	public void noexception_maze() {
-		parse("maze");
+		testFor("maze");
 	}
 
 	@Test
 	public void noexception_simpleMutex() {
-		parse("simpleMutex");
+		testFor("simpleMutex");
 	}
 
 	@Test
 	public void noexception_case_1a() {
-		parse("test_case_1a");
+		testFor("test_case_1a");
 	}
 
 	@Test
 	public void noexception_case_1b() {
-		parse("test_case_1b");
+		testFor("test_case_1b");
 	}
 
 	@Test
 	public void noexception_case_2a() {
-		parse("test_case_2a");
+		testFor("test_case_2a");
 	}
 
 	@Test
 	public void noexception_case_2b() {
-		parse("test_case_2b");
+		testFor("test_case_2b");
 	}
 
 	@Test
 	public void noexception_case_2c() {
-		parse("test_case_2c");
+		testFor("test_case_2c");
 	}
 
 	@Test
 	public void noexception_case_3a() {
-		parse("test_case_3a");
+		testFor("test_case_3a");
 	}
 
 	@Test
 	public void noexception_case_3b() {
-		parse("test_case_3b");
+		testFor("test_case_3b");
 	}
 
 	@Test
 	public void noexception_case_3c() {
-		parse("test_case_3c");
+		testFor("test_case_3c");
 	}
 
 	@Test
 	public void noexception_case_3d() {
-		parse("test_case_3d");
+		testFor("test_case_3d");
 	}
 
 	@Test
 	public void noexception_case_3e() {
-		parse("test_case_3e");
+		testFor("test_case_3e");
 	}
 
 	@Test
 	public void noexception_case_3f() {
-		parse("test_case_3f");
+		testFor("test_case_3f");
 	}
 
 	@Test
 	public void noexception_case_4a() {
-		parse("test_case_4a");
+		testFor("test_case_4a");
 	}
 
 	@Test
 	public void noexception_case_5a() {
-		parse("test_case_5a");
+		testFor("test_case_5a");
 	}
 
 	@Test
 	public void noexception_case_5b() {
-		parse("test_case_5b");
+		testFor("test_case_5b");
 	}
 
 	@Test
 	public void noexception_case_5c() {
-		parse("test_case_5c");
+		testFor("test_case_5c");
 	}
 
 	@Test
 	public void noexception_clean_not_distinct() {
-		parse("test_clean_not_distinct");
+		testFor("test_clean_not_distinct");
 	}
 
 	@Test
 	public void noexception_distinct_beginning_rule() {
-		parse("test_distinct_beginning_rule");
+		testFor("test_distinct_beginning_rule");
 	}
 
-	/*
+	
 	@Test(expected=Exception.class)
 	public void exception_invalid_function_arities_differ() {
-		parse("test_invalid_function_arities_differ");
+		testFor("test_invalid_function_arities_differ");
 	}
 
 	@Test(expected=Exception.class)
 	public void exception_test_invalid_sentence_arities_differ() {
-		parse("test_invalid_function_arities_differ");
-	)
-	*/
+		testFor("test_invalid_sentence_arities_differ");
+	}
 	
 	@Test
 	public void noexception_ticTacToe() {
-		parse("ticTacToe");
+		testFor("ticTacToe");
 	}
 
 
