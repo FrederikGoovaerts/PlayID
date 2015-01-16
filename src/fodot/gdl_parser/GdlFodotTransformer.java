@@ -93,7 +93,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 		actionType.getDeclaration(); //TODO: this has to be fixed!
 		this.scoreType = new FodotType("ScoreType");
 		scoreType.addSupertype(getNaturalNumberType());
-		this.allType = new FodotType("all");
+		this.allType = new FodotType("All");
 	}
 
 	public FodotType getTimeType(){

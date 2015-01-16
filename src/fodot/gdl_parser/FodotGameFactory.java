@@ -155,6 +155,9 @@ public class FodotGameFactory {
     private FodotVocabulary buildVocabulary() {
         FodotVocabulary toReturn = getDefaultVocabulary();
 
+        toReturn.addElement(createBlankLines(1));
+        toReturn.addElement(createComment("Vocabulary elements derived from GDL file"));
+    
         /**
          * nodig: alle roles
          * resultaat:
@@ -179,24 +182,6 @@ public class FodotGameFactory {
                 )
         );
 
-
-        /**
-         * nodig: alle fluent predicaten
-         * resultaat voor elk predicaat:
-         * pred(Time,*standaard argumenten*)
-         * I_pred(*standaard argumenten*)
-         * C_pred(Time,*standaard argumenten*)
-         */
-        for (FodotPredicateDeclaration declaration : this.pool.getFluentPredicates()) {
-        	toReturn.addElement(createBlankLines(1));
-        	toReturn.addElement(createComment("LTC for " + declaration.getName()));
-            toReturn.addElement(this.pool.getTimedVerionOf(declaration));
-            toReturn.addElement(this.pool.getInitialOf(declaration));
-            toReturn.addElement(this.pool.getCauseOf(declaration));
-            toReturn.addElement(this.pool.getCauseNotOf(declaration));
-        }
-    	toReturn.addElement(createBlankLines(1));
-
         /**
          * nodig: alle static predicaten
          * resultaat:
@@ -215,6 +200,24 @@ public class FodotGameFactory {
             toReturn.addElement(declaration);
         }
 
+    	toReturn.addElement(createBlankLines(1));
+        toReturn.addElement(createComment("LTC predicates for the fluent predicates"));
+        /**
+         * nodig: alle fluent predicaten
+         * resultaat voor elk predicaat:
+         * pred(Time,*standaard argumenten*)
+         * I_pred(*standaard argumenten*)
+         * C_pred(Time,*standaard argumenten*)
+         */
+        for (FodotPredicateDeclaration declaration : this.pool.getFluentPredicates()) {
+//        	toReturn.addElement(createComment("LTC for " + declaration.getName()));
+            toReturn.addElement(this.pool.getTimedVerionOf(declaration));
+            toReturn.addElement(this.pool.getInitialOf(declaration));
+            toReturn.addElement(this.pool.getCauseOf(declaration));
+            toReturn.addElement(this.pool.getCauseNotOf(declaration));
+        	toReturn.addElement(createBlankLines(1));
+        }
+
         return toReturn;
     }
 
@@ -229,6 +232,10 @@ public class FodotGameFactory {
          *     !(var [Unfilled])*aantal argumenten keer* t [Time]: *pred*(Next(t),*vars*) <- C_*pred*(t,*vars*).
          * }
          */
+        if (!pool.getFluentPredicates().isEmpty()) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("Inductive definitions for the fluent predicates"));
+        }
         for (FodotPredicateDeclaration declaration : pool.getFluentPredicates()) {
             List<FodotInductiveSentence> definitions = new ArrayList<>();
 
@@ -289,6 +296,10 @@ public class FodotGameFactory {
          * }
          */
         Map<FodotPredicateDeclaration, Set<Pair<FodotPredicate, IFodotFormula>>> nextMap = source.getNextMap();
+        if (!nextMap.isEmpty()) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("The fluent predicates' causations"));
+        }
         for (FodotPredicateDeclaration predicate : nextMap.keySet()) {
             List<FodotInductiveSentence> definitions = new ArrayList<>();
             for (Pair<FodotPredicate, IFodotFormula> pair : nextMap.get(predicate)) {
@@ -306,6 +317,10 @@ public class FodotGameFactory {
          * }
          */
         Map<FodotPredicateDeclaration, Set<Pair<FodotPredicate, IFodotFormula>>> compoundMap = source.getCompoundMap();
+        if (!compoundMap.isEmpty()) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("The static predicates' causations"));
+        }
         for (FodotPredicateDeclaration predicate : compoundMap.keySet()) {
             List<FodotInductiveSentence> definitions = new ArrayList<>();
             for (Pair<FodotPredicate, IFodotFormula> pair : compoundMap.get(predicate)) {
@@ -319,6 +334,10 @@ public class FodotGameFactory {
          * resultaat voor elk koppel:
          * !(var [Unfilled])*aantal argumenten keer* t [Time]: *legal head* => *legal body*
          */
+        if (!source.getLegalMap().isEmpty()) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("Translation of the LEGAL sentences"));
+        }
         for (Map.Entry<FodotPredicate, Set<IFodotFormula>> entry : source.getLegalMap().entrySet()) {
             for (IFodotFormula body : entry.getValue()) {
                 toReturn.addElement(createSentence(
@@ -336,6 +355,10 @@ public class FodotGameFactory {
          * }
          */
         Map<Pair<IFodotTerm, Integer>, Set<IFodotFormula>> scoreMap = source.getScoreMap();
+        if (!scoreMap.isEmpty()) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("Translation of the SCORE sentences"));
+        }
         List<FodotInductiveSentence> definitions = new ArrayList<>();
         for (Pair<IFodotTerm, Integer> scorePair: scoreMap.keySet()) {
         	IFodotTerm playerTerm = scorePair.left;
@@ -367,6 +390,10 @@ public class FodotGameFactory {
          * }
          */
         definitions = new ArrayList<>();
+        if (!scoreMap.isEmpty()) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("Translation of the TERMINAL sentences"));
+        }
         for (IFodotFormula formula : source.getTerminalSet()) {
         	Set<FodotVariable> formulaVariables = new HashSet<FodotVariable>();
         	FodotVariable timeVar = null;
@@ -408,6 +435,8 @@ public class FodotGameFactory {
          * resultaat:
          * Score={*naam*()->100}
          */
+        toReturn.addElement(createBlankLines(1));
+        toReturn.addElement(createComment("Desired result"));
        	List<IFodotFunctionEnumerationElement> desiredResult = new ArrayList<IFodotFunctionEnumerationElement>();
        	List<? extends IFodotTypeEnumerationElement> ownRole = Arrays.asList(source.getOwnRole());
         desiredResult.add(
@@ -426,6 +455,10 @@ public class FodotGameFactory {
          */
         Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> initMap
                 = this.source.getInitialValues();
+        if (!initMap.isEmpty()) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("Initial values for the fluent predicates"));
+        }
         for (FodotPredicateDeclaration declaration : initMap.keySet()) {
             toReturn.addElement(
                     createPredicateEnumeration(this.pool.getInitialOf(declaration),
@@ -438,6 +471,10 @@ public class FodotGameFactory {
          * resultaat:
          * *predicaat*={*waarden()*}
          */
+        if (!initMap.isEmpty()) {
+             toReturn.addElement(createBlankLines(1));
+             toReturn.addElement(createComment("All values found in the static predicates"));
+         }
         Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> staticMap
                 = this.source.getStaticValues();
         for (FodotPredicateDeclaration declaration : staticMap.keySet()) {
@@ -461,6 +498,8 @@ public class FodotGameFactory {
     private FodotVocabulary getDefaultVocabulary() {
         FodotLTCVocabulary defaultVoc = createLTCVocabulary();
 
+        defaultVoc.addElement(createComment("Default vocabulary elements (and types needed by the default elements)"));
+        
         // type Time isa nat
         defaultVoc.addElement(createTypeDeclaration(source.getTimeType()));
 
@@ -491,6 +530,8 @@ public class FodotGameFactory {
     private FodotTheory getDefaultTheory(FodotVocabulary voc) {
         FodotTheory defaultTheory = createTheory(voc);
 
+        defaultTheory.addElement(createComment("Default theory elements:"));
+        
         //!a [Action] p [Player] t [Time]: do(t,p,a) => ~terminalTime(t) & (?t2 [Time]: Next(t) = t2).
         Set<FodotVariable> variables = new HashSet<FodotVariable>();
         FodotVariable a_Action = createVariable("a", source.getActionType(), variables);
@@ -589,6 +630,7 @@ public class FodotGameFactory {
     private FodotStructure getDefaultStructure(FodotVocabulary voc) {
         FodotStructure defaultStructure = createStructure(voc);
 
+        defaultStructure.addElement(createComment("Default structure elements:"));
         //Start=0
         defaultStructure.addElement(
                 createConstantFunctionEnumeration(
