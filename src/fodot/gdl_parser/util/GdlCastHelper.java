@@ -114,14 +114,10 @@ public class GdlCastHelper {
                  decl = trans.getPool().getCompoundTimedVerionOf(
                                 trans.getPool().getCompoundStaticPredicate(predName)
                         );
-                elements.add(createVariable(trans.getTimeType()));
+                 elements.add(trans.createTimeVariable(variables)); 
             } else {
                 decl = trans.getPool().getCompoundTimedVerionOf(trans.processCompoundStaticPredicate(relation));
-                elements.add(createVariable(trans.getTimeType())); 
-                /*TODO: choice is unsatisifiable if we don't take the compoundtimedversion
-                 * and add the time element.
-                 * If we don't do this, it's not parseable because it does not have a time variable the first time
-                 */
+                elements.add(trans.createTimeVariable(variables));
             }
 
             List<IFodotTerm> arguments = trans.processSentenceArguments(relation, decl, elements.size(), variables);
@@ -192,7 +188,7 @@ public class GdlCastHelper {
     		actionFodotTerm = createPredicateTerm(actionTermDecl, actionVariables);
     	}
     	
-    	FodotVariable timeVariable = createVariable("t",trans.getTimeType());
+    	FodotVariable timeVariable = trans.createTimeVariable(variables);
     	
     	FodotPredicate actionPredicate = createPredicate(
 				trans.getDoPredicate(),

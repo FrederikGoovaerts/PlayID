@@ -49,6 +49,7 @@ import org.ggp.base.util.Pair;
 
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.Fodot;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedureStatement;
 import fodot.objects.procedure.FodotProcedures;
@@ -239,7 +240,7 @@ public class FodotGameFactory {
             argList.add(createFunction(this.startFunctionDeclaration));
 
             for (int i = 0; i < originalArity; i++) {
-                FodotVariable newVar = createVariable(source.getAllType());
+                FodotVariable newVar = createVariable(source.getAllType(), varSet);
                 argList.add(newVar);
                 iArgList.add(newVar);
                 varSet.add(newVar);
@@ -258,7 +259,7 @@ public class FodotGameFactory {
             List<IFodotTerm> cArgList = new ArrayList<>(iArgList);
             varSet = new HashSet<>(varSet);
 
-            FodotVariable timeVar = createVariable(source.getTimeType());
+            FodotVariable timeVar = createVariable(source.getTimeType(), varSet);
 
             argList.add(0,createFunction(this.nextFunctionDeclaration,timeVar));
             cArgList.add(0,timeVar);
@@ -367,12 +368,27 @@ public class FodotGameFactory {
          */
         definitions = new ArrayList<>();
         for (IFodotFormula formula : source.getTerminalSet()) {
+        	Set<FodotVariable> formulaVariables = new HashSet<FodotVariable>();
+        	FodotVariable timeVar = null;
+        	for (IFodotElement el : formula.getElementsOfClass(FodotVariable.class)) {
+        		FodotVariable current = (FodotVariable) el;
+        		formulaVariables.add(current);
+        		if (current.getType().equals(source.getTimeType())) {
+        			timeVar = current;
+        		}
+        	}
+        	
+        	if (timeVar == null) {
+        		timeVar = createVariable("t", source.getTimeType(), formulaVariables);
+        	}
+        	
+        	
             definitions.add(
                     createInductiveSentence(
                             createInductiveDefinitionConnector(
                                     createPredicate(
                                             this.terminalTimePredicateDeclaration,
-                                            createVariable("t", source.getTimeType())
+                                            timeVar
                                     ),
                                     formula
                             )
@@ -476,15 +492,18 @@ public class FodotGameFactory {
         FodotTheory defaultTheory = createTheory(voc);
 
         //!a [Action] p [Player] t [Time]: do(t,p,a) => ~terminalTime(t) & (?t2 [Time]: Next(t) = t2).
-        FodotVariable a_Action = createVariable("a", source.getActionType());
-        FodotVariable p_Player = createVariable("p", source.getPlayerType());
-        FodotVariable t_Time = createVariable("t", source.getTimeType());
-        FodotVariable t2_Time = createVariable("t2",source.getTimeType());
-        Set<FodotVariable> variables =
-                new HashSet<>(Arrays.asList(a_Action,p_Player,t_Time));
+        Set<FodotVariable> variables = new HashSet<FodotVariable>();
+        FodotVariable a_Action = createVariable("a", source.getActionType(), variables);
         variables.add(a_Action);
+        FodotVariable p_Player = createVariable("p", source.getPlayerType(), variables);
         variables.add(p_Player);
+        FodotVariable t_Time = createVariable("t", source.getTimeType(), variables);
         variables.add(t_Time);
+        FodotVariable t2_Time = createVariable("t2",source.getTimeType(), variables);
+        variables.add(t2_Time);
+        
+        
+        variables = new HashSet<>(Arrays.asList(a_Action,p_Player,t_Time));
         defaultTheory.addElement(createSentence(createForAll(variables,
                 createImplies(
                         createPredicate(this.doPredicateDeclaration

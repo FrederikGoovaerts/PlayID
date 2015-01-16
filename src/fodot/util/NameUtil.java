@@ -14,12 +14,39 @@ import fodot.objects.vocabulary.elements.FodotType;
 public class NameUtil {
 	/* STATIC HELPERS */
 
-	private static String validNameRegex = "^[a-zA-Z$][a-zA-Z_0-9]*$";
-	private static List<String> allowedSpecialNames = Arrays.asList("-");
-	private static String nonAlphanumericRegex = "[^a-zA-Z0-9]";
+	private static final String VALID_NAME_REGEX = "^[a-zA-Z$][a-zA-Z_0-9]*$";
+	private static final List<String> ALLOWED_SPECIAL_NAMES = Arrays.asList("-");
+	private static final String NON_ALPHA_NUMERIC_REGEX = "[^a-zA-Z0-9]";
+	private static final String BASIC_VAR_NAME = "var";
 
 	private static Map<String, Integer> prefixCounter = new HashMap<String, Integer>();
 
+	public static String generateVariableName(String nameSuggestion, FodotType type, Collection<? extends String> usedNames) {
+		//Generate a new valid name
+		String correctedName = convertToValidName(nameSuggestion, type);
+
+		//Put numbers after it if the name is already used
+		String newName = correctedName;
+		int index = 2;
+		while (usedNames.contains(newName)) {
+			newName = correctedName + index++;
+		}		
+		
+		return newName;
+	}
+	
+	/**
+	 * Creates a basic name for the given type. Takes the first letter in lowercasing of the typename.
+	 * @param type
+	 * @return
+	 */
+	private static String createBaseName(FodotType type) {
+		if (type == null) {
+			return BASIC_VAR_NAME;
+		}
+		return type.getName().trim().substring(0, 1).toLowerCase();
+	}
+	
 	/**
 	 * Checks if the string is a valid name for a variable name in FodotIDP
 	 * @param name
@@ -29,7 +56,8 @@ public class NameUtil {
 		if (name == null || name.length() == 0) {
 			return false;
 		}
-		return (name.matches(validNameRegex)||allowedSpecialNames.contains(name));
+		return (name.matches(VALID_NAME_REGEX)
+				|| ALLOWED_SPECIAL_NAMES.contains(name));
 	}
 
 	/**
@@ -42,16 +70,13 @@ public class NameUtil {
 			if (isValidName(name)) {
 				return name;
 			}
-			String newName = name.replaceAll(nonAlphanumericRegex, "");
+			String newName = name.replaceAll(NON_ALPHA_NUMERIC_REGEX, "");
 			if (isValidName(newName)) {
 				return newName;
 			}
 		}
-		return generateVariableName(type);
-	}
-
-	public static String convertToValidName(String name) {
-		return convertToValidName(name, null);
+		return createBaseName(type);
+		
 	}
 
 	private static synchronized String generateVariableName(String prefix) {
@@ -62,17 +87,6 @@ public class NameUtil {
 		return prefix + Integer.toString(prefixCounter.get(prefix));
 	}
 
-	public static String generateVariableName(FodotType type) {
-		if (type == null) {
-			return generateVariableName();
-		}
-		return generateVariableName(type.getName().toLowerCase().substring(0, 1));
-	}
-
-	public static String generateVariableName() {
-		return generateVariableName("var");
-	}
-
 	private static final String GENERATED_VARIABLE_NAME_REGEX = "^[v][a][r][0-9]*$";
 
 	
@@ -81,7 +95,7 @@ public class NameUtil {
 	 * @param argVariables
 	 */
 	public static void improveGeneratedVariableNames(Collection<? extends FodotVariable> argVariables) {
-
+		
 		Set<String> usedNames = new HashSet<String>();
 		
 		//Sort all variables with generated names per type

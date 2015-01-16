@@ -12,6 +12,7 @@ import static fodot.helpers.FodotPartBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -434,7 +435,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 	}
 
 
-	public IFodotTerm processTerm(GdlTerm term, HashMap<GdlVariable,FodotVariable> variableMap) {
+	public IFodotTerm processTerm(GdlTerm term, Map<GdlVariable,FodotVariable> variableMap) {
 		return processTerm(term, getAllType(), variableMap);
 	}
 
@@ -444,7 +445,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 	 * @param variableMap	Term to add to variablemap
 	 * @return				Converted IFodotTerm
 	 */
-	public IFodotTerm processTerm(GdlTerm term, FodotType argType, HashMap<GdlVariable,FodotVariable> variableMap) {
+	public IFodotTerm processTerm(GdlTerm term, FodotType argType, Map<GdlVariable,FodotVariable> variableMap) {
 		IFodotTerm fodotTerm;
 
 		if (term.isGround()) { //Term is a constant
@@ -457,7 +458,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 			
 		} else if (term instanceof GdlVariable) { //Term is an new variable
 			GdlVariable gdlVar = (GdlVariable) term;
-			FodotVariable temp = createVariable(gdlVar.getName(),argType);
+			FodotVariable temp = createVariable(gdlVar.getName(), argType, new HashSet<FodotVariable>(variableMap.values()));
 			if (variableMap != null) {
 				variableMap.put(gdlVar, temp);
 			}
@@ -469,6 +470,22 @@ public class GdlFodotTransformer implements GdlTransformer{
 		return fodotTerm;
 	}
 
+	//TODO: mock gdl variables maken om in de map te steken zodat ze bezet zijn.
+	public FodotVariable createTimeVariable(Map<GdlVariable,FodotVariable> variableMap) {
+		return createVariable("t", getTimeType(), new HashSet<FodotVariable>(variableMap.values()));
+	}
+	
+	public FodotVariable createAllVariable(Map<GdlVariable,FodotVariable> variableMap) {
+		return createVariable("v", getAllType(), new HashSet<FodotVariable>(variableMap.values()));
+	}
+	
+	public FodotVariable createActionVariable(Map<GdlVariable,FodotVariable> variableMap) {
+		return createVariable("act", getActionType(), new HashSet<FodotVariable>(variableMap.values()));
+	}
+	
+	public FodotVariable createPlayerVariable(Map<GdlVariable,FodotVariable> variableMap) {
+		return createVariable("p", getPlayerType(), new HashSet<FodotVariable>(variableMap.values()));
+	}
 	
 	/**********************************************
 	 *  Processing of Sentence Arguments to List of Fodot Terms
@@ -517,7 +534,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 	public List<IFodotTerm> processSentenceArgumentsTimed(GdlSentence sentence,
 			FodotArgumentListDeclaration declaration, HashMap<GdlVariable,FodotVariable> variableMap) {
 		List<IFodotTerm> arguments = new ArrayList<IFodotTerm>();		
-		arguments.add(createVariable("t",timeType));
+		arguments.add(createTimeVariable(variableMap));
 		arguments.addAll(processSentenceArguments(sentence, declaration, arguments.size(), variableMap));
 		return arguments;
 	}
@@ -686,7 +703,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		List<IFodotTerm> doArguments =
 				Arrays.asList(
-						createVariable("t", timeType),
+						createTimeVariable(variableMap),
 						player,
 						actionTerm
 						);
@@ -753,7 +770,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 				createImplies(
 						createPredicate(
 								terminalTimePredicateDeclaration,
-								createVariable("t", timeType)
+								createTimeVariable(variableMap)
 								), condition
 						);
 
@@ -788,7 +805,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 				this.processCompoundStaticPredicate(predSentence);
 
 		List<IFodotTerm> variables = new ArrayList<>();
-		variables.add(createVariable("t",timeType));
+		variables.add(createTimeVariable(variableMap));
 		for (GdlTerm term : predSentence.getBody()) {
 			//GdlSentence sentence = gdlTerm.toSentence();
 			IFodotTerm fodotTerm = processTerm(term, variableMap);

@@ -321,12 +321,22 @@ public class FodotPartBuilder {
 		return createConstant(Integer.toString(value), getIntegerType());
 	}
 
-	public static FodotVariable createVariable(String name, FodotType type) {
-		return new FodotVariable(NameUtil.convertToValidName(name, type), type);
+	public static FodotVariable createVariable(String nameSuggestion, FodotType type, Collection<? extends String> usedNames) {
+		return new FodotVariable(NameUtil.generateVariableName(nameSuggestion, type, usedNames), type);
 	}
-
-	public static FodotVariable createVariable(FodotType type) {
-		return createVariable(NameUtil.generateVariableName(), type);
+	
+	public static FodotVariable createVariable(String nameSuggestion, FodotType type, Set<FodotVariable> usedVariables) {
+		Set<String> usedNames = new HashSet<String>();
+		for (FodotVariable variable : usedVariables) {
+			usedNames.add(variable.getName());
+		}		
+		FodotVariable toReturn = createVariable(NameUtil.generateVariableName(nameSuggestion, type, usedNames), type, usedNames);
+		usedVariables.add(toReturn);
+		return toReturn;
+	}
+	
+	public static FodotVariable createVariable(FodotType type, Set<FodotVariable> usedVariables) {
+		return createVariable(null, type, usedVariables);
 	}
 
 	public static FodotPredicate createPredicate(FodotPredicateDeclaration declaration, List<IFodotTerm> arguments) {
