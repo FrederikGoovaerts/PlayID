@@ -14,7 +14,7 @@ import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
-import static fodot.helpers.FodotPartBuilder.*;
+import static fodot.objects.FodotPartBuilder.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>

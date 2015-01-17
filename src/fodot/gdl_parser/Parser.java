@@ -8,7 +8,7 @@ import org.ggp.base.util.game.Game;
 import org.ggp.base.util.gdl.grammar.Gdl;
 
 import fodot.communication.input.IdpFileWriter;
-import fodot.objects.Fodot;
+import fodot.objects.file.IFodotFile;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -35,7 +35,7 @@ public class Parser {
      * Constructor
      **************************************************************************/
 
-    private Fodot parsedFodot;
+    private IFodotFile parsedFodot;
     private GdlInspector inspector;
     
     public Parser(File inputFile) {
@@ -54,7 +54,7 @@ public class Parser {
         List<Gdl> rules = game.getRules();
 
         setInspector(new GdlInspector(rules));
-        Fodot builtFodot = getInspector().getFodot();
+        IFodotFile builtFodot = getInspector().getFodot();
         setParsedFodot(builtFodot);
 
         if (printBuiltFodot) {
@@ -70,11 +70,11 @@ public class Parser {
      * Class Properties
      **************************************************************************/
 
-    public Fodot getParsedFodot() {
+    public IFodotFile getParsedFodot() {
     	return parsedFodot;
     }
     
-    private void setParsedFodot(Fodot fodot) {
+    private void setParsedFodot(IFodotFile fodot) {
     	this.parsedFodot = fodot;
     }
 

@@ -2,8 +2,7 @@ package fodot.gdl_parser.util;
 
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
-
-import static fodot.helpers.FodotPartBuilder.*;
+import static fodot.objects.FodotPartBuilder.*;
 
 import java.util.*;
 

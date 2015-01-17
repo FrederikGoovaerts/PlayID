@@ -1,14 +1,14 @@
 package fodot.gdl_parser;
 
-import static fodot.helpers.FodotPartBuilder.createConstant;
-import static fodot.helpers.FodotPartBuilder.createExists;
-import static fodot.helpers.FodotPartBuilder.createImplies;
-import static fodot.helpers.FodotPartBuilder.createPredicate;
-import static fodot.helpers.FodotPartBuilder.createPredicateDeclaration;
-import static fodot.helpers.FodotPartBuilder.createPredicateTerm;
-import static fodot.helpers.FodotPartBuilder.createPredicateTermDeclaration;
-import static fodot.helpers.FodotPartBuilder.createVariable;
-import static fodot.helpers.FodotPartBuilder.getNaturalNumberType;
+import static fodot.objects.FodotPartBuilder.createConstant;
+import static fodot.objects.FodotPartBuilder.createExists;
+import static fodot.objects.FodotPartBuilder.createImplies;
+import static fodot.objects.FodotPartBuilder.createPredicate;
+import static fodot.objects.FodotPartBuilder.createPredicateDeclaration;
+import static fodot.objects.FodotPartBuilder.createPredicateTerm;
+import static fodot.objects.FodotPartBuilder.createPredicateTermDeclaration;
+import static fodot.objects.FodotPartBuilder.createVariable;
+import static fodot.objects.FodotPartBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +29,7 @@ import org.ggp.base.util.gdl.grammar.GdlVariable;
 import fodot.exceptions.gdl.GdlParsingOrderException;
 import fodot.gdl_parser.util.GdlCastHelper;
 import fodot.gdl_parser.util.LTCPool;
-import fodot.objects.Fodot;
+import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.elements.IFodotEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
@@ -39,10 +39,10 @@ import fodot.objects.theory.elements.formulas.IFodotFormula;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
+import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
-import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.util.FormulaUtil;
 
 /**
@@ -432,7 +432,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 	}
 
 	@Override
-	public Fodot buildFodot() {
+	public IFodotFile buildFodot() {
 		FodotGameFactory factory = new FodotGameFactory(this,
 				pool,
 				getDoPredicate(),

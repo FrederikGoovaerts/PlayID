@@ -1,25 +1,23 @@
-package fodot.objects;
+package fodot.objects.file;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import fodot.objects.file.IFodotFile;
-import fodot.objects.file.IFodotFileElement;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.vocabulary.FodotVocabulary;
 
-public class Fodot implements IFodotFile {
+public class BasicFodotFile implements IFodotFile {
 	private FodotIncludeHolder includes;
 	private FodotVocabulary vocabulary;
 	private FodotTheory theory;
 	private FodotStructure structure;
 	private FodotProcedures procedures;
 
-	public Fodot(FodotVocabulary vocabulary, FodotTheory theory,
+	public BasicFodotFile(FodotVocabulary vocabulary, FodotTheory theory,
 			FodotStructure structure, FodotProcedures procedures, FodotIncludeHolder includes) {
 		super();
 		setVocabulary(vocabulary);
@@ -29,7 +27,7 @@ public class Fodot implements IFodotFile {
 		setIncludes(includes);
 	}
 
-	public Fodot(FodotVocabulary vocabulary, FodotTheory theory,
+	public BasicFodotFile(FodotVocabulary vocabulary, FodotTheory theory,
 			FodotStructure structure, FodotProcedures procedures) {
 		this(vocabulary, theory, structure, procedures, new FodotIncludeHolder());
 	}
@@ -81,7 +79,7 @@ public class Fodot implements IFodotFile {
 				+ getProcedures().toCode() + "\n";
 	}	
 
-	public void merge(Fodot other) {
+	public void merge(BasicFodotFile other) {
 		getIncludes().mergeWith(other.getIncludes());
 		getVocabulary().mergeWith(other.getVocabulary());
 		getTheory().mergeWith(other.getTheory());

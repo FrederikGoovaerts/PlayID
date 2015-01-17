@@ -1,10 +1,10 @@
 package fodot.gdl_parser;
 
-import fodot.objects.Fodot;
-import fodot.objects.structure.elements.IFodotEnumerationElement;
-
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
+
+import fodot.objects.file.IFodotFile;
+import fodot.objects.structure.elements.IFodotEnumerationElement;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -27,7 +27,7 @@ public interface GdlTransformer {
 
     void processDefinitionRule(GdlRule rule);
 
-    Fodot buildFodot();
+    IFodotFile buildFodot();
     
     //Translators
     String translateToGdl(IFodotEnumerationElement fodot);

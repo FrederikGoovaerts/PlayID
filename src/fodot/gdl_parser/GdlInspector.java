@@ -1,11 +1,14 @@
 package fodot.gdl_parser;
 
-import fodot.objects.Fodot;
-import org.ggp.base.util.gdl.GdlVisitor;
-import org.ggp.base.util.gdl.grammar.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.ggp.base.util.gdl.GdlVisitor;
+import org.ggp.base.util.gdl.grammar.Gdl;
+import org.ggp.base.util.gdl.grammar.GdlRelation;
+import org.ggp.base.util.gdl.grammar.GdlRule;
+
+import fodot.objects.file.IFodotFile;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -55,7 +58,7 @@ public class GdlInspector extends GdlVisitor{
         return toReturn;
     }
 
-    public Fodot getFodot(){
+    public IFodotFile getFodot(){
         return this.getTransformer().buildFodot();
     }
 

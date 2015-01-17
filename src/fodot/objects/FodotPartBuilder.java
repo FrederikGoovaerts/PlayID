@@ -1,4 +1,4 @@
-package fodot.helpers;
+package fodot.objects;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fodot.objects.Fodot;
 import fodot.objects.comments.FodotBlankLines;
 import fodot.objects.comments.FodotComment;
+import fodot.objects.file.BasicFodotFile;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.includes.elements.FodotIncludeFile;
 import fodot.objects.includes.elements.FodotIncludeLibrary;
@@ -661,20 +661,20 @@ public class FodotPartBuilder {
 	}
 
 	//FODOT ITSELF
-	public static Fodot createFodot(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures, FodotIncludeHolder imports) {
-		return new Fodot(voc, theory, struc, procedures, imports);
+	public static BasicFodotFile createFodot(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures, FodotIncludeHolder imports) {
+		return new BasicFodotFile(voc, theory, struc, procedures, imports);
 	}
 
-	public static Fodot createFodot(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures) {
+	public static BasicFodotFile createFodot(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures) {
 		return createFodot(voc, theory, struc, procedures, null);
 	}
 
-	public static Fodot createFodot() {
+	public static BasicFodotFile createFodot() {
 		FodotVocabulary voc = createVocabulary();
 		return createFodot(voc, null, null, null, null);
 	}
 
-	public static Fodot createFodot(FodotVocabulary voc) {
+	public static BasicFodotFile createFodot(FodotVocabulary voc) {
 		return createFodot(voc, createTheory(voc), createStructure(voc), createProcedures(), null);
 	}
 

@@ -1,42 +1,42 @@
 package fodot.gdl_parser;
 
-import static fodot.helpers.FodotPartBuilder.createAddition;
-import static fodot.helpers.FodotPartBuilder.createAnd;
-import static fodot.helpers.FodotPartBuilder.createBlankLines;
-import static fodot.helpers.FodotPartBuilder.createComment;
-import static fodot.helpers.FodotPartBuilder.createCompleteFunctionDeclaration;
-import static fodot.helpers.FodotPartBuilder.createConstant;
-import static fodot.helpers.FodotPartBuilder.createConstantFunctionEnumeration;
-import static fodot.helpers.FodotPartBuilder.createEquals;
-import static fodot.helpers.FodotPartBuilder.createExists;
-import static fodot.helpers.FodotPartBuilder.createExistsExactly;
-import static fodot.helpers.FodotPartBuilder.createForAll;
-import static fodot.helpers.FodotPartBuilder.createFunction;
-import static fodot.helpers.FodotPartBuilder.createFunctionEnumeration;
-import static fodot.helpers.FodotPartBuilder.createFunctionEnumerationElement;
-import static fodot.helpers.FodotPartBuilder.createImplies;
-import static fodot.helpers.FodotPartBuilder.createIncludeHolder;
-import static fodot.helpers.FodotPartBuilder.createIncludeLTC;
-import static fodot.helpers.FodotPartBuilder.createInductiveDefinition;
-import static fodot.helpers.FodotPartBuilder.createInductiveDefinitionConnector;
-import static fodot.helpers.FodotPartBuilder.createInductiveFunctionHead;
-import static fodot.helpers.FodotPartBuilder.createInductiveQuantifier;
-import static fodot.helpers.FodotPartBuilder.createInductiveSentence;
-import static fodot.helpers.FodotPartBuilder.createInteger;
-import static fodot.helpers.FodotPartBuilder.createLTCVocabulary;
-import static fodot.helpers.FodotPartBuilder.createNot;
-import static fodot.helpers.FodotPartBuilder.createNumericalTypeRangeEnumeration;
-import static fodot.helpers.FodotPartBuilder.createPartialFunctionDeclaration;
-import static fodot.helpers.FodotPartBuilder.createPredicate;
-import static fodot.helpers.FodotPartBuilder.createPredicateEnumeration;
-import static fodot.helpers.FodotPartBuilder.createProcedure;
-import static fodot.helpers.FodotPartBuilder.createProcedures;
-import static fodot.helpers.FodotPartBuilder.createSentence;
-import static fodot.helpers.FodotPartBuilder.createStructure;
-import static fodot.helpers.FodotPartBuilder.createTheory;
-import static fodot.helpers.FodotPartBuilder.createTypeDeclaration;
-import static fodot.helpers.FodotPartBuilder.createVariable;
-import static fodot.helpers.FodotPartBuilder.getNaturalNumberType;
+import static fodot.objects.FodotPartBuilder.createAddition;
+import static fodot.objects.FodotPartBuilder.createAnd;
+import static fodot.objects.FodotPartBuilder.createBlankLines;
+import static fodot.objects.FodotPartBuilder.createComment;
+import static fodot.objects.FodotPartBuilder.createCompleteFunctionDeclaration;
+import static fodot.objects.FodotPartBuilder.createConstant;
+import static fodot.objects.FodotPartBuilder.createConstantFunctionEnumeration;
+import static fodot.objects.FodotPartBuilder.createEquals;
+import static fodot.objects.FodotPartBuilder.createExists;
+import static fodot.objects.FodotPartBuilder.createExistsExactly;
+import static fodot.objects.FodotPartBuilder.createForAll;
+import static fodot.objects.FodotPartBuilder.createFunction;
+import static fodot.objects.FodotPartBuilder.createFunctionEnumeration;
+import static fodot.objects.FodotPartBuilder.createFunctionEnumerationElement;
+import static fodot.objects.FodotPartBuilder.createImplies;
+import static fodot.objects.FodotPartBuilder.createIncludeHolder;
+import static fodot.objects.FodotPartBuilder.createIncludeLTC;
+import static fodot.objects.FodotPartBuilder.createInductiveDefinition;
+import static fodot.objects.FodotPartBuilder.createInductiveDefinitionConnector;
+import static fodot.objects.FodotPartBuilder.createInductiveFunctionHead;
+import static fodot.objects.FodotPartBuilder.createInductiveQuantifier;
+import static fodot.objects.FodotPartBuilder.createInductiveSentence;
+import static fodot.objects.FodotPartBuilder.createInteger;
+import static fodot.objects.FodotPartBuilder.createLTCVocabulary;
+import static fodot.objects.FodotPartBuilder.createNot;
+import static fodot.objects.FodotPartBuilder.createNumericalTypeRangeEnumeration;
+import static fodot.objects.FodotPartBuilder.createPartialFunctionDeclaration;
+import static fodot.objects.FodotPartBuilder.createPredicate;
+import static fodot.objects.FodotPartBuilder.createPredicateEnumeration;
+import static fodot.objects.FodotPartBuilder.createProcedure;
+import static fodot.objects.FodotPartBuilder.createProcedures;
+import static fodot.objects.FodotPartBuilder.createSentence;
+import static fodot.objects.FodotPartBuilder.createStructure;
+import static fodot.objects.FodotPartBuilder.createTheory;
+import static fodot.objects.FodotPartBuilder.createTypeDeclaration;
+import static fodot.objects.FodotPartBuilder.createVariable;
+import static fodot.objects.FodotPartBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +48,8 @@ import java.util.Set;
 import org.ggp.base.util.Pair;
 
 import fodot.gdl_parser.util.LTCPool;
-import fodot.objects.Fodot;
+import fodot.objects.file.BasicFodotFile;
+import fodot.objects.file.IFodotFile;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedureStatement;
@@ -125,14 +126,14 @@ public class FodotGameFactory {
      * Class Methods
      **************************************************************************/
 
-    public Fodot createFodot(){
+    public IFodotFile createFodot(){
         FodotVocabulary voc = this.buildVocabulary();
         FodotTheory theo = this.buildTheory(voc);
         FodotStructure struc = this.buildStructure(voc);
         FodotProcedures proc = this.buildProcedures();
         FodotIncludeHolder incl = createIncludeHolder(createIncludeLTC());
 
-        return new Fodot(voc,theo,struc,proc,incl);
+        return new BasicFodotFile(voc,theo,struc,proc,incl);
     }
 
     private void buildDefaultVocItems() {

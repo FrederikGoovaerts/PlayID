@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import fodot.helpers.FodotPartBuilder;
+import fodot.objects.FodotPartBuilder;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
 import fodot.objects.theory.elements.inductivedefinitions.IFodotInductiveDefinitionElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
