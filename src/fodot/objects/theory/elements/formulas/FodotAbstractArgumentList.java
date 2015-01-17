@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fodot.exceptions.IllegalAmountOfArguments;
-import fodot.exceptions.IllegalTypeException;
+import fodot.exceptions.fodot.IllegalAmountOfArgumentsException;
+import fodot.exceptions.fodot.IllegalTypeException;
 import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
@@ -58,7 +58,7 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 		List<FodotType> argumentTypes = getDeclaration().getArgumentTypes();
 		//Check amount of arguments
 		if (arguments.size() != argumentTypes.size()) {
-			throw new IllegalAmountOfArguments(this, arguments.size(), argumentTypes.size());
+			throw new IllegalAmountOfArgumentsException(this, arguments.size(), argumentTypes.size());
 		}
 		
 		//Check types of arguments

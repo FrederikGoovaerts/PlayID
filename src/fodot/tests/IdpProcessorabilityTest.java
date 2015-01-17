@@ -1,6 +1,7 @@
 package fodot.tests;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
 
@@ -15,7 +16,11 @@ public class IdpProcessorabilityTest {
 	protected void process(String gameName) {
 		File toParse = new File(GAMES_LOCATION + gameName + DEFAULT_EXTENSION);
 		PlayIdProcessor processor = new PlayIdProcessor();
-		processor.process(toParse);
+		try {
+			processor.process(toParse);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test

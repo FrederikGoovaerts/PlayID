@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fodot.exceptions.IllegalConnectorException;
+import fodot.exceptions.fodot.IllegalConnectorException;
 import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.util.CollectionPrinter;

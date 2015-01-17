@@ -3,7 +3,7 @@ package fodot.objects.theory.elements.terms;
 import java.util.HashSet;
 import java.util.Set;
 
-import fodot.exceptions.InvalidTermNameException;
+import fodot.exceptions.fodot.InvalidTermNameException;
 import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.NameUtil;

@@ -3,7 +3,7 @@ package fodot.objects.theory.elements.inductivedefinitions;
 import java.util.HashSet;
 import java.util.Set;
 
-import fodot.exceptions.IllegalTypeException;
+import fodot.exceptions.fodot.IllegalTypeException;
 import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.theory.elements.terms.FodotFunction;
 import fodot.objects.theory.elements.terms.FodotVariable;

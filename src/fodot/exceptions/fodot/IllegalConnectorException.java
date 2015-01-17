@@ -1,4 +1,4 @@
-package fodot.exceptions;
+package fodot.exceptions.fodot;
 
 
 public class IllegalConnectorException extends RuntimeException {

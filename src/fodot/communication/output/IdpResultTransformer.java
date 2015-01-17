@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import fodot.exceptions.idp.IdpParseException;
+import fodot.exceptions.idp.UnsatisfiableIdpFileException;
 import fodot.fodot_parser.FodotStructureParser;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.FodotStructure;
@@ -19,9 +21,9 @@ public class IdpResultTransformer {
 	private String textualResult;
 	private IFodotFile inputFodot;
 	private List<FodotStructure> models = new ArrayList<FodotStructure>();
-	private boolean errorOccured;
 
-	public IdpResultTransformer(IFodotFile inputFodot, String textResult) {
+	public IdpResultTransformer(IFodotFile inputFodot, String textResult)
+			throws IdpParseException, UnsatisfiableIdpFileException, IllegalStateException {
 		super();
 		setInputFodot(inputFodot);
 		setTextualResult(textResult);
@@ -35,7 +37,7 @@ public class IdpResultTransformer {
 	public String getTextualResult() {
 		return textualResult;
 	}
-	public void setTextualResult(String result) {
+	private void setTextualResult(String result) {
 		this.textualResult = result;
 	}	
 
@@ -43,7 +45,7 @@ public class IdpResultTransformer {
 		return inputFodot;
 	}
 
-	public void setInputFodot(IFodotFile inputFodot) {
+	private void setInputFodot(IFodotFile inputFodot) {
 		this.inputFodot = inputFodot;
 	}
 	/**********************************************/
@@ -57,7 +59,7 @@ public class IdpResultTransformer {
 		return models;
 	}
 	
-	public void addModel(FodotStructure model) {
+	private void addModel(FodotStructure model) {
 		models.add(model);
 	}
 
@@ -67,7 +69,7 @@ public class IdpResultTransformer {
 	/**********************************************
 	 *  Processing of the given text
 	 ***********************************************/
-	public void processResult() {
+	public void processResult() throws IdpParseException, UnsatisfiableIdpFileException, IllegalStateException {
 		List<String> linesToProcess = ParserUtil.trimElements(Arrays.asList(getTextualResult().split("\n")));
 
 		Iterator<String> it = linesToProcess.iterator();
@@ -75,9 +77,10 @@ public class IdpResultTransformer {
 			
 			String line = it.next();
 			
-			if (isError(line)) {
-				setErrorOccured(true);
-				break;
+			if (isParseError(line)) {
+				throw new IdpParseException(line);
+			} else if (isUnsatisfiable(line)) {
+				throw new UnsatisfiableIdpFileException();
 			} else if (isThrowAwayLine(line)){
 				//No-op
 			} else if (declaresNewStructure(line)) {
@@ -92,7 +95,7 @@ public class IdpResultTransformer {
 				
 				addModel(FodotStructureParser.parse(getInputFodot(), structureToParse));
 			} else {
-				throw new IllegalArgumentException("Can't process " + line);
+				throw new IllegalStateException("Can't process " + line);
 			}
 		}
 
@@ -103,8 +106,12 @@ public class IdpResultTransformer {
 	/**********************************************
 	 *  Line recognizers
 	 ***********************************************/
-	private boolean isError(String line) {
+	private boolean isParseError(String line) {
 		return line.startsWith("Error: ");
+	}
+
+	private boolean isUnsatisfiable(String line) {
+		return line.trim().startsWith("Unsatisfiable");
 	}
 
 	private boolean isEndOfStructure(String line) {
@@ -125,18 +132,6 @@ public class IdpResultTransformer {
 				|| line.startsWith("====")
 				|| line.startsWith("Number of models")
 				|| line.startsWith("Model");
-	}
-	/**********************************************/
- 
-	/**********************************************
-	 *  Error checkers
-	 ***********************************************/
-	public boolean hasErrorOccured() {
-		return errorOccured;
-	}
-
-	private void setErrorOccured(boolean errorOccured) {
-		this.errorOccured = errorOccured;
 	}
 	/**********************************************/
 }

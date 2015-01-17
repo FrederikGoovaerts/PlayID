@@ -1,4 +1,4 @@
-package fodot.exceptions;
+package fodot.exceptions.fodot;
 
 import fodot.objects.vocabulary.elements.FodotType;
 

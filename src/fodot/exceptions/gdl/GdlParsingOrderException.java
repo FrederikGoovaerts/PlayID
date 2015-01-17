@@ -1,4 +1,4 @@
-package fodot.gdl_parser.exceptions;
+package fodot.exceptions.gdl;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>

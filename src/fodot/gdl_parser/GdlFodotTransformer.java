@@ -26,7 +26,7 @@ import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
-import fodot.gdl_parser.exceptions.GdlParsingOrderException;
+import fodot.exceptions.gdl.GdlParsingOrderException;
 import fodot.gdl_parser.util.GdlCastHelper;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.Fodot;

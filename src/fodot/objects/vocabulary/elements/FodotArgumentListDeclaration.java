@@ -5,7 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import fodot.exceptions.InvalidTermNameException;
+import fodot.exceptions.fodot.InvalidTermNameException;
 import fodot.objects.general.IFodotElement;
 import fodot.util.NameUtil;
 

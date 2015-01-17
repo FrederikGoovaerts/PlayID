@@ -12,13 +12,21 @@ import fodot.communication.input.IdpFileWriter;
 import fodot.communication.output.GdlAction;
 import fodot.communication.output.GdlAnswerCalculator;
 import fodot.communication.output.IdpResultTransformer;
+import fodot.exceptions.idp.IdpConnectionException;
+import fodot.exceptions.idp.IdpParseException;
+import fodot.exceptions.idp.NoValidModelsException;
+import fodot.exceptions.idp.UnsatisfiableIdpFileException;
 import fodot.gdl_parser.Parser;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.FodotStructure;
 
 public class PlayIdProcessor {
 	
-	public void process(File gdlFile) {
+	public void process(File gdlFile)
+			throws IOException, IdpConnectionException,
+				IdpParseException, UnsatisfiableIdpFileException, IllegalStateException,
+				NoValidModelsException 
+		{
 		
 		//Convert GDL to IDP
 		Parser parser = new Parser(gdlFile);
@@ -32,23 +40,15 @@ public class PlayIdProcessor {
 
 		//Make IDP solve it
 		IIdpCaller caller = new IdpCaller();
-		String idpResult = "";
-		try {
-			idpResult = caller.callIDP(idpFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new IllegalStateException("Failed to connect to IDP");
-		}
+		String idpResult = caller.callIDP(idpFile);
 
 		//Process results
 		IdpResultTransformer transformer = new IdpResultTransformer(parsedFodotFile, idpResult);
 		List<FodotStructure> models = transformer.getModels();
 		
-		//Do something if we didn't find any models
-		if (transformer.hasErrorOccured()) {
-			throw new IllegalStateException("An error has occured when running IDP"); //TODO aparte errors hiervoor definieren
-		} else if (models.size() == 0) {
-			throw new IllegalStateException("No models found");
+		//Check if we found a model
+		if (models.size() == 0) {
+			throw new NoValidModelsException();
 		}
 		
 		//Transform a solution 
@@ -60,7 +60,7 @@ public class PlayIdProcessor {
 		outputter.output();
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		new PlayIdProcessor().process( new File("resources/games/maze.kif"));
 	}
 	

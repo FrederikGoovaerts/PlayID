@@ -60,7 +60,7 @@ public class Parser {
         if (printBuiltFodot) {
             System.out.println(builtFodot.toCode());
         }
-        if(outputToFile) {
+        if (outputToFile) {
             File outputFile = IdpFileWriter.createIDPFileBasedOn(input);
             IdpFileWriter.writeToIDPFile(builtFodot, outputFile);
         }
