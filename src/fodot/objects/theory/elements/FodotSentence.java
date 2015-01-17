@@ -1,13 +1,8 @@
 package fodot.objects.theory.elements;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import fodot.exceptions.NonVariablefreeSentenceException;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
-import fodot.objects.theory.elements.terms.FodotVariable;
-import fodot.util.NameUtil;
 
 /**
  * A FO(.) sentence is a FO(.) formula with no free occurences of variables
@@ -28,15 +23,7 @@ public class FodotSentence implements IFodotElement, IFodotTheoryElement {
 	private void setFormula(IFodotFormula formula) {
 		if (formula.getFreeVariables() != null && !(formula.getFreeVariables().isEmpty())) {
 			throw new NonVariablefreeSentenceException(formula);
-		}
-		
-		//Improve variable names (you can delete this if you think this is dirty)
-		Set<FodotVariable> variables = new HashSet<FodotVariable>();
-		for (IFodotSentenceElement el : formula.getElementsOfClass(FodotVariable.class)) {
-			variables.add((FodotVariable) el);
-		}
-		NameUtil.improveGeneratedVariableNames(variables);
-		
+		}		
 		this.formula = formula;
 	}
 
