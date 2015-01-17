@@ -471,12 +471,12 @@ public class FodotGameFactory {
          * resultaat:
          * *predicaat*={*waarden()*}
          */
-        if (!initMap.isEmpty()) {
-             toReturn.addElement(createBlankLines(1));
-             toReturn.addElement(createComment("All values found in the static predicates"));
-         }
         Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> staticMap
                 = this.source.getStaticValues();
+        if (!staticMap.isEmpty()) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("All values found in the static predicates"));
+        }
         for (FodotPredicateDeclaration declaration : staticMap.keySet()) {
             toReturn.addElement(
                     createPredicateEnumeration(declaration,

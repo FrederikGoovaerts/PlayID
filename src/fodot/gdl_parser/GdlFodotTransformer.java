@@ -89,7 +89,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 		timeType.addSupertype(getNaturalNumberType());
 		this.playerType = new FodotType("Player");
 		this.actionType = new FodotType("Action");
-		actionType.getDeclaration(); //TODO: this has to be fixed!
+		actionType.getDeclaration(); //TODO: this has to be fixed!	 //Update 17-01-15: What has to be fixes? -T.
 		this.scoreType = new FodotType("ScoreType");
 		scoreType.addSupertype(getNaturalNumberType());
 		this.allType = new FodotType("All");
@@ -210,20 +210,27 @@ public class GdlFodotTransformer implements GdlTransformer{
 	 * Constants
 	 */
 
-	private void addConstant(FodotConstant constant){
+	private void addConstant(FodotConstant constant) {
 		allType.addDomainElement(constant);
 	}
 
-	private boolean isConstantRegistered(FodotConstant constant){
+	private boolean isConstantRegistered(FodotConstant constant) {
 		return allType.containsElement(constant);
 	}
 
-	public FodotConstant convertRawConstantName(String rawName){
+	public FodotConstant convertRawConstantName(String rawName) {
 		return convertConstantName(rawName, getAllType());
 	}
 
-	public FodotConstant convertConstantName(String rawName, FodotType type){
-		FodotConstant toReturn = createConstant("c_" + rawName, type);
+	public FodotConstant convertConstantName(String rawName, FodotType type) {
+		String constantName;
+		if (rawName.matches("^[0-9]+$")) {
+			constantName = "i" + rawName;
+		} else {
+			constantName = rawName;
+		}
+		
+		FodotConstant toReturn = createConstant(constantName, type);
 		addTranslation(toReturn, rawName);
 		return toReturn;
 	}
