@@ -17,6 +17,9 @@ public class FodotStructure extends FodotFileElementWithNamedElements<IFodotStru
 		setVocabulary(vocabulary);
 	}
 
+	public FodotStructure(String name, FodotVocabulary voc) {
+		this(name, voc, null);
+	}
 	
 	public FodotStructure(FodotVocabulary voc) {
 		this(null, voc, null);

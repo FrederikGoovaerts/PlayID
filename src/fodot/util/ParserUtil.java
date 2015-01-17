@@ -9,8 +9,29 @@ public class ParserUtil {
 		for (int i = 0; i < list.size(); i++) {
 			list.set(i, list.get(i).trim());
 		}
-		return list;
+		return removeEmptyStrings(list);
 	}
+
+	/**********************************************
+	 *  Empty string remover
+	 ***********************************************/
+
+	private static List<String> removeEmptyStrings(List<String> list) {
+		List<String> result = new ArrayList<String>();
+		for (String s : list) {
+			if (!isEmpty(s)) {
+				result.add(s);
+			}
+		}
+		return result;
+	}
+	
+	private static boolean isEmpty(String s) {
+		return s == null
+				|| s.trim().equals("");
+	}	
+
+	/**********************************************/
 
 	/**********************************************
 	 *  Splitters
