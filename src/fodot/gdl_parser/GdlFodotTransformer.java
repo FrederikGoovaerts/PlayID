@@ -1,14 +1,6 @@
 package fodot.gdl_parser;
 
-import static fodot.objects.FodotPartBuilder.createConstant;
-import static fodot.objects.FodotPartBuilder.createExists;
-import static fodot.objects.FodotPartBuilder.createImplies;
-import static fodot.objects.FodotPartBuilder.createPredicate;
-import static fodot.objects.FodotPartBuilder.createPredicateDeclaration;
-import static fodot.objects.FodotPartBuilder.createPredicateTerm;
-import static fodot.objects.FodotPartBuilder.createPredicateTermDeclaration;
-import static fodot.objects.FodotPartBuilder.createVariable;
-import static fodot.objects.FodotPartBuilder.getNaturalNumberType;
+import static fodot.objects.FodotPartBuilder.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,14 +78,18 @@ public class GdlFodotTransformer implements GdlTransformer{
 	private FodotType allType;
 
 	private void buildDefaultTypes(){
-		this.timeType = new FodotType("Time");
+		this.timeType = createType("Time");
 		timeType.addSupertype(getNaturalNumberType());
-		this.playerType = new FodotType("Player");
-		this.actionType = new FodotType("Action");
+		
+		this.playerType = createType("Player");
+		this.actionType = createType("Action");
 		actionType.getDeclaration(); //TODO: this has to be fixed!	 //Update 17-01-15: What has to be fixes? -T.
-		this.scoreType = new FodotType("ScoreType");
+		this.scoreType = createType("ScoreType");
 		scoreType.addSupertype(getNaturalNumberType());
-		this.allType = new FodotType("All");
+		this.allType = createType("All");
+		
+		//Nope, this doesn't work :c
+//		this.allType.addAllSupertypes(Arrays.asList(scoreType,actionType,timeType,playerType));
 	}
 
 	public FodotType getTimeType(){
@@ -471,8 +467,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 			}
 			fodotTerm = temp;
 		} else { //Term is something else, is it a function?
-			System.out.println("Unresolved term: " + term + "\n-->" + term.getClass());
-			throw new IllegalArgumentException("We're dealing with a function?!");
+			throw new IllegalStateException("Support for GDL functions is not implemented");
 		}
 		return fodotTerm;
 	}
@@ -596,7 +591,8 @@ public class GdlFodotTransformer implements GdlTransformer{
 					"processing relations is not allowed anymore.");
 
 		// Static: (pred x1 .. xn)
-		String predName = relation.getName().getValue();
+		String originalPredName = relation.getName().getValue();
+		String predName = NameUtil.convertToValidPredicateName(originalPredName);
 		int predArity = relation.arity();
 
 		FodotPredicateDeclaration pred;

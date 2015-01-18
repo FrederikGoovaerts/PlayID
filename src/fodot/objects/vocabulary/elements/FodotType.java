@@ -136,7 +136,7 @@ public class FodotType implements IFodotElement {
 		}
 	}
 
-	public void addAllSubtypes(Set<FodotType> types) {
+	public void addAllSubtypes(Collection<? extends FodotType> types) {
 		for (FodotType type : types) {
 			addSubtype(type);
 		}
@@ -210,7 +210,7 @@ public class FodotType implements IFodotElement {
 		}
 	}
 
-	public void addAllSupertypes(Set<FodotType> types) {
+	public void addAllSupertypes(Collection<? extends FodotType> types) {
 		for (FodotType type : types) {
 			addSupertype(type);
 		}
