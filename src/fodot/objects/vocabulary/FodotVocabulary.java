@@ -1,12 +1,15 @@
 package fodot.objects.vocabulary;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-import fodot.objects.file.FodotFileElementWithNamedElements;
+import fodot.objects.file.FodotFileElement;
 import fodot.objects.file.IFodotFileElement;
+import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 
-public class FodotVocabulary extends FodotFileElementWithNamedElements<IFodotVocabularyElement> implements IFodotFileElement {
+public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> implements IFodotFileElement {
 
 	private static final String DEFAULT_NAME = "V";
 	
@@ -22,6 +25,43 @@ public class FodotVocabulary extends FodotFileElementWithNamedElements<IFodotVoc
 		this(null, null);
 	}
 
+	//Named stuff
+	public List<IFodotVocabularyElement> getElementsWithName(String name) {
+		List<IFodotVocabularyElement> result = new ArrayList<IFodotVocabularyElement>();
+		if (name != null) {
+			for (IFodotVocabularyElement el : getElements()) {
+				if (name.equals(el.getName())) {
+					result.add(el);
+				}
+			}
+		}
+		return result;
+	}
+
+	public boolean containsElementWithName(String name) {
+		return !getElementsWithName(name).isEmpty();
+	}
+	
+	
+	@Override
+	public boolean isValidElement(IFodotVocabularyElement argEl) {
+		if (argEl == null) {
+			return false;
+		}
+		if (containsElement(argEl)) {
+			return true;
+		}
+		//Types with the same name is okay as long as the arity differst!
+		if (containsElementWithName(argEl.getName())) {
+			for(IFodotVocabularyElement el : getElementsWithName(argEl.getName())) {
+				if (el.getArity() == argEl.getArity()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	/* FODOT ELEMENT */
 	@Override
 	public String toCode() {

@@ -31,6 +31,11 @@ public class FodotFunctionDeclaration extends FodotArgumentListDeclaration imple
 	}
 
 	@Override
+	public int getArity() {
+		return super.getArity() + 1; //Return type also counts
+	}
+	
+	@Override
 	public String toCode() {
 		return (isPartial() ? "partial " : "") + getName()
 				+ (hasArguments() ? CollectionPrinter.toCoupleAsCode(getArgumentTypes()) : "")

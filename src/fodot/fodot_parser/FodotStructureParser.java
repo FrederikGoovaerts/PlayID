@@ -144,7 +144,7 @@ public class FodotStructureParser {
 		String domain = splitted[1].trim();
 
 		IFodotStructureElement elementToAdd = null;
-		IFodotVocabularyElement elementVocElement = getVocabulary().getElementWithName(name);
+		IFodotVocabularyElement elementVocElement = getVocabulary().getElementsWithName(name).get(0); //TODO: fix this: Count the arity of the given domain!
 		switch (getDomainType(name)) {
 		case TYPE:
 			elementToAdd = createTypeEnumeration((FodotTypeDeclaration) elementVocElement, domain);
@@ -313,7 +313,7 @@ public class FodotStructureParser {
 
 	private EnumerationType getDomainType(String name) {
 
-		IFodotVocabularyElement el = getVocabulary().getElementWithName(name);
+		IFodotVocabularyElement el = getVocabulary().getElementsWithName(name).get(0); // TODO: fix me: count the arity!
 		if (el.getClass().equals(FodotFunctionDeclaration.class)) {
 			return EnumerationType.FUNCTION;
 		}

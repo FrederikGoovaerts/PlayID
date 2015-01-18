@@ -97,5 +97,10 @@ public class FodotTypeDeclaration implements IFodotVocabularyElement {
 	public String getName() {
 		return getType().getName();
 	}
+
+	@Override
+	public int getArity() {
+		return 0;
+	}
     
 }

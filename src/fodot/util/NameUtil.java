@@ -38,7 +38,7 @@ public class NameUtil {
 			if (isValidName(name)) {
 				return name;
 			}
-			String newName = name.replaceAll(NON_ALPHA_NUMERIC_REGEX, "");
+			String newName = name.replaceAll(NON_ALPHA_NUMERIC_REGEX, "").replace("-", "_");
 			if (isValidName(newName)) {
 				return newName;
 			}

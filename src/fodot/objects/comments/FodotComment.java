@@ -86,4 +86,9 @@ public class FodotComment implements IFodotElement, IFodotTheoryElement, IFodotS
 		return null;
 	}
 
+	@Override
+	public int getArity() {
+		return 0;
+	}
+
 }

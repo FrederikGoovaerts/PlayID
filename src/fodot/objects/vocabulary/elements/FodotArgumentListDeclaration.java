@@ -50,6 +50,10 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
     public int getAmountOfArgumentTypes(){
         return argumentTypes.size();
     }
+    
+    public int getArity() {
+    	return getAmountOfArgumentTypes();
+    }
 
 	private void setArgumentTypes(List<FodotType> argumentTypes) {
 		if(argumentTypes == null){

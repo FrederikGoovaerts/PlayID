@@ -40,4 +40,9 @@ public class FodotBlankLines implements IFodotElement, IFodotTheoryElement, IFod
 	public IFodotVocabularyElement getDeclaration() {
 		return null;
 	}
+
+	@Override
+	public int getArity() {
+		return 0;
+	}
 }
