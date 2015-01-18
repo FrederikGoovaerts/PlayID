@@ -355,15 +355,15 @@ public class FodotGameFactory {
          *    *en dit voor elk tripel*
          * }
          */
-        Map<Pair<IFodotTerm, Integer>, Set<IFodotFormula>> scoreMap = source.getScoreMap();
+        Map<Pair<IFodotTerm, IFodotTerm>, Set<IFodotFormula>> scoreMap = source.getScoreMap();
         if (!scoreMap.isEmpty()) {
             toReturn.addElement(createBlankLines(1));
             toReturn.addElement(createComment("Translation of the SCORE sentences"));
         }
         List<FodotInductiveSentence> definitions = new ArrayList<>();
-        for (Pair<IFodotTerm, Integer> scorePair: scoreMap.keySet()) {
+        for (Pair<IFodotTerm, IFodotTerm> scorePair: scoreMap.keySet()) {
         	IFodotTerm playerTerm = scorePair.left;
-            int score = scorePair.right;
+            IFodotTerm score = scorePair.right;
             for (IFodotFormula formula : scoreMap.get(scorePair)) {
                 definitions.add(
                         createInductiveSentence(createInductiveDefinitionConnector(
@@ -372,7 +372,7 @@ public class FodotGameFactory {
                                                         scoreFunctionDeclaration,
                                                         playerTerm
                                                 ),
-                                                createConstant(Integer.toString(score), source.getScoreType())
+                                                score
                                         ), FormulaUtil.makeVariableFree(formula)
                                 )
                         )

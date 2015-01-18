@@ -44,6 +44,7 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.FormulaUtil;
+import fodot.util.NameUtil;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -224,7 +225,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 	public FodotConstant convertConstantName(String rawName, FodotType type) {
 		String constantName;
-		if (rawName.matches("^[0-9]+$")) {
+		if (rawName.matches("^[0-9]+$") && !type.isASubtypeOf(FodotType.INTEGER)) {
 			constantName = "i" + rawName;
 		} else {
 			constantName = rawName;
@@ -362,13 +363,13 @@ public class GdlFodotTransformer implements GdlTransformer{
 	 * Score
 	 */
 
-	private Map<Pair<IFodotTerm, Integer>,Set<IFodotFormula>> scoreMap;
+	private Map<Pair<IFodotTerm, IFodotTerm>,Set<IFodotFormula>> scoreMap;
 
-	public Map<Pair<IFodotTerm, Integer>,Set<IFodotFormula>> getScoreMap(){
+	public Map<Pair<IFodotTerm, IFodotTerm>,Set<IFodotFormula>> getScoreMap(){
 		return new HashMap<>(scoreMap);
 	}
 
-	private void addScore(Pair<IFodotTerm, Integer> score, IFodotFormula condition) {
+	private void addScore(Pair<IFodotTerm, IFodotTerm> score, IFodotFormula condition) {
 		if(scoreMap.containsKey(score)){
 			scoreMap.get(score).add(condition);
 		} else {
@@ -754,12 +755,9 @@ public class GdlFodotTransformer implements GdlTransformer{
 		} else {
 			playerTerm = convertRawRole(playerGdlTerm.toSentence().getName().getValue());
 		}
-//		if (scoreGdlTerm instanceof GdlVariable) {
-//			IFodotTerm scoreTerm = processTerm(scoreGdlTerm, variableMap);			
-//		}
+		IFodotTerm scoreTerm = processTerm(scoreGdlTerm, getScoreType(), variableMap);
 		
-		Pair<IFodotTerm, Integer> score = Pair.of(playerTerm,
-				Integer.parseInt(scoreGdlTerm.toSentence().getName().getValue()));
+		Pair<IFodotTerm, IFodotTerm> score = Pair.of(playerTerm, scoreTerm);
 
 		IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
 				rule.getBody(),
@@ -839,7 +837,8 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		//Predicate: (pred x1 .. xn)
 
-		String predName = predSentence.getName().getValue();
+		String originalPredName = predSentence.getName().getValue();
+		String predName = NameUtil.convertToValidPredicateName(originalPredName);
 		int amountOfArguments = predSentence.arity();
 
 		FodotPredicateDeclaration pred;
@@ -877,7 +876,9 @@ public class GdlFodotTransformer implements GdlTransformer{
 	public FodotPredicateDeclaration processCompoundStaticPredicate(GdlSentence predSentence) {
 		//Predicate: (pred x1 .. xn)
 
-		String predName = predSentence.getName().getValue();
+		String originalPredName = predSentence.getName().getValue();
+		String predName = NameUtil.convertToValidPredicateName(originalPredName);
+		
 		int amountOfArguments = predSentence.arity();
 
 		FodotPredicateDeclaration predDecl;

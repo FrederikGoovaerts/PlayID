@@ -2,6 +2,7 @@ package fodot.gdl_parser.util;
 
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.util.NameUtil;
 import static fodot.objects.FodotPartBuilder.*;
 
 import java.util.*;
@@ -39,6 +40,7 @@ public class LTCPool {
      **************************************************************************/
 
     public FodotPredicateDeclaration getPredicate(String predName){
+    	predName = NameUtil.convertToValidPredicateName(predName);
         if(!isPredicateRegistered(predName))
             throw new IllegalArgumentException("Predicate not found: " + predName);
         if(isFluentPredicateRegistered(predName))

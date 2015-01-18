@@ -15,7 +15,7 @@ public class NameUtil {
 
 	public static String generateVariableName(String nameSuggestion, FodotType type, Collection<? extends String> usedNames) {
 		//Generate a new valid name
-		String correctedName = convertToValidName(nameSuggestion, type);
+		String correctedName = convertToValidVariableName(nameSuggestion, type);
 
 		//Put numbers after it if the name is already used
 		String newName = correctedName;
@@ -23,7 +23,7 @@ public class NameUtil {
 		while (usedNames.contains(newName)) {
 			newName = correctedName + index++;
 		}		
-		
+
 		return newName;
 	}
 
@@ -33,20 +33,40 @@ public class NameUtil {
 	 * @param name
 	 * @return
 	 */
-	public static String convertToValidName(String name, FodotType type) {
+	public static String convertToValidVariableName(String name, FodotType type) {
 		if (name != null) {
 			if (isValidName(name)) {
 				return name;
 			}
-			String newName = name.replaceAll(NON_ALPHA_NUMERIC_REGEX, "").replace("-", "_");
+			String newName = name.replaceAll(NON_ALPHA_NUMERIC_REGEX, "");
 			if (isValidName(newName)) {
 				return newName;
 			}
 		}
 		return createBaseName(type);
-		
+
 	}
-	
+
+	public static String convertToValidPredicateName(String name) {
+		if (name == null) {
+			throw new IllegalArgumentException("Name can't be null");
+		}
+		
+		if (isValidName(name)) {
+			return name;
+		}
+		
+		String newName = name.replaceAll("-", "_");
+		if (isValidName(newName)) {
+			return newName;
+		}
+		newName = name.replaceAll(NON_ALPHA_NUMERIC_REGEX, "");
+		if (isValidName(newName)) {
+			return newName;
+		}
+		return "pr_" + newName;
+	}
+
 	/**
 	 * Checks if the string is a valid name for a variable name in FodotIDP
 	 * @param name
@@ -59,7 +79,7 @@ public class NameUtil {
 		return (name.matches(VALID_NAME_REGEX)
 				|| ALLOWED_SPECIAL_NAMES.contains(name));
 	}
-	
+
 	/**
 	 * Creates a basic name for the given type. Takes the first letter in lowercasing of the typename.
 	 * @param type

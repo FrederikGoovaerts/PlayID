@@ -17,7 +17,6 @@ public class SingleplayerTransformationTest {
 	 */
 	protected static void transform(String gameName) {
 		File toParse = toFile(gameName);
-		System.out.println(toParse);
 		Parser parser = new Parser(toParse);
 		parser.run();
 	}
