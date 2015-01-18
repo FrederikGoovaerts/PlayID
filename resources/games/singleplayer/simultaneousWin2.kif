@@ -1,0 +1,155 @@
+(role robot)
+
+(init (cell 1 1 0))
+(init (cell 1 2 0))
+(init (cell 2 1 0))
+(init (cell 2 2 0))
+(init (cell 3 1 0))
+(init (cell 3 2 0))
+(init (cell 4 1 0))
+(init (cell 4 2 0))
+(init (cell 1 3 0))
+(init (cell 1 4 0))
+(init (cell 2 3 0))
+(init (cell 2 4 0))
+(init (cell 3 3 0))
+(init (cell 3 4 0))
+(init (cell 4 3 0))
+(init (cell 4 4 0))
+
+(<= (legal robot (press ?x1 ?y1 ?x2 ?y2))
+    (index ?x1)
+    (index ?y1)
+    (index ?x2)
+    (index ?y2))
+    
+(<= (next (cell ?x ?y 4))
+    (does robot (press ?x ?y ?xignore ?yignore)))
+(<= (next (cell ?x ?y 4))
+    (does robot (press ?xignore ?yignore ?x ?y)))
+(<= (next (cell ?x ?y 4))
+    (in ?x ?y 1)
+    lightson1)
+(<= (next (cell ?x ?y 4))
+    (in ?x ?y 2)
+    lightson2)
+(<= (next (cell ?x ?y 4))
+    (in ?x ?y 3)
+    lightson3)
+(<= (next (cell ?x ?y 4))
+    (in ?x ?y 4)
+    lightson4)
+(<= (next (cell ?x ?y 3))
+    (true (cell ?x ?y 4)))
+(<= (next (cell ?x ?y 2))
+    (true (cell ?x ?y 3)))
+(<= (next (cell ?x ?y 1))
+    (true (cell ?x ?y 2)))
+(<= (next (cell ?x ?y 0))
+    (true (cell ?x ?y 1)))
+(<= (next (cell ?x ?y 0))
+    (true (cell ?x ?y 0)))
+    
+(<= terminal
+    lightson12)
+(<= terminal
+    lightson13)
+(<= terminal
+    lightson14)
+(<= terminal
+    lightson23)
+(<= terminal
+    lightson24)
+(<= terminal
+    lightson34)
+    
+(<= (goal robot 100)
+    lightson12)
+(<= (goal robot 100)
+    lightson13)
+(<= (goal robot 100)
+    lightson14)
+(<= (goal robot 100)
+    lightson23)
+(<= (goal robot 100)
+    lightson24)
+(<= (goal robot 100)
+    lightson34)
+(<= (goal robot 0)
+    (not lightson12)
+    (not lightson13)
+    (not lightson14)
+    (not lightson23)
+    (not lightson24)
+    (not lightson34))
+    
+(<= (on ?x ?y)
+    (true (cell ?x ?y 1)))
+(<= (on ?x ?y)
+    (true (cell ?x ?y 2)))
+(<= (on ?x ?y)
+    (true (cell ?x ?y 3)))
+(<= (on ?x ?y)
+    (true (cell ?x ?y 4)))
+    
+(<= lightson1
+    (on 1 1)
+    (on 1 2)
+    (on 2 1)
+    (on 2 2))
+(<= lightson2
+    (on 3 1)
+    (on 3 2)
+    (on 4 1)
+    (on 4 2))
+(<= lightson3
+    (on 1 3)
+    (on 1 4)
+    (on 2 3)
+    (on 2 4))
+(<= lightson4
+    (on 3 3)
+    (on 3 4)
+    (on 4 3)
+    (on 4 4))
+    
+(<= lightson12
+    lightson1
+    lightson2)
+(<= lightson13
+    lightson1
+    lightson3)
+(<= lightson14
+    lightson1
+    lightson4)
+(<= lightson23
+    lightson2
+    lightson3)
+(<= lightson24
+    lightson2
+    lightson4)
+(<= lightson34
+    lightson3
+    lightson4)
+
+(in 1 1 1)
+(in 1 2 1)
+(in 2 1 1)
+(in 2 2 1)
+(in 3 1 2)
+(in 3 2 2)
+(in 4 1 2)
+(in 4 2 2)
+(in 1 3 3)
+(in 1 4 3)
+(in 2 3 3)
+(in 2 4 3)
+(in 3 3 4)
+(in 3 4 4)
+(in 4 3 4)
+(in 4 4 4)
+
+(index 1)
+(index 2)
+(index 3)
+(index 4)

@@ -1,0 +1,114 @@
+include <LTC>
+
+LTCvocabulary V {
+	// Default vocabulary elements (and types needed by the default elements)
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type All constructed from {s19,s18,s17,s16,s39,s38,s11,p3,s37,s10,p2,s36,p1,s35,s34,s15,s33,s14,p6,s32,s13,p5,s31,s12,p4,s30,s1,s2,s0,s3,s4,s5,s6,s7,s28,s8,s27,s9,s29,s24,s23,s26,s25,s20,s22,s21,s40}
+	type Action constructed from {flip(All)}
+	terminalTime(Time)
+	type ScoreType isa nat
+	type Player constructed from {p_flipper}
+	Score(Player) : ScoreType
+	do(Time,Player,Action)
+	
+	// Vocabulary elements derived from GDL file
+	succ(All,All)
+	pancake(All)
+	greater(Time,All,All)
+	
+	// LTC predicates for the fluent predicates
+	flipcount(Time,All)
+	I_flipcount(All)
+	C_flipcount(Time,All)
+	
+	porder(Time,All,All,All,All,All,All)
+	I_porder(All,All,All,All,All,All)
+	C_porder(Time,All,All,All,All,All,All)
+	
+}
+theory T: V {
+	// Default theory elements:
+	! a [Action] t [Time] p [Player]  : do(t,p,a) => ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2).
+	! p [Player] t [Time]  : ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2) => (?=1 a [Action]  : do(t,p,a)).
+	{
+		! t [Time]  : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time]  : Next(t2) = t).
+		Next(0) = 1.
+	}
+	
+	// Inductive definitions for the fluent predicates
+	{
+		! a [All]  : flipcount(Start,a) <- I_flipcount(a).
+		! a [All] t [Time]  : flipcount(Next(t),a) <- C_flipcount(t,a).
+	}
+	{
+		! a [All] a3 [All] a5 [All] a6 [All] a2 [All] a4 [All]  : porder(Start,a,a2,a3,a4,a5,a6) <- I_porder(a,a2,a3,a4,a5,a6).
+		! a [All] a3 [All] a5 [All] a6 [All] t [Time] a2 [All] a4 [All]  : porder(Next(t),a,a2,a3,a4,a5,a6) <- C_porder(t,a,a2,a3,a4,a5,a6).
+	}
+	
+	// The fluent predicates' causations
+	{
+		! ng4 [All] ng2 [All] ng3 [All] ng5 [All] ng1 [All] ng6 [All] t [Time]  : C_porder(t,ng1,ng2,ng3,ng4,ng5,ng6) <- do(t,p_flipper,flip(p6)) & porder(t,ng6,ng5,ng4,ng3,ng2,ng1).
+		! ng4 [All] ng2 [All] ng3 [All] ng5 [All] ng1 [All] ng6 [All] t [Time]  : C_porder(t,ng1,ng2,ng3,ng4,ng5,ng6) <- do(t,p_flipper,flip(p1)) & porder(t,ng1,ng2,ng3,ng4,ng5,ng6).
+		! ng4 [All] ng2 [All] ng3 [All] ng5 [All] ng1 [All] ng6 [All] t [Time]  : C_porder(t,ng1,ng2,ng3,ng4,ng5,ng6) <- do(t,p_flipper,flip(p3)) & porder(t,ng3,ng2,ng1,ng4,ng5,ng6).
+		! ng4 [All] ng2 [All] ng3 [All] ng5 [All] ng1 [All] ng6 [All] t [Time]  : C_porder(t,ng1,ng2,ng3,ng4,ng5,ng6) <- do(t,p_flipper,flip(p4)) & porder(t,ng4,ng3,ng2,ng1,ng5,ng6).
+		! ng4 [All] ng2 [All] ng3 [All] ng5 [All] ng1 [All] ng6 [All] t [Time]  : C_porder(t,ng1,ng2,ng3,ng4,ng5,ng6) <- do(t,p_flipper,flip(p2)) & porder(t,ng2,ng1,ng3,ng4,ng5,ng6).
+		! ng4 [All] ng2 [All] ng3 [All] ng5 [All] ng1 [All] ng6 [All] t [Time]  : C_porder(t,ng1,ng2,ng3,ng4,ng5,ng6) <- do(t,p_flipper,flip(p5)) & porder(t,ng5,ng4,ng3,ng2,ng1,ng6).
+	}
+	{
+		! b [All] v [All] t [Time]  : C_flipcount(t,b) <- flipcount(t,v) & succ(v,b).
+	}
+	
+	// The static predicates' causations
+	{
+		! b [All] a [All] t [Time] c [All]  : greater(t,a,b) <- a ~= b & succ(c,a) & greater(t,c,b).
+		! b [All] a [All] t [Time]  : greater(t,a,b) <- succ(b,a).
+	}
+	
+	// Translation of the LEGAL sentences
+	! x [All] t [Time]  : do(t,p_flipper,flip(x)) => pancake(x).
+	
+	// Translation of the SCORE sentences
+	{
+		Score(p_flipper) = 65 <- ! t [Time]  : terminalTime(t) => porder(t,p1,p2,p3,p4,p5,p6) & flipcount(t,s11).
+		Score(p_flipper) = 45 <- ! t [Time]  : terminalTime(t) => (? x [All]  : porder(t,p1,p2,p3,p4,p5,p6) & flipcount(t,x) & greater(t,x,s19) & greater(t,s30,x)).
+		Score(p_flipper) = 100 <- ! t [Time]  : terminalTime(t) => (? x [All]  : porder(t,p1,p2,p3,p4,p5,p6) & flipcount(t,x) & greater(t,s6,x)).
+		Score(p_flipper) = 70 <- ! t [Time]  : terminalTime(t) => porder(t,p1,p2,p3,p4,p5,p6) & flipcount(t,s10).
+		Score(p_flipper) = 40 <- ! t [Time]  : terminalTime(t) => (? x [All]  : porder(t,p1,p2,p3,p4,p5,p6) & flipcount(t,x) & greater(t,x,s29) & greater(t,s40,x)).
+		Score(p_flipper) = 75 <- ! t [Time]  : terminalTime(t) => porder(t,p1,p2,p3,p4,p5,p6) & flipcount(t,s9).
+		Score(p_flipper) = 0 <- ! t [Time]  : terminalTime(t) => flipcount(t,s40).
+		Score(p_flipper) = 80 <- ! t [Time]  : terminalTime(t) => porder(t,p1,p2,p3,p4,p5,p6) & flipcount(t,s8).
+		Score(p_flipper) = 60 <- ! t [Time]  : terminalTime(t) => porder(t,p1,p2,p3,p4,p5,p6) & flipcount(t,s12).
+		Score(p_flipper) = 85 <- ! t [Time]  : terminalTime(t) => porder(t,p1,p2,p3,p4,p5,p6) & flipcount(t,s7).
+		Score(p_flipper) = 90 <- ! t [Time]  : terminalTime(t) => porder(t,p1,p2,p3,p4,p5,p6) & flipcount(t,s6).
+		Score(p_flipper) = 50 <- ! t [Time]  : terminalTime(t) => (? x [All]  : porder(t,p1,p2,p3,p4,p5,p6) & flipcount(t,x) & greater(t,x,s12) & greater(t,s20,x)).
+	}
+	
+	// Translation of the TERMINAL sentences
+	{
+		! t [Time]  : terminalTime(t) <- flipcount(t,s40).
+		! t [Time]  : terminalTime(t) <- porder(t,p1,p2,p3,p4,p5,p6).
+	}
+}
+structure S : V {
+	// Default structure elements:
+	Start = 0
+	Time = {0..20}
+	ScoreType = {0..100}
+	
+	// Desired result
+	Score = {p_flipper->100}
+	
+	// Initial values for the fluent predicates
+	I_porder = {p1,p5,p3,p6,p4,p2}
+	I_flipcount = {s0}
+	
+	// All values found in the static predicates
+	pancake = {p1;p6;p5;p4;p3;p2}
+	succ = {s4,s5;s37,s38;s9,s10;s6,s7;s35,s36;s8,s9;s39,s40;s33,s34;s18,s19;s31,s32;s29,s30;s23,s24;s3,s4;s16,s17;s21,s22;s1,s2;s14,s15;s30,s31;s12,s13;s27,s28;s10,s11;s25,s26;s38,s39;s5,s6;s36,s37;s28,s29;s7,s8;s34,s35;s17,s18;s32,s33;s22,s23;s2,s3;s15,s16;s20,s21;s0,s1;s13,s14;s11,s12;s26,s27;s19,s20;s24,s25}
+}
+procedure main() {
+	stdoptions.nbmodels=5
+	printmodels(modelexpand(T,S))
+}

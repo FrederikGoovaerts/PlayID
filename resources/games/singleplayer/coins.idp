@@ -1,0 +1,114 @@
+include <LTC>
+
+LTCvocabulary V {
+	// Default vocabulary elements (and types needed by the default elements)
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type All constructed from {you,i5,i6,i7,i8,i1,onecoin,i2,i3,i4,zerocoins,twocoins}
+	type Action constructed from {jump(All,All)}
+	terminalTime(Time)
+	type ScoreType isa nat
+	type Player constructed from {p_you}
+	Score(Player) : ScoreType
+	do(Time,Player,Action)
+	
+	// Vocabulary elements derived from GDL file
+	succ(All,All)
+	anylegalmove(Time)
+	zerobetween(Time,All,All)
+	legal(Time,All,All)
+	onebetween(Time,All,All)
+	twobetween(Time,All,All)
+	
+	// LTC predicates for the fluent predicates
+	cell(Time,All,All)
+	I_cell(All,All)
+	C_cell(Time,All,All)
+	
+	step(Time,All)
+	I_step(All)
+	C_step(Time,All)
+	
+}
+theory T: V {
+	// Default theory elements:
+	! a [Action] t [Time] p [Player]  : do(t,p,a) => ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2).
+	! p [Player] t [Time]  : ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2) => (?=1 a [Action]  : do(t,p,a)).
+	{
+		! t [Time]  : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time]  : Next(t2) = t).
+		Next(0) = 1.
+	}
+	
+	// Inductive definitions for the fluent predicates
+	{
+		! a [All] a2 [All]  : cell(Start,a,a2) <- I_cell(a,a2).
+		! a [All] t [Time] a2 [All]  : cell(Next(t),a,a2) <- C_cell(t,a,a2).
+	}
+	{
+		! a [All]  : step(Start,a) <- I_step(a).
+		! a [All] t [Time]  : step(Next(t),a) <- C_step(t,a).
+	}
+	
+	// The fluent predicates' causations
+	{
+		! y [All] x [All] t [Time]  : C_cell(t,y,twocoins) <- do(t,p_you,jump(x,y)).
+		! y [All] x [All] t [Time]  : C_cell(t,x,zerocoins) <- do(t,p_you,jump(x,y)).
+		! y [All] z [All] x [All] t [Time] c [All]  : C_cell(t,x,c) <- cell(t,x,c) & do(t,p_you,jump(y,z)) & x ~= y & x ~= z.
+	}
+	{
+		! y [All] x [All] t [Time]  : C_step(t,y) <- step(t,x) & succ(x,y).
+	}
+	
+	// The static predicates' causations
+	{
+		! z [All] y [All] x [All] t [Time]  : zerobetween(t,x,y) <- succ(x,z) & cell(t,z,zerocoins) & zerobetween(t,z,y).
+		! y [All] x [All] t [Time]  : zerobetween(t,x,y) <- succ(x,y).
+	}
+	{
+		! m [All] t [Time]  : anylegalmove(t) <- legal(t,you,m).
+	}
+	{
+		! z [All] y [All] x [All] t [Time]  : twobetween(t,x,y) <- succ(x,z) & cell(t,z,zerocoins) & twobetween(t,z,y).
+		! z [All] y [All] x [All] t [Time]  : twobetween(t,x,y) <- succ(x,z) & cell(t,z,onecoin) & onebetween(t,z,y).
+		! z [All] y [All] x [All] t [Time]  : twobetween(t,x,y) <- succ(x,z) & cell(t,z,twocoins) & zerobetween(t,z,y).
+	}
+	{
+		! z [All] y [All] x [All] t [Time]  : onebetween(t,x,y) <- succ(x,z) & cell(t,z,zerocoins) & onebetween(t,z,y).
+		! z [All] y [All] x [All] t [Time]  : onebetween(t,x,y) <- succ(x,z) & cell(t,z,onecoin) & zerobetween(t,z,y).
+	}
+	
+	// Translation of the LEGAL sentences
+	! y [All] x [All] t [Time]  : do(t,p_you,jump(x,y)) => cell(t,x,onecoin) & cell(t,y,onecoin) & (twobetween(t,x,y) | twobetween(t,y,x)).
+	
+	// Translation of the SCORE sentences
+	{
+		Score(p_you) = 100 <- ! t [Time]  : terminalTime(t) => step(t,i5).
+		Score(p_you) = 0 <- ! t [Time]  : terminalTime(t) => (? x [All]  : cell(t,x,onecoin)).
+	}
+	
+	// Translation of the TERMINAL sentences
+	{
+		! t [Time]  : terminalTime(t) <- ~anylegalmove(t).
+	}
+}
+structure S : V {
+	// Default structure elements:
+	Start = 0
+	Time = {0..20}
+	ScoreType = {0..100}
+	
+	// Desired result
+	Score = {p_you->100}
+	
+	// Initial values for the fluent predicates
+	I_cell = {i1,onecoin;i8,onecoin;i6,onecoin;i7,onecoin;i3,onecoin;i2,onecoin;i5,onecoin;i4,onecoin}
+	I_step = {i1}
+	
+	// All values found in the static predicates
+	succ = {i3,i4;i2,i3;i5,i6;i4,i5;i7,i8;i6,i7;i1,i2}
+}
+procedure main() {
+	stdoptions.nbmodels=5
+	printmodels(modelexpand(T,S))
+}

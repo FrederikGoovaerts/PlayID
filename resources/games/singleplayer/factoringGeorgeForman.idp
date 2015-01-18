@@ -1,0 +1,110 @@
+include <LTC>
+
+LTCvocabulary V {
+	// Default vocabulary elements (and types needed by the default elements)
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type All constructed from {i0,i1,i2,i3,i4}
+	type Action constructed from {press(All,All)}
+	terminalTime(Time)
+	type ScoreType isa nat
+	type Player constructed from {p_robot}
+	Score(Player) : ScoreType
+	do(Time,Player,Action)
+	
+	// Vocabulary elements derived from GDL file
+	index(All)
+	lightson(Time)
+	on(Time,All,All)
+	
+	// LTC predicates for the fluent predicates
+	cell(Time,All,All,All)
+	I_cell(All,All,All)
+	C_cell(Time,All,All,All)
+	
+	round(Time,All)
+	I_round(All)
+	C_round(Time,All)
+	
+}
+theory T: V {
+	// Default theory elements:
+	! a [Action] t [Time] p [Player]  : do(t,p,a) => ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2).
+	! p [Player] t [Time]  : ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2) => (?=1 a [Action]  : do(t,p,a)).
+	{
+		! t [Time]  : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time]  : Next(t2) = t).
+		Next(0) = 1.
+	}
+	
+	// Inductive definitions for the fluent predicates
+	{
+		! a [All] a3 [All] a2 [All]  : cell(Start,a,a2,a3) <- I_cell(a,a2,a3).
+		! a [All] a3 [All] t [Time] a2 [All]  : cell(Next(t),a,a2,a3) <- C_cell(t,a,a2,a3).
+	}
+	{
+		! a [All]  : round(Start,a) <- I_round(a).
+		! a [All] t [Time]  : round(Next(t),a) <- C_round(t,a).
+	}
+	
+	// The fluent predicates' causations
+	{
+		! t [Time]  : C_round(t,i2) <- round(t,i1) & lightson(t).
+		! x [All] t [Time]  : C_round(t,x) <- round(t,x) & ~lightson(t).
+		! t [Time]  : C_round(t,i3) <- round(t,i2) & lightson(t).
+		! t [Time]  : C_round(t,i1) <- round(t,i0) & lightson(t).
+	}
+	{
+		! y [All] x [All] t [Time]  : C_cell(t,x,y,i3) <- cell(t,x,y,i4).
+		! y [All] x [All] t [Time]  : C_cell(t,x,y,i0) <- cell(t,x,y,i1).
+		! y [All] x [All] t [Time]  : C_cell(t,x,y,i4) <- do(t,p_robot,press(x,y)).
+		! y [All] x [All] t [Time]  : C_cell(t,x,y,i1) <- cell(t,x,y,i2).
+		! y [All] x [All] t [Time]  : C_cell(t,x,y,i0) <- cell(t,x,y,i0).
+		! y [All] x [All] t [Time]  : C_cell(t,x,y,i2) <- cell(t,x,y,i3).
+	}
+	
+	// The static predicates' causations
+	{
+		! t [Time]  : lightson(t) <- on(t,i1,i1) & on(t,i1,i2) & on(t,i2,i1) & on(t,i2,i2).
+	}
+	{
+		! y [All] x [All] t [Time]  : on(t,x,y) <- cell(t,x,y,i1).
+		! y [All] x [All] t [Time]  : on(t,x,y) <- cell(t,x,y,i2).
+		! y [All] x [All] t [Time]  : on(t,x,y) <- cell(t,x,y,i3).
+		! y [All] x [All] t [Time]  : on(t,x,y) <- cell(t,x,y,i4).
+	}
+	
+	// Translation of the LEGAL sentences
+	! y [All] x [All] t [Time]  : do(t,p_robot,press(x,y)) => index(x) & index(y).
+	
+	// Translation of the SCORE sentences
+	{
+		Score(p_robot) = 100 <- ! t [Time]  : terminalTime(t) => round(t,i3).
+		Score(p_robot) = 100 <- ! t [Time]  : terminalTime(t) => ~round(t,i3).
+	}
+	
+	// Translation of the TERMINAL sentences
+	{
+		! t [Time]  : terminalTime(t) <- lightson(t) & round(t,i3).
+	}
+}
+structure S : V {
+	// Default structure elements:
+	Start = 0
+	Time = {0..20}
+	ScoreType = {0..100}
+	
+	// Desired result
+	Score = {p_robot->100}
+	
+	// Initial values for the fluent predicates
+	I_round = {i0}
+	I_cell = {i1,i1,i0;i1,i2,i0;i2,i1,i0;i2,i2,i0}
+	
+	// All values found in the static predicates
+	index = {i2;i1}
+}
+procedure main() {
+	stdoptions.nbmodels=5
+	printmodels(modelexpand(T,S))
+}

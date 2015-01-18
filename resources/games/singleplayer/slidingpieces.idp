@@ -1,0 +1,136 @@
+include <LTC>
+
+LTCvocabulary V {
+	// Default vocabulary elements (and types needed by the default elements)
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type All constructed from {s39,s38,s37,s36,s35,s34,s33,s32,s31,s30,s1,s2,s0,s28,s27,s29,s24,i5,s23,s26,s25,s20,i2,s22,i3,s21,i4,piece10,blank,y1,s19,y2,s18,y3,s17,y4,s16,y5,s11,s10,s15,s14,s13,s12,x2,x3,s80,x1,x4,s81,piece1,piece3,piece2,piece5,south,piece4,piece7,piece6,piece9,piece8,s78,s79,s76,s77,s74,s75,s73,s72,s71,s70,s67,s68,s69,s63,s64,s65,s66,s60,s62,s61,east,s54,s55,s52,s53,s58,s59,s56,s57,west,s51,s50,s41,s3,s42,s4,s43,s5,s44,s6,s45,s7,s46,s8,s47,s9,s48,s49,s40,north}
+	type Action constructed from {move(All,All)}
+	terminalTime(Time)
+	type ScoreType isa nat
+	type Player constructed from {p_player}
+	Score(Player) : ScoreType
+	do(Time,Player,Action)
+	
+	// Vocabulary elements derived from GDL file
+	ycoord(All)
+	successor(All,All)
+	xcoord(All)
+	next_y(All,All)
+	next_x(All,All)
+	direction(All)
+	is_moved_anywhere(Time,All,All)
+	goal_reached(Time)
+	is_moved(Time,All,All,All,All)
+	blocked_cell(Time,All,All)
+	is_moved_any_to(Time,All,All)
+	has_adjacent(Time,All,All,All)
+	adjacent(Time,All,All,All,All,All)
+	
+	// LTC predicates for the fluent predicates
+	cell(Time,All,All,All)
+	I_cell(All,All,All)
+	C_cell(Time,All,All,All)
+	
+	step(Time,All)
+	I_step(All)
+	C_step(Time,All)
+	
+}
+theory T: V {
+	// Default theory elements:
+	! a [Action] t [Time] p [Player]  : do(t,p,a) => ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2).
+	! p [Player] t [Time]  : ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2) => (?=1 a [Action]  : do(t,p,a)).
+	{
+		! t [Time]  : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time]  : Next(t2) = t).
+		Next(0) = 1.
+	}
+	
+	// Inductive definitions for the fluent predicates
+	{
+		! a [All] a3 [All] a2 [All]  : cell(Start,a,a2,a3) <- I_cell(a,a2,a3).
+		! a [All] a3 [All] t [Time] a2 [All]  : cell(Next(t),a,a2,a3) <- C_cell(t,a,a2,a3).
+	}
+	{
+		! a [All]  : step(Start,a) <- I_step(a).
+		! a [All] t [Time]  : step(Next(t),a) <- C_step(t,a).
+	}
+	
+	// The fluent predicates' causations
+	{
+		! y [All] x [All] t [Time]  : C_step(t,x) <- step(t,y) & successor(y,x).
+	}
+	{
+		! y [All] y1 [All] x [All] x1 [All] p [All] t [Time]  : C_cell(t,y,x,p) <- is_moved(t,y1,x1,y,x) & cell(t,y1,x1,p).
+		! y [All] x [All] p [All] t [Time]  : C_cell(t,y,x,p) <- cell(t,y,x,p) & ~is_moved_anywhere(t,y,x) & ~is_moved_any_to(t,y,x).
+		! something [All] y [All] x [All] t [Time]  : C_cell(t,y,x,blank) <- cell(t,y,x,something) & ~is_moved_any_to(t,y,x).
+	}
+	
+	// The static predicates' causations
+	{
+		! t [Time]  : goal_reached(t) <- cell(t,i4,i2,piece2) & cell(t,i4,i3,piece2) & cell(t,i5,i2,piece2) & cell(t,i5,i3,piece2).
+	}
+	{
+		! y [All] x [All] t [Time] y2 [All]  : adjacent(t,y,x,north,y2,x) <- xcoord(x) & next_y(y2,y).
+		! y [All] x [All] x2 [All] t [Time]  : adjacent(t,y,x,east,y,x2) <- next_x(x,x2) & ycoord(y).
+		! y [All] x [All] x2 [All] t [Time]  : adjacent(t,y,x,west,y,x2) <- next_x(x2,x) & ycoord(y).
+		! y [All] x [All] t [Time] y2 [All]  : adjacent(t,y,x,south,y2,x) <- xcoord(x) & next_y(y,y2).
+	}
+	{
+		! y [All] x2 [All] x [All] d [All] t [Time] y2 [All]  : has_adjacent(t,y,x,d) <- adjacent(t,y,x,d,y2,x2).
+	}
+	{
+		! y [All] x [All] d [All] p [All] t [Time]  : blocked_cell(t,p,d) <- cell(t,y,x,p) & direction(d) & ~has_adjacent(t,y,x,d).
+		! y [All] x [All] xd [All] d [All] p [All] p2 [All] t [Time] yd [All]  : blocked_cell(t,p,d) <- cell(t,y,x,p) & adjacent(t,y,x,d,yd,xd) & cell(t,yd,xd,p2) & p2 ~= blank & p2 ~= p.
+	}
+	{
+		! y [All] x [All] xd [All] d [All] p [All] t [Time] yd [All]  : is_moved(t,y,x,yd,xd) <- do(t,p_player,move(p,d)) & cell(t,y,x,p) & adjacent(t,y,x,d,yd,xd).
+	}
+	{
+		! y [All] x [All] xd [All] t [Time] yd [All]  : is_moved_anywhere(t,y,x) <- is_moved(t,y,x,yd,xd).
+	}
+	{
+		! y [All] x [All] xd [All] t [Time] yd [All]  : is_moved_any_to(t,yd,xd) <- is_moved(t,y,x,yd,xd).
+	}
+	
+	// Translation of the LEGAL sentences
+	! y [All] x [All] d [All] p [All] t [Time]  : do(t,p_player,move(p,d)) => cell(t,y,x,p) & p ~= blank & direction(d) & ~blocked_cell(t,p,d).
+	
+	// Translation of the SCORE sentences
+	{
+		Score(p_player) = 100 <- ! t [Time]  : terminalTime(t) => goal_reached(t).
+		Score(p_player) = 0 <- ! t [Time]  : terminalTime(t) => ~goal_reached(t).
+	}
+	
+	// Translation of the TERMINAL sentences
+	{
+		! t [Time]  : terminalTime(t) <- goal_reached(t).
+		! t [Time]  : terminalTime(t) <- step(t,s81).
+	}
+}
+structure S : V {
+	// Default structure elements:
+	Start = 0
+	Time = {0..20}
+	ScoreType = {0..100}
+	
+	// Desired result
+	Score = {p_player->100}
+	
+	// Initial values for the fluent predicates
+	I_step = {s0}
+	I_cell = {y3,x2,piece4;y3,x4,blank;y3,x3,piece4;y1,x1,piece1;y1,x2,piece2;y2,x1,piece1;y1,x4,piece3;y2,x2,piece2;y5,x1,piece5;y5,x3,piece10;y4,x1,piece5;y1,x3,piece2;y2,x3,piece2;y5,x2,piece9;y2,x4,piece3;y4,x4,piece8;y5,x4,piece8;y4,x2,piece6;y4,x3,piece7;y3,x1,blank}
+	
+	// All values found in the static predicates
+	next_x = {x3,x4;x1,x2;x2,x3}
+	next_y = {y1,y2;y4,y5;y2,y3;y3,y4}
+	xcoord = {x4;x2;x3;x1}
+	ycoord = {y3;y4;y5;y1;y2}
+	successor = {s50,s51;s44,s45;s6,s7;s35,s36;s78,s79;s48,s49;s39,s40;s63,s64;s18,s19;s31,s32;s23,s24;s66,s67;s14,s15;s1,s2;s57,s58;s73,s74;s27,s28;s10,s11;s41,s42;s53,s54;s45,s46;s36,s37;s7,s8;s77,s78;s62,s63;s17,s18;s32,s33;s67,s68;s22,s23;s58,s59;s74,s75;s13,s14;s0,s1;s26,s27;s70,s71;s40,s41;s54,s55;s49,s50;s4,s5;s9,s10;s37,s38;s59,s60;s52,s53;s42,s43;s8,s9;s61,s62;s33,s34;s76,s77;s46,s47;s29,s30;s16,s17;s3,s4;s71,s72;s21,s22;s80,s81;s30,s31;s64,s65;s12,s13;s55,s56;s25,s26;s68,s69;s38,s39;s5,s6;s51,s52;s28,s29;s43,s44;s60,s61;s34,s35;s69,s70;s75,s76;s47,s48;s72,s73;s79,s80;s15,s16;s2,s3;s65,s66;s20,s21;s56,s57;s11,s12;s19,s20;s24,s25}
+	direction = {north;west;south;east}
+}
+procedure main() {
+	stdoptions.nbmodels=5
+	printmodels(modelexpand(T,S))
+}

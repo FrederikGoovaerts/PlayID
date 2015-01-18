@@ -1,0 +1,113 @@
+include <LTC>
+
+LTCvocabulary V {
+	// Default vocabulary elements (and types needed by the default elements)
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type Action constructed from {grab,move,drop}
+	terminalTime(Time)
+	type ScoreType isa nat
+	type Player constructed from {p_robot}
+	Score(Player) : ScoreType
+	do(Time,Player,Action)
+	
+	// Vocabulary elements derived from GDL file
+	type All constructed from {d,c,b,a,i5,i6,i7,i8,i1,i2,i10,i3,i,i4,i9}
+	succ(All,All)
+	adjacent(All,All)
+	
+	// LTC predicates for the fluent predicates
+	cell(Time,All)
+	I_cell(All)
+	C_cell(Time,All)
+	
+	gold(Time,All)
+	I_gold(All)
+	C_gold(Time,All)
+	
+	step(Time,All)
+	I_step(All)
+	C_step(Time,All)
+	
+}
+theory T: V {
+	// Default theory elements:
+	! a [Action] t [Time] p [Player]  : do(t,p,a) => ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2).
+	! p [Player] t [Time]  : ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2) => (?=1 a [Action]  : do(t,p,a)).
+	{
+		! t [Time]  : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time]  : Next(t2) = t).
+		Next(0) = 1.
+	}
+	
+	// Inductive definitions for the fluent predicates
+	{
+		! a [All]  : cell(Start,a) <- I_cell(a).
+		! a [All] t [Time]  : cell(Next(t),a) <- C_cell(t,a).
+	}
+	{
+		! a [All]  : gold(Start,a) <- I_gold(a).
+		! a [All] t [Time]  : gold(Next(t),a) <- C_gold(t,a).
+	}
+	{
+		! a [All]  : step(Start,a) <- I_step(a).
+		! a [All] t [Time]  : step(Next(t),a) <- C_step(t,a).
+	}
+	
+	// The fluent predicates' causations
+	{
+		! y [All] x [All] t [Time]  : C_step(t,y) <- step(t,x) & succ(x,y).
+	}
+	{
+		! t [Time]  : C_gold(t,i) <- do(t,p_robot,grab) & gold(t,i).
+		! x [All] t [Time]  : C_gold(t,x) <- do(t,p_robot,move) & gold(t,x).
+		! x [All] t [Time]  : C_gold(t,x) <- do(t,p_robot,drop) & gold(t,x) & x ~= i.
+		! x [All] t [Time]  : C_gold(t,x) <- do(t,p_robot,drop) & cell(t,x) & gold(t,i).
+		! y [All] x [All] t [Time]  : C_gold(t,y) <- do(t,p_robot,grab) & cell(t,x) & gold(t,y) & x ~= y.
+		! x [All] t [Time]  : C_gold(t,i) <- do(t,p_robot,grab) & cell(t,x) & gold(t,x).
+	}
+	{
+		! x [All] t [Time]  : C_cell(t,x) <- do(t,p_robot,grab) & cell(t,x).
+		! x [All] t [Time]  : C_cell(t,x) <- do(t,p_robot,drop) & cell(t,x).
+		! y [All] x [All] t [Time]  : C_cell(t,y) <- do(t,p_robot,move) & cell(t,x) & adjacent(x,y).
+	}
+	
+	// Translation of the LEGAL sentences
+	! t [Time]  : do(t,p_robot,move) => succ(i1,i2).
+	! t [Time]  : do(t,p_robot,drop) => gold(t,i).
+	! t [Time]  : do(t,p_robot,grab) => (? x [All]  : cell(t,x) & gold(t,x)).
+	
+	// Translation of the SCORE sentences
+	{
+		Score(p_robot) = 100 <- ! t [Time]  : terminalTime(t) => gold(t,a).
+		Score(p_robot) = 0 <- ! t [Time]  : terminalTime(t) => (? x [All]  : gold(t,x) & x ~= a).
+	}
+	
+	// Translation of the TERMINAL sentences
+	{
+		! t [Time]  : terminalTime(t) <- step(t,i10).
+		! t [Time]  : terminalTime(t) <- gold(t,a).
+	}
+}
+structure S : V {
+	// Default structure elements:
+	Start = 0
+	Time = {0..20}
+	ScoreType = {0..100}
+	
+	// Desired result
+	Score = {p_robot->100}
+	
+	// Initial values for the fluent predicates
+	I_step = {i1}
+	I_gold = {c}
+	I_cell = {a}
+	
+	// All values found in the static predicates
+	succ = {i3,i4;i2,i3;i5,i6;i9,i10;i4,i5;i7,i8;i6,i7;i8,i9;i1,i2}
+	adjacent = {d,a;b,c;a,b;c,d}
+}
+procedure main() {
+	stdoptions.nbmodels=5
+	printmodels(modelexpand(T,S))
+}

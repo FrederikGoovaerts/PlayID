@@ -1,0 +1,166 @@
+include <LTC>
+
+LTCvocabulary V {
+	// Default vocabulary elements (and types needed by the default elements)
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type All constructed from {i47,i84,i48,i83,i49,i85,i43,i80,i44,i45,i82,i46,i81,i40,i41,i42,i0,i5,i15,i6,i14,i7,i17,i8,i16,i11,i1,i10,i2,i3,i13,i4,i12,i58,i59,i18,i56,i9,i19,i57,i54,i55,i52,i53,i50,i51,i20,i24,i23,i22,i21,i28,i27,i26,i25,i65,i66,i29,i67,i68,i69,i60,i61,i62,i63,i64,i31,i30,i33,i32,i35,i34,i37,i36,i39,i38,i78,i79,i76,i77,i70,i71,i74,i75,i72,i73}
+	type Action constructed from {press(All,All,All)}
+	terminalTime(Time)
+	type ScoreType isa nat
+	type Player constructed from {p_robot}
+	Score(Player) : ScoreType
+	do(Time,Player,Action)
+	
+	// Vocabulary elements derived from GDL file
+	index(All)
+	successor(All,All)
+	lightsOn(Time,All)
+	on(Time,All,All,All)
+	wonAGame(Time)
+	
+	// LTC predicates for the fluent predicates
+	seriesGame(Time,All)
+	I_seriesGame(All)
+	C_seriesGame(Time,All)
+	
+	cell(Time,All,All,All,All)
+	I_cell(All,All,All,All)
+	C_cell(Time,All,All,All,All)
+	
+	won(Time,All)
+	I_won(All)
+	C_won(Time,All)
+	
+	step(Time,All)
+	I_step(All)
+	C_step(Time,All)
+	
+}
+theory T: V {
+	// Default theory elements:
+	! a [Action] t [Time] p [Player]  : do(t,p,a) => ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2).
+	! p [Player] t [Time]  : ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2) => (?=1 a [Action]  : do(t,p,a)).
+	{
+		! t [Time]  : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time]  : Next(t2) = t).
+		Next(0) = 1.
+	}
+	
+	// Inductive definitions for the fluent predicates
+	{
+		! a [All]  : seriesGame(Start,a) <- I_seriesGame(a).
+		! a [All] t [Time]  : seriesGame(Next(t),a) <- C_seriesGame(t,a).
+	}
+	{
+		! a [All] a3 [All] a2 [All] a4 [All]  : cell(Start,a,a2,a3,a4) <- I_cell(a,a2,a3,a4).
+		! a [All] a3 [All] t [Time] a2 [All] a4 [All]  : cell(Next(t),a,a2,a3,a4) <- C_cell(t,a,a2,a3,a4).
+	}
+	{
+		! a [All]  : won(Start,a) <- I_won(a).
+		! a [All] t [Time]  : won(Next(t),a) <- C_won(t,a).
+	}
+	{
+		! a [All]  : step(Start,a) <- I_step(a).
+		! a [All] t [Time]  : step(Next(t),a) <- C_step(t,a).
+	}
+	
+	// The fluent predicates' causations
+	{
+		! y [All] x [All] t [Time]  : C_step(t,x) <- step(t,y) & successor(y,x).
+	}
+	{
+		! t [Time]  : C_seriesGame(t,i8) <- step(t,i32).
+		! t [Time]  : C_seriesGame(t,i10) <- step(t,i40).
+		! t [Time]  : C_seriesGame(t,i1) <- step(t,i4).
+		! t [Time]  : C_seriesGame(t,i20) <- step(t,i80).
+		! t [Time]  : C_seriesGame(t,i19) <- step(t,i76).
+		! t [Time]  : C_seriesGame(t,i2) <- step(t,i8).
+		! t [Time]  : C_seriesGame(t,i16) <- step(t,i64).
+		! t [Time]  : C_seriesGame(t,i9) <- step(t,i36).
+		! t [Time]  : C_seriesGame(t,i5) <- step(t,i20).
+		! t [Time]  : C_seriesGame(t,i7) <- step(t,i28).
+		! t [Time]  : C_seriesGame(t,i12) <- step(t,i48).
+		! t [Time]  : C_seriesGame(t,i18) <- step(t,i72).
+		! t [Time]  : C_seriesGame(t,i15) <- step(t,i60).
+		! t [Time]  : C_seriesGame(t,i3) <- step(t,i12).
+		! t [Time]  : C_seriesGame(t,i14) <- step(t,i56).
+		! t [Time]  : C_seriesGame(t,i4) <- step(t,i16).
+		! t [Time]  : C_seriesGame(t,i13) <- step(t,i52).
+		! t [Time]  : C_seriesGame(t,i6) <- step(t,i24).
+		! t [Time]  : C_seriesGame(t,i17) <- step(t,i68).
+		! x [All] t [Time]  : C_seriesGame(t,x) <- seriesGame(t,x) & ~step(t,i4) & ~step(t,i8) & ~step(t,i12) & ~step(t,i16) & ~step(t,i20) & ~step(t,i24) & ~step(t,i28) & ~step(t,i32) & ~step(t,i36) & ~step(t,i40) & ~step(t,i44) & ~step(t,i48) & ~step(t,i52) & ~step(t,i56) & ~step(t,i60) & ~step(t,i64) & ~step(t,i68) & ~step(t,i72) & ~step(t,i76) & ~step(t,i80).
+		! t [Time]  : C_seriesGame(t,i11) <- step(t,i44).
+	}
+	{
+		! z [All] y [All] x [All] t [Time]  : C_cell(t,z,x,y,i1) <- cell(t,z,x,y,i2).
+		! z [All] y [All] x [All] t [Time]  : C_cell(t,z,x,y,i4) <- do(t,p_robot,press(z,x,y)).
+		! z [All] y [All] x [All] t [Time]  : C_cell(t,z,x,y,i0) <- cell(t,z,x,y,i1).
+		! z [All] y [All] x [All] t [Time]  : C_cell(t,z,x,y,i0) <- cell(t,z,x,y,i0).
+		! z [All] y [All] x [All] t [Time]  : C_cell(t,z,x,y,i3) <- cell(t,z,x,y,i4).
+		! z [All] y [All] x [All] t [Time]  : C_cell(t,z,x,y,i2) <- cell(t,z,x,y,i3).
+	}
+	{
+		! z [All] t [Time]  : C_won(t,z) <- lightsOn(t,z).
+		! z [All] t [Time]  : C_won(t,z) <- won(t,z).
+	}
+	
+	// The static predicates' causations
+	{
+		! t [Time]  : wonAGame(t) <- won(t,i11).
+		! t [Time]  : wonAGame(t) <- won(t,i15).
+		! t [Time]  : wonAGame(t) <- won(t,i19).
+		! t [Time]  : wonAGame(t) <- won(t,i16).
+		! t [Time]  : wonAGame(t) <- won(t,i14).
+		! t [Time]  : wonAGame(t) <- won(t,i13).
+		! t [Time]  : wonAGame(t) <- won(t,i17).
+		! t [Time]  : wonAGame(t) <- won(t,i12).
+		! t [Time]  : wonAGame(t) <- won(t,i10).
+		! t [Time]  : wonAGame(t) <- won(t,i18).
+	}
+	{
+		! z [All] y [All] x [All] t [Time]  : on(t,z,x,y) <- cell(t,z,x,y,i1).
+		! z [All] y [All] x [All] t [Time]  : on(t,z,x,y) <- cell(t,z,x,y,i2).
+		! z [All] y [All] x [All] t [Time]  : on(t,z,x,y) <- cell(t,z,x,y,i3).
+		! z [All] y [All] x [All] t [Time]  : on(t,z,x,y) <- cell(t,z,x,y,i4).
+	}
+	{
+		! z [All] t [Time]  : lightsOn(t,z) <- on(t,z,i1,i1) & on(t,z,i1,i2) & on(t,z,i2,i1) & on(t,z,i2,i2).
+	}
+	
+	// Translation of the LEGAL sentences
+	! y [All] z [All] x [All] t [Time]  : do(t,p_robot,press(z,x,y)) => index(x) & index(y) & seriesGame(t,z).
+	
+	// Translation of the SCORE sentences
+	{
+		Score(p_robot) = 100 <- ! t [Time]  : terminalTime(t) => wonAGame(t).
+		Score(p_robot) = 0 <- ! t [Time]  : terminalTime(t) => ~wonAGame(t).
+	}
+	
+	// Translation of the TERMINAL sentences
+	{
+		! t [Time]  : terminalTime(t) <- step(t,i84).
+	}
+}
+structure S : V {
+	// Default structure elements:
+	Start = 0
+	Time = {0..20}
+	ScoreType = {0..100}
+	
+	// Desired result
+	Score = {p_robot->100}
+	
+	// Initial values for the fluent predicates
+	I_step = {i0}
+	I_seriesGame = {i0}
+	I_cell = {i19,i2,i2,i0;i14,i1,i2,i0;i5,i2,i1,i0;i3,i2,i1,i0;i10,i1,i1,i0;i13,i2,i2,i0;i19,i1,i2,i0;i4,i2,i1,i0;i8,i2,i1,i0;i9,i1,i2,i0;i15,i2,i1,i0;i3,i1,i1,i0;i14,i2,i2,i0;i16,i2,i2,i0;i4,i1,i1,i0;i9,i2,i1,i0;i5,i1,i1,i0;i8,i1,i2,i0;i6,i1,i1,i0;i18,i2,i2,i0;i8,i2,i2,i0;i2,i1,i2,i0;i16,i1,i2,i0;i11,i1,i1,i0;i13,i1,i2,i0;i3,i2,i2,i0;i19,i2,i1,i0;i13,i2,i1,i0;i12,i2,i1,i0;i5,i2,i2,i0;i19,i1,i1,i0;i15,i2,i2,i0;i12,i1,i1,i0;i6,i2,i1,i0;i9,i1,i1,i0;i18,i1,i2,i0;i3,i1,i2,i0;i5,i1,i2,i0;i13,i1,i1,i0;i2,i2,i1,i0;i11,i1,i2,i0;i9,i2,i2,i0;i1,i2,i1,i0;i2,i1,i1,i0;i12,i2,i2,i0;i0,i1,i2,i0;i0,i2,i1,i0;i11,i2,i2,i0;i18,i1,i1,i0;i6,i2,i2,i0;i15,i1,i2,i0;i7,i2,i1,i0;i17,i2,i1,i0;i12,i1,i2,i0;i0,i1,i1,i0;i1,i1,i2,i0;i2,i2,i2,i0;i7,i1,i1,i0;i17,i1,i1,i0;i1,i2,i2,i0;i10,i1,i2,i0;i14,i1,i1,i0;i0,i2,i2,i0;i18,i2,i1,i0;i14,i2,i1,i0;i4,i2,i2,i0;i16,i2,i1,i0;i11,i2,i1,i0;i10,i2,i2,i0;i7,i2,i2,i0;i10,i2,i1,i0;i17,i2,i2,i0;i15,i1,i1,i0;i17,i1,i2,i0;i4,i1,i2,i0;i16,i1,i1,i0;i1,i1,i1,i0;i6,i1,i2,i0;i7,i1,i2,i0;i8,i1,i1,i0}
+	
+	// All values found in the static predicates
+	successor = {i51,i52;i37,i38;i59,i60;i60,i61;i10,i11;i46,i47;i78,i79;i33,i34;i64,i65;i0,i1;i23,i24;i74,i75;i83,i84;i68,i69;i18,i19;i4,i5;i70,i71;i55,i56;i27,i28;i42,i43;i14,i15;i8,i9;i38,i39;i52,i53;i69,i70;i47,i48;i61,i62;i34,i35;i77,i78;i65,i66;i1,i2;i22,i23;i73,i74;i30,i31;i82,i83;i17,i18;i5,i6;i56,i57;i26,i27;i13,i14;i43,i44;i44,i45;i53,i54;i62,i63;i29,i30;i48,i49;i21,i22;i35,i36;i39,i40;i81,i82;i66,i67;i16,i17;i2,i3;i31,i32;i25,i26;i76,i77;i19,i20;i40,i41;i12,i13;i6,i7;i72,i73;i57,i58;i45,i46;i54,i55;i63,i64;i36,i37;i50,i51;i20,i21;i80,i81;i67,i68;i15,i16;i3,i4;i24,i25;i75,i76;i32,i33;i9,i10;i79,i80;i7,i8;i11,i12;i84,i85;i41,i42;i71,i72;i58,i59;i28,i29;i49,i50}
+	index = {i2;i1}
+}
+procedure main() {
+	stdoptions.nbmodels=5
+	printmodels(modelexpand(T,S))
+}

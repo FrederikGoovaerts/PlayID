@@ -1,0 +1,129 @@
+include <LTC>
+
+LTCvocabulary V {
+	// Default vocabulary elements (and types needed by the default elements)
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type All constructed from {gonorth,gosoutheast,i47,i48,i49,i43,i44,i45,i46,i40,i41,goeast,i42,gosouth,i5,i15,i6,i14,i17,i7,i8,i16,i1,i11,go,i2,i10,i3,i13,i4,i12,gowest,i18,i19,i9,i50,i51,i20,i24,i23,i22,i21,i28,i27,i26,i25,gosouthwest,i29,gonorthwest,extinguish,i31,i30,i33,i32,i35,i34,i37,i36,i39,i38,gonortheast}
+	type Action constructed from {walk(All),extinguish,flee}
+	terminalTime(Time)
+	type ScoreType isa nat
+	type Player constructed from {p_firefighter}
+	Score(Player) : ScoreType
+	do(Time,Player,Action)
+	
+	// Vocabulary elements derived from GDL file
+	succ(All,All)
+	actions(All)
+	
+	// LTC predicates for the fluent predicates
+	maked(Time,All,All)
+	I_maked(All,All)
+	C_maked(Time,All,All)
+	
+	lost(Time)
+	I_lost()
+	C_lost(Time)
+	
+	fleed(Time)
+	I_fleed()
+	C_fleed(Time)
+	
+	step(Time,All)
+	I_step(All)
+	C_step(Time,All)
+	
+	fire(Time)
+	I_fire()
+	C_fire(Time)
+	
+}
+theory T: V {
+	// Default theory elements:
+	! a [Action] t [Time] p [Player]  : do(t,p,a) => ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2).
+	! p [Player] t [Time]  : ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2) => (?=1 a [Action]  : do(t,p,a)).
+	{
+		! t [Time]  : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time]  : Next(t2) = t).
+		Next(0) = 1.
+	}
+	
+	// Inductive definitions for the fluent predicates
+	{
+		! a [All] a2 [All]  : maked(Start,a,a2) <- I_maked(a,a2).
+		! a [All] t [Time] a2 [All]  : maked(Next(t),a,a2) <- C_maked(t,a,a2).
+	}
+	{
+		lost(Start) <- I_lost.
+		! t [Time]  : lost(Next(t)) <- C_lost(t).
+	}
+	{
+		fleed(Start) <- I_fleed.
+		! t [Time]  : fleed(Next(t)) <- C_fleed(t).
+	}
+	{
+		! a [All]  : step(Start,a) <- I_step(a).
+		! a [All] t [Time]  : step(Next(t),a) <- C_step(t,a).
+	}
+	{
+		fire(Start) <- I_fire.
+		! t [Time]  : fire(Next(t)) <- C_fire(t).
+	}
+	
+	// The fluent predicates' causations
+	{
+		! s [All] t [Time]  : C_maked(t,extinguish,s) <- maked(t,extinguish,s).
+		! s [All] t [Time]  : C_maked(t,go,s) <- maked(t,go,s).
+		! s1 [All] t [Time] s2 [All]  : C_maked(t,extinguish,s2) <- do(t,p_firefighter,extinguish) & step(t,s1) & succ(s1,s2).
+		! x [All] s1 [All] t [Time] s2 [All]  : C_maked(t,go,s2) <- do(t,p_firefighter,walk(x)) & actions(x) & step(t,s1) & succ(s1,s2).
+	}
+	{
+		! s1 [All] t [Time] s2 [All]  : C_step(t,s2) <- step(t,s1) & succ(s1,s2).
+	}
+	{
+		! t [Time]  : C_lost(t) <- lost(t).
+		! x [All] t [Time]  : C_lost(t) <- do(t,p_firefighter,walk(x)) & actions(x).
+	}
+	{
+		! t [Time]  : C_fleed(t) <- do(t,p_firefighter,flee).
+	}
+	
+	// Translation of the LEGAL sentences
+	! x [All] t [Time]  : do(t,p_firefighter,walk(x)) => actions(x).
+	! t [Time]  : do(t,p_firefighter,extinguish) => (? x [All]  : actions(x)).
+	! t [Time]  : do(t,p_firefighter,flee) => step(t,i1).
+	
+	// Translation of the SCORE sentences
+	{
+		Score(p_firefighter) = 100 <- ! t [Time]  : terminalTime(t) => ~lost(t) & ~fleed(t).
+		Score(p_firefighter) = 20 <- ! t [Time]  : terminalTime(t) => fleed(t).
+		Score(p_firefighter) = 0 <- ! t [Time]  : terminalTime(t) => lost(t).
+	}
+	
+	// Translation of the TERMINAL sentences
+	{
+		! t [Time]  : terminalTime(t) <- fleed(t).
+		! t [Time]  : terminalTime(t) <- step(t,i50).
+	}
+}
+structure S : V {
+	// Default structure elements:
+	Start = 0
+	Time = {0..20}
+	ScoreType = {0..100}
+	
+	// Desired result
+	Score = {p_firefighter->100}
+	
+	// Initial values for the fluent predicates
+	I_step = {i1}
+	I_fire = {}
+	
+	// All values found in the static predicates
+	actions = {goeast;gonortheast;gosouth;gosoutheast;gonorthwest;gonorth;gosouthwest;gowest}
+	succ = {i37,i38;i10,i11;i46,i47;i33,i34;i23,i24;i18,i19;i4,i5;i27,i28;i42,i43;i14,i15;i8,i9;i38,i39;i47,i48;i34,i35;i1,i2;i22,i23;i30,i31;i17,i18;i5,i6;i26,i27;i13,i14;i43,i44;i44,i45;i29,i30;i48,i49;i21,i22;i35,i36;i39,i40;i16,i17;i2,i3;i31,i32;i25,i26;i19,i20;i40,i41;i6,i7;i12,i13;i45,i46;i36,i37;i50,i51;i20,i21;i15,i16;i3,i4;i24,i25;i32,i33;i9,i10;i7,i8;i11,i12;i41,i42;i28,i29;i49,i50}
+}
+procedure main() {
+	stdoptions.nbmodels=5
+	printmodels(modelexpand(T,S))
+}

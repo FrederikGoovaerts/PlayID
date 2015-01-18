@@ -1,0 +1,127 @@
+include <LTC>
+
+LTCvocabulary V {
+	// Default vocabulary elements (and types needed by the default elements)
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type All constructed from {orange,numbers,i0,d,c,b,a,letters,i5,i15,i6,i14,i7,i8,i1,i11,i10,i2,i3,i13,i4,i12,i9,yellow}
+	type Action constructed from {celebrate,select(All,All)}
+	terminalTime(Time)
+	type ScoreType isa nat
+	type Player constructed from {p_player}
+	Score(Player) : ScoreType
+	do(Time,Player,Action)
+	
+	// Vocabulary elements derived from GDL file
+	succ(All,All)
+	adjacent(All,All)
+	changes(Time,All,All)
+	all_orange(Time,All)
+	
+	// LTC predicates for the fluent predicates
+	cell(Time,All,All,All)
+	I_cell(All,All,All)
+	C_cell(Time,All,All,All)
+	
+	step(Time,All)
+	I_step(All)
+	C_step(Time,All)
+	
+}
+theory T: V {
+	// Default theory elements:
+	! a [Action] t [Time] p [Player]  : do(t,p,a) => ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2).
+	! p [Player] t [Time]  : ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2) => (?=1 a [Action]  : do(t,p,a)).
+	{
+		! t [Time]  : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time]  : Next(t2) = t).
+		Next(0) = 1.
+	}
+	
+	// Inductive definitions for the fluent predicates
+	{
+		! a [All] a3 [All] a2 [All]  : cell(Start,a,a2,a3) <- I_cell(a,a2,a3).
+		! a [All] a3 [All] t [Time] a2 [All]  : cell(Next(t),a,a2,a3) <- C_cell(t,a,a2,a3).
+	}
+	{
+		! a [All]  : step(Start,a) <- I_step(a).
+		! a [All] t [Time]  : step(Next(t),a) <- C_step(t,a).
+	}
+	
+	// The fluent predicates' causations
+	{
+		! oldstep [All] newstep [All] t [Time]  : C_step(t,newstep) <- step(t,oldstep) & succ(oldstep,newstep).
+	}
+	{
+		! t [Time]  : C_cell(t,c,d,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,b,c,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,d,d,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,d,a,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,b,b,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,a,b,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,c,a,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,a,a,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,a,d,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,d,b,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,c,b,yellow) <- all_orange(t,numbers).
+		! y [All] x [All] color [All] t [Time]  : C_cell(t,x,y,color) <- cell(t,x,y,color) & ~all_orange(t,numbers) & ~changes(t,x,y).
+		! y [All] x [All] t [Time]  : C_cell(t,x,y,orange) <- cell(t,x,y,yellow) & changes(t,x,y).
+		! y [All] x [All] t [Time]  : C_cell(t,x,y,yellow) <- cell(t,x,y,orange) & changes(t,x,y).
+		! t [Time]  : C_cell(t,b,d,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,c,c,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,b,a,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,d,c,yellow) <- all_orange(t,numbers).
+		! t [Time]  : C_cell(t,a,c,yellow) <- all_orange(t,numbers).
+	}
+	
+	// The static predicates' causations
+	{
+		! y [All] x [All] t [Time] adj [All]  : changes(t,x,y) <- do(t,p_player,select(adj,y)) & adjacent(x,adj).
+		! y [All] x [All] t [Time] adj [All]  : changes(t,x,y) <- do(t,p_player,select(x,adj)) & adjacent(y,adj).
+		! y [All] x [All] t [Time]  : changes(t,x,y) <- do(t,p_player,select(x,y)).
+	}
+	{
+		! t [Time]  : all_orange(t,numbers) <- cell(t,i1,i1,orange) & cell(t,i1,i2,orange) & cell(t,i1,i3,orange) & cell(t,i2,i1,orange) & cell(t,i2,i2,orange) & cell(t,i2,i3,orange) & cell(t,i3,i1,orange) & cell(t,i3,i2,orange) & cell(t,i3,i3,orange).
+		! t [Time]  : all_orange(t,letters) <- cell(t,a,a,orange) & cell(t,a,b,orange) & cell(t,a,c,orange) & cell(t,a,d,orange) & cell(t,b,a,orange) & cell(t,b,b,orange) & cell(t,b,c,orange) & cell(t,b,d,orange) & cell(t,c,a,orange) & cell(t,c,b,orange) & cell(t,c,c,orange) & cell(t,c,d,orange) & cell(t,d,a,orange) & cell(t,d,b,orange) & cell(t,d,c,orange) & cell(t,d,d,orange).
+	}
+	
+	// Translation of the LEGAL sentences
+	! t [Time]  : do(t,p_player,celebrate) => all_orange(t,numbers).
+	! y [All] x [All] color [All] t [Time]  : do(t,p_player,select(x,y)) => cell(t,x,y,color) & ~all_orange(t,numbers).
+	
+	// Translation of the SCORE sentences
+	{
+		Score(p_player) = 100 <- ! t [Time]  : terminalTime(t) => step(t,i10) & all_orange(t,letters).
+		Score(p_player) = 40 <- ! t [Time]  : terminalTime(t) => cell(t,a,a,orange) & ~all_orange(t,letters).
+		Score(p_player) = 40 <- ! t [Time]  : terminalTime(t) => cell(t,a,a,yellow).
+		Score(p_player) = 80 <- ! t [Time]  : terminalTime(t) => ~step(t,i10) & all_orange(t,letters).
+		Score(p_player) = 0 <- ! t [Time]  : terminalTime(t) => ~cell(t,a,a,yellow) & ~cell(t,a,a,orange).
+	}
+	
+	// Translation of the TERMINAL sentences
+	{
+		! t [Time]  : terminalTime(t) <- step(t,i15).
+		! t [Time]  : terminalTime(t) <- all_orange(t,letters).
+	}
+}
+structure S : V {
+	// Default structure elements:
+	Start = 0
+	Time = {0..20}
+	ScoreType = {0..100}
+	
+	// Desired result
+	Score = {p_player->100}
+	
+	// Initial values for the fluent predicates
+	I_step = {i0}
+	I_cell = {i2,i3,yellow;i3,i1,yellow;i1,i3,yellow;i2,i2,yellow;i2,i1,yellow;i3,i2,yellow;i1,i2,yellow;i1,i1,yellow;i3,i3,yellow}
+	
+	// All values found in the static predicates
+	succ = {i10,i11;i0,i1;i1,i2;i3,i4;i2,i3;i5,i6;i4,i5;i9,i10;i7,i8;i11,i12;i12,i13;i6,i7;i13,i14;i14,i15;i8,i9}
+	adjacent = {d,c;i2,i1;i2,i3;b,a;c,b;b,c;a,b;i3,i2;i1,i2;c,d}
+}
+procedure main() {
+	stdoptions.nbmodels=5
+	printmodels(modelexpand(T,S))
+}

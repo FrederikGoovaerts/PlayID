@@ -1,0 +1,131 @@
+include <LTC>
+
+LTCvocabulary V {
+	// Default vocabulary elements (and types needed by the default elements)
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type All constructed from {s32,s31,s30,s1,s2,s28,empty,s27,s29,s24,s23,s26,peg,s25,s20,s22,s21,s19,s18,s17,s16,s11,s10,s15,s14,s13,s12,s3,g,s4,f,s5,e,s6,d,s7,c,b,s8,a,s9,c5,c6,c3,c4,c7,c2,c1}
+	type Action constructed from {jump(All,All,All,All)}
+	terminalTime(Time)
+	type ScoreType isa nat
+	type Player constructed from {p_jumper}
+	Score(Player) : ScoreType
+	do(Time,Player,Action)
+	
+	// Vocabulary elements derived from GDL file
+	succ(All,All)
+	nr(All,All)
+	nc(All,All)
+	pc(All,All)
+	column(All)
+	row(All)
+	pr(All,All)
+	middle(Time,All,All,All,All,All,All)
+	moveable(Time)
+	
+	// LTC predicates for the fluent predicates
+	pegs(Time,All)
+	I_pegs(All)
+	C_pegs(Time,All)
+	
+	hole(Time,All,All,All)
+	I_hole(All,All,All)
+	C_hole(Time,All,All,All)
+	
+}
+theory T: V {
+	// Default theory elements:
+	! a [Action] t [Time] p [Player]  : do(t,p,a) => ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2).
+	! p [Player] t [Time]  : ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2) => (?=1 a [Action]  : do(t,p,a)).
+	{
+		! t [Time]  : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time]  : Next(t2) = t).
+		Next(0) = 1.
+	}
+	
+	// Inductive definitions for the fluent predicates
+	{
+		! a [All]  : pegs(Start,a) <- I_pegs(a).
+		! a [All] t [Time]  : pegs(Next(t),a) <- C_pegs(t,a).
+	}
+	{
+		! a [All] a3 [All] a2 [All]  : hole(Start,a,a2,a3) <- I_hole(a,a2,a3).
+		! a [All] a3 [All] t [Time] a2 [All]  : hole(Next(t),a,a2,a3) <- C_hole(t,a,a2,a3).
+	}
+	
+	// The fluent predicates' causations
+	{
+		! y [All] x [All] sc [All] dc [All] sr [All] t [Time] dr [All]  : C_pegs(t,x) <- do(t,p_jumper,jump(sr,sc,dr,dc)) & pegs(t,y) & succ(x,y).
+	}
+	{
+		! y [All] x [All] sc [All] dc [All] sr [All] oc [All] or [All] t [Time] dr [All]  : C_hole(t,x,y,peg) <- do(t,p_jumper,jump(sr,sc,dr,dc)) & hole(t,x,y,peg) & x ~= sr & middle(t,sr,sc,or,oc,dr,dc) & x ~= or.
+		! sc [All] dc [All] sr [All] or [All] oc [All] t [Time] dr [All]  : C_hole(t,or,oc,empty) <- do(t,p_jumper,jump(sr,sc,dr,dc)) & middle(t,sr,sc,or,oc,dr,dc).
+		! y [All] x [All] sc [All] dc [All] sr [All] t [Time] dr [All]  : C_hole(t,x,y,empty) <- do(t,p_jumper,jump(sr,sc,dr,dc)) & hole(t,x,y,empty) & y ~= dc.
+		! y [All] x [All] sc [All] dc [All] sr [All] oc [All] or [All] t [Time] dr [All]  : C_hole(t,x,y,peg) <- do(t,p_jumper,jump(sr,sc,dr,dc)) & hole(t,x,y,peg) & y ~= sc & middle(t,sr,sc,or,oc,dr,dc) & y ~= oc.
+		! y [All] x [All] sc [All] dc [All] sr [All] t [Time] dr [All]  : C_hole(t,x,y,empty) <- do(t,p_jumper,jump(sr,sc,dr,dc)) & hole(t,x,y,empty) & x ~= dr.
+		! dc [All] sc [All] sr [All] t [Time] dr [All]  : C_hole(t,sr,sc,empty) <- do(t,p_jumper,jump(sr,sc,dr,dc)).
+		! sc [All] dc [All] sr [All] t [Time] dr [All]  : C_hole(t,dr,dc,peg) <- do(t,p_jumper,jump(sr,sc,dr,dc)).
+	}
+	
+	// The static predicates' causations
+	{
+		! sc [All] dc [All] sr [All] oc [All] or [All] t [Time] dr [All]  : moveable(t) <- hole(t,sr,sc,peg) & hole(t,dr,dc,empty) & middle(t,sr,sc,or,oc,dr,dc) & hole(t,or,oc,peg).
+	}
+	{
+		! sr [All] col [All] or [All] t [Time] dr [All]  : middle(t,sr,col,or,col,dr,col) <- pr(sr,or) & nr(dr,or) & column(col).
+		! sc [All] dc [All] row [All] oc [All] t [Time]  : middle(t,row,sc,row,oc,row,dc) <- nc(sc,oc) & pc(dc,oc) & row(row).
+		! sc [All] dc [All] row [All] oc [All] t [Time]  : middle(t,row,sc,row,oc,row,dc) <- pc(sc,oc) & nc(dc,oc) & row(row).
+		! sr [All] col [All] or [All] t [Time] dr [All]  : middle(t,sr,col,or,col,dr,col) <- nr(sr,or) & pr(dr,or) & column(col).
+	}
+	
+	// Translation of the LEGAL sentences
+	! dc [All] sc [All] sr [All] oc [All] or [All] t [Time] dr [All]  : do(t,p_jumper,jump(sr,sc,dr,dc)) => hole(t,sr,sc,peg) & hole(t,dr,dc,empty) & middle(t,sr,sc,or,oc,dr,dc) & hole(t,or,oc,peg).
+	
+	// Translation of the SCORE sentences
+	{
+		Score(p_jumper) = 90 <- ! t [Time]  : terminalTime(t) => pegs(t,s2).
+		Score(p_jumper) = 60 <- ! t [Time]  : terminalTime(t) => pegs(t,s5).
+		Score(p_jumper) = 30 <- ! t [Time]  : terminalTime(t) => pegs(t,s8).
+		Score(p_jumper) = 0 <- ! t [Time]  : terminalTime(t) => (? x [All]  : pegs(t,x) & x ~= s10 & x ~= s9 & x ~= s8 & x ~= s7 & x ~= s6 & x ~= s5 & x ~= s4 & x ~= s3 & x ~= s2 & x ~= s1).
+		Score(p_jumper) = 70 <- ! t [Time]  : terminalTime(t) => pegs(t,s4).
+		Score(p_jumper) = 99 <- ! t [Time]  : terminalTime(t) => (? row [All] col [All]  : hole(t,row,col,peg) & pegs(t,s1) & col ~= c4).
+		Score(p_jumper) = 99 <- ! t [Time]  : terminalTime(t) => (? row [All] col [All]  : hole(t,row,col,peg) & pegs(t,s1) & row ~= d).
+		Score(p_jumper) = 100 <- ! t [Time]  : terminalTime(t) => hole(t,d,c4,peg) & pegs(t,s1).
+		Score(p_jumper) = 40 <- ! t [Time]  : terminalTime(t) => pegs(t,s7).
+		Score(p_jumper) = 80 <- ! t [Time]  : terminalTime(t) => pegs(t,s3).
+		Score(p_jumper) = 10 <- ! t [Time]  : terminalTime(t) => pegs(t,s10).
+		Score(p_jumper) = 20 <- ! t [Time]  : terminalTime(t) => pegs(t,s9).
+		Score(p_jumper) = 50 <- ! t [Time]  : terminalTime(t) => pegs(t,s6).
+	}
+	
+	// Translation of the TERMINAL sentences
+	{
+		! t [Time]  : terminalTime(t) <- ~moveable(t).
+	}
+}
+structure S : V {
+	// Default structure elements:
+	Start = 0
+	Time = {0..20}
+	ScoreType = {0..100}
+	
+	// Desired result
+	Score = {p_jumper->100}
+	
+	// Initial values for the fluent predicates
+	I_pegs = {s32}
+	I_hole = {b,c4,peg;d,c4,empty;g,c5,peg;c,c7,peg;g,c3,peg;e,c5,peg;e,c7,peg;e,c3,peg;c,c2,peg;d,c6,peg;e,c1,peg;c,c6,peg;d,c2,peg;f,c5,peg;f,c3,peg;c,c4,peg;b,c5,peg;b,c3,peg;g,c4,peg;d,c1,peg;a,c3,peg;a,c5,peg;e,c6,peg;e,c4,peg;c,c3,peg;a,c4,peg;e,c2,peg;c,c1,peg;d,c7,peg;d,c5,peg;f,c4,peg;d,c3,peg;c,c5,peg}
+	
+	// All values found in the static predicates
+	row = {b;c;d;e;a;f;g}
+	pr = {d,c;e,d;b,a;c,b;f,e;g,f}
+	succ = {s4,s5;s9,s10;s6,s7;s8,s9;s18,s19;s31,s32;s29,s30;s23,s24;s3,s4;s16,s17;s21,s22;s1,s2;s14,s15;s30,s31;s12,s13;s27,s28;s10,s11;s25,s26;s5,s6;s28,s29;s7,s8;s17,s18;s22,s23;s2,s3;s15,s16;s20,s21;s13,s14;s11,s12;s26,s27;s19,s20;s24,s25}
+	column = {c4;c3;c2;c1;c7;c5;c6}
+	nr = {f,g;e,f;b,c;a,b;d,e;c,d}
+	pc = {c4,c3;c3,c2;c2,c1;c5,c4;c6,c5;c7,c6}
+	nc = {c6,c7;c5,c6;c4,c5;c1,c2;c2,c3;c3,c4}
+}
+procedure main() {
+	stdoptions.nbmodels=5
+	printmodels(modelexpand(T,S))
+}

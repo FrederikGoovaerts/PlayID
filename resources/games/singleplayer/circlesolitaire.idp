@@ -1,0 +1,113 @@
+include <LTC>
+
+LTCvocabulary V {
+	// Default vocabulary elements (and types needed by the default elements)
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type All constructed from {s3,p8,red,p3,p2,p1,p7,p6,p5,p4,s1,green,s2,none,s0}
+	type Action constructed from {remove(All),reset}
+	terminalTime(Time)
+	type ScoreType isa nat
+	type Player constructed from {p_taker}
+	Score(Player) : ScoreType
+	do(Time,Player,Action)
+	
+	// Vocabulary elements derived from GDL file
+	succ(All,All)
+	adj(All,All)
+	place(All)
+	
+	// LTC predicates for the fluent predicates
+	resets(Time,All)
+	I_resets(All)
+	C_resets(Time,All)
+	
+	disk(Time,All,All)
+	I_disk(All,All)
+	C_disk(Time,All,All)
+	
+}
+theory T: V {
+	// Default theory elements:
+	! a [Action] t [Time] p [Player]  : do(t,p,a) => ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2).
+	! p [Player] t [Time]  : ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2) => (?=1 a [Action]  : do(t,p,a)).
+	{
+		! t [Time]  : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time]  : Next(t2) = t).
+		Next(0) = 1.
+	}
+	
+	// Inductive definitions for the fluent predicates
+	{
+		! a [All]  : resets(Start,a) <- I_resets(a).
+		! a [All] t [Time]  : resets(Next(t),a) <- C_resets(t,a).
+	}
+	{
+		! a [All] a2 [All]  : disk(Start,a,a2) <- I_disk(a,a2).
+		! a [All] t [Time] a2 [All]  : disk(Next(t),a,a2) <- C_disk(t,a,a2).
+	}
+	
+	// The fluent predicates' causations
+	{
+		! t [Time]  : C_disk(t,p2,green) <- do(t,p_taker,reset).
+		! t [Time]  : C_disk(t,p8,red) <- do(t,p_taker,reset).
+		! y [All] x [All] t [Time]  : C_disk(t,x,none) <- do(t,p_taker,remove(y)) & disk(t,x,none) & x ~= y.
+		! t [Time]  : C_disk(t,p1,green) <- do(t,p_taker,reset).
+		! t [Time]  : C_disk(t,p3,red) <- do(t,p_taker,reset).
+		! t [Time]  : C_disk(t,p7,green) <- do(t,p_taker,reset).
+		! t [Time]  : C_disk(t,p6,red) <- do(t,p_taker,reset).
+		! x [All] t [Time]  : C_disk(t,x,none) <- do(t,p_taker,remove(x)) & disk(t,x,green).
+		! t [Time]  : C_disk(t,p4,red) <- do(t,p_taker,reset).
+		! y [All] x [All] t [Time]  : C_disk(t,x,red) <- do(t,p_taker,remove(y)) & disk(t,x,green) & adj(x,y).
+		! y [All] x [All] t [Time]  : C_disk(t,x,green) <- do(t,p_taker,remove(y)) & disk(t,x,green) & x ~= y & ~adj(x,y).
+		! t [Time]  : C_disk(t,p5,green) <- do(t,p_taker,reset).
+		! y [All] x [All] t [Time]  : C_disk(t,x,red) <- do(t,p_taker,remove(y)) & disk(t,x,red) & x ~= y & ~adj(x,y).
+		! y [All] x [All] t [Time]  : C_disk(t,x,green) <- do(t,p_taker,remove(y)) & disk(t,x,red) & adj(x,y).
+	}
+	{
+		! y [All] x [All] t [Time]  : C_resets(t,x) <- do(t,p_taker,remove(y)) & resets(t,x).
+		! y [All] x [All] t [Time]  : C_resets(t,x) <- do(t,p_taker,reset) & resets(t,y) & succ(y,x).
+	}
+	
+	// Translation of the LEGAL sentences
+	! t [Time]  : do(t,p_taker,reset) => resets(t,s0).
+	! t [Time]  : do(t,p_taker,reset) => resets(t,s2).
+	! t [Time]  : do(t,p_taker,reset) => resets(t,s1).
+	! x [All] t [Time]  : do(t,p_taker,remove(x)) => place(x) & disk(t,x,green).
+	
+	// Translation of the SCORE sentences
+	{
+		Score(p_taker) = 0 <- ! t [Time]  : terminalTime(t) => resets(t,s3).
+		Score(p_taker) = 100 <- ! t [Time]  : terminalTime(t) => disk(t,p1,none) & disk(t,p2,none) & disk(t,p3,none) & disk(t,p4,none) & disk(t,p5,none) & disk(t,p6,none) & disk(t,p7,none) & disk(t,p8,none) & resets(t,s0).
+		Score(p_taker) = 66 <- ! t [Time]  : terminalTime(t) => disk(t,p1,none) & disk(t,p2,none) & disk(t,p3,none) & disk(t,p4,none) & disk(t,p5,none) & disk(t,p6,none) & disk(t,p7,none) & disk(t,p8,none) & resets(t,s1).
+		Score(p_taker) = 33 <- ! t [Time]  : terminalTime(t) => disk(t,p1,none) & disk(t,p2,none) & disk(t,p3,none) & disk(t,p4,none) & disk(t,p5,none) & disk(t,p6,none) & disk(t,p7,none) & disk(t,p8,none) & resets(t,s2).
+	}
+	
+	// Translation of the TERMINAL sentences
+	{
+		! t [Time]  : terminalTime(t) <- disk(t,p1,none) & disk(t,p2,none) & disk(t,p3,none) & disk(t,p4,none) & disk(t,p5,none) & disk(t,p6,none) & disk(t,p7,none) & disk(t,p8,none).
+		! t [Time]  : terminalTime(t) <- resets(t,s3).
+	}
+}
+structure S : V {
+	// Default structure elements:
+	Start = 0
+	Time = {0..20}
+	ScoreType = {0..100}
+	
+	// Desired result
+	Score = {p_taker->100}
+	
+	// Initial values for the fluent predicates
+	I_disk = {p8,red;p7,green;p6,red;p3,red;p4,red;p2,green;p1,green;p5,green}
+	I_resets = {s0}
+	
+	// All values found in the static predicates
+	succ = {s2,s3;s1,s2;s0,s1}
+	place = {p1;p8;p7;p6;p5;p4;p3;p2}
+	adj = {p5,p4;p4,p3;p3,p2;p2,p1;p8,p7;p8,p1;p7,p6;p6,p5;p5,p6;p6,p7;p7,p8;p1,p2;p2,p3;p3,p4;p1,p8;p4,p5}
+}
+procedure main() {
+	stdoptions.nbmodels=5
+	printmodels(modelexpand(T,S))
+}

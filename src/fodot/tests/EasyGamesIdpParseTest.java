@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import fodot.communication.PlayIdProcessor;
 
-public class IdpProcessorabilityTest {
+public class EasyGamesIdpParseTest {
 
 
 	private static final String GAMES_LOCATION = "resources/games/";

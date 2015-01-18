@@ -1,0 +1,122 @@
+include <LTC>
+
+LTCvocabulary V {
+	// Default vocabulary elements (and types needed by the default elements)
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type All constructed from {c,b,a,i1,i2,i3,i4}
+	type Action constructed from {u(All,All),s(All,All)}
+	terminalTime(Time)
+	type ScoreType isa nat
+	type Player constructed from {p_robot}
+	Score(Player) : ScoreType
+	do(Time,Player,Action)
+	
+	// Vocabulary elements derived from GDL file
+	succ(All,All)
+	
+	// LTC predicates for the fluent predicates
+	clear(Time,All)
+	I_clear(All)
+	C_clear(Time,All)
+	
+	on(Time,All,All)
+	I_on(All,All)
+	C_on(Time,All,All)
+	
+	table(Time,All)
+	I_table(All)
+	C_table(Time,All)
+	
+	step(Time,All)
+	I_step(All)
+	C_step(Time,All)
+	
+}
+theory T: V {
+	// Default theory elements:
+	! a [Action] t [Time] p [Player]  : do(t,p,a) => ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2).
+	! p [Player] t [Time]  : ~terminalTime(t) & (? t2 [Time]  : Next(t) = t2) => (?=1 a [Action]  : do(t,p,a)).
+	{
+		! t [Time]  : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time]  : Next(t2) = t).
+		Next(0) = 1.
+	}
+	
+	// Inductive definitions for the fluent predicates
+	{
+		! a [All]  : clear(Start,a) <- I_clear(a).
+		! a [All] t [Time]  : clear(Next(t),a) <- C_clear(t,a).
+	}
+	{
+		! a [All] a2 [All]  : on(Start,a,a2) <- I_on(a,a2).
+		! a [All] t [Time] a2 [All]  : on(Next(t),a,a2) <- C_on(t,a,a2).
+	}
+	{
+		! a [All]  : table(Start,a) <- I_table(a).
+		! a [All] t [Time]  : table(Next(t),a) <- C_table(t,a).
+	}
+	{
+		! a [All]  : step(Start,a) <- I_step(a).
+		! a [All] t [Time]  : step(Next(t),a) <- C_step(t,a).
+	}
+	
+	// The fluent predicates' causations
+	{
+		! y [All] x [All] v [All] t [Time] u [All]  : C_on(t,x,y) <- do(t,p_robot,s(u,v)) & on(t,x,y).
+		! y [All] x [All] t [Time]  : C_on(t,x,y) <- do(t,p_robot,s(x,y)).
+		! y [All] x [All] v [All] t [Time] u [All]  : C_on(t,x,y) <- do(t,p_robot,u(u,v)) & on(t,x,y) & u ~= x.
+	}
+	{
+		! x [All] v [All] t [Time] u [All]  : C_table(t,x) <- do(t,p_robot,s(u,v)) & table(t,x) & u ~= x.
+		! x [All] v [All] t [Time] u [All]  : C_table(t,x) <- do(t,p_robot,u(u,v)) & table(t,x).
+		! y [All] x [All] t [Time]  : C_table(t,x) <- do(t,p_robot,u(x,y)).
+	}
+	{
+		! y [All] x [All] t [Time]  : C_step(t,y) <- step(t,x) & succ(x,y).
+	}
+	{
+		! x [All] v [All] t [Time] u [All]  : C_clear(t,x) <- do(t,p_robot,u(u,v)) & clear(t,x).
+		! y [All] v [All] t [Time] u [All]  : C_clear(t,y) <- do(t,p_robot,s(u,v)) & clear(t,y) & v ~= y.
+		! y [All] x [All] t [Time]  : C_clear(t,y) <- do(t,p_robot,u(x,y)).
+	}
+	
+	// Translation of the LEGAL sentences
+	! y [All] x [All] t [Time]  : do(t,p_robot,s(x,y)) => clear(t,x) & table(t,x) & clear(t,y) & x ~= y.
+	! y [All] x [All] t [Time]  : do(t,p_robot,u(x,y)) => clear(t,x) & on(t,x,y).
+	
+	// Translation of the SCORE sentences
+	{
+		Score(p_robot) = 100 <- ! t [Time]  : terminalTime(t) => on(t,a,b) & on(t,b,c).
+		Score(p_robot) = 0 <- ! t [Time]  : terminalTime(t) => ~on(t,b,c).
+		Score(p_robot) = 0 <- ! t [Time]  : terminalTime(t) => ~on(t,a,b).
+	}
+	
+	// Translation of the TERMINAL sentences
+	{
+		! t [Time]  : terminalTime(t) <- on(t,a,b) & on(t,b,c).
+		! t [Time]  : terminalTime(t) <- step(t,i4).
+	}
+}
+structure S : V {
+	// Default structure elements:
+	Start = 0
+	Time = {0..20}
+	ScoreType = {0..100}
+	
+	// Desired result
+	Score = {p_robot->100}
+	
+	// Initial values for the fluent predicates
+	I_on = {c,a}
+	I_table = {b;a}
+	I_step = {i1}
+	I_clear = {b;c}
+	
+	// All values found in the static predicates
+	succ = {i3,i4;i2,i3;i1,i2}
+}
+procedure main() {
+	stdoptions.nbmodels=5
+	printmodels(modelexpand(T,S))
+}
