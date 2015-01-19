@@ -31,7 +31,7 @@ public class SpecialCasesTransformationTest {
 		parser.run();
 	}
 	
-	protected File toFile(String gameName) {
+	protected static File toFile(String gameName) {
 		return new File(GAMES_LOCATION + gameName + DEFAULT_EXTENSION);
 	}
 	
