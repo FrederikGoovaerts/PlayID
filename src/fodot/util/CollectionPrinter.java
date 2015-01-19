@@ -41,9 +41,9 @@ public class CollectionPrinter {
 		return toCodify;
 	}
 	
-	public static List<String> toString(Collection<? extends IFodotElement> list) {
+	public static List<String> toString(Collection<?> list) {
 		List<String> toStringify = new ArrayList<String>();
-		for (IFodotElement element : list) {
+		for (Object element : list) {
 			toStringify.add(element.toString());
 		}
 		return toStringify;
