@@ -3,7 +3,6 @@ package fodot.objects.theory.elements.formulas;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -12,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fodot.exceptions.fodot.IllegalConnectorException;
+import fodot.objects.general.FodotElementComparators;
 import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotType;
@@ -171,12 +171,7 @@ public class FodotQuantifier implements IFodotFormula {
 				List<FodotVariable> vars = variablesPerType.get(type);
 
 				//Sort them by name
-				Collections.sort(vars, new Comparator<FodotVariable>() {
-					@Override
-					public int compare(FodotVariable o1, FodotVariable o2) {
-						return o1.getName().compareTo(o2.getName());
-					}
-				});
+				Collections.sort(vars, FodotElementComparators.VARIABLE_NAME_COMPARATOR);
 
 				//Output all the variables of this type
 				List<String> varNames = new ArrayList<String>();

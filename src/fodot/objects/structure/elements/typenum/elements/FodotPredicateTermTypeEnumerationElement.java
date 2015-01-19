@@ -1,7 +1,11 @@
 package fodot.objects.structure.elements.typenum.elements;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
+import fodot.objects.general.FodotElementComparators;
 import fodot.objects.general.FodotElementContainer;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.util.CollectionPrinter;
@@ -46,7 +50,9 @@ public class FodotPredicateTermTypeEnumerationElement extends
 
 	@Override
 	public String toCode() {
-		return getDeclaration().getName() + CollectionPrinter.toCoupleAsCode(getElements());
+		List<IFodotTypeEnumerationElement> domainElements = new ArrayList<IFodotTypeEnumerationElement>(getElements());
+		Collections.sort(domainElements, FodotElementComparators.ENUMERATION_ELEMENT_COMPARATOR);
+		return getDeclaration().getName() + CollectionPrinter.toCoupleAsCode(domainElements);
 	}
 
 	@Override

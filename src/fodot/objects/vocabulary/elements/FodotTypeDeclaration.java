@@ -1,7 +1,12 @@
 package fodot.objects.vocabulary.elements;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
+import fodot.objects.general.FodotElementComparators;
+import fodot.objects.general.IFodotElement;
 import fodot.util.CollectionPrinter;
 
 public class FodotTypeDeclaration implements IFodotVocabularyElement {
@@ -76,10 +81,26 @@ public class FodotTypeDeclaration implements IFodotVocabularyElement {
     
 	@Override
 	public String toCode() {
-		return "type " + getType().getName()
-				+ (shouldShowSupertypes() && getType().hasSupertypes() ? " isa " + CollectionPrinter.toNakedList(CollectionPrinter.toCode(getType().getSupertypes())) : "")
-				+ (shouldShowSubtypes() && getType().hasSubtypes() ? " contains " + CollectionPrinter.toNakedList(CollectionPrinter.toCode(getType().getSubtypes())) : "")
-				+ (shouldShowDomain() && getType().hasDomainElements() && !getType().hasSupertypes() ? " constructed from " + CollectionPrinter.printStringList("{",	"}", ",", CollectionPrinter.toCode(getType().getDomainElements())) : "" );
+		StringBuilder builder = new StringBuilder();
+		builder.append("type " + getType().getName());
+		if (shouldShowSupertypes() && getType().hasSupertypes()) {
+			builder.append(" isa ");
+			builder.append(CollectionPrinter.toNakedList(CollectionPrinter.toCode(getType().getSupertypes())));
+		}
+		if (shouldShowSubtypes() && getType().hasSubtypes()) {
+			builder.append(" contains ");
+			builder.append(CollectionPrinter.toNakedList(CollectionPrinter.toCode(getType().getSubtypes())));
+		}
+		if (shouldShowDomain() && getType().hasDomainElements() && !getType().hasSupertypes()) {
+			builder.append(" constructed from ");
+			
+			//Sort domain elements
+			List<IFodotElement> domainElements = new ArrayList<IFodotElement>(getType().getDomainElements());
+			Collections.sort(domainElements, FodotElementComparators.ELEMENT_TOCODE_COMPARATOR);
+			
+			builder.append(CollectionPrinter.printStringList("{",	"}", ",", CollectionPrinter.toCode(domainElements)));
+		}
+		return builder.toString();
 	}
     /************************************/
 
