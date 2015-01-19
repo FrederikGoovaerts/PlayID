@@ -269,7 +269,7 @@ public class FodotPartBuilder {
 
 	//Awesome exists
 	private static final String EXISTS_EXACTLY_SYMBOL = EXISTS_SYMBOL + "=";
-	public static FodotQuantifier createExistsExactly(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+	private static FodotQuantifier createExistsExactly(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
 		return new FodotQuantifier(EXISTS_EXACTLY_SYMBOL + amount, variables, formula);
 	}
 
@@ -278,7 +278,7 @@ public class FodotPartBuilder {
 	}
 
 	private static final String EXISTS_LESS_THAN_SYMBOL = EXISTS_SYMBOL + "<";
-	public static FodotQuantifier createExistsLessThan(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+	private static FodotQuantifier createExistsLessThan(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
 		return new FodotQuantifier(EXISTS_LESS_THAN_SYMBOL + amount, variables, formula);
 	}
 
@@ -287,7 +287,7 @@ public class FodotPartBuilder {
 	}
 
 	private static final String EXISTS_AT_MOST_SYMBOL = EXISTS_SYMBOL + "=<";
-	public static FodotQuantifier createExistsAtMost(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+	private static FodotQuantifier createExistsAtMost(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
 		return new FodotQuantifier(EXISTS_AT_MOST_SYMBOL + amount, variables, formula);
 	}
 
@@ -296,7 +296,7 @@ public class FodotPartBuilder {
 	}
 
 	private static final String EXISTS_MORE_THAN_SYMBOL = EXISTS_SYMBOL + ">";
-	public static FodotQuantifier createExistsMoreThan(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+	private static FodotQuantifier createExistsMoreThan(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
 		return new FodotQuantifier(EXISTS_MORE_THAN_SYMBOL + amount, variables, formula);
 	}
 
