@@ -1,7 +1,8 @@
-package fodot.objects.general;
+package fodot.objects.general.sorting;
 
 import java.util.Comparator;
 
+import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.elements.IFodotEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import fodot.objects.general.FodotElementComparators;
+import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.structure.elements.FodotEnumeration;
 import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fodot.exceptions.fodot.IllegalConnectorException;
-import fodot.objects.general.FodotElementComparators;
+import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotType;

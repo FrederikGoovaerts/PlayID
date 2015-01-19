@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import fodot.objects.general.FodotElementComparators;
 import fodot.objects.general.IFodotElement;
+import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.util.CollectionPrinter;
 
 public class FodotTypeDeclaration implements IFodotVocabularyElement {

@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import fodot.objects.general.FodotElementComparators;
 import fodot.objects.general.FodotElementContainer;
+import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.util.CollectionPrinter;
 
