@@ -9,7 +9,6 @@ import fodot.gdl_parser.Parser;
 public class SingleplayerTransformationTest {
 
 	private static final File GAMES_LOCATION = new File("resources/games/singleplayer/");
-	private static final String DEFAULT_EXTENSION = ".kif";
 
 	/**
 	 * Just parses to see if it throws an exception

@@ -18,7 +18,7 @@ import fodot.gdl_parser.Parser;
 @SuppressWarnings("unused")
 public class SpecialCasesTransformationTest {
 
-	private static final String GAMES_LOCATION = "resources/games/";
+	private static final String GAMES_LOCATION = "resources/games/special/";
 	private static final String DEFAULT_EXTENSION = ".kif";
 
 	/**
@@ -34,32 +34,7 @@ public class SpecialCasesTransformationTest {
 	protected File toFile(String gameName) {
 		return new File(GAMES_LOCATION + gameName + DEFAULT_EXTENSION);
 	}
-
-	@Test
-	public void noexception_blocks() {
-		testFor("blocks");
-	}
-
-	@Test
-	public void noexception_choice() {
-		testFor("choice");
-	}
-
-	@Test
-	public void noexception_connectFour() {
-		testFor("connectFour");
-	}
-
-	@Test
-	public void noexception_maze() {
-		testFor("maze");
-	}
-
-	@Test
-	public void noexception_simpleMutex() {
-		testFor("simpleMutex");
-	}
-
+	
 	@Test
 	public void noexception_case_1a() {
 		testFor("test_case_1a");
@@ -156,10 +131,4 @@ public class SpecialCasesTransformationTest {
 		testFor("test_invalid_sentence_arities_differ");
 	}
 	
-	@Test
-	public void noexception_ticTacToe() {
-		testFor("ticTacToe");
-	}
-
-
 }

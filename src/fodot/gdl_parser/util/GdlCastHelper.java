@@ -191,7 +191,7 @@ public class GdlCastHelper {
     	FodotVariable timeVariable = trans.createTimeVariable(variables);
     	
     	FodotPredicate actionPredicate = createPredicate(
-				trans.getDoPredicate(),
+				trans.getDoPredicateDeclaration(),
 				timeVariable,
 				playerTerm,
 				actionFodotTerm

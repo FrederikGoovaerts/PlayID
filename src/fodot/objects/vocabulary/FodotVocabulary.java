@@ -6,7 +6,6 @@ import java.util.List;
 
 import fodot.objects.file.FodotFileElement;
 import fodot.objects.file.IFodotFileElement;
-import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 
 public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> implements IFodotFileElement {
