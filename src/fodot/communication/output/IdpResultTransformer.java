@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import fodot.exceptions.idp.IdpParseException;
+import fodot.exceptions.idp.OutOfResourcesException;
 import fodot.exceptions.idp.UnsatisfiableIdpFileException;
 import fodot.fodot_parser.FodotStructureParser;
 import fodot.objects.file.IFodotFile;
@@ -81,6 +82,8 @@ public class IdpResultTransformer {
 				throw new IdpParseException(line);
 			} else if (isUnsatisfiable(line)) {
 				throw new UnsatisfiableIdpFileException();
+			} else if (isOutOfResources(line)){
+				throw new OutOfResourcesException(line);
 			} else if (isThrowAwayLine(line)){
 				//No-op
 			} else if (declaresNewStructure(line)) {
@@ -108,6 +111,10 @@ public class IdpResultTransformer {
 	 ***********************************************/
 	private boolean isParseError(String line) {
 		return line.startsWith("Error: ");
+	}
+
+	private boolean isOutOfResources(String line) {
+		return line.trim().startsWith("Out of resources");
 	}
 
 	private boolean isUnsatisfiable(String line) {

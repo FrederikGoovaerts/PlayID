@@ -93,7 +93,7 @@ public class FodotGameFactory {
         this.pool = pool;
         this.doPredicateDeclaration = doPred;
         this.terminalTimePredicateDeclaration = terminalPred;
-        this.timeLimit = timeLimit;
+        this.turnLimit = timeLimit;
         buildDefaultVocItems();
     }
 
@@ -101,7 +101,7 @@ public class FodotGameFactory {
                             LTCPool pool,
                             FodotPredicateDeclaration doPred,
                             FodotPredicateDeclaration terminalPred) {
-        this(source, pool, doPred, terminalPred, DEFAULT_TIME);
+        this(source, pool, doPred, terminalPred, DEFAULT_TURN_LIMIT);
     }
 
     /***************************************************************************
@@ -118,9 +118,9 @@ public class FodotGameFactory {
     private FodotTypeDeclaration scoreTypeDeclaration;
     private FodotFunctionDeclaration scoreFunctionDeclaration;
 
-    private int timeLimit = DEFAULT_TIME;
+    private int turnLimit = DEFAULT_TURN_LIMIT;
 
-    private final static int DEFAULT_TIME = 20;
+    private final static int DEFAULT_TURN_LIMIT = 20;
 
     /***************************************************************************
      * Class Methods
@@ -645,7 +645,7 @@ public class FodotGameFactory {
                 createNumericalTypeRangeEnumeration(
                         source.getTimeType(),
                         createInteger(0),
-                        createInteger(this.timeLimit)
+                        createInteger(this.turnLimit)
                 )
         );
 
@@ -669,13 +669,19 @@ public class FodotGameFactory {
         return defaultStructure;
     }
 
+    private static final int DEFAULT_IDP_TIME_LIMIT = 15;
+    private int idpTimeLimit = DEFAULT_IDP_TIME_LIMIT;
+    private static final int DEFAULT_MODEL_LIMIT = 5;
+    private int idpModelLimit = DEFAULT_IDP_TIME_LIMIT;
+    
     private FodotProcedures getDefaultProcedures() {
-
+    	//stdoptions.timeout=timeLimit
         //stdoptions.nbmodels=5
         //printmodels(modelexpand(T,S))
         List<FodotProcedureStatement> proc = new ArrayList<>(
                 Arrays.asList(
-                        createProcedure("stdoptions.nbmodels=5"),
+                        createProcedure("stdoptions.timeout="+idpTimeLimit),
+                        createProcedure("stdoptions.nbmodels="+idpModelLimit),
                         createProcedure("printmodels(modelexpand(T,S))")
                 )
         );
