@@ -73,10 +73,10 @@ public class BasicFodotFile implements IFodotFile {
 	@Override
 	public String toCode() {
 		return getIncludes().toCode() + "\n"
-				+ getVocabulary().toCode() + "\n"
-				+ getTheory().toCode() + "\n"
-				+ getStructure().toCode() + "\n"
-				+ getProcedures().toCode() + "\n";
+				+ getVocabulary().toCode() + "\n\n"
+				+ getTheory().toCode() + "\n\n"
+				+ getStructure().toCode() + "\n\n"
+				+ getProcedures().toCode();
 	}	
 
 	public void merge(BasicFodotFile other) {

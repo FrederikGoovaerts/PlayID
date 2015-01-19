@@ -661,21 +661,21 @@ public class FodotPartBuilder {
 	}
 
 	//FODOT ITSELF
-	public static BasicFodotFile createFodot(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures, FodotIncludeHolder imports) {
+	public static BasicFodotFile createBasicFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures, FodotIncludeHolder imports) {
 		return new BasicFodotFile(voc, theory, struc, procedures, imports);
 	}
 
-	public static BasicFodotFile createFodot(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures) {
-		return createFodot(voc, theory, struc, procedures, null);
+	public static BasicFodotFile createBasicFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures) {
+		return createBasicFodotFile(voc, theory, struc, procedures, null);
 	}
 
-	public static BasicFodotFile createFodot() {
+	public static BasicFodotFile createBasicFodotFile() {
 		FodotVocabulary voc = createVocabulary();
-		return createFodot(voc, null, null, null, null);
+		return createBasicFodotFile(voc, null, null, null, null);
 	}
 
-	public static BasicFodotFile createFodot(FodotVocabulary voc) {
-		return createFodot(voc, createTheory(voc), createStructure(voc), createProcedures(), null);
+	public static BasicFodotFile createBasicFodotFile(FodotVocabulary voc) {
+		return createBasicFodotFile(voc, createTheory(voc), createStructure(voc), createProcedures(), null);
 	}
 
 }
