@@ -10,7 +10,8 @@ import java.util.Set;
 
 import fodot.objects.comments.FodotBlankLines;
 import fodot.objects.comments.FodotComment;
-import fodot.objects.file.BasicFodotFile;
+import fodot.objects.file.FodotFile;
+import fodot.objects.file.IFodotFile;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.includes.elements.FodotIncludeFile;
 import fodot.objects.includes.elements.FodotIncludeLibrary;
@@ -661,20 +662,20 @@ public class FodotPartBuilder {
 	}
 
 	//FODOT ITSELF
-	public static BasicFodotFile createBasicFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures, FodotIncludeHolder imports) {
-		return new BasicFodotFile(voc, theory, struc, procedures, imports);
+	public static IFodotFile createBasicFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures, FodotIncludeHolder imports) {
+		return new FodotFile(imports,Arrays.asList(voc,theory,struc,procedures));
 	}
 
-	public static BasicFodotFile createBasicFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures) {
+	public static IFodotFile createBasicFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures) {
 		return createBasicFodotFile(voc, theory, struc, procedures, null);
 	}
 
-	public static BasicFodotFile createBasicFodotFile() {
+	public static IFodotFile createBasicFodotFile() {
 		FodotVocabulary voc = createVocabulary();
 		return createBasicFodotFile(voc, null, null, null, null);
 	}
 
-	public static BasicFodotFile createBasicFodotFile(FodotVocabulary voc) {
+	public static IFodotFile createBasicFodotFile(FodotVocabulary voc) {
 		return createBasicFodotFile(voc, createTheory(voc), createStructure(voc), createProcedures(), null);
 	}
 

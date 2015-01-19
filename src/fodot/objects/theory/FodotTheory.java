@@ -114,7 +114,7 @@ public class FodotTheory implements IFodotFileElement {
 	@Override
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("theory " + getName() + ": " + getVocabulary().getName() + " {\n");
+		builder.append("theory " + getName() + " : " + getVocabulary().getName() + " {\n");
 		builder.append(CollectionPrinter.toNewLinesWithTabsAsCode(getElements(),1));		
 		builder.append("}");
 		return builder.toString();

@@ -14,8 +14,13 @@ public class FodotFile extends FodotNamedElementContainer<IFodotFileElement> imp
 	
 	private FodotIncludeHolder includes;
 	
-	public FodotFile(Collection<? extends IFodotFileElement> elements) {
+	public FodotFile(FodotIncludeHolder includes, Collection<? extends IFodotFileElement> elements) {
 		super(elements);
+		setIncludes(includes);
+	}
+	
+	public FodotFile(Collection<? extends IFodotFileElement> elements) {
+		this(null, elements);
 	}
 	
 	public FodotFile() {
