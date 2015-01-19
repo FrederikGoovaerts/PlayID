@@ -51,6 +51,10 @@ public abstract class FodotElementContainer<E extends IFodotElement> implements 
 		return this.elements.contains(element);
 	}
 
+	public boolean containsAllElements(Collection<? extends E> argElements) {
+		return this.elements.containsAll(argElements);
+	}
+	
 	public boolean hasElements() {
 		return !elements.isEmpty();
 	}

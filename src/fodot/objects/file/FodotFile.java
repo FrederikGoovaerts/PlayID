@@ -66,7 +66,8 @@ public class FodotFile extends FodotNamedElementContainer<IFodotFileElement> imp
 
 	@Override
 	public boolean isValidElement(IFodotFileElement argElement) {
-		return !containsElementWithName(argElement.getName());
+		return !containsElementWithName(argElement.getName())
+				&& containsAllElements(argElement.getPrerequiredElements());
 	}
 
 }
