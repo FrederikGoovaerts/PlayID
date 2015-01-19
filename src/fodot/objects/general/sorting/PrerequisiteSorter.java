@@ -17,14 +17,10 @@ public class PrerequisiteSorter<E> {
 
 	private PrerequisiteExtractor<E> prereqExtractor;
 	
-	private List<E> toSort;
-	private Set<E> alreadyTriedThisRound = new LinkedHashSet<E>();
-	private Set<E> alreadyAdded;// = new LinkedHashSet<E>(Arrays.asList(FodotType.INTEGER.getDeclaration(), FodotType.NATURAL_NUMBER.getDeclaration()));
+	private Set<E> base;
 	
-	private List<E> sorted = new ArrayList<E>();
-	
-	public PrerequisiteSorter(Set<E> alreadyAdded, PrerequisiteExtractor<E> extractor) {
-		this.alreadyAdded = (alreadyAdded == null? new LinkedHashSet<E>() : new LinkedHashSet<E>(alreadyAdded));
+	public PrerequisiteSorter(Collection<? extends E> alreadyAdded, PrerequisiteExtractor<E> extractor) {
+		this.base = (alreadyAdded == null? new LinkedHashSet<E>() : new LinkedHashSet<E>(alreadyAdded));
 		this.prereqExtractor = extractor;
 	}
 	
@@ -34,68 +30,86 @@ public class PrerequisiteSorter<E> {
 	
 	
 	public List<E> sort(Collection<? extends E> types) {
-		toSort = new ArrayList<E>(types);
-		while (!toSort.isEmpty()) {
-			tryAddingToSorted(toSort.get(0));
-		}		
-		return sorted;
+		Sorter sorter = new Sorter(base);
+		return sorter.sort(types);
 	}
 	
-	private void tryAddingToSorted(E current) {
-		/*Check if there's a loop like:
-		 * type A constructed from {u(B)}
-		 * type B constructed from {v(A)}
-		 */
-		if (alreadyTriedThisRound.contains(current)) {
-			throw new IllegalStateException(
-					"A loop has been detected in the order in which VocabularyElements should be sorted: \n"
-					+ CollectionPrinter.toString(alreadyTriedThisRound));
+	private class Sorter {
+
+		private List<E> sorted = new ArrayList<E>();
+		private List<E> toSort;
+		private Set<E> alreadyTriedThisRound = new LinkedHashSet<E>();
+		private Set<E> alreadyAdded;
+		
+		public Sorter(Collection<? extends E> alreadyAdded) {
+			this.alreadyAdded = (alreadyAdded == null? new LinkedHashSet<E>() : new LinkedHashSet<E>(alreadyAdded));			
 		}
 		
-		//Check if printable
-		if (alreadyAdded.containsAll(prereqExtractor.getPrerequisitesOf(current))) {
-			addToSorted(current);
+		public List<E> sort(Collection<? extends E> types) {
+			toSort = new ArrayList<E>(types);
+			while (!toSort.isEmpty()) {
+				tryAddingToSorted(toSort.get(0));
+			}		
+			return sorted;
 		}
-		else {
-			alreadyTriedThisRound.add(current);
-			//Try printing the next type that printed does not contain
-			tryAddingToSorted(getFirstNotPrinted(current));
+		
+		private void tryAddingToSorted(E current) {
+			/*Check if there's a loop like:
+			 * type A constructed from {u(B)}
+			 * type B constructed from {v(A)}
+			 */
+			if (alreadyTriedThisRound.contains(current)) {
+				throw new IllegalStateException(
+						"A loop has been detected in the order in which VocabularyElements should be sorted: \n"
+						+ CollectionPrinter.toString(alreadyTriedThisRound));
+			}
+			
+			//Check if printable
+			if (alreadyAdded.containsAll(prereqExtractor.getPrerequisitesOf(current))) {
+				addToSorted(current);
+			}
+			else {
+				alreadyTriedThisRound.add(current);
+				//Try printing the next type that printed does not contain
+				tryAddingToSorted(getFirstNotPrinted(current));
+			}
+		}
+		
+		private E getFirstNotPrinted(E el) {
+			Iterator<? extends E> it = prereqExtractor.getPrerequisitesOf(el).iterator();
+			E current = it.next();
+			while (alreadyAdded.contains(current) && it.hasNext()) {
+				current = it.next();
+			}
+			
+			//Check for errors
+			if (alreadyAdded.contains(current)) {
+				throw new IllegalStateException("Something has gone wrong in the vocabularyelements block with " + current
+						+ "\nsorted:\n" + CollectionPrinter.toString(sorted)
+						+ "\ntoSort:\n" + CollectionPrinter.toString(toSort)
+						+ "\nalreadyAdded:\n" + CollectionPrinter.toString(alreadyAdded));
+			}
+			if (!toSort.contains(current)) {
+				throw new IllegalStateException("A type that wasn't declared is needed to be sorted: " + current
+						+ "\nsorted:\n" + CollectionPrinter.toString(sorted)
+						+ "\ntoSort:\n" + CollectionPrinter.toString(toSort));
+			}
+			
+			//return
+			return current;
+		}
+
+
+		private void addToSorted(E decl) {
+			sorted.add(decl);
+			
+			//Add to sorted, remove from toSort
+			toSort.remove(decl);
+			alreadyAdded.add(decl);
+			
+			//New round!
+			alreadyTriedThisRound.clear();
 		}
 	}
 	
-	private E getFirstNotPrinted(E el) {
-		Iterator<? extends E> it = prereqExtractor.getPrerequisitesOf(el).iterator();
-		E current = it.next();
-		while (alreadyAdded.contains(current) && it.hasNext()) {
-			current = it.next();
-		}
-		
-		//Check for errors
-		if (alreadyAdded.contains(current)) {
-			throw new IllegalStateException("Something has gone wrong in the vocabularyelements block with " + current
-					+ "\nsorted:\n" + CollectionPrinter.toString(sorted)
-					+ "\ntoSort:\n" + CollectionPrinter.toString(toSort)
-					+ "\nalreadyAdded:\n" + CollectionPrinter.toString(alreadyAdded));
-		}
-		if (!toSort.contains(current)) {
-			throw new IllegalStateException("A type that wasn't declared is needed to be sorted: " + current
-					+ "\nsorted:\n" + CollectionPrinter.toString(sorted)
-					+ "\ntoSort:\n" + CollectionPrinter.toString(toSort));
-		}
-		
-		//return
-		return current;
-	}
-
-
-	private void addToSorted(E decl) {
-		sorted.add(decl);
-		
-		//Add to printed, remove from toPrint
-		toSort.remove(decl);
-		alreadyAdded.add(decl);
-		
-		//New round!
-		alreadyTriedThisRound.clear();
-	}
 }

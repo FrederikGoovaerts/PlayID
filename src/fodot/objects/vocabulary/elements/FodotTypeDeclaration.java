@@ -106,7 +106,7 @@ public class FodotTypeDeclaration implements IFodotVocabularyElement {
 
 	@Override
 	public String toString() {
-		return "FodotTypeDeclaration [getType()=" + getType() + "]";
+		return "[FodotTypeDeclaration: "+toCode()+"]";
 	}
 
 	@Override
