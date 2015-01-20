@@ -65,7 +65,7 @@ public abstract class FodotElementList<E extends IFodotElement> implements IFodo
 		return this.elements.size();
 	}
 	
-	public List<? extends E> getElementsOfClass(Class<? extends IFodotElement> clazz) {
+	public List<? extends IFodotElement> getElementsOfClass(Class<? extends IFodotElement> clazz) {
 		if (clazz == null) {
 			return new ArrayList<E>();
 		}

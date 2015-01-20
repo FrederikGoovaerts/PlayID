@@ -11,6 +11,7 @@ import fodot.objects.general.sorting.PrerequisiteExtractor;
 import fodot.objects.general.sorting.PrerequisiteSorter;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 
@@ -92,13 +93,13 @@ public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> i
 	}
 	
 	/* HELPERS */
-	public List<FodotConstant> getAllConstants() {
-		List<FodotConstant> result = new ArrayList<FodotConstant>();
-		for (IFodotVocabularyElement t : getElementsOfClass(FodotType.class)) {
-			FodotType type = (FodotType) t;
+	public List<String> getAllClaimedNames() {
+		List<String> result = new ArrayList<String>();
+		for (IFodotVocabularyElement t : getElementsOfClass(FodotTypeDeclaration.class)) {
+			FodotType type = ((FodotTypeDeclaration) t).getType();
 			for (IFodotDomainElement el : type.getDomainElements()) {
 				if (el instanceof FodotConstant) {
-					result.add((FodotConstant) el);					
+					result.add(((FodotConstant) el).getValue());					
 				}
 			}
 		}

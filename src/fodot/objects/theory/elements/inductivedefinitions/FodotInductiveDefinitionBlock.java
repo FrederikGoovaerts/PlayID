@@ -1,5 +1,6 @@
 package fodot.objects.theory.elements.inductivedefinitions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fodot.objects.general.FodotElementList;
@@ -30,5 +31,19 @@ public class FodotInductiveDefinitionBlock extends FodotElementList<FodotInducti
 	public boolean isValidElement(FodotInductiveSentence argElement) {
 		return argElement != null;
 	}
-
+	
+	@Override
+	public List<? extends IFodotElement> getElementsOfClass(Class<? extends IFodotElement> clazz) {
+		if (clazz == null) {
+			return new ArrayList<FodotInductiveSentence>();
+		}
+		List<IFodotElement> result = new ArrayList<IFodotElement>();
+		for (FodotInductiveSentence el : getElements()) {
+			if (clazz.isInstance(el)) {
+				result.add(el);
+			}
+			result.addAll(el.getElementsOfClass(clazz));
+		}
+		return result;
+	}
 }
