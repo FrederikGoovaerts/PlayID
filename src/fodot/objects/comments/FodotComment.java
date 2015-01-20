@@ -91,4 +91,10 @@ public class FodotComment implements IFodotElement, IFodotTheoryElement, IFodotS
 		return 0;
 	}
 
+	@Override
+	public Collection<? extends IFodotElement> getElementsOfClass(
+			Class<? extends IFodotElement> clazz) {
+		return new HashSet<IFodotElement>();
+	}
+
 }

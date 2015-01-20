@@ -10,7 +10,8 @@ import java.util.Set;
 
 import fodot.objects.comments.FodotBlankLines;
 import fodot.objects.comments.FodotComment;
-import fodot.objects.file.BasicFodotFile;
+import fodot.objects.file.FodotFile;
+import fodot.objects.file.IFodotFile;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.includes.elements.FodotIncludeFile;
 import fodot.objects.includes.elements.FodotIncludeLibrary;
@@ -269,7 +270,7 @@ public class FodotPartBuilder {
 
 	//Awesome exists
 	private static final String EXISTS_EXACTLY_SYMBOL = EXISTS_SYMBOL + "=";
-	public static FodotQuantifier createExistsExactly(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+	private static FodotQuantifier createExistsExactly(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
 		return new FodotQuantifier(EXISTS_EXACTLY_SYMBOL + amount, variables, formula);
 	}
 
@@ -278,7 +279,7 @@ public class FodotPartBuilder {
 	}
 
 	private static final String EXISTS_LESS_THAN_SYMBOL = EXISTS_SYMBOL + "<";
-	public static FodotQuantifier createExistsLessThan(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+	private static FodotQuantifier createExistsLessThan(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
 		return new FodotQuantifier(EXISTS_LESS_THAN_SYMBOL + amount, variables, formula);
 	}
 
@@ -287,7 +288,7 @@ public class FodotPartBuilder {
 	}
 
 	private static final String EXISTS_AT_MOST_SYMBOL = EXISTS_SYMBOL + "=<";
-	public static FodotQuantifier createExistsAtMost(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+	private static FodotQuantifier createExistsAtMost(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
 		return new FodotQuantifier(EXISTS_AT_MOST_SYMBOL + amount, variables, formula);
 	}
 
@@ -296,7 +297,7 @@ public class FodotPartBuilder {
 	}
 
 	private static final String EXISTS_MORE_THAN_SYMBOL = EXISTS_SYMBOL + ">";
-	public static FodotQuantifier createExistsMoreThan(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
+	private static FodotQuantifier createExistsMoreThan(int amount, Collection<? extends FodotVariable> variables, IFodotFormula formula) {
 		return new FodotQuantifier(EXISTS_MORE_THAN_SYMBOL + amount, variables, formula);
 	}
 
@@ -661,21 +662,21 @@ public class FodotPartBuilder {
 	}
 
 	//FODOT ITSELF
-	public static BasicFodotFile createFodot(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures, FodotIncludeHolder imports) {
-		return new BasicFodotFile(voc, theory, struc, procedures, imports);
+	public static IFodotFile createBasicFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures, FodotIncludeHolder imports) {
+		return new FodotFile(imports,Arrays.asList(voc,theory,struc,procedures));
 	}
 
-	public static BasicFodotFile createFodot(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures) {
-		return createFodot(voc, theory, struc, procedures, null);
+	public static IFodotFile createBasicFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures) {
+		return createBasicFodotFile(voc, theory, struc, procedures, null);
 	}
 
-	public static BasicFodotFile createFodot() {
+	public static IFodotFile createBasicFodotFile() {
 		FodotVocabulary voc = createVocabulary();
-		return createFodot(voc, null, null, null, null);
+		return createBasicFodotFile(voc, null, null, null, null);
 	}
 
-	public static BasicFodotFile createFodot(FodotVocabulary voc) {
-		return createFodot(voc, createTheory(voc), createStructure(voc), createProcedures(), null);
+	public static IFodotFile createBasicFodotFile(FodotVocabulary voc) {
+		return createBasicFodotFile(voc, createTheory(voc), createStructure(voc), createProcedures(), null);
 	}
 
 }

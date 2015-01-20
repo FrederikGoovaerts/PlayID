@@ -20,11 +20,11 @@ public class BasicFodotFile implements IFodotFile {
 	public BasicFodotFile(FodotVocabulary vocabulary, FodotTheory theory,
 			FodotStructure structure, FodotProcedures procedures, FodotIncludeHolder includes) {
 		super();
+		setIncludes(includes);
 		setVocabulary(vocabulary);
 		setTheory(theory);
 		setStructure(structure);
 		setProcedures(procedures);
-		setIncludes(includes);
 	}
 
 	public BasicFodotFile(FodotVocabulary vocabulary, FodotTheory theory,
@@ -65,7 +65,7 @@ public class BasicFodotFile implements IFodotFile {
 		this.procedures = (procedures == null? new FodotProcedures() : procedures);
 	}
 
-	private void setIncludes(FodotIncludeHolder includes) {
+	public void setIncludes(FodotIncludeHolder includes) {
 		this.includes = (includes == null ? new FodotIncludeHolder() : includes);
 	}
 
@@ -73,10 +73,10 @@ public class BasicFodotFile implements IFodotFile {
 	@Override
 	public String toCode() {
 		return getIncludes().toCode() + "\n"
-				+ getVocabulary().toCode() + "\n"
-				+ getTheory().toCode() + "\n"
-				+ getStructure().toCode() + "\n"
-				+ getProcedures().toCode() + "\n";
+				+ getVocabulary().toCode() + "\n\n"
+				+ getTheory().toCode() + "\n\n"
+				+ getStructure().toCode() + "\n\n"
+				+ getProcedures().toCode();
 	}	
 
 	public void merge(BasicFodotFile other) {
@@ -88,7 +88,7 @@ public class BasicFodotFile implements IFodotFile {
 	}
 
 	@Override
-	public Collection<? extends IFodotFileElement> getElementsOf(Class<?> claz) {
+	public Collection<? extends IFodotFileElement> getElementsOfClass(Class<?> claz) {
 		if (FodotVocabulary.class.equals(claz)) {
 			return Arrays.asList(getVocabulary());
 		}
@@ -124,5 +124,29 @@ public class BasicFodotFile implements IFodotFile {
 		
 		return null;
 		
+	}
+
+	@Override
+	public void addElement(IFodotFileElement element) {
+		if (element instanceof FodotVocabulary) {
+			setVocabulary((FodotVocabulary) element);
+		} else if (element instanceof FodotStructure) {
+			setStructure((FodotStructure) element);
+		} else if (element instanceof FodotProcedures) {
+			setProcedures((FodotProcedures) element);
+		} else if (element instanceof FodotTheory) {
+			setTheory((FodotTheory) element);
+		} else {
+			throw new IllegalStateException("Can't add " + element + " to a BasicFodotFile");
+		}
+	}
+
+	@Override
+	public void addIncludes(FodotIncludeHolder argIncludes) {
+		if (getIncludes() == null) {
+			setIncludes(argIncludes);				
+		} else {
+			this.includes.mergeWith(argIncludes);
+		}
 	}
 }

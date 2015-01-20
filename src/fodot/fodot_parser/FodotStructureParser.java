@@ -121,7 +121,7 @@ public class FodotStructureParser {
 		int beginIndex = line.lastIndexOf(":")+1;
 		int endIndex = line.lastIndexOf("{")-1;
 		String vocName = line.substring(beginIndex, endIndex).trim();
-		for (IFodotFileElement el : getInputFile().getElementsOf(FodotVocabulary.class)) {
+		for (IFodotFileElement el : getInputFile().getElementsOfClass(FodotVocabulary.class)) {
 			if (el.getName().equals(vocName)) {
 				setVocabulary((FodotVocabulary) el);
 			}

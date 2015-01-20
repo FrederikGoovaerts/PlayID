@@ -1,11 +1,18 @@
 package fodot.objects.vocabulary;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import fodot.objects.file.FodotFileElement;
 import fodot.objects.file.IFodotFileElement;
+import fodot.objects.general.sorting.PrerequisiteExtractor;
+import fodot.objects.general.sorting.PrerequisiteSorter;
+import fodot.objects.theory.elements.terms.FodotConstant;
+import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
+import fodot.objects.vocabulary.elements.IFodotDomainElement;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 
 public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> implements IFodotFileElement {
@@ -62,11 +69,41 @@ public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> i
 	}
 	
 	/* FODOT ELEMENT */
+	
+	private static final PrerequisiteExtractor<IFodotVocabularyElement> EXTRACTOR = 
+			new PrerequisiteExtractor<IFodotVocabularyElement>() {
+		@Override
+		public Collection<? extends IFodotVocabularyElement> getPrerequisitesOf(
+				IFodotVocabularyElement element) {
+			List<IFodotVocabularyElement> preqs = new ArrayList<IFodotVocabularyElement>();
+			for (FodotType t : element.getPrerequiredTypes()) {
+				preqs.add(t.getDeclaration());
+			}
+			return preqs;
+		}
+	};
+	private static final PrerequisiteSorter<IFodotVocabularyElement> SORTER = 
+			new PrerequisiteSorter<IFodotVocabularyElement>(
+					Arrays.asList(FodotType.INTEGER.getDeclaration(), FodotType.NATURAL_NUMBER.getDeclaration()), EXTRACTOR);
+	
 	@Override
 	public String toCode() {
-		VocabularyElementSorter sorter = new VocabularyElementSorter(getElements());
-		setElements(sorter.getSortedElements());
+		setElements(SORTER.sort(getElements()));
 		return super.toCode();
+	}
+	
+	/* HELPERS */
+	public List<String> getAllClaimedNames() {
+		List<String> result = new ArrayList<String>();
+		for (IFodotVocabularyElement t : getElementsOfClass(FodotTypeDeclaration.class)) {
+			FodotType type = ((FodotTypeDeclaration) t).getType();
+			for (IFodotDomainElement el : type.getDomainElements()) {
+				if (el instanceof FodotConstant) {
+					result.add(((FodotConstant) el).getValue());					
+				}
+			}
+		}
+		return result;
 	}
 
 	/* MERGE */

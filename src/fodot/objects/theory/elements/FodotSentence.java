@@ -1,5 +1,7 @@
 package fodot.objects.theory.elements;
 
+import java.util.Collection;
+
 import fodot.exceptions.fodot.NonVariablefreeSentenceException;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
@@ -55,6 +57,13 @@ public class FodotSentence implements IFodotElement, IFodotTheoryElement {
 		} else if (!formula.equals(other.formula))
 			return false;
 		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Collection<? extends IFodotElement> getElementsOfClass(
+			Class<? extends IFodotElement> clazz) {
+		return getFormula().getElementsOfClass((Class<? extends IFodotSentenceElement>) clazz);
 	}
 	
 	

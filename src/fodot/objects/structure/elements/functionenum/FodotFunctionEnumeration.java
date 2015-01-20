@@ -1,7 +1,11 @@
 package fodot.objects.structure.elements.functionenum;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
+import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.structure.elements.FodotEnumeration;
 import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
@@ -27,7 +31,9 @@ public class FodotFunctionEnumeration extends FodotEnumeration<IFodotFunctionEnu
 
 	@Override
 	public String toCode() {
-		return getDeclaration().getName() + " = " + CollectionPrinter.toDomain(CollectionPrinter.toCode(getElements()));
+		List<IFodotFunctionEnumerationElement> domainElements = new ArrayList<IFodotFunctionEnumerationElement>(getElements());
+		Collections.sort(domainElements, FodotElementComparators.ENUMERATION_ELEMENT_COMPARATOR);
+		return getDeclaration().getName() + " = " + CollectionPrinter.toDomain(CollectionPrinter.toCode(domainElements));
 	}
 
 	@Override
