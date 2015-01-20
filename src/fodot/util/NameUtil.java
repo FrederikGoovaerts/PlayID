@@ -2,8 +2,11 @@ package fodot.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotType;
 
 public class NameUtil {
@@ -91,4 +94,27 @@ public class NameUtil {
 		}
 		return type.getName().trim().substring(0, 1).toLowerCase();
 	}
+	
+	public static void solveNameCollisions(Collection<? extends String> prohibitedNames, Collection<? extends FodotVariable> variables) {
+		
+		/* The "Claimed Names" set contains the prohibited names as well as all variablenames.
+		 * This is used for generating a new name.
+		 * DON'T USE THIS TO CHECK IF THE VARIABLE SHOULD CHANGE NAME, IT WILL ALWAYS RESULT IN "TRUE"
+		 */
+		Set<String> claimedNames = new HashSet<String>(prohibitedNames);
+		for (FodotVariable otherVar : variables) {
+			claimedNames.add(otherVar.getName());
+		}
+		
+		for (FodotVariable var : variables) {
+			if (prohibitedNames.contains(var.getName())) {
+				var.setName(generateVariableName(var.getName(), var.getType(), claimedNames));
+			}
+		}
+	}
+	
+	
+	
+	
+	
 }

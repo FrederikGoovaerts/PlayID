@@ -35,7 +35,7 @@ public class FodotStructure extends FodotFileElementWithNamedElements<IFodotStru
 	public String getDefaultName() {
 		return DEFAULT_NAME;
 	}
-	
+		
 	/* VOCABULARY */
 
 	public FodotVocabulary getVocabulary() {

@@ -1,5 +1,6 @@
 package fodot.objects.comments;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,5 +45,11 @@ public class FodotBlankLines implements IFodotElement, IFodotTheoryElement, IFod
 	@Override
 	public int getArity() {
 		return 0;
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getElementsOfClass(
+			Class<? extends IFodotElement> clazz) {
+		return new HashSet<IFodotElement>();
 	}
 }

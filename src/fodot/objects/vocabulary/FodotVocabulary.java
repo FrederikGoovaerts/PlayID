@@ -9,7 +9,9 @@ import fodot.objects.file.FodotFileElement;
 import fodot.objects.file.IFodotFileElement;
 import fodot.objects.general.sorting.PrerequisiteExtractor;
 import fodot.objects.general.sorting.PrerequisiteSorter;
+import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.IFodotDomainElement;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 
 public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> implements IFodotFileElement {
@@ -87,6 +89,20 @@ public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> i
 	public String toCode() {
 		setElements(SORTER.sort(getElements()));
 		return super.toCode();
+	}
+	
+	/* HELPERS */
+	public List<FodotConstant> getAllConstants() {
+		List<FodotConstant> result = new ArrayList<FodotConstant>();
+		for (IFodotVocabularyElement t : getElementsOfClass(FodotType.class)) {
+			FodotType type = (FodotType) t;
+			for (IFodotDomainElement el : type.getDomainElements()) {
+				if (el instanceof FodotConstant) {
+					result.add((FodotConstant) el);					
+				}
+			}
+		}
+		return result;
 	}
 
 	/* MERGE */

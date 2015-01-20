@@ -6,37 +6,37 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import fodot.objects.file.FodotFileElement;
 import fodot.objects.file.IFodotFileElement;
-import fodot.objects.theory.elements.FodotSentence;
 import fodot.objects.theory.elements.IFodotTheoryElement;
-import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionBlock;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.util.CollectionPrinter;
 
-public class FodotTheory implements IFodotFileElement {
+public class FodotTheory extends FodotFileElement<IFodotTheoryElement> implements IFodotFileElement {
 
-	private String name;
+	private static final String DEFAULT_NAME = "T";
 	private FodotVocabulary vocabulary;
-	private Set<IFodotTheoryElement> elements;
+
+	/**********************************************
+	 *  Constructors
+	 ***********************************************/
 
 	public FodotTheory(String name,
 					   FodotVocabulary vocabulary,
 					   Collection<? extends IFodotTheoryElement> elements) {
-		super();
-		setName(name);
+		super(name, elements, vocabulary);
 		setVocabulary(vocabulary);
-		setElements(elements);
 	}
 	
 	public FodotTheory(String name, FodotVocabulary vocabulary) {
 		this(name, vocabulary, null);
 	}
 	
-	private static final String DEFAULT_NAME = "T";
-	
 	public FodotTheory(FodotVocabulary voc) {
-		this(DEFAULT_NAME, voc);
+		this(DEFAULT_NAME, voc);	
 	}
+
+	/**********************************************/	
 
 	/* VOCABULARY */
 	private void setVocabulary(FodotVocabulary voc) {
@@ -47,68 +47,21 @@ public class FodotTheory implements IFodotFileElement {
 		return vocabulary;
 	}
 	
-	/* ELEMENTS */
-	private void setElements(Collection<? extends IFodotTheoryElement> argElements) {
-		this.elements = (isValidElements(argElements) ? new LinkedHashSet<IFodotTheoryElement>(argElements) : new LinkedHashSet<IFodotTheoryElement>());
-	}
-	
-	private boolean isValidElements(Collection<? extends IFodotTheoryElement> argElements) {
-		return argElements != null;
-	}
-	
-	
-	public Set<IFodotTheoryElement> getElements() {
-		return new LinkedHashSet<IFodotTheoryElement>(elements);
-	}
-	public void addElement(IFodotTheoryElement argElement) {
-		this.elements.add(argElement);
-	}
-	
-	public void addAllElements(Set<IFodotTheoryElement> argElements) {
-		elements.addAll(argElements);
-	}
-	
-	public boolean containsElement(IFodotTheoryElement element){
-		return this.elements.contains(element);
-	}
-	
-	public boolean hasElements() {
-		return !elements.isEmpty();
-	}
-	
-	public void removeElements(IFodotTheoryElement argElement) {
-		this.elements.remove(argElement);
-	}
-	
-	/* DEFINITIONS */
-	@Deprecated
-	public void addInductiveDefinition(FodotInductiveDefinitionBlock definition) {
-		elements.add(definition);
+	// OBLIGATORY METHODS
+
+	@Override
+	public String getFileElementName() {
+		return "theory";
 	}
 
-	@Deprecated
-	public void removeInductiveDefinition(FodotInductiveDefinitionBlock definition) {
-		elements.remove(definition);
-	}
-	
-	/* SENTENCES */
-	@Deprecated
-	public void addSentence(FodotSentence sentence) {
-		elements.add(sentence);
+	@Override
+	public String getDefaultName() {
+		return DEFAULT_NAME;
 	}
 
-	@Deprecated
-	public void removeSentence(FodotSentence sentence) {
-		elements.remove(sentence);
-	}
-
-	/* NAME */
-	public void setName(String name) {
-		this.name = (name == null ? DEFAULT_NAME : name);
-	}
-
-	public String getName() {
-		return name;
+	@Override
+	public boolean isValidElement(IFodotTheoryElement argElement) {
+		return argElement != null;
 	}
 	
 	@Override
