@@ -1,16 +1,12 @@
 package fodot.objects.general.sorting;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import fodot.objects.vocabulary.elements.FodotType;
-import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.util.CollectionPrinter;
 
 public class PrerequisiteSorter<E> {

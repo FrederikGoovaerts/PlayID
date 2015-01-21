@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotType;
 

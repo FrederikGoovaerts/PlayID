@@ -669,10 +669,10 @@ public class FodotGameFactory {
         return defaultStructure;
     }
 
-    private static final int DEFAULT_IDP_TIME_LIMIT = 15;
+    private static final int DEFAULT_IDP_TIME_LIMIT = 10;
     private int idpTimeLimit = DEFAULT_IDP_TIME_LIMIT;
     private static final int DEFAULT_MODEL_LIMIT = 5;
-    private int idpModelLimit = DEFAULT_IDP_TIME_LIMIT;
+    private int idpModelLimit = DEFAULT_MODEL_LIMIT;
     
     private FodotProcedures getDefaultProcedures() {
     	//stdoptions.timeout=timeLimit
