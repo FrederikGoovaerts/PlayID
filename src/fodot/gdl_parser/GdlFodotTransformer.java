@@ -538,7 +538,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 		//process (fluent) predicate in head
 		GdlTerm nextGdlTerm = rule.getHead().get(0);
 		if (nextGdlTerm instanceof GdlVariable) {
-			IFodotTerm nextFodotTerm = sentenceTrans.processTerm(nextGdlTerm);
+			IFodotTerm nextFodotTerm = sentenceTrans.generateTerm(nextGdlTerm);
 			throw new IllegalStateException("You can't give a variable as argument for 'next', dummy!\n"+nextGdlTerm + " ===> " + nextFodotTerm);
 		} else {
 		
@@ -546,7 +546,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 			FodotPredicateDeclaration originalPredicateDecl = this.processPredicate(predSentence);
 			FodotPredicateDeclaration causePredDecl = pool.getCauseOf(originalPredicateDecl);
 
-			FodotPredicate causePred = sentenceTrans.createTimedPredicateFromSentence(predSentence, causePredDecl);
+			FodotPredicate causePred = sentenceTrans.generateTimedPredicate(predSentence, causePredDecl);
 			
 			//generate IFodotFormula from the body
 			IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
@@ -566,7 +566,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 		GdlTerm actionGdlTerm = rule.getHead().get(1);
 		IFodotTerm actionTerm;
 		if (actionGdlTerm instanceof GdlVariable) {
-			actionTerm = sentenceTrans.processTerm(actionGdlTerm, getActionType());
+			actionTerm = sentenceTrans.generateTerm(actionGdlTerm, getActionType());
 		} else {
 			GdlSentence actionSent = actionGdlTerm.toSentence();
 
@@ -579,7 +579,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 			List<IFodotTerm> actionTermArguments = new ArrayList<>();
 			for (GdlTerm term : actionSent.getBody()) {
-				IFodotTerm actionVar = sentenceTrans.processTerm(term);
+				IFodotTerm actionVar = sentenceTrans.generateTerm(term);
 				actionTermArguments.add(actionVar);
 			}
 
@@ -629,11 +629,11 @@ public class GdlFodotTransformer implements GdlTransformer{
 		
 		IFodotTerm playerTerm;
 		if (playerGdlTerm instanceof GdlVariable) {
-			playerTerm = sentenceTrans.processTerm(playerGdlTerm, getPlayerType());	
+			playerTerm = sentenceTrans.generateTerm(playerGdlTerm, getPlayerType());	
 		} else {
 			playerTerm = convertRawRole(playerGdlTerm.toSentence().getName().getValue());
 		}
-		IFodotTerm scoreTerm = sentenceTrans.processTerm(scoreGdlTerm, getScoreType());
+		IFodotTerm scoreTerm = sentenceTrans.generateTerm(scoreGdlTerm, getScoreType());
 		
 		Pair<IFodotTerm, IFodotTerm> score = Pair.of(playerTerm, scoreTerm);
 		
@@ -678,7 +678,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 		FodotPredicateDeclaration originalPredicate = this.processCompoundStaticPredicate(predSentence);
 		FodotPredicateDeclaration timedDeclaration = pool.getCompoundTimedVerionOf(originalPredicate);
 		
-		FodotPredicate compoundStaticPred = sentenceTrans.createTimedPredicateFromSentence(predSentence, timedDeclaration);
+		FodotPredicate compoundStaticPred = sentenceTrans.generateTimedPredicate(predSentence, timedDeclaration);
 
 		//generate IFodotFormula from the body
 		IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
