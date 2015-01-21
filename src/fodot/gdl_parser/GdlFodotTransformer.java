@@ -537,10 +537,9 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		//process (fluent) predicate in head
 		GdlTerm nextGdlTerm = rule.getHead().get(0);
-		IFodotTerm nextFodotTerm;
 		if (nextGdlTerm instanceof GdlVariable) {
-			nextFodotTerm = sentenceTrans.processTerm(nextGdlTerm);
-			throw new IllegalStateException("You can't give a variable as argument for 'next', dummy!\n"+nextGdlTerm);
+			IFodotTerm nextFodotTerm = sentenceTrans.processTerm(nextGdlTerm);
+			throw new IllegalStateException("You can't give a variable as argument for 'next', dummy!\n"+nextGdlTerm + " ===> " + nextFodotTerm);
 		} else {
 		
 			GdlSentence predSentence = nextGdlTerm.toSentence();
