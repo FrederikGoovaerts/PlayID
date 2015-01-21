@@ -533,8 +533,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 			throw new IllegalArgumentException("Given rule is not a 'next' rule!");
 		this.processingRules = true;
 
-		HashMap<GdlVariable,FodotVariable> variableMap = new HashMap<>();
-		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this, variableMap);
+		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
 
 		//process (fluent) predicate in head
 		GdlTerm nextGdlTerm = rule.getHead().get(0);
@@ -564,9 +563,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		IFodotTerm player = convertRawRole(rule.getHead().get(0).toString());
 
-		HashMap<GdlVariable,FodotVariable> variableMap = new HashMap<>();
-		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this, variableMap);
-
+		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
 		GdlTerm actionGdlTerm = rule.getHead().get(1);
 		IFodotTerm actionTerm;
 		if (actionGdlTerm instanceof GdlVariable) {
@@ -626,8 +623,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 			throw new IllegalArgumentException("Rule is not a goal rule!");
 		this.processingRules = true;
 
-		HashMap<GdlVariable, FodotVariable> variableMap = new HashMap<>();
-		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this, variableMap);
+		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
 
 		GdlTerm playerGdlTerm = rule.getHead().get(0);
 		GdlTerm scoreGdlTerm = rule.getHead().get(1);
@@ -665,9 +661,8 @@ public class GdlFodotTransformer implements GdlTransformer{
 		if(!rule.getHead().getName().getValue().equals("terminal"))
 			throw new IllegalArgumentException("Rule is not a terminal rule!");
 		this.processingRules = true;
-		HashMap<GdlVariable, FodotVariable> variableMap = new HashMap<>();
 
-		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this, variableMap);
+		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
 		IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
 
 		this.addTerminal(condition);
@@ -677,8 +672,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 	@Override
 	public void processDefinitionRule(GdlRule rule) {
 		this.processingRules = true;
-		HashMap<GdlVariable,FodotVariable> variableMap = new HashMap<>();
-		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this, variableMap);
+		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
 
 		//process (compound static) predicate in head
 		GdlSentence predSentence = rule.getHead();

@@ -10,6 +10,7 @@ import static fodot.objects.FodotPartBuilder.createPredicateTermDeclaration;
 import static fodot.objects.FodotPartBuilder.createVariable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,21 +37,37 @@ import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 
 /**
- * Make one of these for each sentence you're going to translate
+ * Make one of these for each sentence you're going to translate.
+ * This holds the variablemapping so you don't need to give it in the arguments every time
  * @author Thomas
  *
  */
 public class GdlFodotSentenceTransformer {
 	private GdlFodotTransformer trans;
-	private Map<GdlVariable, FodotVariable> variables;
+	private Map<GdlVariable, FodotVariable> variableMap;
 	
 	public GdlFodotSentenceTransformer(GdlFodotTransformer trans,
 			Map<GdlVariable, FodotVariable> variableMap) {
 		super();
 		this.trans = trans;
-		this.variables = variableMap;
+		setVariableMap(variableMap);
+	}
+	
+	private void setVariableMap(Map<GdlVariable, FodotVariable> argVariableMap) {
+		if (argVariableMap == null) {
+			this.variableMap = new HashMap<GdlVariable, FodotVariable>();
+		} else {
+			this.variableMap = argVariableMap;
+		}
 	}
 
+	public GdlFodotSentenceTransformer(GdlFodotTransformer trans) {
+		this(trans, null);
+	}
+
+	
+	
+	
 	public IFodotFormula generateFodotFormulaFrom(List<GdlLiteral> originalFormulas){
         List<IFodotFormula> resultingFormulas = new ArrayList<>();
         for (GdlLiteral literal : originalFormulas) {
@@ -237,17 +254,17 @@ public class GdlFodotSentenceTransformer {
 
 		if (term.isGround()) { //Term is a constant
 			fodotTerm = trans.convertConstantName(term.toString(), argType);
-		} else if(variables != null && variables.containsKey(term)) { //Term is already known in the variablemapping
-			fodotTerm = variables.get(term);
+		} else if(variableMap != null && variableMap.containsKey(term)) { //Term is already known in the variablemapping
+			fodotTerm = variableMap.get(term);
 			if (fodotTerm.getType() != argType && argType != trans.getAllType()) {
 				((FodotVariable) fodotTerm).setType(argType); //TODO: Something should probably signal all other instances using this variable so they update their types!
 			}
 			
 		} else if (term instanceof GdlVariable) { //Term is an new variable
 			GdlVariable gdlVar = (GdlVariable) term;
-			FodotVariable temp = createVariable(gdlVar.getName(), argType, new HashSet<FodotVariable>(variables.values()));
-			if (variables != null) {
-				variables.put(gdlVar, temp);
+			FodotVariable temp = createVariable(gdlVar.getName(), argType, new HashSet<FodotVariable>(variableMap.values()));
+			if (variableMap != null) {
+				variableMap.put(gdlVar, temp);
 			}
 			fodotTerm = temp;
 		} else if (term instanceof GdlFunction){
@@ -267,39 +284,39 @@ public class GdlFodotSentenceTransformer {
 	private static final GdlVariable mockTimeGdlVar = GdlPool.getVariable("fodottime");
 	public FodotVariable createTimeVariable() {
 		FodotVariable timeVar;
-		if (variables.containsKey(mockTimeGdlVar)) {
-			timeVar = variables.get(mockTimeGdlVar);
+		if (variableMap.containsKey(mockTimeGdlVar)) {
+			timeVar = variableMap.get(mockTimeGdlVar);
 		} else {
-			timeVar = createVariable("t", trans.getTimeType(), new HashSet<FodotVariable>(variables.values()));
-			variables.put(mockTimeGdlVar, timeVar);
+			timeVar = createVariable("t", trans.getTimeType(), new HashSet<FodotVariable>(variableMap.values()));
+			variableMap.put(mockTimeGdlVar, timeVar);
 		}
 		return timeVar;
 	}
 
 	public FodotVariable createAllVariable() {
-		FodotVariable result = createVariable("v", trans.getAllType(), new HashSet<FodotVariable>(variables.values()));
+		FodotVariable result = createVariable("v", trans.getAllType(), new HashSet<FodotVariable>(variableMap.values()));
 		
 		//Reserve this name by adding it to the variablemap
 		GdlVariable mockVariable = GdlPool.getVariable(result.getName());
-		variables.put(mockVariable, result);
+		variableMap.put(mockVariable, result);
 		return result;
 	}
 	
 	public FodotVariable createActionVariable() {
-		FodotVariable result = createVariable("act", trans.getActionType(), new HashSet<FodotVariable>(variables.values()));
+		FodotVariable result = createVariable("act", trans.getActionType(), new HashSet<FodotVariable>(variableMap.values()));
 		
 		//Reserve this name by adding it to the variablemap
 		GdlVariable mockVariable = GdlPool.getVariable(result.getName());
-		variables.put(mockVariable, result);
+		variableMap.put(mockVariable, result);
 		return result;
 	}
 	
 	public FodotVariable createPlayerVariable() {
-		FodotVariable result = createVariable("p", trans.getPlayerType(), new HashSet<FodotVariable>(variables.values()));
+		FodotVariable result = createVariable("p", trans.getPlayerType(), new HashSet<FodotVariable>(variableMap.values()));
 		
 		//Reserve this name by adding it to the variablemap
 		GdlVariable mockVariable = GdlPool.getVariable(result.getName());
-		variables.put(mockVariable, result);
+		variableMap.put(mockVariable, result);
 		return result;
 	}
 	
