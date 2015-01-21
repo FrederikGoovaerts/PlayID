@@ -17,10 +17,13 @@ import fodot.objects.vocabulary.elements.FodotType;
 import static fodot.objects.FodotPartBuilder.*;
 
 /**
+ * This class is deprecated: Use the GdlFodotFormulaTransformer
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
+@Deprecated
 public class GdlCastHelper {
 
+	@Deprecated
     public static IFodotFormula generateFodotFormulaFrom(
             List<GdlLiteral> originalFormulas,
             HashMap<GdlVariable,FodotVariable> variables,

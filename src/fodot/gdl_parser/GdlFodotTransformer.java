@@ -1,6 +1,15 @@
 package fodot.gdl_parser;
 
-import static fodot.objects.FodotPartBuilder.*;
+import static fodot.objects.FodotPartBuilder.createConstant;
+import static fodot.objects.FodotPartBuilder.createExists;
+import static fodot.objects.FodotPartBuilder.createImplies;
+import static fodot.objects.FodotPartBuilder.createPredicate;
+import static fodot.objects.FodotPartBuilder.createPredicateDeclaration;
+import static fodot.objects.FodotPartBuilder.createPredicateTerm;
+import static fodot.objects.FodotPartBuilder.createPredicateTermDeclaration;
+import static fodot.objects.FodotPartBuilder.createType;
+import static fodot.objects.FodotPartBuilder.createVariable;
+import static fodot.objects.FodotPartBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +30,6 @@ import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
 import fodot.exceptions.gdl.GdlParsingOrderException;
-import fodot.gdl_parser.util.GdlCastHelper;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.elements.IFodotEnumerationElement;
@@ -439,7 +447,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 		return factory.createFodot();
 	}
 
-
+	@Deprecated
 	public IFodotTerm processTerm(GdlTerm term, Map<GdlVariable,FodotVariable> variableMap) {
 		return processTerm(term, getAllType(), variableMap);
 	}
@@ -450,6 +458,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 	 * @param variableMap	Term to add to variablemap
 	 * @return				Converted IFodotTerm
 	 */
+	@Deprecated
 	public IFodotTerm processTerm(GdlTerm term, FodotType argType, Map<GdlVariable,FodotVariable> variableMap) {
 		IFodotTerm fodotTerm;
 
@@ -533,7 +542,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 	 */
 	public List<IFodotTerm> processSentenceArguments(
 			GdlSentence sentence, FodotArgumentListDeclaration declaration,
-			int argumentOffset, HashMap<GdlVariable,FodotVariable> variableMap) {
+			int argumentOffset, Map<GdlVariable,FodotVariable> variableMap) {
 
 		List<IFodotTerm> elements = new ArrayList<IFodotTerm>(); 
 		for (int i = 0; i < sentence.arity(); i++) {
@@ -557,12 +566,12 @@ public class GdlFodotTransformer implements GdlTransformer{
 	
 	public List<IFodotTerm> processSentenceArguments(
 			GdlSentence sentence,FodotArgumentListDeclaration declaration,
-			HashMap<GdlVariable,FodotVariable> variableMap) {
+			Map<GdlVariable,FodotVariable> variableMap) {
 		return processSentenceArguments(sentence, declaration, 0, variableMap);
 	}
 	
 	public List<IFodotTerm> processSentenceArgumentsTimed(GdlSentence sentence,
-			FodotArgumentListDeclaration declaration, HashMap<GdlVariable,FodotVariable> variableMap) {
+			FodotArgumentListDeclaration declaration, Map<GdlVariable,FodotVariable> variableMap) {
 		List<IFodotTerm> arguments = new ArrayList<IFodotTerm>();		
 		arguments.add(createTimeVariable(variableMap));
 		arguments.addAll(processSentenceArguments(sentence, declaration, arguments.size(), variableMap));
@@ -689,11 +698,8 @@ public class GdlFodotTransformer implements GdlTransformer{
 			FodotPredicate causePred = createTimedPredicateFromSentence(predSentence, causePredDecl, variableMap);
 			
 			//generate IFodotFormula from the body
-			IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
-					rule.getBody(),
-					variableMap,
-					this
-					);
+			GdlFodotSentenceTransformer formTrans = new GdlFodotSentenceTransformer(this, variableMap);
+			IFodotFormula condition = formTrans.generateFodotFormulaFrom(rule.getBody());
 
 			//add the combination as a next rule
 			this.addNext(originalPredicateDecl, Pair.of(causePred, condition));
@@ -749,11 +755,8 @@ public class GdlFodotTransformer implements GdlTransformer{
 						);
 
 		//generate IFodotFormula from the body
-		IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
-				rule.getBody(),
-				variableMap,
-				this
-				);
+		GdlFodotSentenceTransformer formTrans = new GdlFodotSentenceTransformer(this, variableMap);
+		IFodotFormula condition = formTrans.generateFodotFormulaFrom(rule.getBody());
 
 		if(!removeTimeVars(condition.getFreeVariables()).isEmpty()
 				&& removeTimeVars(doPred.getFreeVariables()).isEmpty()){
@@ -785,12 +788,9 @@ public class GdlFodotTransformer implements GdlTransformer{
 		IFodotTerm scoreTerm = processTerm(scoreGdlTerm, getScoreType(), variableMap);
 		
 		Pair<IFodotTerm, IFodotTerm> score = Pair.of(playerTerm, scoreTerm);
-
-		IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
-				rule.getBody(),
-				variableMap,
-				this
-				);
+		
+		GdlFodotSentenceTransformer formTrans = new GdlFodotSentenceTransformer(this, variableMap);
+		IFodotFormula condition = formTrans.generateFodotFormulaFrom(rule.getBody());
 
 		if(!removeTimeVars(condition.getFreeVariables()).isEmpty()){
 			condition = createExists(removeTimeVars(condition.getFreeVariables()),
@@ -815,11 +815,8 @@ public class GdlFodotTransformer implements GdlTransformer{
 		this.processingRules = true;
 		HashMap<GdlVariable, FodotVariable> variableMap = new HashMap<>();
 
-		IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
-				rule.getBody(),
-				variableMap,
-				this
-				);
+		GdlFodotSentenceTransformer formTrans = new GdlFodotSentenceTransformer(this, variableMap);
+		IFodotFormula condition = formTrans.generateFodotFormulaFrom(rule.getBody());
 
 		this.addTerminal(condition);
 
@@ -838,11 +835,8 @@ public class GdlFodotTransformer implements GdlTransformer{
 		FodotPredicate compoundStaticPred = createTimedPredicateFromSentence(predSentence, timedDeclaration, variableMap);
 
 		//generate IFodotFormula from the body
-		IFodotFormula condition = GdlCastHelper.generateFodotFormulaFrom(
-				rule.getBody(),
-				variableMap,
-				this
-				);
+		GdlFodotSentenceTransformer formTrans = new GdlFodotSentenceTransformer(this, variableMap);
+		IFodotFormula condition = formTrans.generateFodotFormulaFrom(rule.getBody());
 
 		//add the combination as a next rule
 		this.addCompound(originalPredicate, Pair.of(compoundStaticPred, condition));
