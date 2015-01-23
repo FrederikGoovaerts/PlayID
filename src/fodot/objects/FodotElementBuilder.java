@@ -390,7 +390,7 @@ public class FodotElementBuilder {
 	}
 
 	public static FodotPredicateEnumeration createPredicateEnumeration(
-			FodotPredicateDeclaration declaration, List<IFodotPredicateEnumerationElement> elements) {
+			FodotPredicateDeclaration declaration, List<? extends IFodotPredicateEnumerationElement> elements) {
 		return new FodotPredicateEnumeration(declaration, elements);
 	}
 	

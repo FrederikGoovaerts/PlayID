@@ -1,7 +1,6 @@
 package fodot.objects.general;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -72,19 +71,6 @@ public abstract class FodotElementContainer<E extends IFodotElement> extends Fod
 		return this.elements.size();
 	}
 	
-	@Deprecated
-	public Set<E> getElementsOfClass(Class<?> clazz) {
-		if (clazz == null) {
-			return new HashSet<E>();
-		}
-		Set<E> result = new LinkedHashSet<E>();
-		for (E el : elements) {
-			if (clazz.isInstance(el)) {
-				result.add(el);
-			}
-		}
-		return result;
-	}
 	/**********************************************/
 
 

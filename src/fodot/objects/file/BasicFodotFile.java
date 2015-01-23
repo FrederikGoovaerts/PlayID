@@ -1,6 +1,5 @@
 package fodot.objects.file;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -88,23 +87,6 @@ public class BasicFodotFile extends FodotElement implements IFodotFile {
 		getTheory().mergeWith(other.getTheory());
 		getStructure().mergeWith(other.getStructure());
 		getProcedures().mergeWith(other.getProcedures());
-	}
-
-	@Override
-	public Collection<? extends IFodotFileElement> getElementsOfClass(Class<?> claz) {
-		if (FodotVocabulary.class.equals(claz)) {
-			return Arrays.asList(getVocabulary());
-		}
-		if (FodotStructure.class.equals(claz)) {
-			return Arrays.asList(getStructure());
-		}
-		if (FodotProcedures.class.equals(claz)) {
-			return Arrays.asList(getProcedures());
-		}
-		if (FodotTheory.class.equals(claz)) {
-			return Arrays.asList(getTheory());
-		}
-		return new ArrayList<IFodotFileElement>();
 	}
 
 	@Override
