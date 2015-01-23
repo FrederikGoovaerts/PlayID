@@ -5,7 +5,5 @@ import java.util.List;
 import fodot.communication.output.GdlAction;
 
 public interface IActionOutputter {
-	void setActions(List<GdlAction> actions);
-	String getOutput();
-	void output();
+	void output(List<GdlAction> actions);
 }

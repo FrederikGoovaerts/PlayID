@@ -76,6 +76,7 @@ public class GdlAnswerCalculator {
 			FodotConstant player = (FodotConstant) c.getElement(1);
 			FodotConstant action = new FodotConstant(c.getElement(2).getValue(), new FodotType("null"));
 			
+			//TODO: use GdlPredicate instead of own GDL action
 			actions.add(new GdlAction(time, player, action));
 		}
 		return actions;

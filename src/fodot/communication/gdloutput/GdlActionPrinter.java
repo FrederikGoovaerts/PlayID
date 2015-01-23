@@ -8,17 +8,15 @@ public class GdlActionPrinter implements IActionOutputter {
 
 	private List<GdlAction> actions;
 	
-	public GdlActionPrinter(List<GdlAction> actions) {
-		setActions(actions);
+	public GdlActionPrinter() {
+		super();
 	}
 
-	@Override
-	public void setActions(List<GdlAction> actions) {
+	private void setActions(List<GdlAction> actions) {
 		this.actions = actions;
 	}
 
-	@Override
-	public String getOutput() {
+	private String generateTextOutput() {
 		StringBuilder builder = new StringBuilder();
 		for(GdlAction ac : actions) {
 			builder.append(ac.toString() + "\n");
@@ -27,8 +25,9 @@ public class GdlActionPrinter implements IActionOutputter {
 	}
 	
 	@Override
-	public void output() {
-		System.out.println(getOutput());
+	public void output(List<GdlAction> actions) {
+		setActions(actions);
+		System.out.println(generateTextOutput());
 	}
 
 }
