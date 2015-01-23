@@ -10,7 +10,6 @@ import java.util.Set;
 
 import fodot.objects.comments.FodotBlankLines;
 import fodot.objects.comments.FodotComment;
-import fodot.objects.file.BasicFodotFile;
 import fodot.objects.file.FodotFile;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.file.IFodotFileElement;

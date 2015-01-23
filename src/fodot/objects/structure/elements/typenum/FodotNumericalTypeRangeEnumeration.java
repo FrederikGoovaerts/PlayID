@@ -10,7 +10,6 @@ import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
-import fodot.util.CollectionPrinter;
 
 public class FodotNumericalTypeRangeEnumeration extends FodotElement implements IFodotStructureElement {
 	private FodotType type;

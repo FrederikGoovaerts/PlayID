@@ -20,19 +20,29 @@ import fodot.exceptions.playid.PlayIdArgumentException;
 import fodot.gdl_parser.Parser;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.FodotStructure;
+import fodot.patterns.ChainFodotOptimizer;
+import fodot.patterns.IFodotOptimizer;
 
 public class PlayIdProcessor {
-	
+
 	private static final IActionOutputter DEFAULT_OUTPUTTER = new GdlActionPrinter();
+	private static final IFodotOptimizer DEFAULT_OPTIMIZER = new ChainFodotOptimizer();
+	
 	private IActionOutputter outputter;
+	private IFodotOptimizer optimizer;
 	
 	/**********************************************
 	 *  Constructors
 	 ***********************************************/
 
-	public PlayIdProcessor(IActionOutputter outputter) {
+	public PlayIdProcessor(IActionOutputter outputter, IFodotOptimizer optimizer) {
 		super();
 		this.outputter = outputter;
+		this.optimizer = optimizer;
+	}
+	
+	public PlayIdProcessor(IActionOutputter outputter) {
+		this(outputter, getDefaultOptimizer());
 	}
 
 	public PlayIdProcessor() {
@@ -59,6 +69,25 @@ public class PlayIdProcessor {
 
 	/**********************************************/
 
+	/**********************************************
+	 *  Optimizer
+	 ***********************************************/
+
+	public IFodotOptimizer getOptimizer() {
+		return optimizer;
+	}
+
+	public void setOptimizer(IFodotOptimizer optimizer) {
+		this.optimizer = optimizer;
+	}
+
+	public static IFodotOptimizer getDefaultOptimizer() {
+		return DEFAULT_OPTIMIZER;
+	}	
+
+	/**********************************************/
+
+	
 	/**********************************************
 	 *  Process
 	 ***********************************************/
