@@ -58,15 +58,11 @@ public class CollectionPrinter {
 	}
 	
 	public static String toDomain(Collection<String> list) {
-		return printStringList("{", "}", ";", new ArrayList<String>(list));
+		return printStringList("{ ", " }", "; ", new ArrayList<String>(list));
 	}
 
 	public static String toDeclarationDomain(Collection<String> list) {
 		return printStringList("{", "}", ",", new ArrayList<String>(list));
-	}
-
-	public static String toDomain(String head, String last) {
-		return "{" + head + ".." + last +"}";
 	}
 	
 	public static String toNakedList(Collection<String> list) {
