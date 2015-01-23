@@ -58,13 +58,16 @@ public class FodotNumericalTypeRangeEnumeration extends FodotElement implements 
 				+ "{ " + getHeadValue().toCode() + ".." + getLastValue().toCode() +" }";
 	}
 
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result
+				+ ((headValue == null) ? 0 : headValue.hashCode());
+		result = prime * result
+				+ ((lastValue == null) ? 0 : lastValue.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + ((headValue == null) ? 0 : headValue.hashCode());
-		result = prime * result + ((lastValue == null) ? 0 : lastValue.hashCode());
 		return result;
 	}
 
@@ -77,11 +80,6 @@ public class FodotNumericalTypeRangeEnumeration extends FodotElement implements 
 		if (getClass() != obj.getClass())
 			return false;
 		FodotNumericalTypeRangeEnumeration other = (FodotNumericalTypeRangeEnumeration) obj;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
 		if (headValue == null) {
 			if (other.headValue != null)
 				return false;
@@ -91,6 +89,11 @@ public class FodotNumericalTypeRangeEnumeration extends FodotElement implements 
 			if (other.lastValue != null)
 				return false;
 		} else if (!lastValue.equals(other.lastValue))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
 			return false;
 		return true;
 	}
@@ -109,5 +112,12 @@ public class FodotNumericalTypeRangeEnumeration extends FodotElement implements 
 	public Collection<? extends IFodotElement> getDirectFodotElements() {
 		return Arrays.asList(getType(), getHeadValue(), getLastValue());
 	}
+
+	@Override
+	public String toString() {
+		return "[FodotNumericalTypeRangeEnumeration: "+toCode()+"]";
+	}
+	
+	
 		
 }

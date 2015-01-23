@@ -17,22 +17,35 @@ import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typenum.FodotNumericalTypeRangeEnumeration;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.FodotVocabulary;
+import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 
 public class StructureParserTest {	
-
-	@BeforeClass
-	public static void beforeClass() {
-
-	}
-
+	FodotType t1;
+	FodotType t2;
+	FodotType t3;
+	FodotConstant t1c1;
+	FodotConstant t1c2;
+	FodotConstant t1c3;
+	FodotConstant t2c1;
+	FodotConstant t2c2;
+	FodotConstant t2c3;
+	
 	@Before
 	public void before() {
-
-
+		t1 = createType("t1",FodotType.INTEGER);
+		t2 = createType("t2");
+		t3 = createType("t3");
+		t1c1 = createConstant("1", t2);
+		t1c2 = createConstant("2", t2);
+		t1c3 = createConstant("3", t2);
+		t2c1 = createConstant("a", t2);
+		t2c2 = createConstant("b", t2);
+		t2c3 = createConstant("c", t2);
 	}
 
 	private FodotStructure toStringAndParse(FodotStructure input) {
@@ -49,9 +62,6 @@ public class StructureParserTest {
 		FodotVocabulary voc = createVocabulary("defvoc");
 
 		//TYPES
-		FodotType t1 = createType("t1",FodotType.INTEGER);
-		FodotType t2 = createType("t2");
-		FodotType t3 = createType("t3");
 		voc.addAllElements(Arrays.asList(t1.getDeclaration(),t2.getDeclaration(),t3.getDeclaration()));
 
 		//PREDS
@@ -59,14 +69,6 @@ public class StructureParserTest {
 		FodotPredicateDeclaration pred2 = createPredicateDeclaration("pred2", Arrays.asList(t1,t2));
 		FodotPredicateDeclaration pred3 = createPredicateDeclaration("pred3", Arrays.asList(t1,t2,t3));
 		voc.addAllElements(Arrays.asList(pred1,pred2,pred3));
-
-		//Constants
-		FodotConstant t1c1 = createConstant("1", t2);
-		FodotConstant t1c2 = createConstant("2", t2);
-		FodotConstant t1c3 = createConstant("3", t2);
-		FodotConstant t2c1 = createConstant("a", t2);
-		FodotConstant t2c2 = createConstant("b", t2);
-		FodotConstant t2c3 = createConstant("c", t2);
 
 		//Enumerations
 		FodotPredicateEnumerationElement p2e1 = createPredicateEnumerationElement(
@@ -86,6 +88,46 @@ public class StructureParserTest {
 
 
 		
+		assertEqualContent(simpleStructure.getElements(), toStringAndParse(simpleStructure).getElements());
+	}
+	
+	@Test
+	public void constant_function_test() {
+		//VOC
+		FodotVocabulary voc = createVocabulary("defvoc");
+
+		//TYPES
+		voc.addElement(t2.getDeclaration());
+
+		//PREDS
+		FodotFunctionDeclaration f1 = createFunctionDeclaration("f1", t2);
+		voc.addElement(f1);
+
+		//Enumerations
+		//simple structure
+		FodotStructure simpleStructure = createStructure("simplestruc", voc);
+		simpleStructure.addAllElements(Arrays.asList(
+				createConstantFunctionEnumeration(f1,t2c1)			
+				));
+
+		assertEqualContent(simpleStructure.getElements(), toStringAndParse(simpleStructure).getElements());
+	}
+	
+	@Test
+	public void ranged_type_test() {
+		//VOC
+		FodotVocabulary voc = createVocabulary("defvoc");
+
+		//TYPES
+		voc.addElement(t1.getDeclaration());
+
+		//Enumerations
+		//simple structure
+		FodotStructure simpleStructure = createStructure("simplestruc", voc);
+		simpleStructure.addAllElements(Arrays.asList(
+				createNumericalTypeRangeEnumeration(t1, t1c1, t1c3)			
+				));
+
 		assertEqualContent(simpleStructure.getElements(), toStringAndParse(simpleStructure).getElements());
 	}
 
