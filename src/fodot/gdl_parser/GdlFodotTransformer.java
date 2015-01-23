@@ -1,14 +1,14 @@
 package fodot.gdl_parser;
 
-import static fodot.objects.FodotPartBuilder.createConstant;
-import static fodot.objects.FodotPartBuilder.createExists;
-import static fodot.objects.FodotPartBuilder.createImplies;
-import static fodot.objects.FodotPartBuilder.createPredicate;
-import static fodot.objects.FodotPartBuilder.createPredicateDeclaration;
-import static fodot.objects.FodotPartBuilder.createPredicateTerm;
-import static fodot.objects.FodotPartBuilder.createPredicateTermDeclaration;
-import static fodot.objects.FodotPartBuilder.createType;
-import static fodot.objects.FodotPartBuilder.getNaturalNumberType;
+import static fodot.objects.FodotElementBuilder.createConstant;
+import static fodot.objects.FodotElementBuilder.createExists;
+import static fodot.objects.FodotElementBuilder.createImplies;
+import static fodot.objects.FodotElementBuilder.createPredicate;
+import static fodot.objects.FodotElementBuilder.createPredicateDeclaration;
+import static fodot.objects.FodotElementBuilder.createPredicateTerm;
+import static fodot.objects.FodotElementBuilder.createPredicateTermDeclaration;
+import static fodot.objects.FodotElementBuilder.createType;
+import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;

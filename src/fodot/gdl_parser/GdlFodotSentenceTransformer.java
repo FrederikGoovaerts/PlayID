@@ -1,13 +1,13 @@
 package fodot.gdl_parser;
 
-import static fodot.objects.FodotPartBuilder.createAnd;
-import static fodot.objects.FodotPartBuilder.createDistinct;
-import static fodot.objects.FodotPartBuilder.createNot;
-import static fodot.objects.FodotPartBuilder.createOr;
-import static fodot.objects.FodotPartBuilder.createPredicate;
-import static fodot.objects.FodotPartBuilder.createPredicateTerm;
-import static fodot.objects.FodotPartBuilder.createPredicateTermDeclaration;
-import static fodot.objects.FodotPartBuilder.createVariable;
+import static fodot.objects.FodotElementBuilder.createAnd;
+import static fodot.objects.FodotElementBuilder.createDistinct;
+import static fodot.objects.FodotElementBuilder.createNot;
+import static fodot.objects.FodotElementBuilder.createOr;
+import static fodot.objects.FodotElementBuilder.createPredicate;
+import static fodot.objects.FodotElementBuilder.createPredicateTerm;
+import static fodot.objects.FodotElementBuilder.createPredicateTermDeclaration;
+import static fodot.objects.FodotElementBuilder.createVariable;
 
 import java.util.ArrayList;
 import java.util.List;

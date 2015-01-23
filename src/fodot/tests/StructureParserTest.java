@@ -1,7 +1,7 @@
 package fodot.tests;
 
 import static org.junit.Assert.*;
-import static fodot.objects.FodotPartBuilder.*;
+import static fodot.objects.FodotElementBuilder.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import fodot.objects.FodotPartBuilder;
+import fodot.objects.FodotElementBuilder;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
 import fodot.objects.theory.elements.inductivedefinitions.IFodotInductiveDefinitionElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
@@ -21,7 +21,7 @@ public class FormulaUtil {
 		IFodotFormula newFormula = formula;
 		Set<FodotVariable> freeVars = formula.getFreeVariables();
 		if(!freeVars.isEmpty()) {
-			newFormula = FodotPartBuilder.createForAll(freeVars, newFormula);
+			newFormula = FodotElementBuilder.createForAll(freeVars, newFormula);
 		}
 		return newFormula;
 	}
@@ -30,7 +30,7 @@ public class FormulaUtil {
 		IFodotInductiveDefinitionElement newFormula = formula;
 		Set<FodotVariable> freeVars = formula.getFreeVariables();
 		if(!freeVars.isEmpty()) {
-			newFormula = FodotPartBuilder.createInductiveForAll(freeVars, newFormula);
+			newFormula = FodotElementBuilder.createInductiveForAll(freeVars, newFormula);
 		}
 		return newFormula;
 	} 

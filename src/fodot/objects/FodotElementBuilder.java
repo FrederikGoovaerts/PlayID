@@ -64,7 +64,7 @@ import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.FormulaUtil;
 import fodot.util.NameUtil;
 
-public class FodotPartBuilder {
+public class FodotElementBuilder {
 
 	//COMMENTS
 	public static FodotComment createComment(String... comments) {
