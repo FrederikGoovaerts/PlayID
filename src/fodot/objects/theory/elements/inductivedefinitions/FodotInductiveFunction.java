@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import fodot.exceptions.fodot.IllegalTypeException;
+import fodot.exceptions.fodot.InvalidTypeException;
 import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.elements.terms.FodotFunction;
@@ -38,7 +38,7 @@ public class FodotInductiveFunction extends FodotElement implements IFodotInduct
 		FodotType expectedType = function.getDeclaration().getReturnType();
 		if (!functionRes.getType().isASubtypeOf(expectedType)
 				&& !functionRes.getType().isASupertypeOf(expectedType)) {
-			throw new IllegalTypeException("In the returntype of the function in the inductive definition", functionRes.getType(), expectedType);
+			throw new InvalidTypeException("In the returntype of the function in the inductive definition", functionRes.getType(), expectedType);
 		}
 		this.functionResult = functionRes;
 	}

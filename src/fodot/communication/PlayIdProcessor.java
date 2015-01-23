@@ -137,14 +137,17 @@ public class PlayIdProcessor {
 	
 	public static void main(String[] args) throws IOException {
 		if (args.length <= 0) {
-			throw new PlayIdArgumentException("Please give the uri of a valid GDL file to the PlayID processor.");
+			throw new PlayIdArgumentException(
+					"Please give the uri of a valid GDL file to the PlayID processor.", 0, 1);
 		}
 		if (!args[0].contains(".kif")) {
-			throw new PlayIdArgumentException("The given uri must lead to a .kif file.");
+			throw new PlayIdArgumentException(
+					"The given uri must lead to a .kif file.");
 		}
 		File gdlFile = new File(args[0]);
 		if (!gdlFile.exists()) {
-			throw new PlayIdArgumentException("The given uri must lead to a existing file.");
+			throw new PlayIdArgumentException(
+					"The given uri must lead to a existing file.");
 		}
 		
 		PlayIdProcessor processor = new PlayIdProcessor();

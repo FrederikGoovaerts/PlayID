@@ -1,6 +1,6 @@
 package fodot.exceptions.idp;
 
-public class UnsatisfiableIdpFileException extends RuntimeException {
+public class UnsatisfiableIdpFileException extends IdpException {
 	
 	private static final long serialVersionUID = -8717567470045900752L;
 

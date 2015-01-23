@@ -3,7 +3,7 @@ package fodot.exceptions.gdl;
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
-public class GdlParsingOrderException extends RuntimeException {
+public class GdlParsingOrderException extends GdlTransformationException {
 
     /**
 	 * 

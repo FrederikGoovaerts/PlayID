@@ -1,7 +1,9 @@
 package fodot.exceptions.fodot;
 
-public class InvalidTermNameException extends RuntimeException {
+public class InvalidTermNameException extends FodotException {
 
+	private static final long serialVersionUID = 955188520513599245L;
+	
 	private String name;
 	
 	public InvalidTermNameException(String name) {
@@ -13,10 +15,5 @@ public class InvalidTermNameException extends RuntimeException {
 	public String getName() {
 		return name;
 	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 }

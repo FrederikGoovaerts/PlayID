@@ -7,7 +7,7 @@ public class PlayIdException extends RuntimeException {
 		super(msg);
 	}
 	
-	public PlayIdException(Throwable cause, String msg) {
+	public PlayIdException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 	

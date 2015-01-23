@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import fodot.exceptions.fodot.IllegalAmountOfArgumentsException;
-import fodot.exceptions.fodot.IllegalTypeException;
+import fodot.exceptions.fodot.InvalidTypeException;
 import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.elements.IFodotSentenceElement;
@@ -84,7 +84,7 @@ public abstract class FodotAbstractArgumentList extends FodotElement implements 
 			//Check if the types are "linked"
 			if (!givenType.isASubtypeOf(expectedType)
 					&& !expectedType.isASubtypeOf(givenType)) {
-				throw new IllegalTypeException("Argument " + i + " in " + getName(), arguments.get(i).getType(), argumentTypes.get(i));
+				throw new InvalidTypeException("Argument " + i + " in " + getName(), arguments.get(i).getType(), argumentTypes.get(i));
 			}
 		}
 	}

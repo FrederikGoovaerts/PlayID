@@ -1,6 +1,6 @@
 package fodot.exceptions.idp;
 
-public class NoValidModelsException extends RuntimeException {
+public class NoValidModelsException extends IdpException {
 
 	private static final long serialVersionUID = 1L;
 
