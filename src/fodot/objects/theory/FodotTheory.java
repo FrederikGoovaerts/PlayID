@@ -8,6 +8,8 @@ import java.util.Set;
 
 import fodot.objects.file.FodotFileElement;
 import fodot.objects.file.IFodotFileElement;
+import fodot.objects.general.IFodotElement;
+import fodot.objects.theory.elements.FodotSentence;
 import fodot.objects.theory.elements.IFodotTheoryElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.FodotVocabulary;
@@ -65,9 +67,12 @@ public class FodotTheory extends FodotFileElement<IFodotTheoryElement> implement
 			List<String> prohibitedVarNames = getVocabulary().getAllClaimedNames();
 			
 			//Solve all namecollisions
-			for (IFodotTheoryElement el : elements) {
-				Collection<FodotVariable> variables = TermUtil.extractVariables(el);
-				NameUtil.solveNameCollisions(prohibitedVarNames, variables);
+			for (IFodotTheoryElement theoryElement : elements) {
+				for (IFodotElement sentence : theoryElement.getAllInnerElementsOfClass(FodotSentence.class)) {
+					Collection<FodotVariable> variables = TermUtil.extractVariables((FodotSentence) sentence);
+					NameUtil.solveNameCollisions(prohibitedVarNames, variables);
+					
+				}
 			}			
 		}
 	}
