@@ -3,6 +3,7 @@ package fodot.objects.structure.elements.typenum.elements;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import fodot.objects.general.FodotElementContainer;
@@ -60,7 +61,34 @@ public class FodotPredicateTermTypeEnumerationElement extends
 		return true;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((declaration == null) ? 0 : declaration.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FodotPredicateTermTypeEnumerationElement other = (FodotPredicateTermTypeEnumerationElement) obj;
+		if (declaration == null) {
+			if (other.declaration != null)
+				return false;
+		} else if (!declaration.equals(other.declaration))
+			return false;
+		return new HashSet<IFodotTypeEnumerationElement>(other.getElements()).equals(new HashSet<IFodotTypeEnumerationElement>(getElements()));
+	}
+
 	/**********************************************/
 
+	
 
 }

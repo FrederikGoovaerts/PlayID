@@ -82,6 +82,11 @@ public abstract class FodotEnumeration<E extends IFodotEnumerationElement> exten
 				return false;
 		} else if (!declaration.equals(other.declaration))
 			return false;
+		if (getElements() == null) {
+			if (other.getElements() != null)
+				return false;
+		} else if (!getElements().equals(other.getElements()))
+			return false;
 		return true;
 	}	
 

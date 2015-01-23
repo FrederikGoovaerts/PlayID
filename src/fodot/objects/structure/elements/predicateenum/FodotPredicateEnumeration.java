@@ -34,7 +34,37 @@ public class FodotPredicateEnumeration extends FodotEnumeration<IFodotPredicateE
 
 	@Override
 	public String toString() {
-		return "FodotPredicateEnumeration ["+toCode()+"]";
+		return "[FodotPredicateEnumeration "+toCode()+"]";
 	}
-		
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((getDeclaration() == null) ? 0 : getDeclaration().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FodotPredicateEnumeration other = (FodotPredicateEnumeration) obj;
+		if (getDeclaration() == null) {
+			if (other.getDeclaration() != null)
+				return false;
+		} else if (!getDeclaration().equals(other.getDeclaration()))
+			return false;
+		if (getElements() == null) {
+			if (other.getElements() != null)
+				return false;
+		} else if (!getElements().equals(other.getElements()))
+			return false;
+		return true;
+	}	
 }
