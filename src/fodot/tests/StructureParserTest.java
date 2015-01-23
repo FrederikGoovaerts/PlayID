@@ -65,7 +65,7 @@ public class StructureParserTest {
 	}
 	
 	private FodotStructure toStringAndParse(FodotStructure input) {
-		IFodotFile file = createFodotFile(defaultVoc, null, input, null);
+		IFodotFile file = createFodotFile(Arrays.asList(defaultVoc, input));
 		return FodotStructureParser.parse(file, input.toCode());
 	}
 	

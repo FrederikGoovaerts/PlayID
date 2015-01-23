@@ -44,7 +44,7 @@ public class FodotFile extends FodotNamedElementContainer<IFodotFileElement> imp
 	public String toCode() {
 		List<IFodotFileElement> fileElements = new ArrayList<IFodotFileElement>(getElements());
 		fileElements = SORTER.sort(fileElements);
-		return (getIncludes() == null? "" : getIncludes() + "\n\n")
+		return (getIncludes() == null? "" : getIncludes().toCode() + "\n\n")
 				+ CollectionPrinter.printStringList("", "", "\n\n", CollectionPrinter.toCode(fileElements));
 	}
 
@@ -69,8 +69,13 @@ public class FodotFile extends FodotNamedElementContainer<IFodotFileElement> imp
 
 	@Override
 	public boolean isValidElement(IFodotFileElement argElement) {
-		return !containsElementWithName(argElement.getName())
-				&& containsAllElements(argElement.getPrerequiredElements());
+		return argElement != null
+				&& !containsElementWithName(argElement.getName())
+				&&	(
+						argElement.getPrerequiredElements() == null
+					||
+						containsAllElements(argElement.getPrerequiredElements())
+					);
 	}
 
 	@Override
