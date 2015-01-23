@@ -1,14 +1,16 @@
 package fodot.objects.theory.elements.terms;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import fodot.exceptions.fodot.InvalidTermNameException;
-import fodot.objects.theory.elements.IFodotSentenceElement;
+import fodot.objects.general.FodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.NameUtil;
 
-public class FodotVariable implements IFodotTerm {
+public class FodotVariable extends FodotElement implements IFodotTerm {
 
 	private static final int BINDING_ORDER = -1;
 	
@@ -38,18 +40,6 @@ public class FodotVariable implements IFodotTerm {
 	
 	public void setType(FodotType type) {
 		this.type = type;
-	}
-	
-	@Override
-	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
-		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
-
-		//Check for this itself
-		if (clazz.isAssignableFrom(this.getClass())) {
-			result.add(this);
-		}
-		
-		return result;
 	}
 	
 	@Override
@@ -103,6 +93,25 @@ public class FodotVariable implements IFodotTerm {
 	@Override
 	public int getBindingOrder() {
 		return BINDING_ORDER;
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectElementsOfClass(
+			Class<? extends IFodotElement> clazz) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getAllInnerElementsOfClass(
+			Class<? extends IFodotElement> clazz) {
+		return new HashSet<IFodotElement>();
 	}
 	
 }

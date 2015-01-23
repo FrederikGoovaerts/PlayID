@@ -1,8 +1,10 @@
 package fodot.objects.theory.elements;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import fodot.exceptions.fodot.NonVariablefreeSentenceException;
+import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
 
@@ -10,7 +12,7 @@ import fodot.objects.theory.elements.formulas.IFodotFormula;
  * A FO(.) sentence is a FO(.) formula with no free occurences of variables
  * Sentences end with a dot.
  */
-public class FodotSentence implements IFodotElement, IFodotTheoryElement {
+public class FodotSentence extends FodotElement implements IFodotElement, IFodotTheoryElement {
 	private IFodotFormula formula;
 
 	public FodotSentence(IFodotFormula formula) {
@@ -59,11 +61,9 @@ public class FodotSentence implements IFodotElement, IFodotTheoryElement {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<? extends IFodotElement> getElementsOfClass(
-			Class<? extends IFodotElement> clazz) {
-		return getFormula().getElementsOfClass((Class<? extends IFodotSentenceElement>) clazz);
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return Arrays.asList(formula);
 	}
 	
 	

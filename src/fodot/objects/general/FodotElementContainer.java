@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public abstract class FodotElementContainer<E extends IFodotElement> implements IFodotElement {
+public abstract class FodotElementContainer<E extends IFodotElement> extends FodotElement implements IFodotElement {
 
 	private Set<E> elements;
 
@@ -27,6 +27,11 @@ public abstract class FodotElementContainer<E extends IFodotElement> implements 
 
 	public Set<E> getElements() {
 		return new LinkedHashSet<E>(elements);
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return getElements();
 	}
 
 	public void addElement(E argElement) {
@@ -67,6 +72,7 @@ public abstract class FodotElementContainer<E extends IFodotElement> implements 
 		return this.elements.size();
 	}
 	
+	@Deprecated
 	public Set<E> getElementsOfClass(Class<?> clazz) {
 		if (clazz == null) {
 			return new HashSet<E>();

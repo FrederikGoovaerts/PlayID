@@ -1,7 +1,11 @@
 package fodot.objects.vocabulary.elements;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import fodot.objects.general.IFodotElement;
 import fodot.util.CollectionPrinter;
 
 /**
@@ -24,6 +28,13 @@ public class FodotFunctionDeclaration extends FodotArgumentListDeclaration imple
 	
 	public FodotType getReturnType() {
 		return returnType;
+	}
+	
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		Set<IFodotElement> superElements = new HashSet<IFodotElement>(super.getDirectFodotElements());
+		superElements.add(returnType);
+		return superElements;
 	}
 	
 	public boolean isPartial() {

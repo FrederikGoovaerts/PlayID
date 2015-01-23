@@ -1,15 +1,18 @@
 package fodot.objects.vocabulary.elements;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.util.CollectionPrinter;
 
-public class FodotTypeDeclaration implements IFodotVocabularyElement {
+public class FodotTypeDeclaration extends FodotElement implements IFodotVocabularyElement {
 	private FodotType type;
 	private boolean showDomain;
 	private boolean showSupertypes;
@@ -122,6 +125,14 @@ public class FodotTypeDeclaration implements IFodotVocabularyElement {
 	@Override
 	public int getArity() {
 		return 0;
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		Set<IFodotElement> res = new LinkedHashSet<IFodotElement>();
+		res.add(getType());
+		res.addAll(getType().getDomainElements());
+		return res;
 	}
     
 }

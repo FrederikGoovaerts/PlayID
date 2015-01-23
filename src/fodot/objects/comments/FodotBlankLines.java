@@ -4,13 +4,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.theory.elements.IFodotTheoryElement;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 
-public class FodotBlankLines implements IFodotElement, IFodotTheoryElement, IFodotStructureElement, IFodotVocabularyElement {
+public class FodotBlankLines extends FodotElement implements IFodotElement, IFodotTheoryElement, IFodotStructureElement, IFodotVocabularyElement {
 	private int amount;
 	
 	public FodotBlankLines(int amount) {
@@ -48,8 +49,7 @@ public class FodotBlankLines implements IFodotElement, IFodotTheoryElement, IFod
 	}
 
 	@Override
-	public Collection<? extends IFodotElement> getElementsOfClass(
-			Class<? extends IFodotElement> clazz) {
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
 		return new HashSet<IFodotElement>();
 	}
 }

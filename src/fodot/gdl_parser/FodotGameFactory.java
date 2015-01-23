@@ -12,6 +12,7 @@ import static fodot.objects.FodotElementBuilder.createExists;
 import static fodot.objects.FodotElementBuilder.createExistsExactly;
 import static fodot.objects.FodotElementBuilder.createForAll;
 import static fodot.objects.FodotElementBuilder.createFunction;
+import static fodot.objects.FodotElementBuilder.createFodotFile;
 import static fodot.objects.FodotElementBuilder.createFunctionEnumeration;
 import static fodot.objects.FodotElementBuilder.createFunctionEnumerationElement;
 import static fodot.objects.FodotElementBuilder.createImplies;
@@ -48,7 +49,6 @@ import java.util.Set;
 import org.ggp.base.util.Pair;
 
 import fodot.gdl_parser.util.LTCPool;
-import fodot.objects.file.BasicFodotFile;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.includes.FodotIncludeHolder;
@@ -133,7 +133,7 @@ public class FodotGameFactory {
         FodotProcedures proc = this.buildProcedures();
         FodotIncludeHolder incl = createIncludeHolder(createIncludeLTC());
 
-        return new BasicFodotFile(voc,theo,struc,proc,incl);
+        return createFodotFile(voc,theo,struc,proc,incl);
     }
 
     private void buildDefaultVocItems() {
@@ -398,7 +398,7 @@ public class FodotGameFactory {
         for (IFodotFormula formula : source.getTerminalSet()) {
         	Set<FodotVariable> formulaVariables = new HashSet<FodotVariable>();
         	FodotVariable timeVar = null;
-        	for (IFodotElement el : formula.getElementsOfClass(FodotVariable.class)) {
+        	for (IFodotElement el : formula.getAllInnerElementsOfClass(FodotVariable.class)) {
         		FodotVariable current = (FodotVariable) el;
         		formulaVariables.add(current);
         		if (current.getType().equals(source.getTimeType())) {

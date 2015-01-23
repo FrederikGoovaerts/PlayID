@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import fodot.objects.file.IFodotFile;
-import fodot.objects.file.IFodotFileElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.structure.elements.functionenum.FodotConstantFunctionEnumeration;
@@ -121,9 +121,12 @@ public class FodotStructureParser {
 		int beginIndex = line.lastIndexOf(":")+1;
 		int endIndex = line.lastIndexOf("{")-1;
 		String vocName = line.substring(beginIndex, endIndex).trim();
-		for (IFodotFileElement el : getInputFile().getElementsOfClass(FodotVocabulary.class)) {
-			if (el.getName().equals(vocName)) {
-				setVocabulary((FodotVocabulary) el);
+		for (IFodotElement el : getInputFile().getDirectElementsOfClass(FodotVocabulary.class)) {
+			if (el instanceof FodotVocabulary) {
+				FodotVocabulary curVoc = (FodotVocabulary) el;
+				if (curVoc.getName().equals(vocName)) {
+					setVocabulary(curVoc);
+				}
 			}
 		}
 		setResultingStructure(new FodotStructure(getVocabulary()));

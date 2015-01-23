@@ -1,8 +1,12 @@
 package fodot.objects.includes.elements;
 
+import java.util.Collection;
+import java.util.HashSet;
+
+import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 
-public abstract class FodotIncludeStatement implements IFodotElement {
+public abstract class FodotIncludeStatement extends FodotElement implements IFodotElement {
 
 	private String toInclude;
 	
@@ -15,6 +19,11 @@ public abstract class FodotIncludeStatement implements IFodotElement {
 		return toInclude;
 	}
 
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return new HashSet<IFodotElement>();
+	}
+	
 	@Override
 	public abstract String toCode();
 

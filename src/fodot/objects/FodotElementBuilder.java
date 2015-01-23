@@ -10,7 +10,7 @@ import java.util.Set;
 
 import fodot.objects.comments.FodotBlankLines;
 import fodot.objects.comments.FodotComment;
-import fodot.objects.file.FodotFile;
+import fodot.objects.file.BasicFodotFile;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.includes.elements.FodotIncludeFile;
@@ -662,21 +662,26 @@ public class FodotElementBuilder {
 	}
 
 	//FODOT ITSELF
-	public static IFodotFile createBasicFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures, FodotIncludeHolder imports) {
-		return new FodotFile(imports,Arrays.asList(voc,theory,struc,procedures));
+//	public static IFodotFile createFodotFile(FodotIncludeHolder imports, Collection<? extends IFodotFileElement> elements) {
+//		return new FodotFile(imports,elements);
+//	}
+	
+	public static IFodotFile createFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures, FodotIncludeHolder imports) {
+//		return createFodotFile(imports,Arrays.asList(voc,theory,struc,procedures));
+		return new BasicFodotFile(voc, theory, struc, procedures, imports);
 	}
 
-	public static IFodotFile createBasicFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures) {
-		return createBasicFodotFile(voc, theory, struc, procedures, null);
+	public static IFodotFile createFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures) {
+		return createFodotFile(voc, theory, struc, procedures, null);
 	}
 
-	public static IFodotFile createBasicFodotFile() {
+	public static IFodotFile createFodotFile() {
 		FodotVocabulary voc = createVocabulary();
-		return createBasicFodotFile(voc, null, null, null, null);
+		return createFodotFile(voc, null, null, null, null);
 	}
 
-	public static IFodotFile createBasicFodotFile(FodotVocabulary voc) {
-		return createBasicFodotFile(voc, createTheory(voc), createStructure(voc), createProcedures(), null);
+	public static IFodotFile createFodotFile(FodotVocabulary voc) {
+		return createFodotFile(voc, createTheory(voc), createStructure(voc), createProcedures(), null);
 	}
 
 }

@@ -1,15 +1,17 @@
 package fodot.objects.vocabulary.elements;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import fodot.exceptions.fodot.InvalidTermNameException;
+import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.util.NameUtil;
 
-public abstract class FodotArgumentListDeclaration implements IFodotElement {
+public abstract class FodotArgumentListDeclaration extends FodotElement implements IFodotElement {
 
 	/***************************************************************************
      * Constructor
@@ -47,6 +49,11 @@ public abstract class FodotArgumentListDeclaration implements IFodotElement {
         return new ArrayList<>(argumentTypes);
     }
 
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return getArgumentTypes();
+	}
+    
     public int getAmountOfArgumentTypes(){
         return argumentTypes.size();
     }

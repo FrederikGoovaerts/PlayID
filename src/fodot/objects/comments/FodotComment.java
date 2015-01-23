@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.theory.elements.IFodotTheoryElement;
@@ -14,7 +15,7 @@ import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionPrinter;
 
-public class FodotComment implements IFodotElement, IFodotTheoryElement, IFodotStructureElement, IFodotVocabularyElement {
+public class FodotComment extends FodotElement implements IFodotElement, IFodotTheoryElement, IFodotStructureElement, IFodotVocabularyElement {
 
 	private List<String> comments;
 	
@@ -92,8 +93,7 @@ public class FodotComment implements IFodotElement, IFodotTheoryElement, IFodotS
 	}
 
 	@Override
-	public Collection<? extends IFodotElement> getElementsOfClass(
-			Class<? extends IFodotElement> clazz) {
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
 		return new HashSet<IFodotElement>();
 	}
 

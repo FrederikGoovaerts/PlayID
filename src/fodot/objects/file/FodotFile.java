@@ -2,9 +2,12 @@ package fodot.objects.file;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import fodot.objects.general.FodotNamedElementContainer;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.general.sorting.PrerequisiteExtractor;
 import fodot.objects.general.sorting.PrerequisiteSorter;
 import fodot.objects.includes.FodotIncludeHolder;
@@ -68,6 +71,13 @@ public class FodotFile extends FodotNamedElementContainer<IFodotFileElement> imp
 	public boolean isValidElement(IFodotFileElement argElement) {
 		return !containsElementWithName(argElement.getName())
 				&& containsAllElements(argElement.getPrerequiredElements());
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		Set<IFodotElement> result = new LinkedHashSet<IFodotElement>(getElements());
+		result.add(getIncludes());
+		return result;
 	}
 
 }

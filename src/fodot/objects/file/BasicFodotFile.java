@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import fodot.objects.general.FodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.vocabulary.FodotVocabulary;
 
-public class BasicFodotFile implements IFodotFile {
+@Deprecated
+public class BasicFodotFile extends FodotElement implements IFodotFile {
 	private FodotIncludeHolder includes;
 	private FodotVocabulary vocabulary;
 	private FodotTheory theory;
@@ -148,5 +151,10 @@ public class BasicFodotFile implements IFodotFile {
 		} else {
 			this.includes.mergeWith(argIncludes);
 		}
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return Arrays.asList(includes,procedures,structure,theory,vocabulary);
 	}
 }

@@ -19,7 +19,7 @@ public class TermUtil {
 	
 	public static List<FodotVariable> extractVariables(IFodotTheoryElement element) {
 		List<FodotVariable> result = new ArrayList<FodotVariable>();
-		for (IFodotElement el : element.getElementsOfClass(FodotVariable.class)) {
+		for (IFodotElement el : element.getAllInnerElementsOfClass(FodotVariable.class)) {
 			result.add((FodotVariable) el);
 		}
 		return result;

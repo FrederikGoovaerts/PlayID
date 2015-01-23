@@ -1,12 +1,15 @@
 package fodot.objects.theory.elements.formulas;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import fodot.exceptions.fodot.IllegalAmountOfArgumentsException;
 import fodot.exceptions.fodot.IllegalTypeException;
+import fodot.objects.general.FodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
@@ -14,7 +17,7 @@ import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.CollectionPrinter;
 
-public abstract class FodotAbstractArgumentList implements IFodotSentenceElement {
+public abstract class FodotAbstractArgumentList extends FodotElement implements IFodotSentenceElement {
 	
 	private static final int BINDING_ORDER = -1;
 	
@@ -45,6 +48,11 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	//Arguments
 	public List<IFodotTerm> getArguments() {
 		return new ArrayList<IFodotTerm>(arguments);
+	}
+	
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return getArguments();
 	}
 	 
 	public boolean hasArguments() {
@@ -82,23 +90,6 @@ public abstract class FodotAbstractArgumentList implements IFodotSentenceElement
 	}
 	
 	//Sentence element stuff
-	
-	@Override
-	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
-		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
-		
-		//Check for all elements
-		for (IFodotSentenceElement el : getArguments()) {
-			result.addAll(el.getElementsOfClass(clazz));
-		}
-		
-		//Check for this itself
-		if (clazz.isAssignableFrom(this.getClass())) {
-			result.add(this);
-		}
-		
-		return result;
-	}
 	
 	@Override
 	public Set<FodotVariable> getFreeVariables() {

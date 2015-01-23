@@ -8,10 +8,12 @@ import java.util.Set;
 
 import fodot.exceptions.fodot.IllegalConnectorException;
 import fodot.objects.theory.elements.IFodotSentenceElement;
+import fodot.objects.general.FodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.util.CollectionPrinter;
 
-public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElement> implements IFodotSentenceElement {
+public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElement> extends FodotElement implements IFodotSentenceElement {
 
 	private List<E> arguments;
 	private String connector;
@@ -46,6 +48,12 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 		return new ArrayList<E>(arguments);
 	}
 
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return getArguments();
+	}
+
+	
 	public String getConnector() {
 		return connector;
 	}
@@ -81,23 +89,6 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 		return formVars;
 	}
 	
-	@Override
-	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
-		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
-		
-		//Check for all elements
-		for (IFodotSentenceElement el : getArguments()) {
-			result.addAll(el.getElementsOfClass(clazz));
-		}
-		
-		//Check for this itself
-		if (clazz.isAssignableFrom(this.getClass())) {
-			result.add(this);
-		}
-		
-		return result;
-	}
-
 	@Override
 	public String toCode() {
 		return CollectionPrinter.printStringList(

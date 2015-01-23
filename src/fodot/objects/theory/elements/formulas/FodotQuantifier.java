@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import fodot.exceptions.fodot.IllegalConnectorException;
+import fodot.objects.general.FodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.general.sorting.FodotElementComparators;
-import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.CollectionPrinter;
 
-public class FodotQuantifier implements IFodotFormula {
+public class FodotQuantifier extends FodotElement implements IFodotFormula {
 	private String symbol;
 	private Set<FodotVariable> variables;
 	private IFodotFormula formula;
@@ -114,24 +114,6 @@ public class FodotQuantifier implements IFodotFormula {
 	/**********************************************
 	 *  Sentence element obligatories
 	 ***********************************************/
-	@Override
-	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
-		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
-
-		//Check for all elements
-		for (IFodotSentenceElement var : getVariables()) {
-			result.addAll(var.getElementsOfClass(clazz));
-		}
-		result.addAll(getFormula().getElementsOfClass(clazz));
-
-		//Check for this itself
-		if (clazz.isAssignableFrom(this.getClass())) {
-			result.add(this);
-		}
-
-		return result;
-	}
-
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		Set<FodotVariable> formulaVars = getFormula().getFreeVariables();
@@ -240,6 +222,14 @@ public class FodotQuantifier implements IFodotFormula {
 		} else if (!variables.equals(other.variables))
 			return false;
 		return true;
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		Set<IFodotElement> res = new LinkedHashSet<IFodotElement>();
+		res.addAll(getVariables());
+		res.add(getFormula());
+		return res;
 	}
 
 

@@ -1,14 +1,16 @@
 package fodot.objects.theory.elements.terms;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import fodot.objects.general.FodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
-import fodot.objects.theory.elements.IFodotSentenceElement;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
 
-public class FodotConstant implements IFodotTerm, IFodotDomainElement, IFodotTypeEnumerationElement {
+public class FodotConstant extends FodotElement implements IFodotTerm, IFodotDomainElement, IFodotTypeEnumerationElement {
 
 	private static final int BINDING_ORDER = -1;
 	
@@ -43,17 +45,6 @@ public class FodotConstant implements IFodotTerm, IFodotDomainElement, IFodotTyp
 		return type;
 	}
 	//FODOT SENTENCE ELEMENT
-	@Override
-	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
-		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
-		
-		//Check for this itself
-		if (clazz.isAssignableFrom(this.getClass())) {
-			result.add(this);
-		}
-		
-		return result;
-	}
 	
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
@@ -109,6 +100,11 @@ public class FodotConstant implements IFodotTerm, IFodotDomainElement, IFodotTyp
 	@Override
 	public Set<FodotType> getRequiredTypes() {
 		return new HashSet<FodotType>();
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return new HashSet<IFodotElement>();
 	}
 	
 	

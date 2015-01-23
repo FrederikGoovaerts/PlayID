@@ -1,5 +1,10 @@
 package fodot.objects.structure.elements.typenum;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import fodot.objects.general.FodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
@@ -7,7 +12,7 @@ import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionPrinter;
 
-public class FodotNumericalTypeRangeEnumeration implements IFodotStructureElement {
+public class FodotNumericalTypeRangeEnumeration extends FodotElement implements IFodotStructureElement {
 	private FodotType type;
 	private FodotConstant headValue;
 	private FodotConstant lastValue;
@@ -99,6 +104,11 @@ public class FodotNumericalTypeRangeEnumeration implements IFodotStructureElemen
 	@Override
 	public String getName() {
 		return getDeclaration().getName();
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return Arrays.asList(getType(), getHeadValue(), getLastValue());
 	}
 		
 }

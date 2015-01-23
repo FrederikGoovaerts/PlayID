@@ -1,14 +1,17 @@
 package fodot.objects.procedure;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import fodot.objects.file.IFodotFileElement;
+import fodot.objects.general.FodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.util.CollectionPrinter;
 import fodot.util.NameUtil;
 
-public class FodotProcedures implements IFodotFileElement {
+public class FodotProcedures extends FodotElement implements IFodotFileElement {
 	private String name;
 	private List<String> arguments;
 	private List<FodotProcedureStatement> procedures;
@@ -78,6 +81,11 @@ public class FodotProcedures implements IFodotFileElement {
 		if (this.getClass().equals(other.getClass())) {
 			merge((FodotProcedures) other);
 		}
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return getProcedures();
 	}
 	
 }

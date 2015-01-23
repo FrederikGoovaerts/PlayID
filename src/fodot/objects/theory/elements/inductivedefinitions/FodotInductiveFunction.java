@@ -1,17 +1,19 @@
 package fodot.objects.theory.elements.inductivedefinitions;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import fodot.exceptions.fodot.IllegalTypeException;
-import fodot.objects.theory.elements.IFodotSentenceElement;
+import fodot.objects.general.FodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.elements.terms.FodotFunction;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotType;
 
 
-public class FodotInductiveFunction implements IFodotInductiveDefinitionElement {
+public class FodotInductiveFunction extends FodotElement implements IFodotInductiveDefinitionElement {
 
 	private static final int BINDING_ORDER = -1;
 	
@@ -39,21 +41,6 @@ public class FodotInductiveFunction implements IFodotInductiveDefinitionElement 
 			throw new IllegalTypeException("In the returntype of the function in the inductive definition", functionRes.getType(), expectedType);
 		}
 		this.functionResult = functionRes;
-	}
-
-	@Override
-	public Set<IFodotSentenceElement> getElementsOfClass(Class<? extends IFodotSentenceElement> clazz) {
-		Set<IFodotSentenceElement> result = new HashSet<IFodotSentenceElement>();
-		
-		//Check for all elements
-		result.addAll(getFunction().getElementsOfClass(clazz));
-		
-		//Check for this itself
-		if (clazz.isAssignableFrom(this.getClass())) {
-			result.add(this);
-		}
-		
-		return result;
 	}
 	
 	@Override
@@ -104,6 +91,13 @@ public class FodotInductiveFunction implements IFodotInductiveDefinitionElement 
 		} else if (!functionResult.equals(other.functionResult))
 			return false;
 		return true;
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		Set<IFodotElement> res = new HashSet<IFodotElement>(getFunction().getDirectFodotElements());
+		res.add(functionResult);
+		return res;
 	}
 	
 	

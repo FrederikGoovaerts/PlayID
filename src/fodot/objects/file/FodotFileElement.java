@@ -32,7 +32,6 @@ public abstract class FodotFileElement<E extends IFodotElement> extends FodotEle
 		this(name, elements, new HashSet<IFodotFileElement>());
 	}
 	
-	
 	//Prerequisites
 	@Override
 	public Set<IFodotFileElement> getPrerequiredElements() {

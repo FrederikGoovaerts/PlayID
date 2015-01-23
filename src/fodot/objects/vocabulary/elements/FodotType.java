@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
+import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
-public class FodotType implements IFodotElement {
+public class FodotType extends FodotElement implements IFodotElement {
 	
 
 	public static final FodotType NATURAL_NUMBER = new FodotType("nat");
@@ -314,6 +316,11 @@ public class FodotType implements IFodotElement {
 			result.addAll(el.getRequiredTypes());
 		}		
 		return result;
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return new LinkedHashSet<IFodotElement>();
 	}
 
 

@@ -7,6 +7,7 @@ import java.util.List;
 
 import fodot.objects.file.FodotFileElement;
 import fodot.objects.file.IFodotFileElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.general.sorting.PrerequisiteExtractor;
 import fodot.objects.general.sorting.PrerequisiteSorter;
 import fodot.objects.theory.elements.terms.FodotConstant;
@@ -95,7 +96,7 @@ public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> i
 	/* HELPERS */
 	public List<String> getAllClaimedNames() {
 		List<String> result = new ArrayList<String>();
-		for (IFodotVocabularyElement t : getElementsOfClass(FodotTypeDeclaration.class)) {
+		for (IFodotElement t : getDirectElementsOfClass(FodotTypeDeclaration.class)) {
 			FodotType type = ((FodotTypeDeclaration) t).getType();
 			for (IFodotDomainElement el : type.getDomainElements()) {
 				if (el instanceof FodotConstant) {

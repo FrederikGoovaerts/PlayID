@@ -1,10 +1,15 @@
 package fodot.objects.structure.elements.functionenum;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import fodot.objects.general.FodotElement;
+import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 
-public class FodotConstantFunctionEnumeration implements IFodotStructureElement {
+public class FodotConstantFunctionEnumeration extends FodotElement implements IFodotStructureElement {
 	private FodotFunctionDeclaration declaration;
 	private IFodotTypeEnumerationElement value;
 
@@ -74,6 +79,11 @@ public class FodotConstantFunctionEnumeration implements IFodotStructureElement 
 	@Override
 	public String getName() {
 		return getDeclaration().getName();
+	}
+
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return Arrays.asList(value);
 	}
 	
 	

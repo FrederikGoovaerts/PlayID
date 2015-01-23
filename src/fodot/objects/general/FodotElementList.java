@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class FodotElementList<E extends IFodotElement> implements IFodotElement {
+public abstract class FodotElementList<E extends IFodotElement> extends FodotElement implements IFodotElement {
 	private List<E> elements;
 	
 	public FodotElementList(Collection<? extends E> elements) {
@@ -26,6 +26,12 @@ public abstract class FodotElementList<E extends IFodotElement> implements IFodo
 	public List<E> getElements() {
 		return new ArrayList<E>(elements);
 	}
+	
+	@Override
+	public Collection<? extends IFodotElement> getDirectFodotElements() {
+		return getElements();
+	}
+
 
 	public E getElement(int index) {
 		return elements.get(index);
