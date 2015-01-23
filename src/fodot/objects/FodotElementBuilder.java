@@ -69,6 +69,10 @@ import fodot.util.NameUtil;
 public class FodotElementBuilder {
 
 	//COMMENTS
+	public static FodotComment createComment(int amountOfTabs, String... comments) {
+		return new FodotComment(amountOfTabs, comments);
+	}
+	
 	public static FodotComment createComment(String... comments) {
 		return new FodotComment(comments);
 	}

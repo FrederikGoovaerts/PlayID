@@ -31,7 +31,7 @@ public class FodotIncludeHolder extends FodotElementContainer<FodotIncludeStatem
 	
 	@Override
 	public String toCode() {		
-		return CollectionPrinter.printStringList("", "", "\n", CollectionPrinter.toCode(getElements())) + "\n";
+		return CollectionPrinter.printStringList("", "", "\n", CollectionPrinter.toCode(getElements()));
 	}
 	
 	@Override

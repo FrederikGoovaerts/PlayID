@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fodot.objects.file.IFodotFileElement;
 import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.elements.IFodotStructureElement;
@@ -15,12 +16,20 @@ import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionPrinter;
 
-public class FodotComment extends FodotElement implements IFodotElement, IFodotTheoryElement, IFodotStructureElement, IFodotVocabularyElement {
+public class FodotComment extends FodotElement implements IFodotElement, IFodotFileElement, IFodotTheoryElement, IFodotStructureElement, IFodotVocabularyElement {
 
-	private List<String> comments;
+	private static final int DEFAULT_AMOUNT_OF_TABS = 1;
+	
+	private List<String> comments;	
+	private int amountOfTabs;
+
+	public FodotComment(int amountOfTabs, String... argComments) {
+		setComments(Arrays.asList(argComments));
+		this.amountOfTabs = amountOfTabs;
+	}
 	
 	public FodotComment(String... argComments) {
-		setComments(Arrays.asList(argComments));
+		this(DEFAULT_AMOUNT_OF_TABS, argComments);
 	}
 
 	/**********************************************
@@ -68,7 +77,11 @@ public class FodotComment extends FodotElement implements IFodotElement, IFodotT
 		if (this.comments.size() == 1) {
 			return "// " + comments.get(0);
 		} else {
-			return CollectionPrinter.printStringList("/**\n\t * ", "\n\t */", "\n\t * ", comments);
+			String tabs = "";
+			for (int i = 0; i < amountOfTabs; i++) {
+				tabs += "\t";
+			}
+			return CollectionPrinter.printStringList("/**\n"+tabs+" * ", "\n"+tabs+" */", "\n"+tabs+" * ", comments);
 		}
 	}
 
@@ -95,6 +108,16 @@ public class FodotComment extends FodotElement implements IFodotElement, IFodotT
 	@Override
 	public Collection<? extends IFodotElement> getDirectFodotElements() {
 		return new HashSet<IFodotElement>();
+	}
+
+	@Override
+	public Set<IFodotFileElement> getPrerequiredElements() {
+		return null;
+	}
+
+	@Override
+	public void mergeWith(IFodotFileElement other) {
+		return;		
 	}
 
 }

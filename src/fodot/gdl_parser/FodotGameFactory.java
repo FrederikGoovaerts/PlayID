@@ -10,9 +10,9 @@ import static fodot.objects.FodotElementBuilder.createConstantFunctionEnumeratio
 import static fodot.objects.FodotElementBuilder.createEquals;
 import static fodot.objects.FodotElementBuilder.createExists;
 import static fodot.objects.FodotElementBuilder.createExistsExactly;
+import static fodot.objects.FodotElementBuilder.createFodotFile;
 import static fodot.objects.FodotElementBuilder.createForAll;
 import static fodot.objects.FodotElementBuilder.createFunction;
-import static fodot.objects.FodotElementBuilder.createFodotFile;
 import static fodot.objects.FodotElementBuilder.createFunctionEnumeration;
 import static fodot.objects.FodotElementBuilder.createFunctionEnumerationElement;
 import static fodot.objects.FodotElementBuilder.createImplies;
@@ -49,6 +49,7 @@ import java.util.Set;
 import org.ggp.base.util.Pair;
 
 import fodot.gdl_parser.util.LTCPool;
+import fodot.objects.comments.FodotComment;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.includes.FodotIncludeHolder;
@@ -126,14 +127,17 @@ public class FodotGameFactory {
      * Class Methods
      **************************************************************************/
 
-    public IFodotFile createFodot(){
+    public IFodotFile createFodot() {
+    	FodotComment topComment = createComment(0,
+    			"This FO(.) file was generated with PlayID.\n" //TODO add from what file it was generated?
+    			+ "PlayID is a program made by Frederik Goovaerts and Thomas Winters.");
         FodotVocabulary voc = this.buildVocabulary();
         FodotTheory theo = this.buildTheory(voc);
         FodotStructure struc = this.buildStructure(voc);
         FodotProcedures proc = this.buildProcedures();
         FodotIncludeHolder incl = createIncludeHolder(createIncludeLTC());
 
-        return createFodotFile(voc,theo,struc,proc,incl);
+        return createFodotFile(incl, Arrays.asList(topComment, voc,theo,struc,proc));
     }
 
     private void buildDefaultVocItems() {
