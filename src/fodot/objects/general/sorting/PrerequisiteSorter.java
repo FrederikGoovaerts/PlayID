@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import fodot.exceptions.fodot.FodotException;
 import fodot.util.CollectionPrinter;
 
 public class PrerequisiteSorter<E> {
@@ -55,7 +56,7 @@ public class PrerequisiteSorter<E> {
 			 * type B constructed from {v(A)}
 			 */
 			if (alreadyTriedThisRound.contains(current)) {
-				throw new IllegalStateException(
+				throw new FodotException(
 						"A loop has been detected in the order in which VocabularyElements should be sorted: \n"
 						+ CollectionPrinter.toString(alreadyTriedThisRound));
 			}
@@ -81,13 +82,13 @@ public class PrerequisiteSorter<E> {
 			
 			//Check for errors
 			if (alreadyAdded.contains(current)) {
-				throw new IllegalStateException("Something has gone wrong in the vocabularyelements block with " + current
+				throw new FodotException("Something has gone wrong in the vocabularyelements block with " + current
 						+ "\nsorted:\n" + CollectionPrinter.toString(sorted)
 						+ "\ntoSort:\n" + CollectionPrinter.toString(toSort)
 						+ "\nalreadyAdded:\n" + CollectionPrinter.toString(alreadyAdded));
 			}
 			if (!toSort.contains(current)) {
-				throw new IllegalStateException("A type that wasn't declared is needed to be sorted: " + current
+				throw new FodotException("A type that wasn't declared is needed to be sorted: " + current
 						+ "\nsorted:\n" + CollectionPrinter.toString(sorted)
 						+ "\ntoSort:\n" + CollectionPrinter.toString(toSort));
 			}

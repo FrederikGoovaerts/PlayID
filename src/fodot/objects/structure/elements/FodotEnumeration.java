@@ -2,6 +2,7 @@ package fodot.objects.structure.elements;
 
 import java.util.Collection;
 
+import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.FodotElementContainer;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.CollectionPrinter;
@@ -23,7 +24,7 @@ public abstract class FodotEnumeration<E extends IFodotEnumerationElement> exten
 	 ***********************************************/
 	private void setDeclaration(IFodotVocabularyElement decl) {
 		if (decl == null) {
-			throw new IllegalArgumentException("Declaration of enumeration can't be null!");
+			throw new FodotException("Declaration of enumeration can't be null!");
 		}
 		this.declaration = decl;
 	}

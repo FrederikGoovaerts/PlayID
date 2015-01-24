@@ -3,6 +3,7 @@ package fodot.objects.file;
 import java.util.Arrays;
 import java.util.Collection;
 
+import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.includes.FodotIncludeHolder;
@@ -122,7 +123,7 @@ public class BasicFodotFile extends FodotElement implements IFodotFile {
 		} else if (element instanceof FodotTheory) {
 			setTheory((FodotTheory) element);
 		} else {
-			throw new IllegalStateException("Can't add " + element + " to a BasicFodotFile");
+			throw new FodotException("Can't add " + element + " to a BasicFodotFile");
 		}
 	}
 

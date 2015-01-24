@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import fodot.exceptions.fodot.FodotException;
+
 public abstract class FodotElementContainer<E extends IFodotElement> extends FodotElement implements IFodotElement {
 
 	private Set<E> elements;
@@ -35,7 +37,7 @@ public abstract class FodotElementContainer<E extends IFodotElement> extends Fod
 
 	public void addElement(E argElement) {
 		if (!isValidElement(argElement)) {
-			throw new RuntimeException(argElement + " is not a valid argument for " + this);
+			throw new FodotException(argElement + " is not a valid element for " + this);
 		
 		}
 		this.elements.add(argElement);

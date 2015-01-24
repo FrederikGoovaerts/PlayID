@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fodot.exceptions.fodot.FodotException;
 import fodot.objects.theory.elements.formulas.FodotSentenceElementConnector;
 import fodot.objects.vocabulary.elements.FodotType;
 
@@ -31,7 +32,7 @@ public class FodotArithmeticConnector extends FodotSentenceElementConnector<IFod
 		//All terms must have integer as supertype, you can comment this out if it's too restrictive
 		for (IFodotTerm term : args) {
 			if (!(term.getType().isASubtypeOf(FodotType.INTEGER))) {
-				throw new IllegalArgumentException(
+				throw new FodotException(
 						"You can't use arithmetic on " + term + " because it does not have integer as its superclass");
 			}
 		}

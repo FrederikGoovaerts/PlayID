@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import fodot.exceptions.fodot.FodotException;
+
 public abstract class FodotElementList<E extends IFodotElement> extends FodotElement implements IFodotElement {
 	private List<E> elements;
 	
@@ -39,7 +41,7 @@ public abstract class FodotElementList<E extends IFodotElement> extends FodotEle
 	
 	public void addElement(E argElement) {
 		if (!isValidElement(argElement)) {
-			throw new RuntimeException(argElement + " is not a valid argument for " + this);
+			throw new FodotException(argElement + " is not a valid argument for " + this);
 		
 		}
 		this.elements.add(argElement);

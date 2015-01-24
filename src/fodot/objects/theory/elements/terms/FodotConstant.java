@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
@@ -35,7 +36,7 @@ public class FodotConstant extends FodotElement implements IFodotTerm, IFodotDom
 	//TYPE	
 	public void setType(FodotType type) {
 		if (type == null) {
-			throw new IllegalArgumentException("Not a legal type");
+			throw new FodotException("Not a legal type");
 		}
 		this.type = type;
 		this.type.addDomainElement(this);

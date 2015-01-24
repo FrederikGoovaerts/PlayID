@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fodot.exceptions.fodot.FodotException;
 import fodot.objects.comments.FodotBlankLines;
 import fodot.objects.comments.FodotComment;
 import fodot.objects.file.FodotFile;
@@ -452,7 +453,7 @@ public class FodotElementBuilder {
 	
 	public static FodotInductiveQuantifier createInductiveQuantifier(FodotQuantifier quantifier) {
 		if (! (quantifier.getFormula() instanceof IFodotInductiveDefinitionElement) ) {
-			throw new IllegalArgumentException(
+			throw new FodotException(
 					"This is not an inductive definition element: " + quantifier.getFormula());
 		}
 		return new FodotInductiveQuantifier(
@@ -508,7 +509,7 @@ public class FodotElementBuilder {
 	//Type declaration
 	public static FodotTypeDeclaration createTypeDeclaration(FodotType type) {
 		if (type == null)
-			throw new IllegalArgumentException(type + " is not a valid type!");
+			throw new FodotException(type + " is not a valid type!");
 		return type.getDeclaration();
 	}
 

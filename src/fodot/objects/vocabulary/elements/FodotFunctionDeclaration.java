@@ -8,9 +8,6 @@ import java.util.Set;
 import fodot.objects.general.IFodotElement;
 import fodot.util.CollectionPrinter;
 
-/**
- * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
- */
 public class FodotFunctionDeclaration extends FodotArgumentListDeclaration implements IFodotVocabularyElement {
 
 	private final FodotType returnType;

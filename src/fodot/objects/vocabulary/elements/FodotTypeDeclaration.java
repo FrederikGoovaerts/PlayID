@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.general.sorting.FodotElementComparators;
@@ -45,7 +46,7 @@ public class FodotTypeDeclaration extends FodotElement implements IFodotVocabula
     
     private void setType(FodotType type) {
     	if (type == null)
-    		throw new IllegalArgumentException("Not a valid type!");
+    		throw new FodotException("Not a valid type!");
     	this.type = type;
     }
 	

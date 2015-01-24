@@ -3,6 +3,7 @@ package fodot.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import fodot.exceptions.answer.StructureParsingException;
 import fodot.objects.structure.elements.typenum.elements.FodotPredicateTermTypeEnumerationElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
@@ -17,7 +18,7 @@ public class EnumerationUtil {
 	
 	public static List<IFodotTypeEnumerationElement> toTypeEnumerationElements(List<String> values, List<FodotType> types) {
 		if (values.size() != types.size()) {
-			throw new IllegalArgumentException("Not equal sizes of arguments \nValues: " + values + "\nTypes: " + types);
+			throw new StructureParsingException("Not equal sizes of arguments \nValues: " + values + "\nTypes: " + types);
 		}
 		List<IFodotTypeEnumerationElement> result = new ArrayList<IFodotTypeEnumerationElement>();
 		for (int i = 0; i < values.size(); i++) {

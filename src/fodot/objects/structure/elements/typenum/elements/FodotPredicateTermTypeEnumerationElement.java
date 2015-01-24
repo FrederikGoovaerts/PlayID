@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.FodotElementContainer;
 import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
@@ -32,7 +33,7 @@ public class FodotPredicateTermTypeEnumerationElement extends
 
 	public void setDeclaration(FodotPredicateTermDeclaration declaration) {
 		if (declaration == null) {
-			throw new IllegalArgumentException("Declaration can't be null");
+			throw new FodotException("Declaration can't be null");
 		}
 		this.declaration = declaration;
 	}
