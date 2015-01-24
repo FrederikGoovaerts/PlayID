@@ -1,7 +1,17 @@
 package fodot.tests;
 
-import static fodot.objects.FodotElementBuilder.*;
-import static org.junit.Assert.*;
+import static fodot.objects.FodotElementBuilder.createConstant;
+import static fodot.objects.FodotElementBuilder.createConstantFunctionEnumeration;
+import static fodot.objects.FodotElementBuilder.createFodotFile;
+import static fodot.objects.FodotElementBuilder.createFunctionDeclaration;
+import static fodot.objects.FodotElementBuilder.createNumericalTypeRangeEnumeration;
+import static fodot.objects.FodotElementBuilder.createPredicateDeclaration;
+import static fodot.objects.FodotElementBuilder.createPredicateEnumeration;
+import static fodot.objects.FodotElementBuilder.createPredicateEnumerationElement;
+import static fodot.objects.FodotElementBuilder.createStructure;
+import static fodot.objects.FodotElementBuilder.createType;
+import static fodot.objects.FodotElementBuilder.createVocabulary;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,15 +19,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import fodot.fodot_parser.FodotStructureParser;
-import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.file.IFodotFile;
+import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
-import fodot.objects.structure.elements.typenum.FodotNumericalTypeRangeEnumeration;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;

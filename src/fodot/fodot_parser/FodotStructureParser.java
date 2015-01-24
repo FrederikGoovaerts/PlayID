@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import fodot.exceptions.answer.StructureParsingException;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.FodotStructure;
@@ -80,7 +81,7 @@ public class FodotStructureParser {
 			} else if (isEndOfStructure(line)) {
 				break;
 			} else {
-				throw new IllegalArgumentException("Can't process " + line);
+				throw new StructureParsingException("Can't process " + line);
 			}
 		}
 	}
@@ -141,7 +142,7 @@ public class FodotStructureParser {
 	private void processAssignment(String line) {
 		String[] splitted = line.split(ASSIGNMENT_CHARACTER);
 		if (splitted.length != 2) {
-			throw new IllegalArgumentException("Something went wrong when processing assignment: " + line);
+			throw new StructureParsingException("Something went wrong when processing assignment: " + line);
 		}
 		String name = splitted[0].trim();
 		String domain = splitted[1].trim();
@@ -159,7 +160,7 @@ public class FodotStructureParser {
 			elementToAdd = createFunctionEnumeration((FodotFunctionDeclaration) elementVocElement, domain);
 			break;
 		default:
-			throw new IllegalStateException("Trying to process an assignment of an unknown type");
+			throw new StructureParsingException("Trying to process an assignment of an unknown type");
 		}
 
 		if (elementToAdd != null) {
@@ -197,7 +198,7 @@ public class FodotStructureParser {
 	private List<IFodotTypeEnumerationElement> extractTypeEnumerationDomain(List<FodotType> types, String line) {
 		//Errorchecking
 		if (line.contains(MULTIVALUE_DIVIDER)) {
-			throw new IllegalArgumentException("Tried parsing a multiargumented line with the constantdomain parser");
+			throw new StructureParsingException("Tried parsing a multiargumented line with the constantdomain parser");
 		}
 
 		//Extract the domainstring
@@ -248,7 +249,7 @@ public class FodotStructureParser {
 	private Set<IFodotPredicateEnumerationElement> extractPredicateEnumerationElements(FodotPredicateDeclaration decl, String line) {
 		//Error checking
 		if (line.contains(RESULT_DIVIDER)) {
-			throw new IllegalStateException(line + " is a function domain, don't parse it with a predicate domain extractor");
+			throw new StructureParsingException(line + " is a function domain, don't parse it with a predicate domain extractor");
 		}
 
 		//Remove the brackets
@@ -327,7 +328,7 @@ public class FodotStructureParser {
 			return EnumerationType.TYPE;
 		}
 
-		throw new IllegalArgumentException("Not a recognized class: " + el.getClass());
+		throw new StructureParsingException("Not a recognized class: " + el.getClass());
 	}
 
 
