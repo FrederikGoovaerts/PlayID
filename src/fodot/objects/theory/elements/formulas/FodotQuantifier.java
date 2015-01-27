@@ -137,37 +137,45 @@ public class FodotQuantifier extends FodotElement implements IFodotFormula {
 		//Add the symbol
 		builder.append(getSymbol() + " ");
 
-		//Sort all the variables by type
-		Map<FodotType, List<FodotVariable>> variablesPerType = new HashMap<FodotType, List<FodotVariable>>();
-		if (hasSimpleSymbol()) {
-			for (FodotVariable var : getVariables()) {
-				FodotType type = var.getType();
-				if (variablesPerType.get(type) == null) {
-					variablesPerType.put(type, new ArrayList<FodotVariable>());
-				}
-				variablesPerType.get(type).add(var);
-			}
+		List<FodotVariable> vars = new ArrayList<FodotVariable>(getVariables());
+		Collections.sort(vars, FodotElementComparators.VARIABLE_NAME_COMPARATOR);
 
-			//Print all variables by type, sorted alphabettically by name
-			for (FodotType type : variablesPerType.keySet()) {
-				List<FodotVariable> vars = variablesPerType.get(type);
-
-				//Sort them by name
-				Collections.sort(vars, FodotElementComparators.VARIABLE_NAME_COMPARATOR);
-
-				//Output all the variables of this type
-				List<String> varNames = new ArrayList<String>();
-				for (FodotVariable var : vars) {
-					varNames.add(var.getName());
-				}
-				builder.append(CollectionPrinter.printStringList("","",", ",varNames));
-				builder.append(" [" + type.getName() + "] ");
-			}
-		} else {
-			for (FodotVariable var : getVariables()) {
-				builder.append(var.getName() + " [" + var.getType().getName() + "] ");
-			}
+		//Output all the variables of this type
+		for (FodotVariable var : vars) {
+			builder.append(var.getName() + " [" + var.getType().getName() + "] ");
 		}
+		
+		//Sort all the variables by type
+//		Map<FodotType, List<FodotVariable>> variablesPerType = new HashMap<FodotType, List<FodotVariable>>();
+//		if (hasSimpleSymbol()) {
+//			for (FodotVariable var : getVariables()) {
+//				FodotType type = var.getType();
+//				if (variablesPerType.get(type) == null) {
+//					variablesPerType.put(type, new ArrayList<FodotVariable>());
+//				}
+//				variablesPerType.get(type).add(var);
+//			}
+//
+//			//Print all variables by type, sorted alphabettically by name
+//			for (FodotType type : variablesPerType.keySet()) {
+//				List<FodotVariable> vars = variablesPerType.get(type);
+//
+//				//Sort them by name
+//				Collections.sort(vars, FodotElementComparators.VARIABLE_NAME_COMPARATOR);
+//
+//				//Output all the variables of this type
+//				List<String> varNames = new ArrayList<String>();
+//				for (FodotVariable var : vars) {
+//					varNames.add(var.getName());
+//				}
+//				builder.append(CollectionPrinter.printStringList("","",", ",varNames));
+//				builder.append(" [" + type.getName() + "] ");
+//			}
+//		} else {
+//			for (FodotVariable var : getVariables()) {
+//				builder.append(var.getName() + " [" + var.getType().getName() + "] ");
+//			}
+//		}
 		builder.append(": ");
 
 		//Add brackets around it if necessary
