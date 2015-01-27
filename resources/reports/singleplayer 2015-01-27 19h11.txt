@@ -1,0 +1,59 @@
+REPORT FOR PROCESSIBILITY OF SINGLEPLAYER GAMES
+
+===================================================
+Created on                      2015-01-27 19:11
+Default time limit:             15s
+===================================================
+
+
+Successful:                       4
+
+GDL transformation error:         0
+
+FO(.) transformation error:       9
+
+IDP syntax error:                12
+
+Out of Resources:                23
+
+Unsatisfiable:                    3
+
+No models found:                  0
+
+Answerer error:                   8
+
+Other error::                     3
+
+
+===================================================
+===================== Details =====================
+===================================================
+
+Successful: 
+[blocks.kif, blocksWorld.kif, buttons.kif, maze.kif]
+
+GDL transformation error: 
+[]
+
+FO(.) transformation error: 
+[chineseCheckers1.kif, duplicateStateLarge.kif, duplicateStateMedium.kif, duplicateStateSmall.kif, knightsTourLarge.kif, max_knights.kif, stateSpaceLarge.kif, stateSpaceMedium.kif, stateSpaceSmall.kif]
+
+IDP syntax error: 
+[asteroids.kif, asteroidsParallel.kif, asteroidsSerial.kif, kitten_escapes_from_fire.kif, knightsTour.kif, queens.kif, ruleDepthExponential.kif, ruleDepthLinear.kif, snake_2008.kif, snake_2008_tweaked.kif, snake_2009.kif, snake_2009_big.kif]
+
+Out of Resources: 
+[blocksWorldParallel.kif, brain_teaser_extended.kif, eightPuzzle.kif, factoringEasyTurtleBrain.kif, factoringImpossibleTurtleBrain.kif, factoringMediumTurtleBrain.kif, factoringMutuallyAssuredDestruction.kif, god.kif, hanoi7_bugfix.kif, hanoi_6_disks.kif, hitori.kif, incredible.kif, knightmove.kif, lightsOnSimul4.kif, lightsOnSimultaneous.kif, lightsOut.kif, pancakes.kif, pancakes6.kif, pancakes88.kif, peg.kif, pegEuro.kif, slidingpieces.kif, snakeParallel.kif]
+
+Unsatisfiable: 
+[firefighter.kif, hanoi.kif, pearls.kif]
+
+No models found: 
+[]
+
+Answerer error: 
+[blocksWorldSerial.kif, circlesolitaire.kif, coins.kif, factoringGeorgeForman.kif, haystack.kif, lightsOn.kif, lightsOnParallel.kif, simultaneousWin2.kif]
+
+Others:
+coins_atomic.kif: IllegalStateException
+aipsrovers01.kif: IllegalStateException
+mummymaze1p.kif: IllegalStateException
