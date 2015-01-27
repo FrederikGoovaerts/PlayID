@@ -1,7 +1,6 @@
 package fodot.objects.theory.elements.terms;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +25,7 @@ public class FodotArithmeticConnector extends FodotSentenceElementConnector<IFod
 	private static final List<String> ASSOCIATIVE_CONNECTORS =
 			Arrays.asList(new String[]{"+", "*"});
 
-	private FodotArithmeticConnector(String connector, Collection<IFodotTerm> args) {
+	private FodotArithmeticConnector(String connector, List<IFodotTerm> args) {
 		super(connector, args);
 
 		//All terms must have integer as supertype, you can comment this out if it's too restrictive

@@ -1,7 +1,6 @@
 package fodot.objects.theory.elements.formulas;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +32,7 @@ public class FodotFormulaConnector extends FodotSentenceElementConnector<IFodotF
 	/**********************************************
 	 *  Constructors
 	 ***********************************************/
-	public FodotFormulaConnector(String connector, Collection<? extends IFodotFormula> formulas) {
+	public FodotFormulaConnector(String connector, List<? extends IFodotFormula> formulas) {
 		super(connector, formulas);
 	}
 	

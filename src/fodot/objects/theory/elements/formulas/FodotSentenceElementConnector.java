@@ -18,7 +18,7 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 	private List<E> arguments;
 	private String connector;
 
-	public FodotSentenceElementConnector(String connector, Collection<? extends E> args) {
+	public FodotSentenceElementConnector(String connector, List<? extends E> args) {
 		super();
 		if (!isValidConnector(connector)) {
 			throw new IllegalConnectorException(this, connector);

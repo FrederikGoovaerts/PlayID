@@ -84,7 +84,7 @@ public class FodotElementBuilder {
 	// FORMULA CONNECTORS
 	private static final String AND_SYMBOL = "&";
 
-	public static FodotFormulaConnector createAnd(Collection<? extends IFodotFormula> forms) {
+	public static FodotFormulaConnector createAnd(List<? extends IFodotFormula> forms) {
 		return new FodotFormulaConnector(AND_SYMBOL, forms);
 	}
 
@@ -94,7 +94,7 @@ public class FodotElementBuilder {
 
 	private static final String OR_SYMBOL = "|";
 
-	public static FodotFormulaConnector createOr(Collection<? extends IFodotFormula> forms) {
+	public static FodotFormulaConnector createOr(List<? extends IFodotFormula> forms) {
 		return new FodotFormulaConnector(OR_SYMBOL, forms);
 	}
 
