@@ -97,20 +97,6 @@ public class FodotVariable extends FodotElement implements IFodotTerm {
 
 	@Override
 	public Collection<? extends IFodotElement> getDirectFodotElements() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<? extends IFodotElement> getDirectElementsOfClass(
-			Class<? extends IFodotElement> clazz) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<? extends IFodotElement> getAllInnerElementsOfClass(
-			Class<? extends IFodotElement> clazz) {
 		return new HashSet<IFodotElement>();
 	}
 	

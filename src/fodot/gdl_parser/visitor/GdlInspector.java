@@ -3,71 +3,73 @@ package fodot.gdl_parser.visitor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ggp.base.util.game.Game;
 import org.ggp.base.util.gdl.GdlVisitor;
 import org.ggp.base.util.gdl.grammar.Gdl;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 
-import fodot.gdl_parser.GdlFodotTransformer;
 import fodot.gdl_parser.GdlTransformer;
-import fodot.objects.file.IFodotFile;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
 public class GdlInspector extends GdlVisitor{
 
+	private Game game;
+    private GdlTransformer transformer;
+    private List<Gdl> gdlRules;
+    private List<Gdl> gdlRelations;
+
     /***************************************************************************
      * Constructor
      **************************************************************************/
 
-    public GdlInspector(List<Gdl> rules){
-        this.transformer = new GdlFodotTransformer();
-        this.gdlRules = new ArrayList<>();
-        this.gdlNonRules = new ArrayList<>();
-        this.splitRules(rules);
-        GdlRootVisitors.visitAll(gdlNonRules, this);
-        GdlRootVisitors.visitAll(gdlRules, this);
-    }
+    public GdlInspector(Game gdlGame, GdlTransformer transformer) {
+    	setGame(gdlGame);
+    	setTransformer(transformer);
 
-    private void splitRules(List<Gdl> rules) {
-        for (Gdl rule : rules) {
+        this.gdlRules = new ArrayList<>();
+        this.gdlRelations = new ArrayList<>();
+
+        for (Gdl rule : getGame().getRules()) {
             if(rule instanceof GdlRule){
                 gdlRules.add(rule);
             } else {
-                gdlNonRules.add(rule);
+                gdlRelations.add(rule);
             }
-        }
+        }     
+        
+        GdlRootVisitors.visitAll(gdlRelations, this);
+        GdlRootVisitors.visitAll(gdlRules, this);
     }
-
+    
     /***************************************************************************
      * Class Properties
      **************************************************************************/
 
-    private GdlTransformer transformer;
-
+    //Transformer
     public GdlTransformer getTransformer() {
         return transformer;
     }
-
-    private List<Gdl> gdlRules;
-
-    private List<Gdl> gdlNonRules;
-
-    private List<Gdl> getRules() {
-        List<Gdl> toReturn = new ArrayList<>(gdlNonRules);
-        toReturn.addAll(gdlRules);
-        return toReturn;
+    
+    public void setTransformer(GdlTransformer transformer) {
+    	this.transformer = transformer;
     }
 
-    public IFodotFile getFodot(){
-        return this.getTransformer().buildFodot();
-    }
+    //Game
+    public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
 
     /***************************************************************************
      * Visitor Methods
      **************************************************************************/
-
+	
     @Override
     public void visitRelation(GdlRelation relation) {
         String relationType = relation.getName().getValue();
@@ -121,4 +123,8 @@ public class GdlInspector extends GdlVisitor{
                 break;
         }
     }
+
+	public static void inspect(Game argGame, GdlTransformer argTransformer) {
+		new GdlInspector(argGame, argTransformer).getTransformer();
+	}
 }

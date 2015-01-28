@@ -1,13 +1,12 @@
 package fodot.gdl_parser;
 
 import java.io.File;
-import java.util.List;
 
 import org.ggp.base.util.files.FileUtils;
 import org.ggp.base.util.game.Game;
-import org.ggp.base.util.gdl.grammar.Gdl;
 
 import fodot.communication.input.IdpFileWriter;
+import fodot.exceptions.gdl.GdlTransformationException;
 import fodot.gdl_parser.visitor.GdlInspector;
 import fodot.objects.file.IFodotFile;
 
@@ -19,80 +18,100 @@ import fodot.objects.file.IFodotFile;
  */
 public class Parser {
 
-    private static boolean outputToFile = true;
-    private static boolean printBuiltFodot = false;
-    
-    /***************************************************************************
-     * Main Method
-     **************************************************************************/
+	private static boolean outputToFile = true;
+	private static boolean printBuiltFodot = false;
 
-    public static void main(String[] args) {
-        File file = new File("resources/games/maze.kif");
-        Parser test = new Parser(file);
-        test.run();
-    }
+	/***************************************************************************
+	 * Main Method
+	 **************************************************************************/
 
-    /***************************************************************************
-     * Constructor
-     **************************************************************************/
-
-    private IFodotFile parsedFodot;
-    private GdlInspector inspector;
-    
-    public Parser(File inputFile) {
-        if(inputFile == null || !inputFile.exists())
-            throw new IllegalArgumentException("Bad file!");
-        input = inputFile;
-        String fileContents = FileUtils.readFileAsString(inputFile);
-        game = Game.createEphemeralGame(Game.preprocessRulesheet(fileContents));
-    }
-
-    /***************************************************************************
-     * Class Methods
-     **************************************************************************/
-
-    public void run() {
-        List<Gdl> rules = game.getRules();
-
-        setInspector(new GdlInspector(rules));
-        IFodotFile builtFodot = getInspector().getFodot();
-        setParsedFodot(builtFodot);
-
-        if (printBuiltFodot) {
-            System.out.println(builtFodot.toCode());
-        }
-        if (outputToFile) {
-            File outputFile = IdpFileWriter.createIDPFileBasedOn(input);
-            IdpFileWriter.writeToIDPFile(builtFodot, outputFile);
-        }
-    }
-
-    /***************************************************************************
-     * Class Properties
-     **************************************************************************/
-
-    public IFodotFile getParsedFodot() {
-    	return parsedFodot;
-    }
-    
-    private void setParsedFodot(IFodotFile fodot) {
-    	this.parsedFodot = fodot;
-    }
-
-	public GdlInspector getInspector() {
-		return inspector;
+	public static void main(String[] args) {
+		File file = new File("resources/games/maze.kif");
+		Parser test = new Parser(file);
+		test.run();
 	}
 
-	private void setInspector(GdlInspector inspector) {
-		this.inspector = inspector;
-	}
-	
-	public GdlTransformer getTransformer() {
-		return getInspector().getTransformer();
+	/***************************************************************************
+	 * Constructor
+	 **************************************************************************/
+
+
+	private final File input;
+	private final Game game;
+	private GdlFodotTransformer transformer;
+	private IFodotFile parsedFodot;
+
+	public Parser(File inputFile) {
+		if(inputFile == null || !inputFile.exists()) {
+			throw new GdlTransformationException("The given GDL file does not exist: " + inputFile);
+		}
+		
+		//Initialize final variables
+		this.input = inputFile;
+		String fileContents = FileUtils.readFileAsString(inputFile);
+		this.game = Game.createEphemeralGame(Game.preprocessRulesheet(fileContents));
+		
+		//Initialise other variables
+		setTransformer( new GdlFodotTransformer() );
+		
 	}
 
-    private final File input;
+	/***************************************************************************
+	 * Class Methods
+	 **************************************************************************/
 
-    /* The game for this parser */
-    private final Game game;
+	public void run() {
+		/*
+		 * First phase:
+		 * Create datastructure containing basic info about the game:
+		 * The types, the predicates with their correct typing, sorting of
+		 * the dynamic and static predicates...
+		 */
+		
+		//TODO inspector gebruiken om een eerstefase visitor te bezoeken
+		
+		/*
+		 * Second phase:
+		 * Visit every rule and translate it
+		 */
+		GdlInspector.inspect( game, getTransformer() );
+		setFodot( getTransformer().buildFodot() );
+
+		
+		//Do some extra debugging stuff if necessary
+		if ( printBuiltFodot ) {
+			System.out.println(getFodot().toCode());
+		}
+		if ( outputToFile ) {
+			File outputFile = IdpFileWriter.createIDPFileBasedOn(input);
+			IdpFileWriter.writeToIDPFile(getFodot(), outputFile);
+		}
+	}
+
+	/***************************************************************************
+	 * Class Properties
+	 **************************************************************************/
+
+	//Parsed Fodot
+	public IFodotFile getFodot() {
+		return parsedFodot;
+	}
+
+	private void setFodot(IFodotFile fodot) {
+		this.parsedFodot = fodot;
+	}
+
+	//Transformer
+	public GdlFodotTransformer getTransformer() {
+		return transformer;
+	}
+
+	public void setTransformer(GdlFodotTransformer transformer) {
+		this.transformer = transformer;
+	}
+
+	//Game
+	public Game getGame() {
+		return game;
+	}
 }
