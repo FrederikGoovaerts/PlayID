@@ -110,7 +110,9 @@ public class IdpResultTransformer {
 	 *  Line recognizers
 	 ***********************************************/
 	private boolean isParseError(String line) {
-		return line.startsWith("Error: ");
+		String trimmed = line.trim();
+		return trimmed.startsWith("Error: ")
+				|| trimmed.startsWith("This application has requested the Runtime to terminate it in an unusual way.");
 	}
 
 	private boolean isOutOfResources(String line) {

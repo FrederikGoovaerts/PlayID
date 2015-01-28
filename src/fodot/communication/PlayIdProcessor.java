@@ -109,7 +109,7 @@ public class PlayIdProcessor {
 		IdpFileWriter.writeToIDPFile(parsedFodotFile, idpFile);
 
 		//Make IDP solve it
-		IIdpCaller caller = new IdpCaller();
+		IIdpCaller caller = new IdpCaller(false);
 		String idpResult = caller.callIDP(idpFile);
 
 		//Process results

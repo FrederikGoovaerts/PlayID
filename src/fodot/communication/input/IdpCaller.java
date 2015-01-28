@@ -9,6 +9,12 @@ import fodot.exceptions.idp.IdpConnectionException;
 
 public class IdpCaller implements IIdpCaller {
 
+	private boolean displayWarnings;
+	
+	public IdpCaller(boolean displayWarnings) {
+		this.displayWarnings = displayWarnings;
+	}
+	
 	@Override
 	public String callIDP(File file) throws IOException, IdpConnectionException {
 		String fileDirectory = file.getParent();
@@ -16,6 +22,11 @@ public class IdpCaller implements IIdpCaller {
 
 		String command = "idp " + fileName;		
 
+		if (!displayWarnings) {
+			command = command + " --nowarnings";
+		}
+		
+		
 		StringBuilder result = new StringBuilder();
 
 		ProcessBuilder builder = new ProcessBuilder(

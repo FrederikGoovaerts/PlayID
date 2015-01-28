@@ -537,7 +537,6 @@ public class FodotGameFactory {
 
         defaultTheory.addElement(createComment("Default theory elements:"));
         
-        //!a [Action] p [Player] t [Time]: do(t,p,a) => ~terminalTime(t) & (?t2 [Time]: Next(t) = t2).
         Set<FodotVariable> variables = new HashSet<FodotVariable>();
         FodotVariable a_Action = createVariable("a", source.getActionType(), variables);
         variables.add(a_Action);
@@ -548,7 +547,7 @@ public class FodotGameFactory {
         FodotVariable t2_Time = createVariable("t2",source.getTimeType(), variables);
         variables.add(t2_Time);
         
-        
+        //!a [Action] p [Player] t [Time]: do(t,p,a) => ~terminalTime(t) & (?t2 [Time]: Next(t) = t2).
         variables = new HashSet<>(Arrays.asList(a_Action,p_Player,t_Time));
         defaultTheory.addElement(createSentence(createForAll(variables,
                 createImplies(
