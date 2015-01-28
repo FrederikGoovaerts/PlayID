@@ -8,6 +8,7 @@ import fodot.communication.gdloutput.IFodotGdlTranslator;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
 
@@ -91,8 +92,8 @@ public class GdlAnswerCalculator {
 		List<GdlAction> actions = new ArrayList<GdlAction>();
 		for (IFodotPredicateEnumerationElement c : actionEnum.getElements()) {
 			int time = Integer.valueOf(c.getElement(0).getValue());
-			FodotConstant player = (FodotConstant) c.getElement(1);
-			FodotConstant action = new FodotConstant(c.getElement(2).getValue(), new FodotType("null"));
+			IFodotTypeEnumerationElement player = c.getElement(1);
+			IFodotTypeEnumerationElement action = c.getElement(2);
 			
 			//TODO: use GdlPredicate instead of own GDL action
 			actions.add(new GdlAction(getTranslator(), time, player, action));

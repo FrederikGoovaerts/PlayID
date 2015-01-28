@@ -385,7 +385,9 @@ public class GdlFodotSentenceTransformer {
 
 	public FodotPredicateTerm generatePredicateTerm(GdlSentence sentence,
 			FodotPredicateTermDeclaration declaration) {
-		return createPredicateTerm(declaration, processSentenceArguments(sentence, declaration));
+		FodotPredicateTerm result = createPredicateTerm(declaration, processSentenceArguments(sentence, declaration));
+		trans.addTranslation(declaration, sentence.getName());
+		return result;
 	}
 
 	public FodotPredicate generateTimedPredicate(GdlSentence sentence,

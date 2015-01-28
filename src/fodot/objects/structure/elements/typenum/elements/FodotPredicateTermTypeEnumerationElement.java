@@ -88,6 +88,10 @@ public class FodotPredicateTermTypeEnumerationElement extends
 		return new HashSet<IFodotTypeEnumerationElement>(other.getElements()).equals(new HashSet<IFodotTypeEnumerationElement>(getElements()));
 	}
 
+	@Override
+	public String toString() {
+		return "[FodotPTTEE : "+toCode()+"]";
+	}
 	/**********************************************/
 
 	
