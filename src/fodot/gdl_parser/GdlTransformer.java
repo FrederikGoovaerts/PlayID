@@ -3,13 +3,13 @@ package fodot.gdl_parser;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 
+import fodot.communication.gdloutput.IFodotGdlTranslator;
 import fodot.objects.file.IFodotFile;
-import fodot.objects.structure.elements.IFodotEnumerationElement;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
-public interface GdlTransformer {
+public interface GdlTransformer extends IFodotGdlTranslator {
 
     void processRoleRelation(GdlRelation relation);
 
@@ -30,6 +30,6 @@ public interface GdlTransformer {
     IFodotFile buildFodot();
     
     //Translators
-    String translateToGdl(IFodotEnumerationElement fodot);
-    IFodotEnumerationElement translateToFodot(String gdl);
+//    String translateToGdl(IFodotEnumerationElement fodot);
+//    IFodotEnumerationElement translateToFodot(String gdl);
 }

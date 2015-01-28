@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.ggp.base.util.Pair;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
+import org.ggp.base.util.gdl.grammar.GdlPool;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 import org.ggp.base.util.gdl.grammar.GdlSentence;
@@ -27,11 +28,12 @@ import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
 import fodot.exceptions.gdl.GdlParsingOrderException;
+import fodot.exceptions.gdl.GdlTransformationException;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.file.IFodotFile;
-import fodot.objects.structure.elements.IFodotEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typenum.elements.FodotPredicateTermTypeEnumerationElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
@@ -86,16 +88,16 @@ public class GdlFodotTransformer implements GdlTransformer{
 	private void buildDefaultTypes(){
 		this.timeType = createType("Time");
 		timeType.addSupertype(getNaturalNumberType());
-		
+
 		this.playerType = createType("Player");
 		this.actionType = createType("Action");
 		actionType.getDeclaration(); //TODO: this has to be fixed!	 //Update 17-01-15: What has to be fixes? -T.
 		this.scoreType = createType("ScoreType");
 		scoreType.addSupertype(getNaturalNumberType());
 		this.allType = createType("All");
-		
+
 		//Nope, this doesn't work :c
-//		this.allType.addAllSupertypes(Arrays.asList(scoreType,actionType,timeType,playerType));
+		//		this.allType.addAllSupertypes(Arrays.asList(scoreType,actionType,timeType,playerType));
 	}
 
 	public FodotType getTimeType(){
@@ -142,9 +144,10 @@ public class GdlFodotTransformer implements GdlTransformer{
 		}
 	}
 
-	public FodotConstant convertRawRole(String rawName){
+	public FodotConstant convertRawRole(GdlConstant term){
+		String rawName = term.getValue();
 		FodotConstant toReturn = createConstant("p_" + rawName, this.getPlayerType());
-		addTranslation(toReturn, rawName);
+		addTranslation(toReturn, term);
 		return toReturn;
 	}
 
@@ -221,20 +224,22 @@ public class GdlFodotTransformer implements GdlTransformer{
 		return allType.containsElement(constant);
 	}
 
-	public FodotConstant convertRawConstantName(String rawName) {
-		return convertConstantName(rawName, getAllType());
+	public FodotConstant convertRawConstantName(GdlConstant constant) {
+		return convertConstantName(constant, getAllType());
 	}
 
-	public FodotConstant convertConstantName(String rawName, FodotType type) {
+	public FodotConstant convertConstantName(GdlConstant constant, FodotType type) {
+		String rawName = constant.getValue();
+
 		String constantName;
 		if (rawName.matches("^[0-9]+$") && !type.isASubtypeOf(FodotType.INTEGER)) {
 			constantName = "i" + rawName;
 		} else {
 			constantName = rawName;
 		}
-		
+
 		FodotConstant toReturn = createConstant(constantName, type);
-		addTranslation(toReturn, rawName);
+		addTranslation(toReturn, constant);
 		return toReturn;
 	}
 
@@ -444,7 +449,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 	}
 
 	/**********************************************/
-	
+
 	@Override
 	public void processRoleRelation(GdlRelation relation) {
 		if(processingRules)
@@ -453,7 +458,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		// Role: (role player)
 		GdlConstant player = relation.getBody().get(0).toSentence().getName();
-		this.addRole(convertRawRole(player.toString()));
+		this.addRole(convertRawRole(player));
 	}
 
 	@Override
@@ -474,7 +479,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		for (int i = 0; i < predArity; i++) {
 			//PLS TRUST ME
-			String constant = predicate.get(i).toSentence().getName().getValue();
+			GdlConstant constant = (GdlConstant) predicate.get(i);
 			initValues.add(convertRawConstantName(constant));
 		}
 
@@ -515,8 +520,8 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		for (int i = 0; i < predArity; i++) {
 			//PLS TRUST ME
-			String constantName = relation.get(i).toSentence().getName().getValue();
-			FodotConstant newConstant = convertRawConstantName(constantName);
+			GdlConstant constant = (GdlConstant) relation.get(i);
+			FodotConstant newConstant = convertRawConstantName(constant);
 			staticValues.add(newConstant);
 			if(!isConstantRegistered(newConstant)) {
 				this.addConstant(newConstant);
@@ -541,13 +546,13 @@ public class GdlFodotTransformer implements GdlTransformer{
 			IFodotTerm nextFodotTerm = sentenceTrans.generateTerm(nextGdlTerm);
 			throw new IllegalStateException("You can't give a variable as argument for 'next', dummy!\n"+nextGdlTerm + " ===> " + nextFodotTerm);
 		} else {
-		
+
 			GdlSentence predSentence = nextGdlTerm.toSentence();
 			FodotPredicateDeclaration originalPredicateDecl = this.processPredicate(predSentence);
 			FodotPredicateDeclaration causePredDecl = pool.getCauseOf(originalPredicateDecl);
 
 			FodotPredicate causePred = sentenceTrans.generateTimedPredicate(predSentence, causePredDecl);
-			
+
 			//generate IFodotFormula from the body
 			IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
 
@@ -560,9 +565,16 @@ public class GdlFodotTransformer implements GdlTransformer{
 	public void processLegalRule(GdlRule rule) {
 		// legal(player, action) ==> do(time,player,action)
 
-		IFodotTerm player = convertRawRole(rule.getHead().get(0).toString());
-
 		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
+
+		IFodotTerm player;
+		GdlTerm playerGdlTerm = rule.getHead().get(0);
+		if (playerGdlTerm instanceof GdlConstant) {
+			player = convertRawRole((GdlConstant) playerGdlTerm);
+		} else {
+			player = sentenceTrans.generateTerm(playerGdlTerm, getPlayerType());
+		}
+
 		GdlTerm actionGdlTerm = rule.getHead().get(1);
 		IFodotTerm actionTerm;
 		if (actionGdlTerm instanceof GdlVariable) {
@@ -626,17 +638,20 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		GdlTerm playerGdlTerm = rule.getHead().get(0);
 		GdlTerm scoreGdlTerm = rule.getHead().get(1);
-		
+
 		IFodotTerm playerTerm;
 		if (playerGdlTerm instanceof GdlVariable) {
 			playerTerm = sentenceTrans.generateTerm(playerGdlTerm, getPlayerType());	
+		} else if (playerGdlTerm instanceof GdlConstant) {
+			playerTerm = convertRawRole((GdlConstant) playerGdlTerm);
 		} else {
-			playerTerm = convertRawRole(playerGdlTerm.toSentence().getName().getValue());
+			throw new GdlTransformationException("Playerterm should probably only be constant or a variable.");
 		}
+
 		IFodotTerm scoreTerm = sentenceTrans.generateTerm(scoreGdlTerm, getScoreType());
-		
+
 		Pair<IFodotTerm, IFodotTerm> score = Pair.of(playerTerm, scoreTerm);
-		
+
 		IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
 
 		if(!removeTimeVars(condition.getFreeVariables()).isEmpty()){
@@ -677,7 +692,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 		GdlSentence predSentence = rule.getHead();
 		FodotPredicateDeclaration originalPredicate = this.processCompoundStaticPredicate(predSentence);
 		FodotPredicateDeclaration timedDeclaration = pool.getCompoundTimedVerionOf(originalPredicate);
-		
+
 		FodotPredicate compoundStaticPred = sentenceTrans.generateTimedPredicate(predSentence, timedDeclaration);
 
 		//generate IFodotFormula from the body
@@ -695,7 +710,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		String originalPredName = predSentence.getName().getValue();
 		String predName = NameUtil.convertToValidPredicateName(originalPredName);
-		
+
 		int amountOfArguments = predSentence.arity();
 
 		FodotPredicateDeclaration pred;
@@ -723,7 +738,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		String originalPredName = predSentence.getName().getValue();
 		String predName = NameUtil.convertToValidPredicateName(originalPredName);
-		
+
 		int amountOfArguments = predSentence.arity();
 
 		FodotPredicateDeclaration predDecl;
@@ -740,12 +755,12 @@ public class GdlFodotTransformer implements GdlTransformer{
 			if(predDecl.getAmountOfArgumentTypes() != amountOfArguments)
 				throw new IllegalStateException("Predicate differs in arity from before!");
 		}
-		
+
 		registerConstants(predSentence);
 
 		return predDecl;
 	}
-	
+
 	/**
 	 * Scan all body elements, if they are constants (ground in a non-built-in
 	 * predicate is equivalent with being a constant), add them as a constant
@@ -758,28 +773,49 @@ public class GdlFodotTransformer implements GdlTransformer{
 			GdlTerm term = sentence.get(i);
 			if(term.isGround()) {
 				//Term is a constant, and only has a name, and arity 0
-				FodotConstant constantName = convertRawConstantName(term.toSentence().getName().getValue());
-				if(!isConstantRegistered(constantName))
-					addConstant(constantName);
+				GdlConstant constant = (GdlConstant) term;
+				FodotConstant fodotConstant = convertRawConstantName(constant);
+				if(!isConstantRegistered(fodotConstant))
+					addConstant(fodotConstant);
 			}
 		}
 	}
 
-	Map<IFodotEnumerationElement, String> translationsFromFodot = new HashMap<IFodotEnumerationElement, String>();
-	Map<String, IFodotEnumerationElement> translationsFromGdl = new HashMap<String, IFodotEnumerationElement>();
+	Map<FodotConstant, GdlTerm> constantsMap = new HashMap<FodotConstant, GdlTerm> ();
+	Map<FodotPredicateTermDeclaration, GdlConstant> predicateTermMap = new HashMap<FodotPredicateTermDeclaration, GdlConstant> ();
+	//	Map<GdlTerm, IFodotTerm> translationsFromGdl = new HashMap<GdlTerm, IFodotTerm>();
 
-	public void addTranslation(IFodotEnumerationElement fodot, String gdl) {
-		translationsFromFodot.put(fodot, gdl);
-		translationsFromGdl.put(gdl, fodot);
+	public void addTranslation(FodotConstant fodot, GdlTerm gdl) {
+		constantsMap.put(fodot, gdl);
 	}
 
-	public String translateToGdl(IFodotEnumerationElement fodot) {
-		return translationsFromFodot.get(fodot);
+	public void addTranslation(FodotPredicateTermDeclaration fodot, GdlConstant name) {
+		predicateTermMap.put(fodot, name);
 	}
 
-	public IFodotEnumerationElement translateToFodot(String gdl) {
-		return translationsFromGdl.get(gdl);
+	@Override
+	public GdlTerm translate(IFodotTypeEnumerationElement fodot) {
+		if (fodot instanceof FodotConstant) {
+			FodotConstant casted = (FodotConstant) fodot;
+			if (constantsMap.containsKey(casted)) {
+				return constantsMap.get(casted);
+			}
+		}
+		if (fodot instanceof FodotPredicateTermTypeEnumerationElement) {
+			FodotPredicateTermTypeEnumerationElement casted = (FodotPredicateTermTypeEnumerationElement) fodot;
+			FodotPredicateTermDeclaration decl = casted.getDeclaration();
+			if (predicateTermMap.containsKey(decl)) {
+				GdlConstant name = predicateTermMap.get(decl);
+				List<GdlTerm> body = new ArrayList<GdlTerm>();
+				for (IFodotTypeEnumerationElement el : casted.getElements()) {
+					body.add(translate(el));
+				}
+				return GdlPool.getRelation(name, body).toTerm();
+			}
+		}
+		return null;
 	}
+
 
 	/***************************************************************************
 	 * Helper methods

@@ -1,34 +1,50 @@
 package fodot.communication.output;
 
-import fodot.objects.theory.elements.terms.FodotConstant;
+import java.util.Arrays;
+
+import org.ggp.base.util.gdl.grammar.GdlPool;
+import org.ggp.base.util.gdl.grammar.GdlRelation;
+import org.ggp.base.util.gdl.grammar.GdlTerm;
+
+import fodot.communication.gdloutput.IFodotGdlTranslator;
+import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 
 public class GdlAction {
+	private IFodotGdlTranslator translator;
 	private int time;
-	private FodotConstant player;
-	private FodotConstant action;
+	private IFodotTypeEnumerationElement player;
+	private IFodotTypeEnumerationElement action;
 	
-	public GdlAction(int time, FodotConstant player, FodotConstant action) {
+	public GdlAction(IFodotGdlTranslator translator, int time, IFodotTypeEnumerationElement player, IFodotTypeEnumerationElement action) {
 		super();
+		setTranslator(translator);
 		setTime(time);
 		setPlayer(player);
-		//Temporal solution: ACTION SHOULD BE PREDICATE TERM!
 		setAction(action);
 	}
 
-	public FodotConstant getPlayer() {
+	public IFodotGdlTranslator getTranslator() {
+		return translator;
+	}
+
+	public void setTranslator(IFodotGdlTranslator translator) {
+		this.translator = translator;
+	}
+
+	public IFodotTypeEnumerationElement getPlayer() {
 		return player;
 	}
 
-	private void setPlayer(FodotConstant player) {
+	private void setPlayer(IFodotTypeEnumerationElement player) {
 		this.player = player;
 	}
 
-	public FodotConstant getAction() {
+	public IFodotTypeEnumerationElement getAction() {
 		return action;
 	}
 
-	private void setAction(FodotConstant action) {
+	private void setAction(IFodotTypeEnumerationElement action) {
 		this.action = action;
 	}
 
@@ -47,26 +63,26 @@ public class GdlAction {
 	
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
+		
+		//TODO: action moet een predicateterm zijn, geen constant!
+//		GdlTerm player = getTranslator().translate(getPlayer());
+//		GdlTerm action = getTranslator().translate(getAction());
+//		GdlRelation does = GdlPool.getRelation( GdlPool.getConstant("does"), Arrays.asList(player, action));
+//		
+//		return does.toString();
+		
 		builder.append("( does ");
 		builder.append(translateTerm(player).trim() + " ");
 		builder.append("( " + translateTerm(action).trim() + " ) )");
-		
-		//This is for when action is a predicateterm
-//		builder.append(" (" + action.getName());
-//		for (IFodotTerm term : action.getArguments())  {
-//			builder.append(" " + translateTerm(term));
-//		}
-//		builder.append(")");
-		
-		
 		return builder.toString();
 	}
 	
-	public String translateTerm(IFodotTerm constant) {
+	public String translateTerm(IFodotTypeEnumerationElement constant) {
 		if (constant == null) {
 			return null;
 		}
 		//TODO: link met vertaler van GDL->FO(.)
+
 		
 		//Temporal cheaty way of translating:
 		return constant.toCode().trim()

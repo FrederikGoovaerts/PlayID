@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import fodot.communication.gdloutput.IFodotGdlTranslator;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
@@ -13,11 +14,28 @@ import fodot.objects.vocabulary.elements.FodotType;
 public class GdlAnswerCalculator {
 
 	private List<FodotStructure> models;
+	private IFodotGdlTranslator translator;
 
-	public GdlAnswerCalculator(Collection<? extends FodotStructure> models) {
+	public GdlAnswerCalculator(IFodotGdlTranslator translator, Collection<? extends FodotStructure> models) {
+		setTranslator(translator);
 		setModels(models);
 	}
 
+	/**********************************************
+	 *  Translator
+	 ***********************************************/
+
+	public IFodotGdlTranslator getTranslator() {
+		return translator;
+	}
+
+	public void setTranslator(IFodotGdlTranslator translator) {
+		this.translator = translator;
+	}	
+
+	/**********************************************/
+	
+	
 	/**********************************************
 	 *  Models methods
 	 ***********************************************/
@@ -77,7 +95,7 @@ public class GdlAnswerCalculator {
 			FodotConstant action = new FodotConstant(c.getElement(2).getValue(), new FodotType("null"));
 			
 			//TODO: use GdlPredicate instead of own GDL action
-			actions.add(new GdlAction(time, player, action));
+			actions.add(new GdlAction(getTranslator(), time, player, action));
 		}
 		return actions;
 	}

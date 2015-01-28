@@ -122,7 +122,7 @@ public class PlayIdProcessor {
 		}
 		
 		//Transform a solution 
-		GdlAnswerCalculator answerer = new GdlAnswerCalculator(models);
+		GdlAnswerCalculator answerer = new GdlAnswerCalculator(parser.getTransformer(), models);
 		List<GdlAction> actions = answerer.generateActionSequence();
 		
 		//Output it

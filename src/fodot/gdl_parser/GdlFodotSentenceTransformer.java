@@ -12,6 +12,7 @@ import static fodot.objects.FodotElementBuilder.createVariable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlDistinct;
 import org.ggp.base.util.gdl.grammar.GdlFunction;
 import org.ggp.base.util.gdl.grammar.GdlLiteral;
@@ -23,6 +24,7 @@ import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
+import fodot.exceptions.gdl.GdlTransformationException;
 import fodot.gdl_parser.util.VariableRegisterer;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
@@ -187,9 +189,11 @@ public class GdlFodotSentenceTransformer {
 		IFodotTerm playerTerm;
 		if (playerGdlTerm instanceof GdlVariable) {
 			playerTerm = generateTerm(playerGdlTerm, trans.getPlayerType());
+		} else if (playerGdlTerm instanceof GdlConstant) {
+//			String playerName = relation.get(0).toSentence().getName().getValue();
+			playerTerm = trans.convertRawRole((GdlConstant) playerGdlTerm);
 		} else {
-			String playerName = relation.get(0).toSentence().getName().getValue();
-			playerTerm = trans.convertRawRole(playerName);
+			throw new GdlTransformationException("Player should be a variable or a constant");
 		}
 
 
@@ -248,7 +252,11 @@ public class GdlFodotSentenceTransformer {
 	 ***********************************************/
 	public IFodotTerm generateTerm(GdlTerm term, FodotType argType) {
 		if (term.isGround()) { //Term is a constant
-			return trans.convertConstantName(term.toString(), argType);
+			if (term instanceof GdlConstant) {
+				return trans.convertConstantName((GdlConstant) term, argType);
+			} else {
+				throw new GdlTransformationException("A ground term should be a constant");
+			}
 		} else if (term instanceof GdlVariable) {
 			return generateVariable((GdlVariable) term, argType);
 		} else if (term instanceof GdlFunction){

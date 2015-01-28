@@ -7,13 +7,13 @@ import java.util.HashSet;
 import java.util.List;
 
 import fodot.exceptions.fodot.FodotException;
-import fodot.objects.general.FodotElementContainer;
+import fodot.objects.general.FodotElementList;
 import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
 import fodot.util.CollectionPrinter;
 
 public class FodotPredicateTermTypeEnumerationElement extends
-		FodotElementContainer<IFodotTypeEnumerationElement> implements
+		FodotElementList<IFodotTypeEnumerationElement> implements
 		IFodotTypeEnumerationElement {
 
 	private FodotPredicateTermDeclaration declaration;
