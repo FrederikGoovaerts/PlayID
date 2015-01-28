@@ -200,7 +200,7 @@ public class GdlFodotSentenceTransformer {
 		//ProcessAction
 		GdlTerm actionGdlTerm = relation.get(1);
 		IFodotTerm actionFodotTerm;
-		if (actionGdlTerm instanceof GdlVariable) {
+		if (actionGdlTerm instanceof GdlVariable || actionGdlTerm instanceof GdlConstant) {
 			actionFodotTerm = generateTerm(actionGdlTerm, trans.getActionType());
 		} else {
 			GdlSentence actionPredSentence = actionGdlTerm.toSentence();

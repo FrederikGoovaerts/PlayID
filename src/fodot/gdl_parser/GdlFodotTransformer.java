@@ -221,7 +221,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 	}
 
 	private boolean isConstantRegistered(FodotConstant constant) {
-		return allType.containsElement(constant);
+		return allType.containsDomainElement(constant);
 	}
 
 	public FodotConstant convertRawConstantName(GdlConstant constant) {
@@ -577,7 +577,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 		GdlTerm actionGdlTerm = rule.getHead().get(1);
 		IFodotTerm actionTerm;
-		if (actionGdlTerm instanceof GdlVariable) {
+		if (actionGdlTerm instanceof GdlVariable || actionGdlTerm instanceof GdlConstant) {
 			actionTerm = sentenceTrans.generateTerm(actionGdlTerm, getActionType());
 		} else {
 			GdlSentence actionSent = actionGdlTerm.toSentence();

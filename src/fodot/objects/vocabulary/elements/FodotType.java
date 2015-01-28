@@ -286,7 +286,7 @@ public class FodotType extends FodotElement implements IFodotElement {
 		domain.addAll(elements);
 	}
 
-	public boolean containsElement(IFodotDomainElement element){
+	public boolean containsDomainElement(IFodotDomainElement element){
 		return domain.contains(element);
 	}
 

@@ -14,10 +14,10 @@ import fodot.objects.vocabulary.elements.IFodotDomainElement;
 public class FodotConstant extends FodotElement implements IFodotTerm, IFodotDomainElement, IFodotTypeEnumerationElement {
 
 	private static final int BINDING_ORDER = -1;
-	
+
 	private String value;
 	private FodotType type;
-	
+
 	public FodotConstant(String value, FodotType type) {
 		super();
 		setValue(value);
@@ -28,25 +28,27 @@ public class FodotConstant extends FodotElement implements IFodotTerm, IFodotDom
 	public String getValue() {
 		return value;
 	}
-	
+
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
+
 	//TYPE	
 	public void setType(FodotType type) {
 		if (type == null) {
 			throw new FodotException("Not a legal type");
 		}
 		this.type = type;
-		this.type.addDomainElement(this);
+		if (!type.containsDomainElement(this)) {
+			this.type.addDomainElement(this);
+		}
 	}
 
 	public FodotType getType() {
 		return type;
 	}
 	//FODOT SENTENCE ELEMENT
-	
+
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		return new HashSet<FodotVariable>();
@@ -107,6 +109,6 @@ public class FodotConstant extends FodotElement implements IFodotTerm, IFodotDom
 	public Collection<? extends IFodotElement> getDirectFodotElements() {
 		return new HashSet<IFodotElement>();
 	}
-	
-	
+
+
 }

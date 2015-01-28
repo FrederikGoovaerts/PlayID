@@ -61,36 +61,10 @@ public class GdlAction {
 		return toCode();
 	}
 	
-	public String toCode() {
-		StringBuilder builder = new StringBuilder();
-		
-		//TODO: action moet een predicateterm zijn, geen constant!
-//		GdlTerm player = getTranslator().translate(getPlayer());
-//		GdlTerm action = getTranslator().translate(getAction());
-//		GdlRelation does = GdlPool.getRelation( GdlPool.getConstant("does"), Arrays.asList(player, action));
-//		
-//		return does.toString();
-		
-		builder.append("( does ");
-		builder.append(translateTerm(player).trim() + " ");
-		builder.append("( " + translateTerm(action).trim() + " ) )");
-		return builder.toString();
-	}
-	
-	public String translateTerm(IFodotTypeEnumerationElement constant) {
-		if (constant == null) {
-			return null;
-		}
-		//TODO: link met vertaler van GDL->FO(.)
-
-		
-		//Temporal cheaty way of translating:
-		return constant.toCode().trim()
-				//Replace all typical action stuff by spaces
-				.replaceAll("[(]|[)]", " ")
-				.replaceAll("[,]|[,][\b]", "")
-				//Replace the typical c_ and p_ by nothing to translate our conventions
-				.replaceAll("[a-zA-Z][_]", "");
-	}
-	
+	public String toCode() {//		
+		GdlTerm gdlPlayer = getTranslator().translate(getPlayer());
+		GdlTerm gdlAction = getTranslator().translate(getAction());
+		GdlRelation does = GdlPool.getRelation( GdlPool.getConstant("does"), Arrays.asList(gdlPlayer, gdlAction));
+		return does.toString();
+	}	
 }
