@@ -1,4 +1,4 @@
-package fodot.gdl_parser;
+package fodot.gdl_parser.visitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,8 @@ import org.ggp.base.util.gdl.grammar.Gdl;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 
+import fodot.gdl_parser.GdlFodotTransformer;
+import fodot.gdl_parser.GdlTransformer;
 import fodot.objects.file.IFodotFile;
 
 /**

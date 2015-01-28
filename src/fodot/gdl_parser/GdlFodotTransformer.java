@@ -138,7 +138,7 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 	public FodotConstant getOwnRole() {
 		if (ownRole == null) {
-			throw new IllegalStateException("No roles present in this class!");
+			throw new GdlTransformationException("No roles present in this class!");
 		} else {
 			return ownRole;
 		}

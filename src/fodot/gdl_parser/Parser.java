@@ -8,6 +8,7 @@ import org.ggp.base.util.game.Game;
 import org.ggp.base.util.gdl.grammar.Gdl;
 
 import fodot.communication.input.IdpFileWriter;
+import fodot.gdl_parser.visitor.GdlInspector;
 import fodot.objects.file.IFodotFile;
 
 /**

@@ -9,8 +9,6 @@ import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
-import fodot.objects.theory.elements.terms.FodotConstant;
-import fodot.objects.vocabulary.elements.FodotType;
 
 public class GdlAnswerCalculator {
 

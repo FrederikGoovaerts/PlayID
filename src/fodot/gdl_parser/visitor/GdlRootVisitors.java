@@ -1,4 +1,4 @@
-package fodot.gdl_parser;
+package fodot.gdl_parser.visitor;
 
 import org.ggp.base.util.gdl.GdlVisitor;
 import org.ggp.base.util.gdl.grammar.*;
