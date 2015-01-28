@@ -14,8 +14,6 @@ import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.theory.elements.terms.FodotVariable;
-import fodot.objects.vocabulary.elements.FodotType;
-import fodot.util.CollectionPrinter;
 
 public class FodotQuantifier extends FodotElement implements IFodotFormula {
 	private String symbol;

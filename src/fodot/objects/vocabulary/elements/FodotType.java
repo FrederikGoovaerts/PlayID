@@ -12,6 +12,7 @@ import java.util.Set;
 
 import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
+import fodot.objects.theory.elements.terms.FodotConstant;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -19,9 +20,16 @@ import fodot.objects.general.IFodotElement;
 public class FodotType extends FodotElement implements IFodotElement {
 	
 
+	public static final FodotType BOOLEAN = new FodotType("bool");
 	public static final FodotType NATURAL_NUMBER = new FodotType("nat");
 	public static final FodotType INTEGER = new FodotType("int", null, null, new HashSet<FodotType>(Arrays.asList(new FodotType[]{NATURAL_NUMBER})));
 
+	static {
+		new FodotConstant("false", BOOLEAN);
+		new FodotConstant("true", BOOLEAN);
+	}
+	
+	
 	private FodotTypeDeclaration declaration;
 	private String name;
 	private Set<IFodotDomainElement> domain = new HashSet<>();

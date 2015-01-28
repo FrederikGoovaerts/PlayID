@@ -2,6 +2,7 @@ package fodot.fodot_parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -246,23 +247,30 @@ public class FodotStructureParser {
 		return new FodotPredicateEnumeration(decl, extractPredicateEnumerationElements(decl, domain));		
 	}
 
-	private Set<IFodotPredicateEnumerationElement> extractPredicateEnumerationElements(FodotPredicateDeclaration decl, String line) {
+	private Collection<? extends IFodotPredicateEnumerationElement> extractPredicateEnumerationElements(FodotPredicateDeclaration decl, String line) {
+
+		Set<IFodotPredicateEnumerationElement> result = new LinkedHashSet<IFodotPredicateEnumerationElement>();
 		//Error checking
 		if (line.contains(RESULT_DIVIDER)) {
 			throw new StructureParsingException(line + " is a function domain, don't parse it with a predicate domain extractor");
 		}
 
-		//Remove the brackets
-		String domainString = extractDomain(line);
+		if (isSingleValue(line)) {
+			result.add(new FodotPredicateEnumerationElement(Arrays.asList(new FodotConstant(line.trim(), FodotType.BOOLEAN))));
+		} else if (containsDomain(line)) {
+			//Remove the brackets
+			String domainString = extractDomain(line);
 
-		//Split all elements
-		List<String> domainElements = ParserUtil.splitOnTrimmed(domainString, MULTIVALUE_DIVIDER);
+			//Split all elements
+			List<String> domainElements = ParserUtil.splitOnTrimmed(domainString, MULTIVALUE_DIVIDER);
 
-		//Parse all elements as if they were lists of type enumerations
-		Set<IFodotPredicateEnumerationElement> result = new LinkedHashSet<IFodotPredicateEnumerationElement>();
-		for (String element : domainElements) {
-			result.add(	new FodotPredicateEnumerationElement(
-					extractTypeEnumerationDomain(decl.getArgumentTypes(), element)));
+			//Parse all elements as if they were lists of type enumerations
+			for (String element : domainElements) {
+				result.add(	new FodotPredicateEnumerationElement(
+						extractTypeEnumerationDomain(decl.getArgumentTypes(), element)));
+			}
+		} else {
+			throw new StructureParsingException(line + " does not contain a 'Single Value' nor a domain.");
 		}
 		return result;
 	}
