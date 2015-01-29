@@ -1,15 +1,13 @@
 package fodot.gdl_parser.firstphase;
 
+import static fodot.objects.FodotElementBuilder.createType;
 import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static fodot.objects.FodotElementBuilder.*;
 
 import org.ggp.base.util.gdl.grammar.Gdl;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
@@ -54,11 +52,12 @@ public class GdlTypeIdentifier {
 	/***********************************************
 	 *  Types
 	 ***********************************************/
+	
 	private FodotType unfilled = createType("Unfilled");
 	private FodotType timeType = createType("Time", getNaturalNumberType());
 	private FodotType playerType = createType("Player");
 	private FodotType actionType = createType("Action");
-	private FodotType scoreType = createType("Score", getNaturalNumberType());
+	private FodotType scoreType = createType("ScoreType", getNaturalNumberType());
 	private FodotType allType = createType("All");
 
 	/**********************************************/

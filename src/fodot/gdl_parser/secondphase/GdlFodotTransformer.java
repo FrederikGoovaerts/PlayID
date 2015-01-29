@@ -5,9 +5,7 @@ import static fodot.objects.FodotElementBuilder.createExists;
 import static fodot.objects.FodotElementBuilder.createImplies;
 import static fodot.objects.FodotElementBuilder.createPredicate;
 import static fodot.objects.FodotElementBuilder.createPredicateDeclaration;
-import static fodot.objects.FodotElementBuilder.createType;
 import static fodot.objects.FodotElementBuilder.createTypeFunctionEnumerationElement;
-import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,46 +95,26 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 	 * Default Types
 	 */
 
-	private FodotType timeType;
-	private FodotType playerType;
-	private FodotType actionType;
-	private FodotType scoreType;
-	private FodotType allType;
-
-	private void buildDefaultTypes(){
-		this.timeType = createType("Time");
-		timeType.addSupertype(getNaturalNumberType());
-
-		this.playerType = createType("Player");
-		this.actionType = createType("Action");
-		actionType.getDeclaration(); //TODO: this has to be fixed!	 //Update 17-01-15: What has to be fixes? -T.
-		this.scoreType = createType("ScoreType");
-		scoreType.addSupertype(getNaturalNumberType());
-		this.allType = createType("All");
-
-		//Nope, this doesn't work :c
-		//		this.allType.addAllSupertypes(Arrays.asList(scoreType,actionType,timeType,playerType));
-	}
-
 	public FodotType getTimeType(){
-		return this.timeType;
+		return getGdlData().getTimeType();
 	}
 
 	public FodotType getPlayerType() {
-		return playerType;
+		return getGdlData().getPlayerType();
 	}
 
 	public FodotType getActionType() {
-		return actionType;
+		return getGdlData().getActionType();
 	}
 
 	public FodotType getScoreType() {
-		return scoreType;
+		return getGdlData().getScoreType();
 	}
 
 	public FodotType getAllType() {
-		return allType;
+		return getGdlData().getAllType();
 	}
+
 
 	/*** End of Default Types subsection ***/
 
@@ -442,7 +420,6 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 		this.terminalSet = new HashSet<>();
 		this.compoundMap = new HashMap<>();
 		this.processingRules = false;
-		this.buildDefaultTypes();
 		this.pool = new LTCPool(this.getTimeType());
 
 		List<FodotType> typeList = new ArrayList<>();
