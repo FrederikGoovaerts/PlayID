@@ -2,12 +2,11 @@ package fodot.gdl_parser.secondphase;
 
 import static fodot.objects.FodotElementBuilder.createConstant;
 import static fodot.objects.FodotElementBuilder.createExists;
-import static fodot.objects.FodotElementBuilder.createFunction;
 import static fodot.objects.FodotElementBuilder.createImplies;
 import static fodot.objects.FodotElementBuilder.createPredicate;
 import static fodot.objects.FodotElementBuilder.createPredicateDeclaration;
 import static fodot.objects.FodotElementBuilder.createType;
-import static fodot.objects.FodotElementBuilder.createTypeFunctionDeclaration;
+import static fodot.objects.FodotElementBuilder.createTypeFunctionEnumerationElement;
 import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
@@ -41,6 +40,7 @@ import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationEl
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
 import fodot.objects.theory.elements.terms.FodotConstant;
+import fodot.objects.theory.elements.terms.FodotFunction;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
@@ -473,17 +473,9 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 
 		GdlSentence predicate = relation.getBody().get(0).toSentence();
 
-
 		FodotPredicateDeclaration fodotPredicate = processPredicate(predicate);
-		int predArity = predicate.arity();
 
-		List<IFodotTypeEnumerationElement> initValues = new ArrayList<IFodotTypeEnumerationElement>();
-
-		for (int i = 0; i < predArity; i++) {
-			//PLS TRUST ME
-			GdlConstant constant = (GdlConstant) predicate.get(i);
-			initValues.add(convertRawConstantName(constant));
-		}
+		List<IFodotTypeEnumerationElement> initValues = extractEnumerationList(predicate);
 
 		this.addInitialValue(fodotPredicate, new FodotPredicateEnumerationElement(initValues));
 	}
@@ -493,7 +485,7 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 		if(processingRules)
 			throw new GdlParsingOrderException("A rule has already been processed," +
 					"processing relations is not allowed anymore.");
-
+		
 		// Static: (pred x1 .. xn)
 		String originalPredName = relation.getName().getValue();
 		String predName = NameUtil.convertToValidPredicateName(originalPredName);
@@ -518,20 +510,34 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 		}
 
 
-		List<IFodotTypeEnumerationElement> staticValues = new ArrayList<IFodotTypeEnumerationElement>();
-
-		for (int i = 0; i < predArity; i++) {
-			//PLS TRUST ME
-			GdlConstant constant = (GdlConstant) relation.get(i);
-			FodotConstant newConstant = convertRawConstantName(constant);
-			staticValues.add(newConstant);
-			if(!isConstantRegistered(newConstant)) {
-				this.addConstant(newConstant);
-			}
-		}
+		List<IFodotTypeEnumerationElement> staticValues = extractEnumerationList(relation);
 
 		this.addStaticValue(pred, new FodotPredicateEnumerationElement(staticValues));
 
+	}
+	
+	
+	private List<IFodotTypeEnumerationElement> extractEnumerationList(GdlSentence sentence) {
+
+		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
+		List<IFodotTypeEnumerationElement> staticValues = new ArrayList<IFodotTypeEnumerationElement>();
+
+		for (int i = 0; i < sentence.arity(); i++) {
+			IFodotTerm term = sentenceTrans.generateTerm(sentence.get(i));
+			if(term instanceof FodotConstant) {
+				staticValues.add((FodotConstant) term);
+				if(!isConstantRegistered((FodotConstant)term)) {
+					this.addConstant((FodotConstant)term);
+				}
+			} else if (term instanceof FodotFunction) {
+				FodotFunction func = (FodotFunction) term;
+				staticValues.add(createTypeFunctionEnumerationElement((FodotTypeFunctionDeclaration) func.getDeclaration(), extractEnumerationList(sentence.get(i).toSentence())));				
+			} else {
+				throw new GdlTransformationException("Not a valid argument in a predicate");
+			}
+		}
+		
+		return staticValues;
 	}
 
 	@Override
@@ -579,7 +585,6 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 
 		GdlTerm actionGdlTerm = rule.getHead().get(1);
 		IFodotTerm actionTerm = sentenceTrans.generateTerm(actionGdlTerm, getActionType());
-		
 
 		List<IFodotTerm> doArguments =
 				Arrays.asList(

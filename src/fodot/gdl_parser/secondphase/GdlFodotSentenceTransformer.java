@@ -228,12 +228,8 @@ public class GdlFodotSentenceTransformer {
 	 *  Term processing
 	 ***********************************************/
 	public IFodotTerm generateTerm(GdlTerm term, FodotType argType) {
-		if (term.isGround()) { //Term is a constant
-			if (term instanceof GdlConstant) {
+		if (term instanceof GdlConstant) {
 				return trans.convertConstantName((GdlConstant) term, argType);
-			} else {
-				throw new GdlTransformationException("A ground term should be a constant");
-			}
 		} else if (term instanceof GdlVariable) {
 			return generateVariable((GdlVariable) term, argType);
 		} else if (term instanceof GdlFunction){
