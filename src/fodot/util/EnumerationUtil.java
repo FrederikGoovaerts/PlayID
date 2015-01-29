@@ -7,7 +7,7 @@ import fodot.exceptions.answer.StructureParsingException;
 import fodot.objects.structure.elements.typenum.elements.FodotPredicateTermTypeEnumerationElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
-import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
 
@@ -37,7 +37,7 @@ public class EnumerationUtil {
 			
 			int firstBracketPosition = value.indexOf("(");
 			String termName = value.substring(0, firstBracketPosition).trim();
-			FodotPredicateTermDeclaration termDecl = getPredicateTermDeclaration(termName, type);
+			FodotTypeFunctionDeclaration termDecl = getPredicateTermDeclaration(termName, type);
 			
 			String allElementsString = value.substring(firstBracketPosition+1, value.lastIndexOf(")")).trim();
 			List<IFodotTypeEnumerationElement> elements = toTypeEnumerationElements(ParserUtil.splitOnTrimmed(allElementsString, ","), termDecl.getArgumentTypes());
@@ -46,10 +46,10 @@ public class EnumerationUtil {
 		return new FodotConstant(value, type);
 	}
 	
-	private static FodotPredicateTermDeclaration getPredicateTermDeclaration(String name, FodotType type) {
+	private static FodotTypeFunctionDeclaration getPredicateTermDeclaration(String name, FodotType type) {
 		for (IFodotDomainElement el : type.getDomainElements()) {
-			if (el instanceof FodotPredicateTermDeclaration) {
-				FodotPredicateTermDeclaration casted = (FodotPredicateTermDeclaration) el;
+			if (el instanceof FodotTypeFunctionDeclaration) {
+				FodotTypeFunctionDeclaration casted = (FodotTypeFunctionDeclaration) el;
 				if (casted.getName().equals(name)) {
 					return casted;
 				}

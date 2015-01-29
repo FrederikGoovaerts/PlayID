@@ -7,19 +7,19 @@ import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
-import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
+import fodot.objects.vocabulary.elements.FodotFunctionFullDeclaration;
 
 public class FodotConstantFunctionEnumeration extends FodotElement implements IFodotStructureElement {
-	private FodotFunctionDeclaration declaration;
+	private FodotFunctionFullDeclaration declaration;
 	private IFodotTypeEnumerationElement value;
 
-	public FodotConstantFunctionEnumeration(FodotFunctionDeclaration declaration, IFodotTypeEnumerationElement value) {
+	public FodotConstantFunctionEnumeration(FodotFunctionFullDeclaration declaration, IFodotTypeEnumerationElement value) {
 		super();
 		this.declaration = declaration;
 		this.value = value;
 	}
 
-	public FodotFunctionDeclaration getDeclaration() {
+	public FodotFunctionFullDeclaration getDeclaration() {
 		return declaration;
 	}
 

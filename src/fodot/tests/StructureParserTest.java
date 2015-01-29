@@ -30,7 +30,7 @@ import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.FodotVocabulary;
-import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
+import fodot.objects.vocabulary.elements.FodotFunctionFullDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 
@@ -110,7 +110,7 @@ public class StructureParserTest {
 		voc.addElement(t2.getDeclaration());
 
 		//PREDS
-		FodotFunctionDeclaration f1 = createFunctionDeclaration("f1", t2);
+		FodotFunctionFullDeclaration f1 = createFunctionDeclaration("f1", t2);
 		voc.addElement(f1);
 
 		//Enumerations

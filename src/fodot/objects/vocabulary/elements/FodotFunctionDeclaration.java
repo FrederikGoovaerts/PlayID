@@ -1,63 +1,49 @@
 package fodot.objects.vocabulary.elements;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fodot.objects.general.IFodotElement;
 import fodot.util.CollectionPrinter;
 
-public class FodotFunctionDeclaration extends FodotArgumentListDeclaration implements IFodotVocabularyElement {
-
-	private final FodotType returnType;
-	private final boolean isPartial;
+public abstract class FodotFunctionDeclaration extends FodotArgumentListDeclaration {
 	
-	public FodotFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType, boolean isPartial) {
-		super(name, argumentTypes);
-		this.returnType = returnType;
-		this.isPartial = isPartial;
-	}
-
+	private FodotType type;
+	
 	public FodotFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType) {
-		this(name, argumentTypes, returnType, false);
-	}
-	
-	public FodotType getReturnType() {
-		return returnType;
-	}
-	
-	@Override
-	public Collection<? extends IFodotElement> getDirectFodotElements() {
-		Set<IFodotElement> superElements = new HashSet<IFodotElement>(super.getDirectFodotElements());
-		superElements.add(returnType);
-		return superElements;
-	}
-	
-	public boolean isPartial() {
-		return isPartial;
+		super(name, argumentTypes);
+		setType(returnType);
 	}
 
-	@Override
-	public int getArity() {
-		return super.getArity() + 1; //Return type also counts
+	/**********************************************
+	 *  Type
+	 ***********************************************/
+	public FodotType getType() {
+		return type;
 	}
-	
+
+	protected void setType(FodotType type) {
+		this.type = type;
+	}
+	/**********************************************/
+
+	/**********************************************
+	 *  Obligatory
+	 ***********************************************/
+
 	@Override
 	public String toCode() {
-		return (isPartial() ? "partial " : "") + getName()
-				+ (hasArguments() ? CollectionPrinter.toCoupleAsCode(getArgumentTypes()) : "")
-				+ " : " + getReturnType().getName();
+		return getName() + (hasArguments() ? CollectionPrinter.toCoupleAsCode(getArgumentTypes()) : "");
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((returnType == null) ? 0 : returnType.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -68,21 +54,18 @@ public class FodotFunctionDeclaration extends FodotArgumentListDeclaration imple
 		if (getClass() != obj.getClass())
 			return false;
 		FodotFunctionDeclaration other = (FodotFunctionDeclaration) obj;
-		if (returnType == null) {
-			if (other.returnType != null)
+		if (type == null) {
+			if (other.type != null)
 				return false;
-		} else if (!returnType.equals(other.returnType))
+		} else if (!type.equals(other.type))
 			return false;
 		return true;
 	}
 
+
 	@Override
 	public String toString() {
-		return "FodotFunctionDeclaration [returnType=" + returnType
-				+ ", isPartial=" + isPartial + ", getName()=" + getName()
-				+ ", getArgumentTypes()=" + getArgumentTypes() + "]";
+		return "[FodotFunctionDeclaration "+toCode()+"]";
 	}
-	
-	
-    
+	/**********************************************/
 }

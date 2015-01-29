@@ -9,16 +9,16 @@ import java.util.List;
 import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.FodotElementList;
 import fodot.objects.general.sorting.FodotElementComparators;
-import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.util.CollectionPrinter;
 
 public class FodotPredicateTermTypeEnumerationElement extends
 		FodotElementList<IFodotTypeEnumerationElement> implements
 		IFodotTypeEnumerationElement {
 
-	private FodotPredicateTermDeclaration declaration;
+	private FodotTypeFunctionDeclaration declaration;
 	
-	public FodotPredicateTermTypeEnumerationElement(FodotPredicateTermDeclaration decl, Collection<? extends IFodotTypeEnumerationElement> elements) {
+	public FodotPredicateTermTypeEnumerationElement(FodotTypeFunctionDeclaration decl, Collection<? extends IFodotTypeEnumerationElement> elements) {
 		super(elements);
 		setDeclaration(decl);
 	}
@@ -27,11 +27,11 @@ public class FodotPredicateTermTypeEnumerationElement extends
 	 *  Declaration
 	 ***********************************************/
 	
-	public FodotPredicateTermDeclaration getDeclaration() {
+	public FodotTypeFunctionDeclaration getDeclaration() {
 		return declaration;
 	}
 
-	public void setDeclaration(FodotPredicateTermDeclaration declaration) {
+	public void setDeclaration(FodotTypeFunctionDeclaration declaration) {
 		if (declaration == null) {
 			throw new FodotException("Declaration can't be null");
 		}

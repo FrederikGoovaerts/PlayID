@@ -44,7 +44,7 @@ import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
-import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.FormulaUtil;
 import fodot.util.NameUtil;
@@ -584,7 +584,7 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 		} else {
 			GdlSentence actionSent = actionGdlTerm.toSentence();
 
-			FodotPredicateTermDeclaration actionDecl =
+			FodotTypeFunctionDeclaration actionDecl =
 					createPredicateTermDeclaration(
 							actionSent.getName().getValue(),
 							FodotType.getSameTypeList(actionSent.arity(),getAllType()),
@@ -784,14 +784,14 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 	}
 
 	Map<FodotConstant, GdlTerm> constantsMap = new HashMap<FodotConstant, GdlTerm> ();
-	Map<FodotPredicateTermDeclaration, GdlConstant> predicateTermMap = new HashMap<FodotPredicateTermDeclaration, GdlConstant> ();
+	Map<FodotTypeFunctionDeclaration, GdlConstant> predicateTermMap = new HashMap<FodotTypeFunctionDeclaration, GdlConstant> ();
 	//	Map<GdlTerm, IFodotTerm> translationsFromGdl = new HashMap<GdlTerm, IFodotTerm>();
 
 	public void addTranslation(FodotConstant fodot, GdlTerm gdl) {
 		constantsMap.put(fodot, gdl);
 	}
 
-	public void addTranslation(FodotPredicateTermDeclaration fodot, GdlConstant name) {
+	public void addTranslation(FodotTypeFunctionDeclaration fodot, GdlConstant name) {
 		predicateTermMap.put(fodot, name);
 	}
 
@@ -805,7 +805,7 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 		}
 		if (fodot instanceof FodotPredicateTermTypeEnumerationElement) {
 			FodotPredicateTermTypeEnumerationElement casted = (FodotPredicateTermTypeEnumerationElement) fodot;
-			FodotPredicateTermDeclaration decl = casted.getDeclaration();
+			FodotTypeFunctionDeclaration decl = casted.getDeclaration();
 			if (predicateTermMap.containsKey(decl)) {
 				GdlConstant name = predicateTermMap.get(decl);
 				List<GdlTerm> body = new ArrayList<GdlTerm>();

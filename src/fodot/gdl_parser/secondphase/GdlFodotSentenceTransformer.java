@@ -34,7 +34,7 @@ import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
-import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 
 /**
@@ -204,7 +204,7 @@ public class GdlFodotSentenceTransformer {
 			actionFodotTerm = generateTerm(actionGdlTerm, trans.getActionType());
 		} else {
 			GdlSentence actionPredSentence = actionGdlTerm.toSentence();
-			FodotPredicateTermDeclaration actionTermDecl = createPredicateTermDeclaration(
+			FodotTypeFunctionDeclaration actionTermDecl = createPredicateTermDeclaration(
 					actionPredSentence.getName().getValue(),
 					FodotType.getSameTypeList(
 							actionPredSentence.arity(),
@@ -384,7 +384,7 @@ public class GdlFodotSentenceTransformer {
 	}
 
 	public FodotPredicateTerm generatePredicateTerm(GdlSentence sentence,
-			FodotPredicateTermDeclaration declaration) {
+			FodotTypeFunctionDeclaration declaration) {
 		FodotPredicateTerm result = createPredicateTerm(declaration, processSentenceArguments(sentence, declaration));
 		trans.addTranslation(declaration, sentence.getName());
 		return result;

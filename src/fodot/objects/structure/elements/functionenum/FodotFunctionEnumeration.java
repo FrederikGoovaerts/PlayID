@@ -8,22 +8,22 @@ import java.util.List;
 import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.structure.elements.FodotEnumeration;
 import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
-import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
+import fodot.objects.vocabulary.elements.FodotFunctionFullDeclaration;
 import fodot.util.CollectionPrinter;
 
 public class FodotFunctionEnumeration extends FodotEnumeration<IFodotFunctionEnumerationElement> {
 	
-	public FodotFunctionEnumeration(FodotFunctionDeclaration declaration, Collection<? extends IFodotFunctionEnumerationElement> elements) {
+	public FodotFunctionEnumeration(FodotFunctionFullDeclaration declaration, Collection<? extends IFodotFunctionEnumerationElement> elements) {
 		super(declaration, elements);
 	}
 
-	public FodotFunctionEnumeration(FodotFunctionDeclaration declaration) {
+	public FodotFunctionEnumeration(FodotFunctionFullDeclaration declaration) {
 		this(declaration, null);
 	}
 
 	@Override
-	public FodotFunctionDeclaration getDeclaration() {
-		return (FodotFunctionDeclaration) super.getDeclaration();
+	public FodotFunctionFullDeclaration getDeclaration() {
+		return (FodotFunctionFullDeclaration) super.getDeclaration();
 	}
 
 

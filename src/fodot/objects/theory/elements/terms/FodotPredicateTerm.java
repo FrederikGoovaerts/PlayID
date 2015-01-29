@@ -4,19 +4,19 @@ import java.util.List;
 
 import fodot.objects.structure.elements.IFodotEnumerationElement;
 import fodot.objects.theory.elements.formulas.FodotAbstractArgumentList;
-import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 
 public class FodotPredicateTerm extends FodotAbstractArgumentList
 		implements IFodotTerm, IFodotEnumerationElement {
 
-	public FodotPredicateTerm(FodotPredicateTermDeclaration decl, List<IFodotTerm> arguments) {
+	public FodotPredicateTerm(FodotTypeFunctionDeclaration decl, List<IFodotTerm> arguments) {
 		super(decl, arguments);
 	}
 
 	@Override
-	public FodotPredicateTermDeclaration getDeclaration() {
-		return ((FodotPredicateTermDeclaration) super.getDeclaration());
+	public FodotTypeFunctionDeclaration getDeclaration() {
+		return ((FodotTypeFunctionDeclaration) super.getDeclaration());
 	}
 	
 	@Override

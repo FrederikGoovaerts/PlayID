@@ -24,7 +24,7 @@ import fodot.objects.structure.elements.typenum.FodotTypeEnumeration;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.FodotVocabulary;
-import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
+import fodot.objects.vocabulary.elements.FodotFunctionFullDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
@@ -158,7 +158,7 @@ public class FodotStructureParser {
 			elementToAdd = createPredicateEnumeration((FodotPredicateDeclaration) elementVocElement, domain);
 			break;
 		case FUNCTION:
-			elementToAdd = createFunctionEnumeration((FodotFunctionDeclaration) elementVocElement, domain);
+			elementToAdd = createFunctionEnumeration((FodotFunctionFullDeclaration) elementVocElement, domain);
 			break;
 		default:
 			throw new StructureParsingException("Trying to process an assignment of an unknown type");
@@ -281,7 +281,7 @@ public class FodotStructureParser {
 	 *  Function Enumeration Parser
 	 ***********************************************/
 
-	private IFodotStructureElement createFunctionEnumeration(FodotFunctionDeclaration decl, String domain) {
+	private IFodotStructureElement createFunctionEnumeration(FodotFunctionFullDeclaration decl, String domain) {
 		if (isSingleValue(domain)) {
 			return new FodotConstantFunctionEnumeration(
 					decl, EnumerationUtil.toTypeEnumerationElement(domain.trim(), decl.getReturnType()));
@@ -291,7 +291,7 @@ public class FodotStructureParser {
 		}
 	}
 
-	private Set<IFodotFunctionEnumerationElement> extractFunctionEnumerationElements(FodotFunctionDeclaration decl, String line) {
+	private Set<IFodotFunctionEnumerationElement> extractFunctionEnumerationElements(FodotFunctionFullDeclaration decl, String line) {
 		//Remove domain brackets
 		String domainString = extractDomain(line);
 
@@ -326,7 +326,7 @@ public class FodotStructureParser {
 	private EnumerationType getDomainType(String name) {
 
 		IFodotVocabularyElement el = getVocabulary().getElementsWithName(name).get(0); // TODO: fix me: count the arity!
-		if (el.getClass().equals(FodotFunctionDeclaration.class)) {
+		if (el.getClass().equals(FodotFunctionFullDeclaration.class)) {
 			return EnumerationType.FUNCTION;
 		}
 		if (el.getClass().equals(FodotPredicateDeclaration.class)) {

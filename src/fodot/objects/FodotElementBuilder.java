@@ -56,9 +56,9 @@ import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
-import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
+import fodot.objects.vocabulary.elements.FodotFunctionFullDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
-import fodot.objects.vocabulary.elements.FodotPredicateTermDeclaration;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
@@ -185,11 +185,11 @@ public class FodotElementBuilder {
 	}
 
 	//Other arithmetics (IDP manual p8)
-	private static final Map<FodotType, FodotFunctionDeclaration> SUCCESSOR_DECLARATIONS = new HashMap<FodotType, FodotFunctionDeclaration>(); 
+	private static final Map<FodotType, FodotFunctionFullDeclaration> SUCCESSOR_DECLARATIONS = new HashMap<FodotType, FodotFunctionFullDeclaration>(); 
 
 	public static FodotFunction createSuccessor(IFodotTerm term) {
 		FodotType type = term.getType();
-		FodotFunctionDeclaration decl;
+		FodotFunctionFullDeclaration decl;
 		if (SUCCESSOR_DECLARATIONS.containsKey(type)) {
 			decl = SUCCESSOR_DECLARATIONS.get(type);
 		} else {
@@ -199,11 +199,11 @@ public class FodotElementBuilder {
 		return createFunction(decl, term);
 	}
 
-	private static final Map<FodotType, FodotFunctionDeclaration> PREDECESSOR_DECLARATIONS = new HashMap<FodotType, FodotFunctionDeclaration>(); 
+	private static final Map<FodotType, FodotFunctionFullDeclaration> PREDECESSOR_DECLARATIONS = new HashMap<FodotType, FodotFunctionFullDeclaration>(); 
 
 	public static FodotFunction createPredecessor(IFodotTerm term) {
 		FodotType type = term.getType();
-		FodotFunctionDeclaration decl;
+		FodotFunctionFullDeclaration decl;
 		if (PREDECESSOR_DECLARATIONS.containsKey(type)) {
 			decl = PREDECESSOR_DECLARATIONS.get(type);
 		} else {
@@ -213,10 +213,10 @@ public class FodotElementBuilder {
 		return createFunction(decl, term);
 	}
 
-	private static final Map<FodotType, FodotFunctionDeclaration> MINIMUM_DECLARATIONS = new HashMap<FodotType, FodotFunctionDeclaration>(); 
+	private static final Map<FodotType, FodotFunctionFullDeclaration> MINIMUM_DECLARATIONS = new HashMap<FodotType, FodotFunctionFullDeclaration>(); 
 
 	public static FodotFunction createMinium(FodotType type) {
-		FodotFunctionDeclaration decl;
+		FodotFunctionFullDeclaration decl;
 		if (MINIMUM_DECLARATIONS.containsKey(type)) {
 			decl = MINIMUM_DECLARATIONS.get(type);
 		} else {
@@ -226,10 +226,10 @@ public class FodotElementBuilder {
 		return createFunction(decl);
 	}
 
-	private static final Map<FodotType, FodotFunctionDeclaration> MAXIMUM_DECLARATIONS = new HashMap<FodotType, FodotFunctionDeclaration>(); 
+	private static final Map<FodotType, FodotFunctionFullDeclaration> MAXIMUM_DECLARATIONS = new HashMap<FodotType, FodotFunctionFullDeclaration>(); 
 
 	public static FodotFunction createMaximum(FodotType type) {
-		FodotFunctionDeclaration decl;
+		FodotFunctionFullDeclaration decl;
 		if (MAXIMUM_DECLARATIONS.containsKey(type)) {
 			decl = MAXIMUM_DECLARATIONS.get(type);
 		} else {
@@ -239,14 +239,14 @@ public class FodotElementBuilder {
 		return createFunction(decl);
 	}
 
-	private static final FodotFunctionDeclaration ABSOLUTE_VALUE_DECLARATION =
+	private static final FodotFunctionFullDeclaration ABSOLUTE_VALUE_DECLARATION =
 			createCompleteFunctionDeclaration("abs", Arrays.asList(getIntegerType()), getIntegerType());
 
 	public static FodotFunction createAbsoluteValue(IFodotTerm term) {
 		return createFunction(ABSOLUTE_VALUE_DECLARATION, term);
 	}
 
-	private static final FodotFunctionDeclaration NEGATE_INTEGER_DECLARATION =
+	private static final FodotFunctionFullDeclaration NEGATE_INTEGER_DECLARATION =
 			createCompleteFunctionDeclaration("-", Arrays.asList(getIntegerType()), getIntegerType());
 
 	public static FodotFunction createNegateInteger(IFodotTerm term) {
@@ -354,29 +354,29 @@ public class FodotElementBuilder {
 		return createPredicate(declaration, Arrays.asList(arguments));
 	}
 
-	public static FodotPredicateTerm createPredicateTerm(FodotPredicateTermDeclaration declaration, List<IFodotTerm> arguments) {
+	public static FodotPredicateTerm createPredicateTerm(FodotTypeFunctionDeclaration declaration, List<IFodotTerm> arguments) {
 		return new FodotPredicateTerm(declaration, arguments);
 	}
 	
-	public static FodotPredicateTerm createPredicateTerm(FodotPredicateTermDeclaration declaration, IFodotTerm... arguments) {
+	public static FodotPredicateTerm createPredicateTerm(FodotTypeFunctionDeclaration declaration, IFodotTerm... arguments) {
 		return createPredicateTerm(declaration, Arrays.asList(arguments));
 	}
 
-	public static FodotFunction createFunction(FodotFunctionDeclaration declaration, List<IFodotTerm> arguments) {
+	public static FodotFunction createFunction(FodotFunctionFullDeclaration declaration, List<IFodotTerm> arguments) {
 		return new FodotFunction(declaration, arguments);
 	}
 
-	public static FodotFunction createFunction(FodotFunctionDeclaration declaration, IFodotTerm... arguments) {
+	public static FodotFunction createFunction(FodotFunctionFullDeclaration declaration, IFodotTerm... arguments) {
 		return new FodotFunction(declaration, Arrays.asList(arguments));
 	}
 
 	//ENUMERATIONS
-	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionDeclaration declaration, 
+	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionFullDeclaration declaration, 
 			Collection<? extends IFodotFunctionEnumerationElement> elements) {
 		return new FodotFunctionEnumeration(declaration, elements);
 	}
 	
-	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionDeclaration declaration) {
+	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionFullDeclaration declaration) {
 		return createFunctionEnumeration(declaration, null);
 	}
 	
@@ -386,7 +386,7 @@ public class FodotElementBuilder {
 	}
 	
 	public static FodotConstantFunctionEnumeration createConstantFunctionEnumeration(
-			FodotFunctionDeclaration declaration, IFodotTypeEnumerationElement value) {
+			FodotFunctionFullDeclaration declaration, IFodotTypeEnumerationElement value) {
 		return new FodotConstantFunctionEnumeration(declaration,value);
 	}
 
@@ -412,7 +412,7 @@ public class FodotElementBuilder {
 		return new FodotTypeEnumeration(type.getType(), values);
 	}
 	
-	public static FodotPredicateTermTypeEnumerationElement createPredicateTermTypeEnumerationElement(FodotPredicateTermDeclaration declaration,
+	public static FodotPredicateTermTypeEnumerationElement createPredicateTermTypeEnumerationElement(FodotTypeFunctionDeclaration declaration,
 			List<? extends IFodotTypeEnumerationElement> elements) {
 		return new FodotPredicateTermTypeEnumerationElement(declaration,elements);
 	}
@@ -473,28 +473,28 @@ public class FodotElementBuilder {
 
 
 	//DECLARATIONS
-	public static FodotFunctionDeclaration createFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType, boolean isPartial) {
-		return new FodotFunctionDeclaration(name, argumentTypes, returnType, isPartial);
+	public static FodotFunctionFullDeclaration createFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType, boolean isPartial) {
+		return new FodotFunctionFullDeclaration(name, argumentTypes, returnType, isPartial);
 	}
 
-	public static FodotFunctionDeclaration createPartialFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType) {
+	public static FodotFunctionFullDeclaration createPartialFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType) {
 		return createFunctionDeclaration(name, argumentTypes, returnType, true);
 	}
 
-	public static FodotFunctionDeclaration createCompleteFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType) {
+	public static FodotFunctionFullDeclaration createCompleteFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType) {
 		return createFunctionDeclaration(name, argumentTypes, returnType, false);
 	}
 
-	public static FodotFunctionDeclaration createCompleteFunctionDeclaration(String name, FodotType returnType) {
+	public static FodotFunctionFullDeclaration createCompleteFunctionDeclaration(String name, FodotType returnType) {
 		return createCompleteFunctionDeclaration(name, null, returnType);
 	}
 
 	//If "PartialFunction" isn't specified, assume that it is Complete
-	public static FodotFunctionDeclaration createFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType) {
+	public static FodotFunctionFullDeclaration createFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType returnType) {
 		return createFunctionDeclaration(name, argumentTypes, returnType, false);
 	}
 
-	public static FodotFunctionDeclaration createFunctionDeclaration(String name, FodotType returnType) {
+	public static FodotFunctionFullDeclaration createFunctionDeclaration(String name, FodotType returnType) {
 		return createCompleteFunctionDeclaration(name, null, returnType);
 	}
 
@@ -502,8 +502,8 @@ public class FodotElementBuilder {
 		return new FodotPredicateDeclaration(name, argumentTypes);
 	}
 
-	public static FodotPredicateTermDeclaration createPredicateTermDeclaration(String name, List<FodotType> argumentTypes, FodotType type) {
-		return new FodotPredicateTermDeclaration(name, argumentTypes, type);
+	public static FodotTypeFunctionDeclaration createPredicateTermDeclaration(String name, List<FodotType> argumentTypes, FodotType type) {
+		return new FodotTypeFunctionDeclaration(name, argumentTypes, type);
 	} 
 
 	//Type declaration

@@ -68,7 +68,7 @@ import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
-import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
+import fodot.objects.vocabulary.elements.FodotFunctionFullDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
@@ -113,12 +113,12 @@ public class FodotGameFactory {
     private GdlFodotTransformer source;
     private LTCPool pool;
 
-    private FodotFunctionDeclaration startFunctionDeclaration;
-    private FodotFunctionDeclaration nextFunctionDeclaration;
+    private FodotFunctionFullDeclaration startFunctionDeclaration;
+    private FodotFunctionFullDeclaration nextFunctionDeclaration;
     private FodotPredicateDeclaration doPredicateDeclaration;
     private FodotPredicateDeclaration terminalTimePredicateDeclaration;
     private FodotTypeDeclaration scoreTypeDeclaration;
-    private FodotFunctionDeclaration scoreFunctionDeclaration;
+    private FodotFunctionFullDeclaration scoreFunctionDeclaration;
 
     private int turnLimit = DEFAULT_TURN_LIMIT;
 
