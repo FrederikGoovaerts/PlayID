@@ -578,31 +578,8 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 		}
 
 		GdlTerm actionGdlTerm = rule.getHead().get(1);
-		IFodotTerm actionTerm;
-		if (actionGdlTerm instanceof GdlVariable || actionGdlTerm instanceof GdlConstant) {
-			actionTerm = sentenceTrans.generateTerm(actionGdlTerm, getActionType());
-		} else {
-			GdlSentence actionSent = actionGdlTerm.toSentence();
-
-			FodotTypeFunctionDeclaration actionDecl =
-					createTypeFunctionDeclaration(
-							actionSent.getName().getValue(),
-							FodotType.getSameTypeList(actionSent.arity(),getAllType()),
-							getActionType()
-							);
-
-			List<IFodotTerm> actionTermArguments = new ArrayList<>();
-			for (GdlTerm term : actionSent.getBody()) {
-				IFodotTerm actionVar = sentenceTrans.generateTerm(term);
-				actionTermArguments.add(actionVar);
-			}
-
-			actionTerm =
-					createFunction(
-							actionDecl,
-							actionTermArguments
-							);
-		}
+		IFodotTerm actionTerm = sentenceTrans.generateTerm(actionGdlTerm, getActionType());
+		
 
 		List<IFodotTerm> doArguments =
 				Arrays.asList(

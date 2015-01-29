@@ -124,11 +124,11 @@ public class GdlFodotSentenceTransformer {
 
 	private IFodotFormula generateRelation(
 			GdlRelation relation) {
-		if(relation.getName().toString().equals("does")) {
-
+		if(relation.getName().getValue().equals("does")) {
+			
 			return generateDoes(relation);    
 
-		} else if(relation.getName().toString().equals("true")) {
+		} else if(relation.getName().getValue().equals("true")) {
 
 			return generateTrue(relation);
 
@@ -191,22 +191,7 @@ public class GdlFodotSentenceTransformer {
 
 		//ProcessAction
 		GdlTerm actionGdlTerm = relation.get(1);
-		IFodotTerm actionFodotTerm;
-		if (actionGdlTerm instanceof GdlVariable || actionGdlTerm instanceof GdlConstant) {
-			actionFodotTerm = generateTerm(actionGdlTerm, trans.getActionType());
-		} else {
-			GdlSentence actionPredSentence = actionGdlTerm.toSentence();
-			FodotTypeFunctionDeclaration actionTermDecl = createTypeFunctionDeclaration(
-					actionPredSentence.getName().getValue(),
-					FodotType.getSameTypeList(
-							actionPredSentence.arity(),
-							trans.getAllType()
-							),
-							trans.getActionType()
-					);
-
-			actionFodotTerm = generatePredicateTerm(actionPredSentence, actionTermDecl);
-		}
+		IFodotTerm actionFodotTerm = generateTerm(actionGdlTerm, trans.getActionType());
 
 		FodotVariable timeVariable = createTimeVariable();
 
@@ -284,7 +269,20 @@ public class GdlFodotSentenceTransformer {
 	}
 	
 	public FodotFunction generateFunction(GdlFunction gdlFunc, FodotType argType) {
-		throw new IllegalStateException("Support for GDL functions is not implemented.\n"+gdlFunc);
+
+		FodotTypeFunctionDeclaration decl = createTypeFunctionDeclaration(
+				gdlFunc.getName().getValue(),
+				FodotType.getSameTypeList(
+						gdlFunc.arity(),
+						trans.getAllType()
+						),
+						argType
+				);
+
+		return generateTypeFunction(gdlFunc, decl);
+		
+		
+//		throw new IllegalStateException("Support for GDL functions is not implemented.\n"+gdlFunc);
 	}
 
 	/**********************************************/
@@ -375,10 +373,9 @@ public class GdlFodotSentenceTransformer {
 		return arguments;
 	}
 
-	public FodotFunction generatePredicateTerm(GdlSentence sentence,
-			FodotTypeFunctionDeclaration declaration) {
-		FodotFunction result = createFunction(declaration, processSentenceArguments(sentence, declaration));
-		trans.addTranslation(declaration, sentence.getName());
+	public FodotFunction generateTypeFunction(GdlFunction function, FodotTypeFunctionDeclaration declaration) {
+		FodotFunction result = createFunction(declaration, processSentenceArguments(function.toSentence(), declaration));
+		trans.addTranslation(declaration, function.getName());
 		return result;
 	}
 
