@@ -7,6 +7,7 @@ import org.ggp.base.util.game.Game;
 
 import fodot.communication.input.IdpFileWriter;
 import fodot.exceptions.gdl.GdlTransformationException;
+import fodot.gdl_parser.secondphase.GdlFodotTransformer;
 import fodot.gdl_parser.visitor.GdlInspector;
 import fodot.objects.file.IFodotFile;
 
@@ -26,7 +27,7 @@ public class Parser {
 	 **************************************************************************/
 
 	public static void main(String[] args) {
-		File file = new File("resources/games/maze.kif");
+		File file = new File("resources/games/blocks.kif");
 		Parser test = new Parser(file);
 		test.run();
 	}

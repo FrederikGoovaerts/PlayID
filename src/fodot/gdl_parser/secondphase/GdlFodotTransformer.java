@@ -1,4 +1,4 @@
-package fodot.gdl_parser;
+package fodot.gdl_parser.secondphase;
 
 import static fodot.objects.FodotElementBuilder.createConstant;
 import static fodot.objects.FodotElementBuilder.createExists;
@@ -27,8 +27,11 @@ import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
+import fodot.communication.gdloutput.IFodotGdlTranslator;
 import fodot.exceptions.gdl.GdlParsingOrderException;
 import fodot.exceptions.gdl.GdlTransformationException;
+import fodot.gdl_parser.FodotGameFactory;
+import fodot.gdl_parser.GdlTransformer;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
@@ -52,7 +55,7 @@ import fodot.util.NameUtil;
  * For correct utilization of this class, non-GdlRules should be processed before
  * GdlRules. If this is not respected, a GdlParsingOrderException will be thrown.
  */
-public class GdlFodotTransformer implements GdlTransformer{
+public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator {
 
 	/***************************************************************************
 	 * Constructor
@@ -439,7 +442,6 @@ public class GdlFodotTransformer implements GdlTransformer{
 
 	}
 
-	@Override
 	public IFodotFile buildFodot() {
 		FodotGameFactory factory = new FodotGameFactory(this,
 				pool,

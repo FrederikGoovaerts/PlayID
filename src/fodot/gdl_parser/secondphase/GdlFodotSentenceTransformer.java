@@ -1,4 +1,4 @@
-package fodot.gdl_parser;
+package fodot.gdl_parser.secondphase;
 
 import static fodot.objects.FodotElementBuilder.createAnd;
 import static fodot.objects.FodotElementBuilder.createDistinct;
