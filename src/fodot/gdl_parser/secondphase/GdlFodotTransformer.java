@@ -515,6 +515,11 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 		this.addStaticValue(pred, new FodotPredicateEnumerationElement(staticValues));
 
 	}
+
+	@Override
+	public void processLegalRelation(GdlRelation relation) {
+		//Do Nothing
+	}
 	
 	
 	private List<IFodotTypeEnumerationElement> extractEnumerationList(GdlSentence sentence) {

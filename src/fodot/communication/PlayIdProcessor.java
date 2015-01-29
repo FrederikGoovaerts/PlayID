@@ -17,7 +17,7 @@ import fodot.exceptions.idp.IdpParseException;
 import fodot.exceptions.idp.NoValidModelsException;
 import fodot.exceptions.idp.UnsatisfiableIdpFileException;
 import fodot.exceptions.playid.PlayIdArgumentException;
-import fodot.gdl_parser.Parser;
+import fodot.gdl_parser.GdlParser;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.FodotStructure;
 import fodot.patterns.ChainFodotOptimizer;
@@ -99,9 +99,9 @@ public class PlayIdProcessor {
 		{
 		
 		//Convert GDL to IDP
-		Parser parser = new Parser(gdlFile);
+		GdlParser parser = new GdlParser(gdlFile);
 		parser.run();
-		IFodotFile parsedFodotFile = parser.getFodot();
+		IFodotFile parsedFodotFile = parser.getFodotFile();
 		
 		
 		//Create IDPfile in same location as GDL file

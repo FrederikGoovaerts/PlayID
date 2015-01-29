@@ -1,15 +1,16 @@
-package fodot.gdl_parser.firstphase.objects;
+package fodot.gdl_parser.firstphase.data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fodot.gdl_parser.firstphase.objects.occurrences.GdlPredicateOccurrence;
+import fodot.gdl_parser.firstphase.data.occurrences.GdlPredicateOccurrence;
 import fodot.objects.vocabulary.elements.FodotType;
 
 public class GdlPredicateData {
 
 	private List<FodotType> argumentTypes;
 	private List<GdlPredicateOccurrence> occurrences = new ArrayList<GdlPredicateOccurrence>();
+	private boolean isDynamic = false;
 	
 	public GdlPredicateData(List<FodotType> argumentTypes) {
 		this.argumentTypes = argumentTypes;
@@ -29,5 +30,13 @@ public class GdlPredicateData {
 	
 	public void addOccurence(GdlPredicateOccurrence occurrence) {
 		this.occurrences.add(occurrence);
+	}
+	
+	public void makeDynamic() {
+		this.isDynamic = true;
+	}
+	
+	public boolean isDynamic() {
+		return this.isDynamic;
 	}
 }

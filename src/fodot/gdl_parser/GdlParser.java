@@ -17,7 +17,7 @@ import fodot.objects.file.IFodotFile;
  * Parsing class for reading a basic .kif file containing a gdl specification
  * and forming data objects which can be used to inspect and adapt the game.
  */
-public class Parser {
+public class GdlParser {
 
 	private static boolean outputToFile = true;
 	private static boolean printBuiltFodot = false;
@@ -28,7 +28,7 @@ public class Parser {
 
 	public static void main(String[] args) {
 		File file = new File("resources/games/blocks.kif");
-		Parser test = new Parser(file);
+		GdlParser test = new GdlParser(file);
 		test.run();
 	}
 
@@ -42,7 +42,7 @@ public class Parser {
 	private GdlFodotTransformer transformer;
 	private IFodotFile parsedFodot;
 
-	public Parser(File inputFile) {
+	public GdlParser(File inputFile) {
 		if(inputFile == null || !inputFile.exists()) {
 			throw new GdlTransformationException("The given GDL file does not exist: " + inputFile);
 		}
@@ -81,11 +81,11 @@ public class Parser {
 		
 		//Do some extra debugging stuff if necessary
 		if ( printBuiltFodot ) {
-			System.out.println(getFodot().toCode());
+			System.out.println(getFodotFile().toCode());
 		}
 		if ( outputToFile ) {
 			File outputFile = IdpFileWriter.createIDPFileBasedOn(input);
-			IdpFileWriter.writeToIDPFile(getFodot(), outputFile);
+			IdpFileWriter.writeToIDPFile(getFodotFile(), outputFile);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class Parser {
 	 **************************************************************************/
 
 	//Parsed Fodot
-	public IFodotFile getFodot() {
+	public IFodotFile getFodotFile() {
 		return parsedFodot;
 	}
 

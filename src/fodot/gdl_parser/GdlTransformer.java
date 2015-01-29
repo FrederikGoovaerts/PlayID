@@ -8,12 +8,27 @@ import org.ggp.base.util.gdl.grammar.GdlRule;
  */
 public interface GdlTransformer {
 
-    void processRoleRelation(GdlRelation relation);
+	/**********************************************
+	 *  Relations
+	 ***********************************************/
+	
+	void processRoleRelation(GdlRelation relation);
 
     void processInitRelation(GdlRelation relation);
 
     void processStaticPredicateRelation(GdlRelation relation);
 
+	void processLegalRelation(GdlRelation relation);   
+	
+
+	/**********************************************/
+
+	
+	
+	/**********************************************
+	 *  Rules
+	 ***********************************************/
+    
     void processNextRule(GdlRule rule);
 
     void processLegalRule(GdlRule rule);
@@ -22,6 +37,9 @@ public interface GdlTransformer {
 
     void processTerminalRule(GdlRule rule);
 
-    void processDefinitionRule(GdlRule rule);
+    void processDefinitionRule(GdlRule rule); 	
+
+	/**********************************************/
+
     
 }

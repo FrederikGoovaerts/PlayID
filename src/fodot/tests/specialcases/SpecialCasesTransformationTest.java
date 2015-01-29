@@ -6,7 +6,7 @@ import java.io.File;
 
 import org.junit.Test;
 
-import fodot.gdl_parser.Parser;
+import fodot.gdl_parser.GdlParser;
 
 /**
  * This class tests if exceptions are throwed properly:
@@ -27,7 +27,7 @@ public class SpecialCasesTransformationTest {
 	 */
 	protected void testFor(String gameName) {
 		File toParse = toFile(gameName);
-		Parser parser = new Parser(toParse);
+		GdlParser parser = new GdlParser(toParse);
 		parser.run();
 	}
 	

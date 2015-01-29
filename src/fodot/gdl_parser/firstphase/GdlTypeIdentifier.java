@@ -11,17 +11,18 @@ import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
-import fodot.gdl_parser.firstphase.objects.GdlConstantData;
-import fodot.gdl_parser.firstphase.objects.GdlFunctionData;
-import fodot.gdl_parser.firstphase.objects.GdlPredicateData;
-import fodot.gdl_parser.firstphase.objects.GdlVariableData;
-import fodot.gdl_parser.firstphase.objects.declarations.GdlFunctionDeclaration;
-import fodot.gdl_parser.firstphase.objects.declarations.GdlPredicateDeclaration;
-import fodot.gdl_parser.firstphase.objects.declarations.GdlVariableDeclaration;
-import fodot.gdl_parser.firstphase.objects.occurrences.GdlConstantOccurrence;
-import fodot.gdl_parser.firstphase.objects.occurrences.GdlFunctionOccurrence;
-import fodot.gdl_parser.firstphase.objects.occurrences.GdlPredicateOccurrence;
-import fodot.gdl_parser.firstphase.objects.occurrences.GdlVariableOccurrence;
+import fodot.gdl_parser.GdlTransformer;
+import fodot.gdl_parser.firstphase.data.GdlConstantData;
+import fodot.gdl_parser.firstphase.data.GdlFunctionData;
+import fodot.gdl_parser.firstphase.data.GdlPredicateData;
+import fodot.gdl_parser.firstphase.data.GdlVariableData;
+import fodot.gdl_parser.firstphase.data.declarations.GdlFunctionDeclaration;
+import fodot.gdl_parser.firstphase.data.declarations.GdlPredicateDeclaration;
+import fodot.gdl_parser.firstphase.data.declarations.GdlVariableDeclaration;
+import fodot.gdl_parser.firstphase.data.occurrences.GdlConstantOccurrence;
+import fodot.gdl_parser.firstphase.data.occurrences.GdlFunctionOccurrence;
+import fodot.gdl_parser.firstphase.data.occurrences.GdlPredicateOccurrence;
+import fodot.gdl_parser.firstphase.data.occurrences.GdlVariableOccurrence;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.FormulaUtil;
 
@@ -153,5 +154,81 @@ public class GdlTypeIdentifier {
 	
 	/**********************************************/
 
+	
+	
+	/**********************************************
+	 *  GdlTransformer creator
+	 ***********************************************/
+	public GdlTransformer createTransformer() {
+		return new GdlTypeIdentifierTransformer();
+	}
+
+	/**********************************************/
+
+	
+	
+	
+	
+	/* =======================================
+	 * ====== TRANSFORMER: THE VISITOR ======
+	 * ======================================= */
+	
+	private class GdlTypeIdentifierTransformer implements GdlTransformer {
+
+		@Override
+		public void processRoleRelation(GdlRelation relation) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void processInitRelation(GdlRelation relation) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void processStaticPredicateRelation(GdlRelation relation) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void processLegalRelation(GdlRelation relation) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void processNextRule(GdlRule rule) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void processLegalRule(GdlRule rule) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void processGoalRule(GdlRule rule) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void processTerminalRule(GdlRule rule) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void processDefinitionRule(GdlRule rule) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
 
 }

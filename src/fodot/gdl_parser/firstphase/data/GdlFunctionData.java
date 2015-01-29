@@ -1,9 +1,9 @@
-package fodot.gdl_parser.firstphase.objects;
+package fodot.gdl_parser.firstphase.data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fodot.gdl_parser.firstphase.objects.occurrences.GdlFunctionOccurrence;
+import fodot.gdl_parser.firstphase.data.occurrences.GdlFunctionOccurrence;
 import fodot.objects.vocabulary.elements.FodotType;
 
 public class GdlFunctionData {

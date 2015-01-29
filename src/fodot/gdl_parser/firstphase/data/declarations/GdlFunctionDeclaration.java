@@ -1,4 +1,4 @@
-package fodot.gdl_parser.firstphase.objects.declarations;
+package fodot.gdl_parser.firstphase.data.declarations;
 
 import org.ggp.base.util.gdl.grammar.GdlFunction;
 
