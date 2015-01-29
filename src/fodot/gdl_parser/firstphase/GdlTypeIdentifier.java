@@ -280,25 +280,15 @@ public class GdlTypeIdentifier {
 			super();
 			this.rule = rule;
 		}
-		
-		public void visitConstant(GdlConstant constant) {
-			// TODO
-		}
-		public void visitVariable(GdlVariable variable) {
-			// TODO
-		}
-		public void visitFunction(GdlFunction function) {
-			// TODO
-		}
 		public void visitRelation(GdlRelation relation) {
 			// TODO
 		}
 		public void visitProposition(GdlProposition proposition) {
 			// TODO
 		}
-		public void visitNot(GdlNot not) {
-			// TODO
-		}
+//		public void visitNot(GdlNot not) {
+//			// TODO
+//		}
 		public void visitDistinct(GdlDistinct distinct) {
 			// TODO
 		}
@@ -311,7 +301,57 @@ public class GdlTypeIdentifier {
 		
 	}
 	
+	/**
+	 * This will visit the arguments of a predicate.
+	 * @author Thomas Winters
+	 */
+	private class GdlPredicateVisitor extends GdlVisitor {
+		private GdlRule rule;
+		private GdlRelation predicate;
+		
+		public GdlPredicateVisitor(GdlRule rule, GdlRelation predicate) {
+			super();
+			this.rule = rule;
+			this.predicate = predicate;
+		}
+		
+		public void visitConstant(GdlConstant constant) {
+			// TODO
+		}
+		public void visitVariable(GdlVariable variable) {
+			// TODO
+		}
+		public void visitFunction(GdlFunction function) {
+			// TODO
+		}
+		
+	}
 
+	/**
+	 * This will visit the arguments of a function.
+	 * @author Thomas Winters
+	 */
+	private class GdlFunctionVisitor extends GdlVisitor {
+		private GdlRule rule;
+		private GdlFunction function;
+		
+		public GdlFunctionVisitor(GdlRule rule, GdlFunction function) {
+			super();
+			this.rule = rule;
+			this.function = function;
+		}
+		
+		public void visitConstant(GdlConstant constant) {
+			// TODO
+		}
+		public void visitVariable(GdlVariable variable) {
+			// TODO
+		}
+		public void visitFunction(GdlFunction function) {
+			// TODO
+		}
+		
+	}
 	/**********************************************/
 
 }
