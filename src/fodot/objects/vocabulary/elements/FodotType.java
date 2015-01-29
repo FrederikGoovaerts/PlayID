@@ -321,7 +321,11 @@ public class FodotType extends FodotElement implements IFodotElement {
 	public Set<FodotType> getPrerequiredTypes() {
 		Set<FodotType> result = new HashSet<FodotType>();
 		for (IFodotDomainElement el : getDomainElements()) {
-			result.addAll(el.getRequiredTypes());
+			for (FodotType req : el.getRequiredTypes()) {
+				if (!req.equals(this)) {
+					result.add(req);					
+				}
+			}
 		}		
 		return result;
 	}

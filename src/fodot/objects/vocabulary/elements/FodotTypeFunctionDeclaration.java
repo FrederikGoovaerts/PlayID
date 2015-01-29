@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 public class FodotTypeFunctionDeclaration extends FodotFunctionDeclaration implements IFodotDomainElement {
-	
+
 	public FodotTypeFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType elementOfType) {
 		super(name, argumentTypes, elementOfType);
 	}
@@ -57,16 +57,13 @@ public class FodotTypeFunctionDeclaration extends FodotFunctionDeclaration imple
 	public Set<FodotType> getRequiredTypes() {
 		Set<FodotType> result = new HashSet<FodotType>();
 		//Check all arguments
-		for (FodotType arg : getArgumentTypes()) {
-			result.addAll(arg.getPrerequiredTypes());
-		}
 		result.addAll(getArgumentTypes());
-		
+
 		return result;
 	}
-	
-	
 
-	
-	
+
+
+
+
 }
