@@ -1,13 +1,6 @@
 package fodot.gdl_parser.secondphase;
 
-import static fodot.objects.FodotElementBuilder.createAnd;
-import static fodot.objects.FodotElementBuilder.createDistinct;
-import static fodot.objects.FodotElementBuilder.createFunction;
-import static fodot.objects.FodotElementBuilder.createNot;
-import static fodot.objects.FodotElementBuilder.createOr;
-import static fodot.objects.FodotElementBuilder.createPredicate;
-import static fodot.objects.FodotElementBuilder.createPredicateTermDeclaration;
-import static fodot.objects.FodotElementBuilder.createVariable;
+import static fodot.objects.FodotElementBuilder.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -203,7 +196,7 @@ public class GdlFodotSentenceTransformer {
 			actionFodotTerm = generateTerm(actionGdlTerm, trans.getActionType());
 		} else {
 			GdlSentence actionPredSentence = actionGdlTerm.toSentence();
-			FodotTypeFunctionDeclaration actionTermDecl = createPredicateTermDeclaration(
+			FodotTypeFunctionDeclaration actionTermDecl = createTypeFunctionDeclaration(
 					actionPredSentence.getName().getValue(),
 					FodotType.getSameTypeList(
 							actionPredSentence.arity(),

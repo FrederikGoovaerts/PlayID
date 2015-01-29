@@ -404,7 +404,7 @@ public class FodotElementBuilder {
 		return new FodotTypeEnumeration(type.getType(), values);
 	}
 	
-	public static FodoTypeFunctionEnumerationElement createPredicateTermTypeEnumerationElement(FodotTypeFunctionDeclaration declaration,
+	public static FodoTypeFunctionEnumerationElement createTypeFunctionEnumerationElement(FodotTypeFunctionDeclaration declaration,
 			List<? extends IFodotTypeEnumerationElement> elements) {
 		return new FodoTypeFunctionEnumerationElement(declaration,elements);
 	}
@@ -494,7 +494,7 @@ public class FodotElementBuilder {
 		return new FodotPredicateDeclaration(name, argumentTypes);
 	}
 
-	public static FodotTypeFunctionDeclaration createPredicateTermDeclaration(String name, List<FodotType> argumentTypes, FodotType type) {
+	public static FodotTypeFunctionDeclaration createTypeFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType type) {
 		return new FodotTypeFunctionDeclaration(name, argumentTypes, type);
 	} 
 
