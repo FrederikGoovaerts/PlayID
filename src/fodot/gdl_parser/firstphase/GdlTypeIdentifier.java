@@ -1,5 +1,6 @@
 package fodot.gdl_parser.firstphase;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,10 +32,10 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Data maps
 	 ***********************************************/
-	private Map<GdlConstant, GdlConstantData> constants;
-	private Map<GdlVariableDeclaration, GdlVariableData> variables;
-	private Map<GdlPredicateDeclaration, GdlPredicateData> predicates;	
-	private Map<GdlFunctionDeclaration, GdlFunctionData> functions;
+	private Map<GdlConstant, GdlConstantData> constants = new HashMap<GdlConstant, GdlConstantData>();
+	private Map<GdlVariableDeclaration, GdlVariableData> variables = new HashMap<GdlVariableDeclaration, GdlVariableData>();
+	private Map<GdlPredicateDeclaration, GdlPredicateData> predicates = new HashMap<GdlPredicateDeclaration, GdlPredicateData>();	
+	private Map<GdlFunctionDeclaration, GdlFunctionData> functions = new HashMap<GdlFunctionDeclaration, GdlFunctionData>();
 	/**********************************************/
 
 
@@ -228,6 +229,8 @@ public class GdlTypeIdentifier {
 			// TODO Auto-generated method stub
 			
 		}
+		
+		
 		
 	}
 

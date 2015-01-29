@@ -7,6 +7,7 @@ import org.ggp.base.util.game.Game;
 
 import fodot.communication.input.IdpFileWriter;
 import fodot.exceptions.gdl.GdlTransformationException;
+import fodot.gdl_parser.firstphase.GdlTypeIdentifier;
 import fodot.gdl_parser.secondphase.GdlFodotTransformer;
 import fodot.gdl_parser.visitor.GdlInspector;
 import fodot.objects.file.IFodotFile;
@@ -36,10 +37,15 @@ public class GdlParser {
 	 * Constructor
 	 **************************************************************************/
 
-
+	//Input
 	private final File input;
 	private final Game game;
-	private GdlFodotTransformer transformer;
+	
+	//Processing
+	private final GdlTypeIdentifier identifier = new GdlTypeIdentifier();
+	private final GdlFodotTransformer fodotTransformer = new GdlFodotTransformer();
+	
+	//Output
 	private IFodotFile parsedFodot;
 
 	public GdlParser(File inputFile) {
@@ -51,9 +57,6 @@ public class GdlParser {
 		this.input = inputFile;
 		String fileContents = FileUtils.readFileAsString(inputFile);
 		this.game = Game.createEphemeralGame(Game.preprocessRulesheet(fileContents));
-		
-		//Initialise other variables
-		setTransformer( new GdlFodotTransformer() );
 		
 	}
 
@@ -69,14 +72,15 @@ public class GdlParser {
 		 * the dynamic and static predicates...
 		 */
 		
-		//TODO inspector gebruiken om een eerstefase visitor te bezoeken
+		GdlInspector.inspect(game, getIdentifier().createTransformer());
+		
 		
 		/*
 		 * Second phase:
 		 * Visit every rule and translate it
 		 */
-		GdlInspector.inspect( game, getTransformer() );
-		setFodot( getTransformer().buildFodot() );
+		GdlInspector.inspect( game, getFodotTransformer() );
+		setFodot( getFodotTransformer().buildFodot() );
 
 		
 		//Do some extra debugging stuff if necessary
@@ -102,13 +106,15 @@ public class GdlParser {
 		this.parsedFodot = fodot;
 	}
 
-	//Transformer
-	public GdlFodotTransformer getTransformer() {
-		return transformer;
-	}
+	//Identifier
 
-	public void setTransformer(GdlFodotTransformer transformer) {
-		this.transformer = transformer;
+	public GdlTypeIdentifier getIdentifier() {
+		return identifier;
+	}	
+	
+	//Transformer
+	public GdlFodotTransformer getFodotTransformer() {
+		return fodotTransformer;
 	}
 
 	//Game

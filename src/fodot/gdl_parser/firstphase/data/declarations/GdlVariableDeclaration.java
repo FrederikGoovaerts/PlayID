@@ -9,10 +9,26 @@ public class GdlVariableDeclaration {
 	
 	public GdlVariableDeclaration(GdlVariable variable, GdlRule location) {
 		super();
-		this.variable = variable;
-		this.location = location;
+		setVariable(variable);
+		setLocation(location);
 	}
 	
+	public GdlVariable getVariable() {
+		return variable;
+	}
+	
+	private void setVariable(GdlVariable variable) {
+		this.variable = variable;
+	}
+	
+	public GdlRule getLocation() {
+		return location;
+	}
+
+	private void setLocation(GdlRule location) {
+		this.location = location;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
