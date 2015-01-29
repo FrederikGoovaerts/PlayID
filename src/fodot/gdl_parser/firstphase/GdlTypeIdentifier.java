@@ -9,14 +9,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.ggp.base.util.gdl.GdlVisitor;
 import org.ggp.base.util.gdl.grammar.Gdl;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
+import org.ggp.base.util.gdl.grammar.GdlDistinct;
 import org.ggp.base.util.gdl.grammar.GdlFunction;
 import org.ggp.base.util.gdl.grammar.GdlLiteral;
+import org.ggp.base.util.gdl.grammar.GdlNot;
+import org.ggp.base.util.gdl.grammar.GdlOr;
+import org.ggp.base.util.gdl.grammar.GdlProposition;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
+import org.ggp.base.util.gdl.grammar.GdlSentence;
+import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
+import fodot.exceptions.gdl.GdlTypeIdentificationError;
 import fodot.gdl_parser.GdlFodotData;
 import fodot.gdl_parser.GdlTransformer;
 import fodot.gdl_parser.firstphase.data.GdlConstantData;
@@ -52,7 +60,6 @@ public class GdlTypeIdentifier {
 	/***********************************************
 	 *  Types
 	 ***********************************************/
-	
 	private FodotType unfilled = createType("Unfilled");
 	private FodotType timeType = createType("Time", getNaturalNumberType());
 	private FodotType playerType = createType("Player");
@@ -181,10 +188,7 @@ public class GdlTypeIdentifier {
 		Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule = new HashMap<GdlRule, Map<GdlVariable, FodotVariable>>();
 		Set<GdlPredicateDeclaration> dynamicPredicates = new HashSet<GdlPredicateDeclaration>();
 
-
-
-
-
+		//TODO: mapping of TypeIdentifier data to GdlFodotData data
 
 		return new GdlFodotData(
 				this.timeType, this.playerType, this.actionType, this.scoreType, this.allType,
@@ -206,63 +210,107 @@ public class GdlTypeIdentifier {
 	 * ====== TRANSFORMER: THE VISITOR ======
 	 * ======================================= */
 
+	/**
+	 * This class will be used to visit the relations and rules.
+	 * It will use the GdlRuleElementsVisitor to visit the rules deeper.
+	 * @author Thomas Winters
+	 */
 	private class GdlTypeIdentifierTransformer implements GdlTransformer {
 
 		@Override
 		public void processRoleRelation(GdlRelation relation) {
-			// TODO Auto-generated method stub
+			// TODO
 
 		}
 
 		@Override
 		public void processInitRelation(GdlRelation relation) {
-			// TODO Auto-generated method stub
+			// TODO
 
 		}
 
 		@Override
 		public void processStaticPredicateRelation(GdlRelation relation) {
-			// TODO Auto-generated method stub
+			// TODO
 
 		}
 
 		@Override
 		public void processLegalRelation(GdlRelation relation) {
-			// TODO Auto-generated method stub
+			// TODO
 
 		}
 
 		@Override
 		public void processNextRule(GdlRule rule) {
-			// TODO Auto-generated method stub
+			// TODO
 
 		}
 
 		@Override
 		public void processLegalRule(GdlRule rule) {
-			// TODO Auto-generated method stub
+			// TODO
 
 		}
 
 		@Override
 		public void processGoalRule(GdlRule rule) {
-			// TODO Auto-generated method stub
+			// TODO
 
 		}
 
 		@Override
 		public void processTerminalRule(GdlRule rule) {
-			// TODO Auto-generated method stub
+			// TODO
 
 		}
 
 		@Override
 		public void processDefinitionRule(GdlRule rule) {
-			// TODO Auto-generated method stub
+			// TODO
 
 		}		
-
 	}
+	
+	private class GdlRuleElementsVisitor extends GdlVisitor {
+		//We will need this rule so we can tell what variables are the same.
+		private GdlRule rule;
+		
+		public GdlRuleElementsVisitor(GdlRule rule) {
+			super();
+			this.rule = rule;
+		}
+		
+		public void visitConstant(GdlConstant constant) {
+			// TODO
+		}
+		public void visitVariable(GdlVariable variable) {
+			// TODO
+		}
+		public void visitFunction(GdlFunction function) {
+			// TODO
+		}
+		public void visitRelation(GdlRelation relation) {
+			// TODO
+		}
+		public void visitProposition(GdlProposition proposition) {
+			// TODO
+		}
+		public void visitNot(GdlNot not) {
+			// TODO
+		}
+		public void visitDistinct(GdlDistinct distinct) {
+			// TODO
+		}
+		public void visitOr(GdlOr or) {
+			// TODO
+		}
+		public void visitRule(GdlRule rule) {
+			throw new GdlTypeIdentificationError("A rule occured in a rule, that's not possible, right?");
+		}
+		
+	}
+	
 
 	/**********************************************/
 
