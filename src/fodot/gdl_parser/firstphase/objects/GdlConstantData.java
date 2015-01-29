@@ -1,0 +1,33 @@
+package fodot.gdl_parser.firstphase.objects;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import fodot.gdl_parser.firstphase.objects.occurrences.GdlConstantOccurrence;
+import fodot.objects.vocabulary.elements.FodotType;
+
+public class GdlConstantData {
+	private FodotType type;
+	private List<GdlConstantOccurrence> occurrences = new ArrayList<GdlConstantOccurrence>();
+	
+	public GdlConstantData(FodotType type) {
+		this.type = type;
+	}
+
+	public FodotType getType() {
+		return type;
+	}
+	
+	public void setType(FodotType type) {
+		this.type = type;
+	}
+	
+	public List<GdlConstantOccurrence> getOccurences() {
+		return occurrences;
+	}
+	
+	public void addOccurences(GdlConstantOccurrence occurrence) {
+		this.occurrences.add(occurrence);
+	}
+	
+}

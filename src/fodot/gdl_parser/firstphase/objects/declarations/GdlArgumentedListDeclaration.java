@@ -1,8 +1,6 @@
 package fodot.gdl_parser.firstphase.objects.declarations;
 
 import org.ggp.base.util.gdl.grammar.GdlConstant;
-import org.ggp.base.util.gdl.grammar.GdlFunction;
-import org.ggp.base.util.gdl.grammar.GdlRelation;
 
 public abstract class GdlArgumentedListDeclaration {
 	private GdlConstant name;
