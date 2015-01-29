@@ -1,8 +1,10 @@
 package fodot.gdl_parser.firstphase;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.ggp.base.util.gdl.grammar.Gdl;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
@@ -12,6 +14,7 @@ import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
+import fodot.gdl_parser.GdlFodotData;
 import fodot.gdl_parser.GdlTransformer;
 import fodot.gdl_parser.firstphase.data.GdlConstantData;
 import fodot.gdl_parser.firstphase.data.GdlFunctionData;
@@ -24,6 +27,10 @@ import fodot.gdl_parser.firstphase.data.occurrences.GdlConstantOccurrence;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlFunctionOccurrence;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlPredicateOccurrence;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlVariableOccurrence;
+import fodot.objects.theory.elements.terms.FodotConstant;
+import fodot.objects.theory.elements.terms.FodotVariable;
+import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
+import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.FormulaUtil;
 
@@ -43,6 +50,11 @@ public class GdlTypeIdentifier {
 	 *  Types
 	 ***********************************************/
 	private FodotType unfilled = new FodotType("Unfilled");
+	private FodotType timeType = new FodotType("Time");
+	private FodotType playerType = new FodotType("Player");
+	private FodotType actionType = new FodotType("Action");
+	private FodotType scoreType = new FodotType("Score");
+	private FodotType allType = new FodotType("All");
 
 	/**********************************************/
 
@@ -155,7 +167,29 @@ public class GdlTypeIdentifier {
 	
 	/**********************************************/
 
-	
+	/**********************************************
+	 *  Resulting GdlFodotData generator
+	 ***********************************************/
+	public GdlFodotData getResultingData() {
+		Map<GdlConstant, FodotConstant> constants = new HashMap<GdlConstant, FodotConstant>();
+		Map<GdlFunctionDeclaration, FodotFunctionDeclaration> functionDeclarations = new HashMap<GdlFunctionDeclaration, FodotFunctionDeclaration>();
+		Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations = new HashMap<GdlPredicateDeclaration, FodotPredicateDeclaration>();
+		Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule = new HashMap<GdlRule, Map<GdlVariable, FodotVariable>>();
+		Set<GdlPredicateDeclaration> dynamicPredicates = new HashSet<GdlPredicateDeclaration>();
+		
+		
+		
+		
+		
+		
+		return new GdlFodotData(
+				this.timeType, this.playerType, this.actionType, this.scoreType, this.allType,
+				constants, functionDeclarations, predicateDeclarations,
+				variablesPerRule, dynamicPredicates);
+	}
+
+	/**********************************************/
+
 	
 	/**********************************************
 	 *  GdlTransformer creator
@@ -164,12 +198,6 @@ public class GdlTypeIdentifier {
 		return new GdlTypeIdentifierTransformer();
 	}
 
-	/**********************************************/
-
-	
-	
-	
-	
 	/* =======================================
 	 * ====== TRANSFORMER: THE VISITOR ======
 	 * ======================================= */
@@ -228,10 +256,10 @@ public class GdlTypeIdentifier {
 		public void processDefinitionRule(GdlRule rule) {
 			// TODO Auto-generated method stub
 			
-		}
-		
-		
+		}		
 		
 	}
+
+	/**********************************************/
 
 }

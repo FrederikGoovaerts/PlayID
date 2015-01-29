@@ -30,6 +30,7 @@ import fodot.communication.gdloutput.IFodotGdlTranslator;
 import fodot.exceptions.gdl.GdlParsingOrderException;
 import fodot.exceptions.gdl.GdlTransformationException;
 import fodot.gdl_parser.FodotGameFactory;
+import fodot.gdl_parser.GdlFodotData;
 import fodot.gdl_parser.GdlTransformer;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.file.IFodotFile;
@@ -57,11 +58,15 @@ import fodot.util.NameUtil;
  */
 public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator {
 
+	private GdlFodotData data;
+	
 	/***************************************************************************
 	 * Constructor
+	 * @param data 	The data created by the first pass through the GDL file
 	 **************************************************************************/
 
-	public GdlFodotTransformer(){
+	public GdlFodotTransformer(GdlFodotData data){
+		this.data = data;
 		this.cleanAndInitializeBuilder();
 	}
 

@@ -42,8 +42,8 @@ public class GdlParser {
 	private final Game game;
 	
 	//Processing
-	private final GdlTypeIdentifier identifier = new GdlTypeIdentifier();
-	private final GdlFodotTransformer fodotTransformer = new GdlFodotTransformer();
+	private GdlTypeIdentifier identifier = new GdlTypeIdentifier();
+	private GdlFodotTransformer fodotTransformer;
 	
 	//Output
 	private IFodotFile parsedFodot;
@@ -73,12 +73,13 @@ public class GdlParser {
 		 */
 		
 		GdlInspector.inspect(game, getIdentifier().createTransformer());
-		
+		GdlFodotData data = getIdentifier().getResultingData();
 		
 		/*
 		 * Second phase:
 		 * Visit every rule and translate it
 		 */
+		setFodotTransformer( new GdlFodotTransformer(data) );
 		GdlInspector.inspect( game, getFodotTransformer() );
 		setFodot( getFodotTransformer().buildFodot() );
 
@@ -115,6 +116,10 @@ public class GdlParser {
 	//Transformer
 	public GdlFodotTransformer getFodotTransformer() {
 		return fodotTransformer;
+	}
+	
+	public void setFodotTransformer(GdlFodotTransformer transformer) {
+		this.fodotTransformer = transformer;
 	}
 
 	//Game
