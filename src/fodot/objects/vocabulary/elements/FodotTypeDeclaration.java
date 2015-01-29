@@ -102,7 +102,7 @@ public class FodotTypeDeclaration extends FodotElement implements IFodotVocabula
 			List<IFodotElement> domainElements = new ArrayList<IFodotElement>(getType().getDomainElements());
 			Collections.sort(domainElements, FodotElementComparators.ELEMENT_TOCODE_COMPARATOR);
 			
-			builder.append(CollectionPrinter.printStringList("{",	"}", ",", CollectionPrinter.toCode(domainElements)));
+			builder.append(CollectionPrinter.printStringList("{ ", " }", ", ", CollectionPrinter.toCode(domainElements)));
 		}
 		return builder.toString();
 	}

@@ -55,7 +55,7 @@ public class CollectionPrinter {
 	}
 	
 	public static String toCouple(Collection<String> list) {
-		return printStringList("(", ")", ",", new ArrayList<String>(list));
+		return printStringList("(", ")", ", ", new ArrayList<String>(list));
 	}
 	
 	public static String toDomain(Collection<String> list) {
