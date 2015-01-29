@@ -12,13 +12,13 @@ import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.util.CollectionPrinter;
 
-public class FodotPredicateTermTypeEnumerationElement extends
+public class FodoTypeFunctionEnumerationElement extends
 		FodotElementList<IFodotTypeEnumerationElement> implements
 		IFodotTypeEnumerationElement {
 
 	private FodotTypeFunctionDeclaration declaration;
 	
-	public FodotPredicateTermTypeEnumerationElement(FodotTypeFunctionDeclaration decl, Collection<? extends IFodotTypeEnumerationElement> elements) {
+	public FodoTypeFunctionEnumerationElement(FodotTypeFunctionDeclaration decl, Collection<? extends IFodotTypeEnumerationElement> elements) {
 		super(elements);
 		setDeclaration(decl);
 	}
@@ -79,7 +79,7 @@ public class FodotPredicateTermTypeEnumerationElement extends
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		FodotPredicateTermTypeEnumerationElement other = (FodotPredicateTermTypeEnumerationElement) obj;
+		FodoTypeFunctionEnumerationElement other = (FodoTypeFunctionEnumerationElement) obj;
 		if (declaration == null) {
 			if (other.declaration != null)
 				return false;
@@ -90,7 +90,7 @@ public class FodotPredicateTermTypeEnumerationElement extends
 
 	@Override
 	public String toString() {
-		return "[FodotPTTEE : "+toCode()+"]";
+		return "[FodotTypeFunctionEnumEl : "+toCode()+"]";
 	}
 	/**********************************************/
 

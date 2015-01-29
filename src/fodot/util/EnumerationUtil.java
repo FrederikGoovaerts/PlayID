@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fodot.exceptions.answer.StructureParsingException;
-import fodot.objects.structure.elements.typenum.elements.FodotPredicateTermTypeEnumerationElement;
+import fodot.objects.structure.elements.typenum.elements.FodoTypeFunctionEnumerationElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
@@ -41,7 +41,7 @@ public class EnumerationUtil {
 			
 			String allElementsString = value.substring(firstBracketPosition+1, value.lastIndexOf(")")).trim();
 			List<IFodotTypeEnumerationElement> elements = toTypeEnumerationElements(ParserUtil.splitOnTrimmed(allElementsString, ","), termDecl.getArgumentTypes());
-			return new FodotPredicateTermTypeEnumerationElement(termDecl, elements);		
+			return new FodoTypeFunctionEnumerationElement(termDecl, elements);		
 		}
 		return new FodotConstant(value, type);
 	}

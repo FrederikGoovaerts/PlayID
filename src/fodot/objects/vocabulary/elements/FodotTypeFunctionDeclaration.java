@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fodot.util.CollectionPrinter;
-
 public class FodotTypeFunctionDeclaration extends FodotFunctionDeclaration implements IFodotDomainElement {
 	
 	public FodotTypeFunctionDeclaration(String name, List<FodotType> argumentTypes, FodotType elementOfType) {
@@ -17,8 +15,6 @@ public class FodotTypeFunctionDeclaration extends FodotFunctionDeclaration imple
 		super.setType(type);
 		getType().addDomainElement(this);
 	}
-
-
 
 	@Override
 	public String toCode() {

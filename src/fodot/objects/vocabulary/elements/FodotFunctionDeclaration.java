@@ -1,8 +1,6 @@
 package fodot.objects.vocabulary.elements;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import fodot.util.CollectionPrinter;
 
@@ -27,10 +25,10 @@ public abstract class FodotFunctionDeclaration extends FodotArgumentListDeclarat
 	}
 	/**********************************************/
 
+	
 	/**********************************************
 	 *  Obligatory
 	 ***********************************************/
-
 	@Override
 	public String toCode() {
 		return getName() + (hasArguments() ? CollectionPrinter.toCoupleAsCode(getArgumentTypes()) : "");

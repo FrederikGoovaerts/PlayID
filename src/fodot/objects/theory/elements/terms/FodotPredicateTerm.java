@@ -7,6 +7,7 @@ import fodot.objects.theory.elements.formulas.FodotAbstractArgumentList;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 
+@Deprecated
 public class FodotPredicateTerm extends FodotAbstractArgumentList
 		implements IFodotTerm, IFodotEnumerationElement {
 

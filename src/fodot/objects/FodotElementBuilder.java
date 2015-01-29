@@ -31,7 +31,7 @@ import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnu
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.typenum.FodotNumericalTypeRangeEnumeration;
 import fodot.objects.structure.elements.typenum.FodotTypeEnumeration;
-import fodot.objects.structure.elements.typenum.elements.FodotPredicateTermTypeEnumerationElement;
+import fodot.objects.structure.elements.typenum.elements.FodoTypeFunctionEnumerationElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.elements.FodotSentence;
@@ -51,16 +51,16 @@ import fodot.objects.theory.elements.inductivedefinitions.IFodotInductiveDefinit
 import fodot.objects.theory.elements.terms.FodotArithmeticConnector;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotFunction;
-import fodot.objects.theory.elements.terms.FodotPredicateTerm;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
+import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotFunctionFullDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
-import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
 import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 import fodot.util.FormulaUtil;
@@ -354,19 +354,11 @@ public class FodotElementBuilder {
 		return createPredicate(declaration, Arrays.asList(arguments));
 	}
 
-	public static FodotPredicateTerm createPredicateTerm(FodotTypeFunctionDeclaration declaration, List<IFodotTerm> arguments) {
-		return new FodotPredicateTerm(declaration, arguments);
-	}
-	
-	public static FodotPredicateTerm createPredicateTerm(FodotTypeFunctionDeclaration declaration, IFodotTerm... arguments) {
-		return createPredicateTerm(declaration, Arrays.asList(arguments));
-	}
-
-	public static FodotFunction createFunction(FodotFunctionFullDeclaration declaration, List<IFodotTerm> arguments) {
+	public static FodotFunction createFunction(FodotFunctionDeclaration declaration, List<IFodotTerm> arguments) {
 		return new FodotFunction(declaration, arguments);
 	}
 
-	public static FodotFunction createFunction(FodotFunctionFullDeclaration declaration, IFodotTerm... arguments) {
+	public static FodotFunction createFunction(FodotFunctionDeclaration declaration, IFodotTerm... arguments) {
 		return new FodotFunction(declaration, Arrays.asList(arguments));
 	}
 
@@ -412,9 +404,9 @@ public class FodotElementBuilder {
 		return new FodotTypeEnumeration(type.getType(), values);
 	}
 	
-	public static FodotPredicateTermTypeEnumerationElement createPredicateTermTypeEnumerationElement(FodotTypeFunctionDeclaration declaration,
+	public static FodoTypeFunctionEnumerationElement createPredicateTermTypeEnumerationElement(FodotTypeFunctionDeclaration declaration,
 			List<? extends IFodotTypeEnumerationElement> elements) {
-		return new FodotPredicateTermTypeEnumerationElement(declaration,elements);
+		return new FodoTypeFunctionEnumerationElement(declaration,elements);
 	}
 
 	public static FodotNumericalTypeRangeEnumeration createNumericalTypeRangeEnumeration(

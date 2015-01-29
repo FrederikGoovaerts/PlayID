@@ -2,10 +2,10 @@ package fodot.gdl_parser.secondphase;
 
 import static fodot.objects.FodotElementBuilder.createAnd;
 import static fodot.objects.FodotElementBuilder.createDistinct;
+import static fodot.objects.FodotElementBuilder.createFunction;
 import static fodot.objects.FodotElementBuilder.createNot;
 import static fodot.objects.FodotElementBuilder.createOr;
 import static fodot.objects.FodotElementBuilder.createPredicate;
-import static fodot.objects.FodotElementBuilder.createPredicateTerm;
 import static fodot.objects.FodotElementBuilder.createPredicateTermDeclaration;
 import static fodot.objects.FodotElementBuilder.createVariable;
 
@@ -29,13 +29,12 @@ import fodot.gdl_parser.util.VariableRegisterer;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
 import fodot.objects.theory.elements.terms.FodotFunction;
-import fodot.objects.theory.elements.terms.FodotPredicateTerm;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
-import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 
 /**
  * Make one of these for each sentence you're going to translate.
@@ -383,9 +382,9 @@ public class GdlFodotSentenceTransformer {
 		return arguments;
 	}
 
-	public FodotPredicateTerm generatePredicateTerm(GdlSentence sentence,
+	public FodotFunction generatePredicateTerm(GdlSentence sentence,
 			FodotTypeFunctionDeclaration declaration) {
-		FodotPredicateTerm result = createPredicateTerm(declaration, processSentenceArguments(sentence, declaration));
+		FodotFunction result = createFunction(declaration, processSentenceArguments(sentence, declaration));
 		trans.addTranslation(declaration, sentence.getName());
 		return result;
 	}

@@ -4,8 +4,8 @@ import static fodot.objects.FodotElementBuilder.createConstant;
 import static fodot.objects.FodotElementBuilder.createExists;
 import static fodot.objects.FodotElementBuilder.createImplies;
 import static fodot.objects.FodotElementBuilder.createPredicate;
+import static fodot.objects.FodotElementBuilder.createFunction;
 import static fodot.objects.FodotElementBuilder.createPredicateDeclaration;
-import static fodot.objects.FodotElementBuilder.createPredicateTerm;
 import static fodot.objects.FodotElementBuilder.createPredicateTermDeclaration;
 import static fodot.objects.FodotElementBuilder.createType;
 import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
@@ -36,7 +36,7 @@ import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
-import fodot.objects.structure.elements.typenum.elements.FodotPredicateTermTypeEnumerationElement;
+import fodot.objects.structure.elements.typenum.elements.FodoTypeFunctionEnumerationElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
@@ -44,8 +44,8 @@ import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
-import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.util.FormulaUtil;
 import fodot.util.NameUtil;
 
@@ -598,7 +598,7 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 			}
 
 			actionTerm =
-					createPredicateTerm(
+					createFunction(
 							actionDecl,
 							actionTermArguments
 							);
@@ -803,8 +803,8 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 				return constantsMap.get(casted);
 			}
 		}
-		if (fodot instanceof FodotPredicateTermTypeEnumerationElement) {
-			FodotPredicateTermTypeEnumerationElement casted = (FodotPredicateTermTypeEnumerationElement) fodot;
+		if (fodot instanceof FodoTypeFunctionEnumerationElement) {
+			FodoTypeFunctionEnumerationElement casted = (FodoTypeFunctionEnumerationElement) fodot;
 			FodotTypeFunctionDeclaration decl = casted.getDeclaration();
 			if (predicateTermMap.containsKey(decl)) {
 				GdlConstant name = predicateTermMap.get(decl);

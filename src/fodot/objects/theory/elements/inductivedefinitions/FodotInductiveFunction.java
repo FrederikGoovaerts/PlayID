@@ -35,7 +35,7 @@ public class FodotInductiveFunction extends FodotElement implements IFodotInduct
 		if (functionRes == null) {
 			throw new IllegalArgumentException("Functionresult can't be null");
 		}
-		FodotType expectedType = function.getDeclaration().getReturnType();
+		FodotType expectedType = function.getDeclaration().getType();
 		if (!functionRes.getType().isASubtypeOf(expectedType)
 				&& !functionRes.getType().isASupertypeOf(expectedType)) {
 			throw new InvalidTypeException("In the returntype of the function in the inductive definition", functionRes.getType(), expectedType);

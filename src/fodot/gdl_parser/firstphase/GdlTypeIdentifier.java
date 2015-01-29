@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.ggp.base.util.Pair;
-import org.ggp.base.util.gdl.grammar.Gdl;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlLiteral;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
