@@ -1,10 +1,15 @@
 package fodot.gdl_parser.firstphase;
 
+import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static fodot.objects.FodotElementBuilder.*;
 
 import org.ggp.base.util.gdl.grammar.Gdl;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
@@ -49,12 +54,12 @@ public class GdlTypeIdentifier {
 	/***********************************************
 	 *  Types
 	 ***********************************************/
-	private FodotType unfilled = new FodotType("Unfilled");
-	private FodotType timeType = new FodotType("Time");
-	private FodotType playerType = new FodotType("Player");
-	private FodotType actionType = new FodotType("Action");
-	private FodotType scoreType = new FodotType("Score");
-	private FodotType allType = new FodotType("All");
+	private FodotType unfilled = createType("Unfilled");
+	private FodotType timeType = createType("Time", getNaturalNumberType());
+	private FodotType playerType = createType("Player");
+	private FodotType actionType = createType("Action");
+	private FodotType scoreType = createType("Score", getNaturalNumberType());
+	private FodotType allType = createType("All");
 
 	/**********************************************/
 
@@ -148,12 +153,12 @@ public class GdlTypeIdentifier {
 		// TODO
 
 	}
-	
+
 	private void updateFunctionType(GdlFunctionDeclaration function, FodotType foundType) {
 		assert !foundType.equals(unfilled);
 		// TODO		
 	}
-	
+
 
 	private void updatePredicateArgumentType(GdlPredicateDeclaration predicate, int argumentNr, FodotType foundType) {
 		assert !foundType.equals(unfilled);
@@ -164,7 +169,7 @@ public class GdlTypeIdentifier {
 		assert !foundType.equals(unfilled);
 		// TODO
 	}
-	
+
 	/**********************************************/
 
 	/**********************************************
@@ -176,12 +181,12 @@ public class GdlTypeIdentifier {
 		Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations = new HashMap<GdlPredicateDeclaration, FodotPredicateDeclaration>();
 		Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule = new HashMap<GdlRule, Map<GdlVariable, FodotVariable>>();
 		Set<GdlPredicateDeclaration> dynamicPredicates = new HashSet<GdlPredicateDeclaration>();
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
 		return new GdlFodotData(
 				this.timeType, this.playerType, this.actionType, this.scoreType, this.allType,
 				constants, functionDeclarations, predicateDeclarations,
@@ -190,7 +195,7 @@ public class GdlTypeIdentifier {
 
 	/**********************************************/
 
-	
+
 	/**********************************************
 	 *  GdlTransformer creator
 	 ***********************************************/
@@ -201,63 +206,63 @@ public class GdlTypeIdentifier {
 	/* =======================================
 	 * ====== TRANSFORMER: THE VISITOR ======
 	 * ======================================= */
-	
+
 	private class GdlTypeIdentifierTransformer implements GdlTransformer {
 
 		@Override
 		public void processRoleRelation(GdlRelation relation) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void processInitRelation(GdlRelation relation) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void processStaticPredicateRelation(GdlRelation relation) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void processLegalRelation(GdlRelation relation) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void processNextRule(GdlRule rule) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void processLegalRule(GdlRule rule) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void processGoalRule(GdlRule rule) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void processTerminalRule(GdlRule rule) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void processDefinitionRule(GdlRule rule) {
 			// TODO Auto-generated method stub
-			
+
 		}		
-		
+
 	}
 
 	/**********************************************/

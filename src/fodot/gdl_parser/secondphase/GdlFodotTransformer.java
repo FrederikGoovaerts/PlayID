@@ -57,8 +57,6 @@ import fodot.util.NameUtil;
  * GdlRules. If this is not respected, a GdlParsingOrderException will be thrown.
  */
 public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator {
-
-	private GdlFodotData data;
 	
 	/***************************************************************************
 	 * Constructor
@@ -74,6 +72,18 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 	 * Class Properties
 	 **************************************************************************/
 
+	/**********************************************
+	 *  Data
+	 ***********************************************/
+	private GdlFodotData data;
+	
+	public GdlFodotData getGdlData() {
+		return data;
+	}
+
+	/**********************************************/
+
+	
 	/*************************************
 	 * Processing state
 	 */
@@ -141,7 +151,7 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 			throw new IllegalArgumentException();
 		if(ownRole == null)
 			ownRole = role;
-		playerType.addDomainElement(role);
+		getPlayerType().addDomainElement(role);
 	}
 
 	public FodotConstant getOwnRole() {
@@ -225,11 +235,11 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 	 */
 
 	private void addConstant(FodotConstant constant) {
-		allType.addDomainElement(constant);
+		getAllType().addDomainElement(constant);
 	}
 
 	private boolean isConstantRegistered(FodotConstant constant) {
-		return allType.containsDomainElement(constant);
+		return getAllType().containsDomainElement(constant);
 	}
 
 	public FodotConstant convertRawConstantName(GdlConstant constant) {
@@ -433,7 +443,7 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 		this.compoundMap = new HashMap<>();
 		this.processingRules = false;
 		this.buildDefaultTypes();
-		this.pool = new LTCPool(this.timeType);
+		this.pool = new LTCPool(this.getTimeType());
 
 		List<FodotType> typeList = new ArrayList<>();
 		typeList.add(getTimeType());
@@ -505,7 +515,7 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 				pred = this.getPredicate(predName);
 			} else {
 				pred = new FodotPredicateDeclaration(predName,
-						FodotType.getSameTypeList(predArity, this.allType));
+						FodotType.getSameTypeList(predArity, this.getAllType()));
 				this.addStaticPredicate(pred);
 			}
 		} else {
@@ -713,7 +723,7 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 		if(!isPredicateRegistered(predName)) {
 			pred = new FodotPredicateDeclaration(
 					predName,
-					FodotType.getSameTypeList(amountOfArguments, allType)
+					FodotType.getSameTypeList(amountOfArguments, getAllType())
 					);
 			this.addFluentPredicate(pred);
 		} else {
@@ -741,7 +751,7 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 		if(!isCompoundStaticPredicateRegistered(predName)) {
 			predDecl = new FodotPredicateDeclaration(
 					predName,
-					FormulaUtil.createTypeList(allType, amountOfArguments)
+					FormulaUtil.createTypeList(getAllType(), amountOfArguments)
 					);
 			this.addCompoundStaticPredicate(predDecl);
 		} else {
@@ -818,7 +828,7 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 	public Set<FodotVariable> removeTimeVars(Set<FodotVariable> vars){
 		Set<FodotVariable> toReturn = new HashSet<>();
 		for (FodotVariable var : vars) {
-			if(!var.getType().equals(timeType))
+			if(!var.getType().equals(getTimeType()))
 				toReturn.add(var);
 		}
 		return toReturn;
