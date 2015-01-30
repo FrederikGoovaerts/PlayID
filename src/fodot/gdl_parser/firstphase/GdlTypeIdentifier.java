@@ -3,6 +3,7 @@ package fodot.gdl_parser.firstphase;
 import static fodot.objects.FodotElementBuilder.createType;
 import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +19,6 @@ import org.ggp.base.util.gdl.grammar.GdlPool;
 import org.ggp.base.util.gdl.grammar.GdlProposition;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
-import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
@@ -76,69 +76,55 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Default predicates
 	 ***********************************************/
-	private GdlPredicateDeclaration distinct = new GdlPredicateDeclaration ( GdlPool.getConstant("distinct"), 2);
-	private GdlPredicateDeclaration does = new GdlPredicateDeclaration ( GdlPool.getConstant("does"), 2);
-	private GdlPredicateDeclaration goal = new GdlPredicateDeclaration ( GdlPool.getConstant("goal"), 2);
-	private GdlPredicateDeclaration init = new GdlPredicateDeclaration ( GdlPool.getConstant("init"), 1);
-	private GdlPredicateDeclaration legal = new GdlPredicateDeclaration ( GdlPool.getConstant("legal"), 2);
-	private GdlPredicateDeclaration next = new GdlPredicateDeclaration ( GdlPool.getConstant("next"), 1);
-	private GdlPredicateDeclaration role = new GdlPredicateDeclaration ( GdlPool.getConstant("role"), 1);
-	private GdlPredicateDeclaration terminal = new GdlPredicateDeclaration ( GdlPool.getConstant("terminal"), 0);
+	private GdlPredicateDeclaration distinctPred = new GdlPredicateDeclaration ( GdlPool.getConstant("distinct"), 2);
+	private GdlPredicateDeclaration doesPred = new GdlPredicateDeclaration ( GdlPool.getConstant("does"), 2);
+	private GdlPredicateDeclaration goalPred = new GdlPredicateDeclaration ( GdlPool.getConstant("goal"), 2);
+	private GdlPredicateDeclaration initPred = new GdlPredicateDeclaration ( GdlPool.getConstant("init"), 1);
+	private GdlPredicateDeclaration legalPred = new GdlPredicateDeclaration ( GdlPool.getConstant("legal"), 2);
+	private GdlPredicateDeclaration nextPred = new GdlPredicateDeclaration ( GdlPool.getConstant("next"), 1);
+	private GdlPredicateDeclaration rolePred = new GdlPredicateDeclaration ( GdlPool.getConstant("role"), 1);
+	private GdlPredicateDeclaration terminalPred = new GdlPredicateDeclaration ( GdlPool.getConstant("terminal"), 0);
 	private GdlPredicateDeclaration truePred = new GdlPredicateDeclaration ( GdlPool.getConstant("true"), 1);
 
 	private void initDefaultPredicates() {
-		initPredicate(distinct);
-		initPredicate(does);
-		initPredicate(goal);
-		initPredicate(init);
-		initPredicate(legal);
-		initPredicate(next);
-		initPredicate(role);
-		initPredicate(terminal);
-		initPredicate(truePred);
+		initPredicate(distinctPred,	Arrays.asList(unfilledType, unfilledType),	true);
+		initPredicate(doesPred,		Arrays.asList(playerType, actionType),		true);
+		initPredicate(goalPred,		Arrays.asList(playerType, scoreType),		true);
+		initPredicate(initPred,		Arrays.asList(unfilledType),				true);
+		initPredicate(legalPred,	Arrays.asList(playerType, actionType),		true);
+		initPredicate(nextPred,		Arrays.asList(unfilledType),				true);
+		initPredicate(rolePred,		Arrays.asList(playerType),					true);
+		initPredicate(terminalPred,	new ArrayList<FodotType>(),					true);
+		initPredicate(truePred,		Arrays.asList(unfilledType),				true);
+	}
 
-		//DISTINCT
-		updatePredicateArgumentType(distinct, 0, unfilledType);
-		updatePredicateArgumentType(distinct, 1, unfilledType);
-
-		//DOES
-		updatePredicateArgumentType(does, 0, playerType);
-		updatePredicateArgumentType(does, 1, actionType);
-
-		//GOAL
-		updatePredicateArgumentType(goal, 0, playerType);
-		updatePredicateArgumentType(goal, 1, scoreType);
-
-		//INIT
-		updatePredicateArgumentType(init, 0, unfilledType);
-
-		//LEGAL
-		updatePredicateArgumentType(legal, 0, playerType);
-		updatePredicateArgumentType(legal, 1, actionType);
-
-		//NEXT
-		updatePredicateArgumentType(next, 0, unfilledType);
-
-		//ROLE
-		updatePredicateArgumentType(role, 0, playerType);
-
-		//TERMINAL: no types
-
-		//TRUE
-		updatePredicateArgumentType(truePred, 0, unfilledType);
-
-
-		//LOCK TYPES
-		predicates.get(distinct).lockTypes();
-		predicates.get(does).lockTypes();
-		predicates.get(goal).lockTypes();
-		predicates.get(init).lockTypes();
-		predicates.get(legal).lockTypes();
-		predicates.get(next).lockTypes();
-		predicates.get(role).lockTypes();
-		predicates.get(terminal).lockTypes();
-		predicates.get(truePred).lockTypes();
-
+	//GETTERS
+	public GdlPredicateDeclaration getDistinct() {
+		return distinctPred;
+	}
+	public GdlPredicateDeclaration getDoes() {
+		return doesPred;
+	}
+	public GdlPredicateDeclaration getGoal() {
+		return goalPred;
+	}
+	public GdlPredicateDeclaration getInit() {
+		return initPred;
+	}
+	public GdlPredicateDeclaration getLegal() {
+		return legalPred;
+	}
+	public GdlPredicateDeclaration getNext() {
+		return nextPred;
+	}
+	public GdlPredicateDeclaration getRole() {
+		return rolePred;
+	}
+	public GdlPredicateDeclaration getTerminal() {
+		return terminalPred;
+	}
+	public GdlPredicateDeclaration getTrue() {
+		return truePred;
 	}
 	/**********************************************/
 
@@ -155,7 +141,6 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Initialize entries
 	 ***********************************************/
-
 	private void initConstant(GdlConstant constant, FodotType givenType) {
 		constants.put(constant, new GdlConstantData(givenType));
 	}
@@ -165,12 +150,14 @@ public class GdlTypeIdentifier {
 	private void initFunction(GdlFunctionDeclaration function, FodotType givenType) {
 		List<FodotType> argumentTypes = FormulaUtil.createTypeList( unfilledType, function.getArity() );
 		functions.put(function, new GdlFunctionData(givenType, argumentTypes) );
+	}	
+	private void initPredicate(GdlPredicateDeclaration predicate, List<FodotType> argumentTypes, boolean lockedTypes) {
+		predicates.put(predicate, new GdlPredicateData(argumentTypes, lockedTypes));	
 	}
 	private void initPredicate(GdlPredicateDeclaration predicate) {
 		List<FodotType> argumentTypes = FormulaUtil.createTypeList( unfilledType, predicate.getArity() );
-		predicates.put(predicate, new GdlPredicateData(argumentTypes));	
-	}	
-
+		initPredicate(predicate, argumentTypes, false);
+	}
 	/**********************************************/
 
 
@@ -245,8 +232,8 @@ public class GdlTypeIdentifier {
 			updateFunctionType(head, givenType);
 		}
 	}
-
 	/**********************************************/
+
 
 	/**********************************************
 	 *  Updating the typing of something
@@ -255,7 +242,6 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Intrinsic Types
 	 ***********************************************/
-
 	private void updateConstantType(GdlConstant argConstant, FodotType foundType) {
 		if (!constants.containsKey(argConstant)) {
 			initConstant(argConstant, foundType);
@@ -279,7 +265,6 @@ public class GdlTypeIdentifier {
 		GdlFunctionData functionData = functions.get(argFunction);		
 		updateTermType(functionData, foundType);
 	}
-
 
 	/**
 	 * Helper method for updating the type of GDL terms.
@@ -315,13 +300,12 @@ public class GdlTypeIdentifier {
 			}		
 		}
 	}
-
 	/**********************************************/
+
 
 	/**********************************************
 	 *  Argument types
 	 ***********************************************/
-
 	private void updatePredicateArgumentType(GdlPredicateDeclaration predicate, int argumentNr, FodotType foundType) {
 		if (!predicates.containsKey(predicate)) {
 			initPredicate(predicate);
@@ -349,6 +333,9 @@ public class GdlTypeIdentifier {
 	 */
 	private void updateArgumentListArgumentType(IGdlArgumentListData data, int argumentNr, FodotType foundType) {
 		assert !foundType.equals(unfilledType);
+		if (foundType.equals(unfilledType)) {
+			return;
+		}
 
 		//Return if already set
 		if (foundType.equals(data.getArgumentType(argumentNr))) {
@@ -377,14 +364,9 @@ public class GdlTypeIdentifier {
 		}
 
 	}
-
 	/**********************************************/
 
-
-
 	/**********************************************/
-
-
 
 
 	/**********************************************
@@ -410,7 +392,6 @@ public class GdlTypeIdentifier {
 				constantsMap, functionDeclarations, predicateDeclarations,
 				variablesPerRule, dynamicPredicates);
 	}
-
 	/**********************************************/
 
 
@@ -465,28 +446,28 @@ public class GdlTypeIdentifier {
 		/**********************************************
 		 *  Rule processing
 		 ***********************************************/
-
 		@Override
 		public void processNextRule(GdlRule rule) {
-			visitRuleArguments(rule);
+			visitElements(rule, rule.getHead().getBody(), getNext());
 			visitRuleBody(rule);
 		}
 
 		@Override
 		public void processLegalRule(GdlRule rule) {
-			visitRuleArguments(rule);
+			visitElements(rule, rule.getHead().getBody(), getLegal());
 			visitRuleBody(rule);
 		}
 
 		@Override
 		public void processGoalRule(GdlRule rule) {
-			visitRuleArguments(rule);
+			visitElements(rule, rule.getHead().getBody(), getGoal());
 			visitRuleBody(rule);
 		}
 
 		@Override
 		public void processTerminalRule(GdlRule rule) {
-			visitRuleArguments(rule);
+			assert rule.getHead().arity() == 0;
+			visitElements(rule, rule.getHead().getBody(), getTerminal());
 			visitRuleBody(rule);
 		}
 
@@ -496,20 +477,12 @@ public class GdlTypeIdentifier {
 			visitRuleBody(rule);
 		}		
 
-		/**
-		 * We don't want to visit the head itself, only the contents of the head and the body.
-		 * Things like "next", "does", "goal" ... are not intrinsic parts of our GDL file!
-		 */		
-		private void visitRuleArguments(GdlRule rule) {
-			visitSentenceElements(rule, rule.getHead(), null);
-		}
-
 		private void visitRuleBody(GdlRule rule) {
 			GdlRuleElementsVisitor bodyVisitor = new GdlRuleElementsVisitor(rule);
 			GdlRootVisitors.visitAll(rule.getBody(), bodyVisitor);
 		}
-		/**********************************************/
 	}
+	/**********************************************/
 
 	private class GdlRuleElementsVisitor extends GdlVisitor {
 		//We will need this rule so we can tell what variables are the same.
@@ -534,7 +507,7 @@ public class GdlTypeIdentifier {
 		}
 
 		public void visitDistinct(GdlDistinct distinct) {
-			visitElements(rule, Arrays.asList(distinct.getArg1(), distinct.getArg2()), null);
+			visitElements(rule, Arrays.asList(distinct.getArg1(), distinct.getArg2()), getDistinct());
 		}
 
 		public void visitRule(GdlRule rule) {
@@ -547,7 +520,6 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Sentence visitor
 	 ***********************************************/
-
 	public void visitElements(GdlRule rule, List<GdlTerm> terms, IGdlArgumentListDeclaration parent) {
 		for (int i = 0; i < terms.size(); i++) {
 			GdlTerm term = terms.get(i);
@@ -562,18 +534,13 @@ public class GdlTypeIdentifier {
 		}
 	}
 
-	public void visitSentenceElements(GdlRule rule, GdlSentence sentence, IGdlArgumentListDeclaration parent) {
-		visitElements(rule, sentence.getBody(), parent);
-	}
-
 	public void visitPredicateArguments(GdlRule rule, GdlRelation predicate) {
-		this.visitSentenceElements(rule, predicate.toTerm().toSentence(), new GdlPredicateDeclaration(predicate) );
+		this.visitElements(rule, predicate.getBody(), new GdlPredicateDeclaration(predicate) );
 	}
 
 	public void visitFunctionArguments(GdlRule rule, GdlFunction function) {
-		this.visitSentenceElements(rule, function.toSentence(), new GdlFunctionDeclaration(function) );
+		this.visitElements(rule, function.getBody(), new GdlFunctionDeclaration(function) );
 	}
-
 	/**********************************************/
 
 

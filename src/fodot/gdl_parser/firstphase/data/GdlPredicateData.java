@@ -14,8 +14,9 @@ public class GdlPredicateData implements IGdlArgumentListData {
 	private boolean isDynamic = false;
 	private boolean typesLocked = false;
 	
-	public GdlPredicateData(List<FodotType> argumentTypes) {
+	public GdlPredicateData(List<FodotType> argumentTypes, boolean typesLocked) {
 		this.argumentTypes = argumentTypes;
+		this.typesLocked = typesLocked;
 	}
 
 	/**********************************************
