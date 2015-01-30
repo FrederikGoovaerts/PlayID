@@ -5,12 +5,21 @@ import org.ggp.base.util.gdl.grammar.GdlConstant;
 public abstract class GdlArgumentedListDeclaration {
 	private GdlConstant name;
 	private int arity;
-	
+
 	public GdlArgumentedListDeclaration(GdlConstant name, int arity) {
 		super();
 		this.name = name;
 		this.arity = arity;
 	}
+
+	public GdlConstant getName() {
+		return name;
+	}
+
+	public int getArity() {
+		return arity;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
