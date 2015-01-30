@@ -149,11 +149,11 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Adding occurrences of elements
 	 ***********************************************/
-	private void addConstantOccurrence(Gdl directParent, int argumentIndex, GdlConstant constant) {
+	public void addConstantOccurrence(Gdl directParent, int argumentIndex, GdlConstant constant) {
 		addConstantOccurrence(directParent, argumentIndex, constant, unfilledType);
 	}
 
-	private void addConstantOccurrence(Gdl directParent, int argumentIndex, GdlConstant constant, FodotType givenType) {
+	public void addConstantOccurrence(Gdl directParent, int argumentIndex, GdlConstant constant, FodotType givenType) {
 
 		//Initialize list if first occurrence of constant
 		if (constants.get(constant) == null) {
@@ -168,11 +168,11 @@ public class GdlTypeIdentifier {
 
 	}
 
-	private void addVariableOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlVariable variable) {
+	public void addVariableOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlVariable variable) {
 		addVariableOccurrence(parentRule, directParent, argumentIndex, variable, unfilledType);
 	}
 
-	private void addVariableOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlVariable argVariable, FodotType givenType) {
+	public void addVariableOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlVariable argVariable, FodotType givenType) {
 
 		GdlVariableDeclaration variable = new GdlVariableDeclaration(argVariable, parentRule);
 
@@ -189,7 +189,7 @@ public class GdlTypeIdentifier {
 
 	}
 
-	private void addPredicateOccurrence(GdlRule parentRule, GdlRelation predicate) {
+	public void addPredicateOccurrence(GdlRule parentRule, GdlRelation predicate) {
 		GdlPredicateDeclaration head = new GdlPredicateDeclaration( predicate );
 
 		//Initialize list if first occurrence of the predicate
@@ -200,11 +200,11 @@ public class GdlTypeIdentifier {
 
 	}
 
-	private void addFunctionOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlFunction function) {
+	public void addFunctionOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlFunction function) {
 		addFunctionOccurrence(parentRule, directParent, argumentIndex, function, unfilledType);
 	}
 
-	private void addFunctionOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlFunction function, FodotType givenType) {
+	public void addFunctionOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlFunction function, FodotType givenType) {
 		GdlFunctionDeclaration head = new GdlFunctionDeclaration( function );
 
 		//Initialize list if first occurrence of the predicate
@@ -389,7 +389,7 @@ public class GdlTypeIdentifier {
 	 *  Resulting GdlFodotData generator
 	 ***********************************************/
 	public GdlFodotData getResultingData() {
-		Map<GdlConstant, FodotConstant> constants = new HashMap<GdlConstant, FodotConstant>();
+		Map<GdlConstant, FodotConstant> constantsMap = new HashMap<GdlConstant, FodotConstant>();
 		Map<GdlFunctionDeclaration, FodotFunctionDeclaration> functionDeclarations = new HashMap<GdlFunctionDeclaration, FodotFunctionDeclaration>();
 		Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations = new HashMap<GdlPredicateDeclaration, FodotPredicateDeclaration>();
 		Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule = new HashMap<GdlRule, Map<GdlVariable, FodotVariable>>();
@@ -405,7 +405,7 @@ public class GdlTypeIdentifier {
 
 		return new GdlFodotData(
 				this.timeType, this.playerType, this.actionType, this.scoreType, this.allType,
-				constants, functionDeclarations, predicateDeclarations,
+				constantsMap, functionDeclarations, predicateDeclarations,
 				variablesPerRule, dynamicPredicates);
 	}
 
