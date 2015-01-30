@@ -73,6 +73,61 @@ public class GdlTypeIdentifier {
 	private GdlPredicateDeclaration role = new GdlPredicateDeclaration ( GdlPool.getConstant("role"), 1);
 	private GdlPredicateDeclaration terminal = new GdlPredicateDeclaration ( GdlPool.getConstant("terminal"), 0);
 	private GdlPredicateDeclaration truePred = new GdlPredicateDeclaration ( GdlPool.getConstant("true"), 1);
+
+	private void initDefaultPredicates() {
+		initPredicate(distinct);
+		initPredicate(does);
+		initPredicate(goal);
+		initPredicate(init);
+		initPredicate(legal);
+		initPredicate(next);
+		initPredicate(role);
+		initPredicate(terminal);
+		initPredicate(truePred);
+
+		//DISTINCT
+		updatePredicateArgumentType(distinct, 0, unfilledType);
+		updatePredicateArgumentType(distinct, 1, unfilledType);
+
+		//DOES
+		updatePredicateArgumentType(does, 0, playerType);
+		updatePredicateArgumentType(does, 1, actionType);
+
+		//GOAL
+		updatePredicateArgumentType(goal, 0, playerType);
+		updatePredicateArgumentType(goal, 1, scoreType);
+
+		//INIT
+		updatePredicateArgumentType(init, 0, unfilledType);
+		
+		//LEGAL
+		updatePredicateArgumentType(legal, 0, playerType);
+		updatePredicateArgumentType(legal, 1, actionType);
+
+		//NEXT
+		updatePredicateArgumentType(next, 0, unfilledType);
+		
+		//ROLE
+		updatePredicateArgumentType(role, 0, playerType);
+		
+		//TERMINAL: no types
+		
+		//TRUE
+		updatePredicateArgumentType(truePred, 0, unfilledType);
+		
+
+		//LOCK TYPES
+		predicates.get(distinct).lockTypes();
+		predicates.get(does).lockTypes();
+		predicates.get(goal).lockTypes();
+		predicates.get(init).lockTypes();
+		predicates.get(legal).lockTypes();
+		predicates.get(next).lockTypes();
+		predicates.get(role).lockTypes();
+		predicates.get(terminal).lockTypes();
+		predicates.get(truePred).lockTypes();
+
+	}
 	/**********************************************/
 
 	/**********************************************
@@ -88,46 +143,12 @@ public class GdlTypeIdentifier {
 	 *  Constructor
 	 ***********************************************/
 	public GdlTypeIdentifier() {
-		initializeMaps();
-	}
-	
-	private void initializeMaps() {
-		initPredicate(distinct);
-		initPredicate(does);
-		initPredicate(goal);
-		initPredicate(init);
-		initPredicate(legal);
-		initPredicate(next);
-		initPredicate(role);
-		initPredicate(terminal);
-		initPredicate(truePred);
-		
-		//TODO: make typelocking system so the "fixed" type don't pass type updates.
-		
-		//DOES
-		updatePredicateArgumentType(does, 0, playerType);
-		updatePredicateArgumentType(does, 1, actionType);
-		predicates.get(does).lockTypes();
-		
-		//GOAL
-		updatePredicateArgumentType(goal, 0, playerType);
-		updatePredicateArgumentType(goal, 1, scoreType);
-		predicates.get(goal).lockTypes();
-		
-		//LEGAL
-		updatePredicateArgumentType(legal, 0, playerType);
-		updatePredicateArgumentType(legal, 1, actionType);
-		predicates.get(legal).lockTypes();
-		
-		//ROLE
-		updatePredicateArgumentType(role, 0, playerType);
-		predicates.get(role).lockTypes();
-		
+		initDefaultPredicates();
 	}
 	/**********************************************/
 
-	
-	
+
+
 	/**********************************************
 	 *  Init entries
 	 ***********************************************/
@@ -291,7 +312,7 @@ public class GdlTypeIdentifier {
 			}		
 		}
 	}
-	
+
 	/**
 	 * This method can be used by the typechangers if they don't know the type of their terms
 	 * Use this for things like "next, "does", "legal" etc.
@@ -309,7 +330,7 @@ public class GdlTypeIdentifier {
 			updateVariableType(new GdlVariableDeclaration((GdlVariable) term, rule), foundType);
 		}
 	}
-	
+
 	/**********************************************/
 
 	/**********************************************
@@ -351,7 +372,7 @@ public class GdlTypeIdentifier {
 
 		//What if it already has a type?
 		if (!data.getArgumentType(argumentNr).equals(unfilledType)) {
-			throw new GdlTypeIdentificationError("Type collision");
+			throw new GdlTypeIdentificationError("Type collision in " + data);
 		}
 
 		//Set typing
@@ -383,7 +404,7 @@ public class GdlTypeIdentifier {
 
 	/**********************************************/
 
-	
+
 
 	/**********************************************/
 
@@ -450,7 +471,7 @@ public class GdlTypeIdentifier {
 		@Override
 		public void processInitRelation(GdlRelation relation) {
 			visitPredicateArguments(null, relation);
-//			makeDynamic(relation.get(0)); //Is this right? It has an initial status, so it must be dynamic, right?
+			//			makeDynamic(relation.get(0)); //Is this right? It has an initial status, so it must be dynamic, right?
 		}
 
 		@Override
@@ -465,7 +486,7 @@ public class GdlTypeIdentifier {
 			updateTermType(null, relation.get(0), playerType);
 			updateTermType(null, relation.get(0), actionType);
 		}
-		
+
 		/**********************************************/
 
 		/**********************************************
@@ -514,7 +535,7 @@ public class GdlTypeIdentifier {
 		private void visitRuleArguments(GdlRule rule) {
 			visitSentenceElements(rule, rule.getHead(), null);
 		}
-		
+
 		private void visitRuleBody(GdlRule rule) {
 			GdlRuleElementsVisitor bodyVisitor = new GdlRuleElementsVisitor(rule);
 			GdlRootVisitors.visitAll(rule.getBody(), bodyVisitor);
@@ -535,10 +556,10 @@ public class GdlTypeIdentifier {
 			addPredicateOccurrence(rule, predicate);
 			visitPredicateArguments(rule, predicate);
 		}
-//		public void visitFunction(GdlFunction function) {
-//			GdlSentenceVisitor functionArgumentsVisitor = new GdlSentenceVisitor(rule, function.toSentence(), function);
-//			functionArgumentsVisitor.visitElements();
-//		}
+		//		public void visitFunction(GdlFunction function) {
+		//			GdlSentenceVisitor functionArgumentsVisitor = new GdlSentenceVisitor(rule, function.toSentence(), function);
+		//			functionArgumentsVisitor.visitElements();
+		//		}
 
 		public void visitProposition(GdlProposition proposition) {
 			// Do nothing?
@@ -558,7 +579,7 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Sentence visitor
 	 ***********************************************/
-	
+
 	public void visitElements(GdlRule rule, List<GdlTerm> terms, IGdlArgumentListDeclaration parent) {
 		for (int i = 0; i < terms.size(); i++) {
 			GdlTerm term = terms.get(i);
@@ -572,15 +593,15 @@ public class GdlTypeIdentifier {
 			}
 		}
 	}
-	
+
 	public void visitSentenceElements(GdlRule rule, GdlSentence sentence, IGdlArgumentListDeclaration parent) {
 		visitElements(rule, sentence.getBody(), parent);
 	}
-	
+
 	public void visitPredicateArguments(GdlRule rule, GdlRelation predicate) {
 		this.visitSentenceElements(rule, predicate.toTerm().toSentence(), new GdlPredicateDeclaration(predicate) );
 	}
-	
+
 	public void visitFunctionArguments(GdlRule rule, GdlFunction function) {
 		this.visitSentenceElements(rule, function.toSentence(), new GdlFunctionDeclaration(function) );
 	}
