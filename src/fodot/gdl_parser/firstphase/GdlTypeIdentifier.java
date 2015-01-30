@@ -93,11 +93,11 @@ public class GdlTypeIdentifier {
 
 	}
 
-	private void addVariableOccurrence(GdlRule parentRule, int argumentIndex, Gdl directParent, GdlVariable variable) {
-		addVariableOccurrence(parentRule, argumentIndex, directParent, variable, unfilled);
+	private void addVariableOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlVariable variable) {
+		addVariableOccurrence(parentRule, directParent, argumentIndex, variable, unfilled);
 	}
 
-	private void addVariableOccurrence(GdlRule parentRule, int argumentIndex, Gdl directParent, GdlVariable argVariable, FodotType givenType) {
+	private void addVariableOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlVariable argVariable, FodotType givenType) {
 
 		GdlVariableDeclaration variable = new GdlVariableDeclaration(argVariable, parentRule);
 
@@ -278,6 +278,12 @@ public class GdlTypeIdentifier {
 
 		//TODO: mapping of TypeIdentifier data to GdlFodotData data
 
+		//		System.out.println("c"+constants);
+		//		System.out.println("f"+functionDeclarations);
+		//		System.out.println("p"+predicateDeclarations);
+		//		System.out.println("v"+variablesPerRule);
+		//		System.out.println("d"+dynamicPredicates);
+
 		return new GdlFodotData(
 				this.timeType, this.playerType, this.actionType, this.scoreType, this.allType,
 				constants, functionDeclarations, predicateDeclarations,
@@ -311,27 +317,44 @@ public class GdlTypeIdentifier {
 
 		@Override
 		public void processRoleRelation(GdlRelation relation) {
-			// TODO
-
+			visitRelationArguments(relation);
+			updateTermTypeInRelation(relation.get(0), playerType);
 		}
 
 		@Override
 		public void processInitRelation(GdlRelation relation) {
-			// TODO
-
+			visitRelationArguments(relation);
 		}
 
 		@Override
 		public void processStaticPredicateRelation(GdlRelation relation) {
-			// TODO
-
+			visitRelationArguments(relation);
 		}
 
 		@Override
 		public void processLegalRelation(GdlRelation relation) {
-			// TODO
+			visitRelationArguments(relation);
+			updateTermTypeInRelation(relation.get(0), playerType);
+			updateTermTypeInRelation(relation.get(0), actionType);
 		}		
 
+		private void updateTermTypeInRelation(GdlTerm term, FodotType foundType) {
+			if (term instanceof GdlConstant) {
+				updateConstantType((GdlConstant) term, foundType);
+			} else if (term instanceof GdlFunction) {
+				updateFunctionType(new GdlFunctionDeclaration((GdlFunction) term), foundType);
+			} else if (term instanceof GdlVariable) {
+				throw new GdlTypeIdentificationError("Variables can't be processed in relations");
+			}
+		}
+
+		private void visitRelationArguments(GdlRelation relation) {
+			addPredicateOccurrence(null, relation);
+			
+			//Rule can be null: only used for variables, but it doesn't contain variables!
+			GdlPredicateVisitor visitor = new GdlPredicateVisitor(null, relation);
+			visitor.visitElements();
+		}
 		/**********************************************/
 
 		/**********************************************
@@ -371,6 +394,11 @@ public class GdlTypeIdentifier {
 		/**********************************************/
 	}
 
+	private class GdlRelationElementsVisitor extends GdlVisitor {
+
+	}
+
+
 	private class GdlRuleElementsVisitor extends GdlVisitor {
 		//We will need this rule so we can tell what variables are the same.
 		private GdlRule rule;
@@ -380,29 +408,23 @@ public class GdlTypeIdentifier {
 			this.rule = rule;
 		}
 
-
 		public void visitRelation(GdlRelation predicate) {
 			GdlPredicateVisitor predicateArgumentsVisitor = new GdlPredicateVisitor(rule, predicate);
-			GdlRootVisitors.visitAll(predicate.getBody(), predicateArgumentsVisitor);
+			predicateArgumentsVisitor.visitElements();
 		}
 		public void visitFunction(GdlFunction function) {
 			GdlFunctionVisitor functionArgumentsVisitor = new GdlFunctionVisitor(rule, function);
-			GdlRootVisitors.visitAll(function.getBody(), functionArgumentsVisitor);
+			functionArgumentsVisitor.visitElements();
 		}
-
 
 		public void visitProposition(GdlProposition proposition) {
-			// TODO
+			// Do nothing?
 		}
-		//		public void visitNot(GdlNot not) {
-		//			// TODO
-		//		}
+		
 		public void visitDistinct(GdlDistinct distinct) {
-			// TODO
+			// Do nothing?
 		}
-		//		public void visitOr(GdlOr or) {
-		//			// TODO
-		//		}
+		
 		public void visitRule(GdlRule rule) {
 			throw new GdlTypeIdentificationError("A rule occured in a rule, that's not possible, right?");
 		}
@@ -413,24 +435,26 @@ public class GdlTypeIdentifier {
 	 * This will visit the arguments of a predicate.
 	 * @author Thomas Winters
 	 */
-	private class GdlPredicateVisitor extends GdlVisitor {
+	private class GdlPredicateVisitor {
 		private GdlRule rule;
 		private GdlRelation predicate;
 
 		public GdlPredicateVisitor(GdlRule rule, GdlRelation predicate) {
-			super();
 			this.rule = rule;
 			this.predicate = predicate;
 		}
 
-		public void visitConstant(GdlConstant constant) {
-			// TODO
-		}
-		public void visitVariable(GdlVariable variable) {
-			// TODO
-		}
-		public void visitFunction(GdlFunction function) {
-			// TODO
+		public void visitElements() {
+			for (int i = 0; i < predicate.arity(); i++) {
+				GdlTerm term = predicate.get(i);
+				if (term instanceof GdlConstant) {
+					addConstantOccurrence(predicate, i, (GdlConstant) term);
+				} else if (term instanceof GdlVariable) {
+					addVariableOccurrence(rule, predicate, i, (GdlVariable) term);
+				} else if (term instanceof GdlFunction) {
+					addFunctionOccurrence(rule, predicate, i, (GdlFunction) term);
+				}
+			}
 		}
 
 	}
@@ -439,24 +463,26 @@ public class GdlTypeIdentifier {
 	 * This will visit the arguments of a function.
 	 * @author Thomas Winters
 	 */
-	private class GdlFunctionVisitor extends GdlVisitor {
+	private class GdlFunctionVisitor {
 		private GdlRule rule;
 		private GdlFunction function;
 
 		public GdlFunctionVisitor(GdlRule rule, GdlFunction function) {
-			super();
 			this.rule = rule;
 			this.function = function;
 		}
 
-		public void visitConstant(GdlConstant constant) {
-			// TODO
-		}
-		public void visitVariable(GdlVariable variable) {
-			// TODO
-		}
-		public void visitFunction(GdlFunction function) {
-			// TODO
+		public void visitElements() {
+			for (int i = 0; i < function.arity(); i++) {
+				GdlTerm term = function.get(i);
+				if (term instanceof GdlConstant) {
+					addConstantOccurrence(function, i, (GdlConstant) term);
+				} else if (term instanceof GdlVariable) {
+					addVariableOccurrence(rule, function, i, (GdlVariable) term);
+				} else if (term instanceof GdlFunction) {
+					addFunctionOccurrence(rule, function, i, (GdlFunction) term);
+				}
+			}
 		}
 
 	}
