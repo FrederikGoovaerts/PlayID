@@ -5,20 +5,24 @@ import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.ggp.base.util.gdl.GdlVisitor;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlDistinct;
 import org.ggp.base.util.gdl.grammar.GdlFunction;
+import org.ggp.base.util.gdl.grammar.GdlLiteral;
+import org.ggp.base.util.gdl.grammar.GdlNot;
+import org.ggp.base.util.gdl.grammar.GdlOr;
 import org.ggp.base.util.gdl.grammar.GdlPool;
 import org.ggp.base.util.gdl.grammar.GdlProposition;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
+import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
@@ -41,7 +45,6 @@ import fodot.gdl_parser.firstphase.data.occurrences.GdlFunctionOccurrence;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlPredicateOccurrence;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlVariableOccurrence;
 import fodot.gdl_parser.firstphase.data.occurrences.IGdlTermOccurrence;
-import fodot.gdl_parser.visitor.GdlRootVisitors;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
@@ -162,7 +165,8 @@ public class GdlTypeIdentifier {
 
 
 	/**********************************************
-	 *  Adding occurrences of elements
+	 *  Adding occurrences of elements.
+	 *  This should be done by a visitor.
 	 ***********************************************/
 	public void addConstantOccurrence(IGdlArgumentListDeclaration directParent, int argumentIndex, GdlConstant constant) {
 		addConstantOccurrence(directParent, argumentIndex, constant, unfilledType);
@@ -232,11 +236,17 @@ public class GdlTypeIdentifier {
 			updateFunctionType(head, givenType);
 		}
 	}
+	
+	public void makeDynamic(GdlRelation predicate) {
+		predicates.get(new GdlPredicateDeclaration(predicate)).makeDynamic();
+	}
 	/**********************************************/
 
 
 	/**********************************************
-	 *  Updating the typing of something
+	 *  Updating the typings.
+	 *  This should not be accessed outside this class:
+	 *  Everything can be deducted by the occurrences.
 	 ***********************************************/
 
 	/**********************************************
@@ -333,9 +343,6 @@ public class GdlTypeIdentifier {
 	 */
 	private void updateArgumentListArgumentType(IGdlArgumentListData data, int argumentNr, FodotType foundType) {
 		assert !foundType.equals(unfilledType);
-		if (foundType.equals(unfilledType)) {
-			return;
-		}
 
 		//Return if already set
 		if (foundType.equals(data.getArgumentType(argumentNr))) {
@@ -405,7 +412,7 @@ public class GdlTypeIdentifier {
 	/* =======================================
 	 * ====== TRANSFORMER: THE VISITOR ======
 	 * ======================================= */
-
+ 
 	/**
 	 * This class will be used to visit the relations and rules.
 	 * It will use the GdlRuleElementsVisitor to visit the rules deeper.
@@ -478,47 +485,80 @@ public class GdlTypeIdentifier {
 		}		
 
 		private void visitRuleBody(GdlRule rule) {
-			GdlRuleElementsVisitor bodyVisitor = new GdlRuleElementsVisitor(rule);
-			GdlRootVisitors.visitAll(rule.getBody(), bodyVisitor);
+			GdlRuleBodyVisitor bodyVisitor = new GdlRuleBodyVisitor(rule);
+			bodyVisitor.visitBodyElements();
 		}
 	}
 	/**********************************************/
 
-	private class GdlRuleElementsVisitor extends GdlVisitor {
+	private class GdlRuleBodyVisitor {
 		//We will need this rule so we can tell what variables are the same.
 		private GdlRule rule;
 
-		public GdlRuleElementsVisitor(GdlRule rule) {
-			super();
+		public GdlRuleBodyVisitor(GdlRule rule) {
 			this.rule = rule;
 		}
-
-		public void visitRelation(GdlRelation predicate) {
+		
+		public void visitBodyElements() {	
+			visitLiterals(rule.getBody());
+		}
+		
+		private void visitLiterals(Collection<? extends GdlLiteral> literals) {
+			for (GdlLiteral lit : literals) {
+				visitLiteral(lit);
+			}	
+			
+		}
+		
+		private void visitLiteral(GdlLiteral lit) {
+			if (lit instanceof GdlDistinct) {
+				visitDistinct( (GdlDistinct) lit);
+			} else if (lit instanceof GdlNot) {
+				visitNot( (GdlNot) lit);
+			} else if (lit instanceof GdlOr) {
+				visitOr( (GdlOr) lit);
+			} else if (lit instanceof GdlSentence) {
+				visitSentence( (GdlSentence) lit);
+			} else {
+				throw new GdlTypeIdentificationError();
+			}
+		}
+		
+		//Basic literals
+		private void visitDistinct(GdlDistinct distinct) {
+			visitElements(rule, Arrays.asList(distinct.getArg1(), distinct.getArg2()), getDistinct());
+		}		
+		public void visitNot(GdlNot not) {
+			visitLiteral(not.getBody());
+		}
+		public void visitOr(GdlOr or) {
+			visitLiterals(or.getDisjuncts());
+		}
+		
+		//Sentences
+		public void visitSentence(GdlSentence sentence) {
+			if (sentence instanceof GdlRelation) {
+				visitRelation( (GdlRelation) sentence);
+			} else if (sentence instanceof GdlProposition) {
+				visitProposition( (GdlProposition) sentence);
+			} else {
+				throw new GdlTypeIdentificationError();
+			}
+		}
+		private void visitRelation(GdlRelation predicate) {
 			addPredicateOccurrence(rule, predicate);
 			visitPredicateArguments(rule, predicate);
 		}
-		//		public void visitFunction(GdlFunction function) {
-		//			GdlSentenceVisitor functionArgumentsVisitor = new GdlSentenceVisitor(rule, function.toSentence(), function);
-		//			functionArgumentsVisitor.visitElements();
-		//		}
-
-		public void visitProposition(GdlProposition proposition) {
-			// Do nothing?
-		}
-
-		public void visitDistinct(GdlDistinct distinct) {
-			visitElements(rule, Arrays.asList(distinct.getArg1(), distinct.getArg2()), getDistinct());
-		}
-
-		public void visitRule(GdlRule rule) {
-			throw new GdlTypeIdentificationError("A rule occured in a rule, that's not possible, right?");
+		private void visitProposition(GdlProposition proposition) {
+			//TODO what to do with these?
+			// Do nothing
 		}
 
 	}
 
 
 	/**********************************************
-	 *  Sentence visitor
+	 *  Inner elemens visitor
 	 ***********************************************/
 	public void visitElements(GdlRule rule, List<GdlTerm> terms, IGdlArgumentListDeclaration parent) {
 		for (int i = 0; i < terms.size(); i++) {
