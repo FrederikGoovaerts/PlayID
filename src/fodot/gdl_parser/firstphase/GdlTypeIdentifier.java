@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ggp.base.util.gdl.GdlVisitor;
-import org.ggp.base.util.gdl.grammar.Gdl;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlDistinct;
 import org.ggp.base.util.gdl.grammar.GdlFunction;
@@ -108,17 +107,21 @@ public class GdlTypeIdentifier {
 		//DOES
 		updatePredicateArgumentType(does, 0, playerType);
 		updatePredicateArgumentType(does, 1, actionType);
+		predicates.get(does).lockTypes();
 		
 		//GOAL
 		updatePredicateArgumentType(goal, 0, playerType);
 		updatePredicateArgumentType(goal, 1, scoreType);
+		predicates.get(goal).lockTypes();
 		
 		//LEGAL
 		updatePredicateArgumentType(legal, 0, playerType);
 		updatePredicateArgumentType(legal, 1, actionType);
+		predicates.get(legal).lockTypes();
 		
 		//ROLE
 		updatePredicateArgumentType(role, 0, playerType);
+		predicates.get(role).lockTypes();
 		
 	}
 	/**********************************************/
@@ -573,10 +576,6 @@ public class GdlTypeIdentifier {
 	public void visitSentenceElements(GdlRule rule, GdlSentence sentence, IGdlArgumentListDeclaration parent) {
 		visitElements(rule, sentence.getBody(), parent);
 	}
-	
-//	public void visitSentenceElements(GdlRule rule, GdlSentence sentence) {
-//		this.visitSentenceElements(rule, sentence, null);
-//	}
 	
 	public void visitPredicateArguments(GdlRule rule, GdlRelation predicate) {
 		this.visitSentenceElements(rule, predicate.toTerm().toSentence(), new GdlPredicateDeclaration(predicate) );
