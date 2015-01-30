@@ -6,7 +6,7 @@ import java.util.List;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlPredicateOccurrence;
 import fodot.objects.vocabulary.elements.FodotType;
 
-public class GdlPredicateData {
+public class GdlPredicateData implements IGdlArgumentListData {
 
 	private List<FodotType> argumentTypes;
 	private List<GdlPredicateOccurrence> occurrences = new ArrayList<GdlPredicateOccurrence>();

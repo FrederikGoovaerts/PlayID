@@ -6,7 +6,7 @@ import java.util.List;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlConstantOccurrence;
 import fodot.objects.vocabulary.elements.FodotType;
 
-public class GdlConstantData {
+public class GdlConstantData implements IGdlTermData {
 	private FodotType type;
 	private List<GdlConstantOccurrence> occurrences = new ArrayList<GdlConstantOccurrence>();
 	

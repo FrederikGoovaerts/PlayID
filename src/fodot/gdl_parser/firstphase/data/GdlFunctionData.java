@@ -6,7 +6,7 @@ import java.util.List;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlFunctionOccurrence;
 import fodot.objects.vocabulary.elements.FodotType;
 
-public class GdlFunctionData {
+public class GdlFunctionData implements IGdlTermData, IGdlArgumentListData {
 	private FodotType type;
 	private List<FodotType> argumentTypes;
 	private List<GdlFunctionOccurrence> occurrences = new ArrayList<GdlFunctionOccurrence>();

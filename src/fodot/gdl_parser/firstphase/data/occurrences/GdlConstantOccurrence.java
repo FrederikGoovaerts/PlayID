@@ -4,8 +4,8 @@ import org.ggp.base.util.gdl.grammar.Gdl;
 
 public class GdlConstantOccurrence extends GdlTermOccurrence {
 
-	public GdlConstantOccurrence(Gdl directParent) {
-		super(directParent);
+	public GdlConstantOccurrence(Gdl directParent, int argumentIndex) {
+		super(directParent, argumentIndex);
 	}
 
 }
