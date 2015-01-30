@@ -35,6 +35,7 @@ import fodot.gdl_parser.firstphase.data.IGdlTermData;
 import fodot.gdl_parser.firstphase.data.declarations.GdlFunctionDeclaration;
 import fodot.gdl_parser.firstphase.data.declarations.GdlPredicateDeclaration;
 import fodot.gdl_parser.firstphase.data.declarations.GdlVariableDeclaration;
+import fodot.gdl_parser.firstphase.data.declarations.IGdlArgumentListDeclaration;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlArgumentListOccurrence;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlConstantOccurrence;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlFunctionOccurrence;
@@ -149,11 +150,11 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Adding occurrences of elements
 	 ***********************************************/
-	public void addConstantOccurrence(Gdl directParent, int argumentIndex, GdlConstant constant) {
+	public void addConstantOccurrence(IGdlArgumentListDeclaration directParent, int argumentIndex, GdlConstant constant) {
 		addConstantOccurrence(directParent, argumentIndex, constant, unfilledType);
 	}
 
-	public void addConstantOccurrence(Gdl directParent, int argumentIndex, GdlConstant constant, FodotType givenType) {
+	public void addConstantOccurrence(IGdlArgumentListDeclaration directParent, int argumentIndex, GdlConstant constant, FodotType givenType) {
 
 		//Initialize list if first occurrence of constant
 		if (constants.get(constant) == null) {
@@ -168,11 +169,11 @@ public class GdlTypeIdentifier {
 
 	}
 
-	public void addVariableOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlVariable variable) {
+	public void addVariableOccurrence(GdlRule parentRule, IGdlArgumentListDeclaration directParent, int argumentIndex, GdlVariable variable) {
 		addVariableOccurrence(parentRule, directParent, argumentIndex, variable, unfilledType);
 	}
 
-	public void addVariableOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlVariable argVariable, FodotType givenType) {
+	public void addVariableOccurrence(GdlRule parentRule, IGdlArgumentListDeclaration directParent, int argumentIndex, GdlVariable argVariable, FodotType givenType) {
 
 		GdlVariableDeclaration variable = new GdlVariableDeclaration(argVariable, parentRule);
 
@@ -200,11 +201,11 @@ public class GdlTypeIdentifier {
 
 	}
 
-	public void addFunctionOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlFunction function) {
+	public void addFunctionOccurrence(GdlRule parentRule, IGdlArgumentListDeclaration directParent, int argumentIndex, GdlFunction function) {
 		addFunctionOccurrence(parentRule, directParent, argumentIndex, function, unfilledType);
 	}
 
-	public void addFunctionOccurrence(GdlRule parentRule, Gdl directParent, int argumentIndex, GdlFunction function, FodotType givenType) {
+	public void addFunctionOccurrence(GdlRule parentRule, IGdlArgumentListDeclaration directParent, int argumentIndex, GdlFunction function, FodotType givenType) {
 		GdlFunctionDeclaration head = new GdlFunctionDeclaration( function );
 
 		//Initialize list if first occurrence of the predicate
@@ -275,15 +276,13 @@ public class GdlTypeIdentifier {
 
 		//Update all occurrences
 		for (IGdlTermOccurrence occ : data.getOccurences()) {
-			Gdl parent = occ.getDirectParent();
+			IGdlArgumentListDeclaration parent = occ.getDirectParent();
 			if (parent == null) {
 				//no op
-			} else if (parent instanceof GdlRelation) {
-				updatePredicateArgumentType(new GdlPredicateDeclaration((GdlRelation) parent), occ.getArgumentIndex(), foundType);
-			} else if (parent instanceof GdlFunction) {
-				updatePredicateArgumentType(new GdlPredicateDeclaration((GdlRelation) parent), occ.getArgumentIndex(), foundType);				
-			} else if (parent instanceof GdlDistinct) {
-				// Do nothing, we don't know anything new about the typing
+			} else if (parent instanceof GdlPredicateDeclaration) {
+				updatePredicateArgumentType( (GdlPredicateDeclaration) parent, occ.getArgumentIndex(), foundType);
+			} else if (parent instanceof GdlFunctionDeclaration) {
+				updateFunctionArgumentType( (GdlFunctionDeclaration) parent, occ.getArgumentIndex(), foundType);				
 			} else {
 				throw new GdlTypeIdentificationError("Terms should appear in anything else but functions and predicates, right?");
 			}		
@@ -319,6 +318,9 @@ public class GdlTypeIdentifier {
 			initPredicate(predicate);
 		}
 		GdlPredicateData data = predicates.get(predicate);
+		if (data.isTypeLocked()) {
+			return;
+		}
 		updateArgumentListArgumentType(data, argumentNr, foundType);
 	}
 
@@ -554,7 +556,7 @@ public class GdlTypeIdentifier {
 	 *  Sentence visitor
 	 ***********************************************/
 	
-	public void visitElements(GdlRule rule, List<GdlTerm> terms, Gdl parent) {
+	public void visitElements(GdlRule rule, List<GdlTerm> terms, IGdlArgumentListDeclaration parent) {
 		for (int i = 0; i < terms.size(); i++) {
 			GdlTerm term = terms.get(i);
 			if (term instanceof GdlConstant) {
@@ -568,20 +570,20 @@ public class GdlTypeIdentifier {
 		}
 	}
 	
-	public void visitSentenceElements(GdlRule rule, GdlSentence sentence, Gdl parent) {
+	public void visitSentenceElements(GdlRule rule, GdlSentence sentence, IGdlArgumentListDeclaration parent) {
 		visitElements(rule, sentence.getBody(), parent);
 	}
 	
-	public void visitSentenceElements(GdlRule rule, GdlSentence sentence) {
-		this.visitSentenceElements(rule, sentence, sentence);
-	}
+//	public void visitSentenceElements(GdlRule rule, GdlSentence sentence) {
+//		this.visitSentenceElements(rule, sentence, null);
+//	}
 	
 	public void visitPredicateArguments(GdlRule rule, GdlRelation predicate) {
-		this.visitSentenceElements(rule, predicate.toTerm().toSentence(), predicate);
+		this.visitSentenceElements(rule, predicate.toTerm().toSentence(), new GdlPredicateDeclaration(predicate) );
 	}
 	
 	public void visitFunctionArguments(GdlRule rule, GdlFunction function) {
-		this.visitSentenceElements(rule, function.toSentence(), function);
+		this.visitSentenceElements(rule, function.toSentence(), new GdlFunctionDeclaration(function) );
 	}
 
 	/**********************************************/

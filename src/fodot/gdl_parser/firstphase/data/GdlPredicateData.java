@@ -12,7 +12,7 @@ public class GdlPredicateData implements IGdlArgumentListData {
 	private List<FodotType> argumentTypes;
 	private List<GdlPredicateOccurrence> occurrences = new ArrayList<GdlPredicateOccurrence>();
 	private boolean isDynamic = false;
-	private boolean typesLocked;
+	private boolean typesLocked = false;
 	
 	public GdlPredicateData(List<FodotType> argumentTypes) {
 		this.argumentTypes = argumentTypes;
@@ -33,7 +33,7 @@ public class GdlPredicateData implements IGdlArgumentListData {
 	public void lockTypes() {
 		this.typesLocked = true;
 	}
-	public boolean hasTypeLocked() {
+	public boolean isTypeLocked() {
 		return this.typesLocked;
 	}
 	/**********************************************/
