@@ -70,6 +70,14 @@ public class NameUtil {
 		return "pr_" + newName;
 	}
 
+	public static String convertToValidConstantName(String name) {
+		//TODO: optimize this
+		if (name.substring(0, 1).matches("[0-9]")) {
+			return "i_" + name;
+		}
+		return name;
+	}
+	
 	/**
 	 * Checks if the string is a valid name for a variable name in FodotIDP
 	 * @param name

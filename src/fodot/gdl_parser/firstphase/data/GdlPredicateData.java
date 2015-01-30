@@ -25,6 +25,9 @@ public class GdlPredicateData implements IGdlArgumentListData {
 	public FodotType getArgumentType(int index) {
 		return this.argumentTypes.get(index);
 	}	
+	public List<FodotType> getArgumentTypes() {
+		return new ArrayList<FodotType>(argumentTypes);
+	}
 	public void setArgumentType(int index, FodotType type) {
 		if (typesLocked) {
 			throw new GdlTypeIdentificationError("Can't update a locked type!");
