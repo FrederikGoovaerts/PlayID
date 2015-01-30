@@ -50,6 +50,30 @@ import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.FormulaUtil;
 
 public class GdlTypeIdentifier {
+	/***********************************************
+	 *  Default types
+	 ***********************************************/
+	private FodotType unfilledType = createType("Unfilled");
+	private FodotType timeType = createType("Time", getNaturalNumberType());
+	private FodotType playerType = createType("Player");
+	private FodotType actionType = createType("Action");
+	private FodotType scoreType = createType("ScoreType", getNaturalNumberType());
+	private FodotType allType = createType("All");
+	/**********************************************/
+
+	/**********************************************
+	 *  Default predicates
+	 ***********************************************/
+	private GdlPredicateDeclaration distinct = new GdlPredicateDeclaration ( GdlPool.getConstant("distinct"), 2);
+	private GdlPredicateDeclaration does = new GdlPredicateDeclaration ( GdlPool.getConstant("does"), 2);
+	private GdlPredicateDeclaration goal = new GdlPredicateDeclaration ( GdlPool.getConstant("goal"), 2);
+	private GdlPredicateDeclaration init = new GdlPredicateDeclaration ( GdlPool.getConstant("init"), 1);
+	private GdlPredicateDeclaration legal = new GdlPredicateDeclaration ( GdlPool.getConstant("legal"), 2);
+	private GdlPredicateDeclaration next = new GdlPredicateDeclaration ( GdlPool.getConstant("next"), 1);
+	private GdlPredicateDeclaration role = new GdlPredicateDeclaration ( GdlPool.getConstant("role"), 1);
+	private GdlPredicateDeclaration terminal = new GdlPredicateDeclaration ( GdlPool.getConstant("terminal"), 0);
+	private GdlPredicateDeclaration truePred = new GdlPredicateDeclaration ( GdlPool.getConstant("true"), 1);
+	/**********************************************/
 
 	/**********************************************
 	 *  Data maps
@@ -60,19 +84,46 @@ public class GdlTypeIdentifier {
 	private Map<GdlFunctionDeclaration, GdlFunctionData> functions = new HashMap<GdlFunctionDeclaration, GdlFunctionData>();
 	/**********************************************/
 
-
-	/***********************************************
-	 *  Types
+	/**********************************************
+	 *  Constructor
 	 ***********************************************/
-	private FodotType unfilledType = createType("Unfilled");
-	private FodotType timeType = createType("Time", getNaturalNumberType());
-	private FodotType playerType = createType("Player");
-	private FodotType actionType = createType("Action");
-	private FodotType scoreType = createType("ScoreType", getNaturalNumberType());
-	private FodotType allType = createType("All");
-
+	public GdlTypeIdentifier() {
+		initializeMaps();
+	}
+	
+	private void initializeMaps() {
+		initPredicate(distinct);
+		initPredicate(does);
+		initPredicate(goal);
+		initPredicate(init);
+		initPredicate(legal);
+		initPredicate(next);
+		initPredicate(role);
+		initPredicate(terminal);
+		initPredicate(truePred);
+		
+		//TODO: make typelocking system so the "fixed" type don't pass type updates.
+		
+		//DOES
+		updatePredicateArgumentType(does, 0, playerType);
+		updatePredicateArgumentType(does, 1, actionType);
+		
+		//GOAL
+		updatePredicateArgumentType(goal, 0, playerType);
+		updatePredicateArgumentType(goal, 1, scoreType);
+		
+		//LEGAL
+		updatePredicateArgumentType(legal, 0, playerType);
+		updatePredicateArgumentType(legal, 1, actionType);
+		
+		//ROLE
+		updatePredicateArgumentType(role, 0, playerType);
+		
+	}
 	/**********************************************/
 
+	
+	
 	/**********************************************
 	 *  Init entries
 	 ***********************************************/
@@ -238,6 +289,25 @@ public class GdlTypeIdentifier {
 			}		
 		}
 	}
+	
+	/**
+	 * This method can be used by the typechangers if they don't know the type of their terms
+	 * Use this for things like "next, "does", "legal" etc.
+	 * @param rule
+	 * @param term
+	 * @param foundType
+	 */
+	@Deprecated
+	private void updateTermType(GdlRule rule, GdlTerm term, FodotType foundType) {
+		if (term instanceof GdlConstant) {
+			updateConstantType((GdlConstant) term, foundType);
+		} else if (term instanceof GdlFunction) {
+			updateFunctionType(new GdlFunctionDeclaration((GdlFunction) term), foundType);
+		} else if (term instanceof GdlVariable) {
+			updateVariableType(new GdlVariableDeclaration((GdlVariable) term, rule), foundType);
+		}
+	}
+	
 	/**********************************************/
 
 	/**********************************************
@@ -299,6 +369,16 @@ public class GdlTypeIdentifier {
 
 	/**********************************************/
 
+	/**********************************************
+	 *  Dynamic spotting
+	 ***********************************************/
+	private void makeDynamic(GdlRelation predicate) {
+		predicates.get(new GdlPredicateDeclaration(predicate)).makeDynamic();
+	}
+
+	/**********************************************/
+
+	
 
 	/**********************************************/
 
@@ -351,48 +431,36 @@ public class GdlTypeIdentifier {
 	private class GdlTypeIdentifierTransformer implements GdlTransformer {
 
 		/**********************************************
-		 *  Relation processing: only for type defining
+		 *  Relation processing: only for type defining.
+		 *  Most of the time, you won't add the occurrence
+		 *  because init, legal etc are not part of our GDL file
 		 ***********************************************/
 
 		@Override
 		public void processRoleRelation(GdlRelation relation) {
-			visitRelationArguments(relation);
-			updateTermTypeInRelation(relation.get(0), playerType);
+			visitPredicateArguments(null, relation);
+			updateTermType(null, relation.get(0), playerType);
 		}
 
 		@Override
 		public void processInitRelation(GdlRelation relation) {
-			visitRelationArguments(relation);
+			visitPredicateArguments(null, relation);
+//			makeDynamic(relation.get(0)); //Is this right? It has an initial status, so it must be dynamic, right?
 		}
 
 		@Override
 		public void processStaticPredicateRelation(GdlRelation relation) {
-			visitRelationArguments(relation);
+			addPredicateOccurrence(null, relation);
+			visitPredicateArguments(null, relation);
 		}
 
 		@Override
 		public void processLegalRelation(GdlRelation relation) {
-			visitRelationArguments(relation);
-			updateTermTypeInRelation(relation.get(0), playerType);
-			updateTermTypeInRelation(relation.get(0), actionType);
-		}		
-
-		private void updateTermTypeInRelation(GdlTerm term, FodotType foundType) {
-			if (term instanceof GdlConstant) {
-				updateConstantType((GdlConstant) term, foundType);
-			} else if (term instanceof GdlFunction) {
-				updateFunctionType(new GdlFunctionDeclaration((GdlFunction) term), foundType);
-			} else if (term instanceof GdlVariable) {
-				throw new GdlTypeIdentificationError("Variables can't be processed in relations");
-			}
-		}
-
-		private void visitRelationArguments(GdlRelation relation) {
-			addPredicateOccurrence(null, relation);
-
-			//Rule can be null: only used for variables, but it doesn't contain variables!
 			visitPredicateArguments(null, relation);
+			updateTermType(null, relation.get(0), playerType);
+			updateTermType(null, relation.get(0), actionType);
 		}
+		
 		/**********************************************/
 
 		/**********************************************
@@ -403,23 +471,23 @@ public class GdlTypeIdentifier {
 		public void processNextRule(GdlRule rule) {
 			visitRuleArguments(rule);
 			visitRuleBody(rule);
-			updateTermTypeInRelationInRule(rule, rule.getHead().get(0), actionType);
+			updateTermType(rule, rule.getHead().get(0), actionType);
 		}
 
 		@Override
 		public void processLegalRule(GdlRule rule) {
 			visitRuleArguments(rule);
 			visitRuleBody(rule);
-			updateTermTypeInRelationInRule(rule, rule.getHead().get(0), playerType);
-			updateTermTypeInRelationInRule(rule, rule.getHead().get(1), actionType);
+			updateTermType(rule, rule.getHead().get(0), playerType);
+			updateTermType(rule, rule.getHead().get(1), actionType);
 		}
 
 		@Override
 		public void processGoalRule(GdlRule rule) {
 			visitRuleArguments(rule);
 			visitRuleBody(rule);
-			updateTermTypeInRelationInRule(rule, rule.getHead().get(0), playerType);
-			updateTermTypeInRelationInRule(rule, rule.getHead().get(1), scoreType);
+			updateTermType(rule, rule.getHead().get(0), playerType);
+			updateTermType(rule, rule.getHead().get(1), scoreType);
 		}
 
 		@Override
@@ -445,16 +513,6 @@ public class GdlTypeIdentifier {
 		private void visitRuleBody(GdlRule rule) {
 			GdlRuleElementsVisitor bodyVisitor = new GdlRuleElementsVisitor(rule);
 			GdlRootVisitors.visitAll(rule.getBody(), bodyVisitor);
-		}
-		
-		private void updateTermTypeInRelationInRule(GdlRule rule, GdlTerm term, FodotType foundType) {
-			if (term instanceof GdlConstant) {
-				updateConstantType((GdlConstant) term, foundType);
-			} else if (term instanceof GdlFunction) {
-				updateFunctionType(new GdlFunctionDeclaration((GdlFunction) term), foundType);
-			} else if (term instanceof GdlVariable) {
-				updateVariableType(new GdlVariableDeclaration((GdlVariable) term, rule), foundType);
-			}
 		}
 		/**********************************************/
 	}

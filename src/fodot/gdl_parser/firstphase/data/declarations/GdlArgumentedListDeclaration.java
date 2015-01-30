@@ -11,7 +11,10 @@ public abstract class GdlArgumentedListDeclaration {
 		this.name = name;
 		this.arity = arity;
 	}
-
+	
+	/**********************************************
+	 *  Class properties
+	 ***********************************************/
 	public GdlConstant getName() {
 		return name;
 	}
@@ -19,6 +22,12 @@ public abstract class GdlArgumentedListDeclaration {
 	public int getArity() {
 		return arity;
 	}
+	/**********************************************/
+	
+	
+	/**********************************************
+	 *  Hashcode & Equals
+	 ***********************************************/
 
 	@Override
 	public int hashCode() {
@@ -45,6 +54,13 @@ public abstract class GdlArgumentedListDeclaration {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}	
+	
+	@Override 
+	public String toString() {
+		return getName().toString() + "/" + getArity();
 	}
+
+	/**********************************************/
 
 }
