@@ -18,6 +18,10 @@ public abstract class FodotElementCollection<E extends IFodotElement> extends Fo
 		setElements(argElements);
 	}
 	
+	public FodotElementCollection(Collection<? extends E> argElements) {
+		this(argElements, -1, -1);
+	}
+	
 	/**********************************************
 	 *  Size methods
 	 ***********************************************/
@@ -81,7 +85,7 @@ public abstract class FodotElementCollection<E extends IFodotElement> extends Fo
 	}
 
 	public void addElement(E argElement) {
-		if (!isValidElement(argElement)) {
+		if (!isFull() && !isValidElement(argElement)) {
 			throw new FodotException(argElement + " is not a valid argument for " + this);
 		
 		}

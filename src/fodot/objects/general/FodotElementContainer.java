@@ -6,8 +6,12 @@ import java.util.Set;
 
 public abstract class FodotElementContainer<E extends IFodotElement> extends FodotElementCollection<E> implements IFodotElement {
 
+	public FodotElementContainer(Collection<? extends E> elements, int minSize, int maxSize) {
+		super(elements, minSize, maxSize);
+	}
+	
 	public FodotElementContainer(Collection<? extends E> elements) {
-		super(elements, -1, -1);
+		super(elements);
 	}
 
 	/**********************************************

@@ -10,7 +10,7 @@ import fodot.objects.vocabulary.FodotVocabulary;
 public class FodotTermDefinition extends FodotFileElement<IFodotTerm> implements IFodotFileElement {
 	
 	public FodotTermDefinition(String name, IFodotTerm term, FodotVocabulary voc) {
-		super(name, Arrays.asList(term), voc);
+		super(name, Arrays.asList(term), Arrays.asList(voc), 1, 1);
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class FodotTermDefinition extends FodotFileElement<IFodotTerm> implements
 
 	@Override
 	public boolean isValidElement(IFodotTerm argElement) {
-		return getSize() <= 0;
+		return true;
 	}
 
 }

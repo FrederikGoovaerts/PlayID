@@ -6,6 +6,10 @@ import fodot.exceptions.fodot.FodotException;
 
 public abstract class FodotNamedElementContainer<E extends IFodotNamedElement> extends FodotElementContainer<E> {
 
+	public FodotNamedElementContainer(Collection<? extends E> elements, int minSize, int maxSize) {
+		super(elements, minSize, maxSize);
+	}
+	
 	public FodotNamedElementContainer(Collection<? extends E> elements) {
 		super(elements);
 	}

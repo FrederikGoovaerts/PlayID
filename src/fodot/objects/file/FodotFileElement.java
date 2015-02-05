@@ -18,10 +18,15 @@ public abstract class FodotFileElement<E extends IFodotElement> extends FodotEle
 	private Set<IFodotFileElement> prerequired;
 
 	public FodotFileElement(String name, Collection<? extends E> elements,
-			Collection<? extends IFodotFileElement> prerequired) {
-		super(elements);
+			Collection<? extends IFodotFileElement> prerequired, int minSize, int maxSize) {
+		super(elements, minSize, maxSize);
 		setName(name);
-		setPrerequiredElements(prerequired);
+		setPrerequiredElements(prerequired);		
+	}
+	
+	public FodotFileElement(String name, Collection<? extends E> elements,
+			Collection<? extends IFodotFileElement> prerequired) {
+		this(name, elements, prerequired, -1, -1);
 	}
 	
 	public FodotFileElement(String name, Collection<? extends E> elements, IFodotFileElement... prerequired) {
