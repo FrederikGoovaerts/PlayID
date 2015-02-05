@@ -115,9 +115,4 @@ public class FodotComment extends FodotElement implements IFodotElement, IFodotF
 		return null;
 	}
 
-	@Override
-	public void mergeWith(IFodotFileElement other) {
-		return;		
-	}
-
 }

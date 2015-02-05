@@ -82,14 +82,6 @@ public class BasicFodotFile extends FodotElement implements IFodotFile {
 				+ getProcedures().toCode();
 	}	
 
-	public void merge(BasicFodotFile other) {
-		getIncludes().mergeWith(other.getIncludes());
-		getVocabulary().mergeWith(other.getVocabulary());
-		getTheory().mergeWith(other.getTheory());
-		getStructure().mergeWith(other.getStructure());
-		getProcedures().mergeWith(other.getProcedures());
-	}
-
 	@Override
 	public IFodotFileElement getElementWithName(String name) {
 		if (name == null) {

@@ -123,12 +123,5 @@ public class FodotTheory extends FodotFileElement<IFodotTheoryElement> implement
 	public Set<IFodotFileElement> getPrerequiredElements() {
 		return new HashSet<IFodotFileElement>(Arrays.asList(getVocabulary()));
 	}
-
-	@Override
-	public void mergeWith(IFodotFileElement other) {
-		if (this.getClass().equals(other.getClass())) {
-			merge((FodotTheory) other);
-		}
-	}
 	
 }

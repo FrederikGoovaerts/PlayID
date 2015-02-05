@@ -77,13 +77,6 @@ public class FodotProcedures extends FodotElement implements IFodotFileElement {
 	}
 
 	@Override
-	public void mergeWith(IFodotFileElement other) {
-		if (this.getClass().equals(other.getClass())) {
-			merge((FodotProcedures) other);
-		}
-	}
-
-	@Override
 	public Collection<? extends IFodotElement> getDirectFodotElements() {
 		return getProcedures();
 	}
