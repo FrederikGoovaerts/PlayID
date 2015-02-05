@@ -3,6 +3,7 @@ package fodot.objects.theory.elements.terms.aggregates;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.FodotElement;
@@ -49,6 +50,13 @@ public class FodotSet extends FodotElement implements IFodotElement {
 			throw new FodotException("A set can't contain zero variables");
 		}
 	}
+	public Set<FodotVariable> getFreeVariables() {
+		Set<FodotVariable> freeVariables = getFormula().getFreeVariables();
+		freeVariables.addAll(getTerm().getFreeVariables());
+		freeVariables.removeAll(getVariables());
+		return freeVariables;
+	}
+	
 	
 	//Formula
 	public IFodotFormula getFormula() {

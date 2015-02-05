@@ -53,6 +53,8 @@ import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotFunction;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
+import fodot.objects.theory.elements.terms.aggregates.FodotAggregate;
+import fodot.objects.theory.elements.terms.aggregates.FodotSet;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
@@ -72,15 +74,15 @@ public class FodotElementBuilder {
 	public static FodotComment createComment(int amountOfTabs, String... comments) {
 		return new FodotComment(amountOfTabs, comments);
 	}
-	
+
 	public static FodotComment createComment(String... comments) {
 		return new FodotComment(comments);
 	}
-	
+
 	public static FodotBlankLines createBlankLines(int amountOfLines) {
 		return new FodotBlankLines(amountOfLines);
 	}
-	
+
 	// FORMULA CONNECTORS
 	private static final String AND_SYMBOL = "&";
 
@@ -331,7 +333,7 @@ public class FodotElementBuilder {
 	public static FodotVariable createVariable(String nameSuggestion, FodotType type, Collection<? extends String> usedNames) {
 		return new FodotVariable(NameUtil.generateVariableName(nameSuggestion, type, usedNames), type);
 	}
-	
+
 	public static FodotVariable createVariable(String nameSuggestion, FodotType type, Set<FodotVariable> usedVariables) {
 		Set<String> usedNames = new HashSet<String>();
 		for (FodotVariable variable : usedVariables) {
@@ -341,7 +343,7 @@ public class FodotElementBuilder {
 		usedVariables.add(toReturn);
 		return toReturn;
 	}
-	
+
 	public static FodotVariable createVariable(FodotType type, Set<FodotVariable> usedVariables) {
 		return createVariable(null, type, usedVariables);
 	}
@@ -362,35 +364,82 @@ public class FodotElementBuilder {
 		return new FodotFunction(declaration, Arrays.asList(arguments));
 	}
 
+	//Aggregates
+	public static FodotSet createSet(List<FodotVariable> variables, IFodotFormula formula,
+			IFodotTerm term) {
+		return new FodotSet(variables, formula, term);
+	}
+
+	public static FodotSet createSet(List<FodotVariable> variables, IFodotFormula formula) {
+		return createSet(variables, formula, null);
+	}
+
+	public static FodotSet createSet(IFodotFormula formula) {
+		return createSet(null, formula, null);
+	}
+	
+	private static final String CARDINALITY_SYMBOL = "#";
+
+	public static FodotAggregate createCardinality(String name, FodotSet set) {
+		return new FodotAggregate(CARDINALITY_SYMBOL, set);
+	}
+	
+	private static final String SUM_SYMBOL = "sum";
+
+	public static FodotAggregate createSum(String name, FodotSet set) {
+		return new FodotAggregate(SUM_SYMBOL, set);
+	}
+	
+	private static final String PRODUCT_SYMBOL = "prod";
+
+	public static FodotAggregate createProduct(String name, FodotSet set) {
+		return new FodotAggregate(PRODUCT_SYMBOL, set);
+	}
+	
+	private static final String MAXIMUM_SYMBOL = "max";
+
+	public static FodotAggregate createMaximum(String name, FodotSet set) {
+		return new FodotAggregate(MAXIMUM_SYMBOL, set);
+	}
+	
+	private static final String MINIMUM_SYMBOL = "min";
+
+	public static FodotAggregate createMinimum(String name, FodotSet set) {
+		return new FodotAggregate(MINIMUM_SYMBOL, set);
+	}
+	
+	
+	
+	
 	//ENUMERATIONS
 	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionFullDeclaration declaration, 
 			Collection<? extends IFodotFunctionEnumerationElement> elements) {
 		return new FodotFunctionEnumeration(declaration, elements);
 	}
-	
+
 	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionFullDeclaration declaration) {
 		return createFunctionEnumeration(declaration, null);
 	}
-	
+
 	public static FodotFunctionEnumerationElement createFunctionEnumerationElement(
 			Collection<? extends IFodotTypeEnumerationElement> elements, IFodotTypeEnumerationElement returnValue) {
 		return new FodotFunctionEnumerationElement(elements, returnValue);
 	}
-	
+
 	public static FodotConstantFunctionEnumeration createConstantFunctionEnumeration(
 			FodotFunctionFullDeclaration declaration, IFodotTypeEnumerationElement value) {
 		return new FodotConstantFunctionEnumeration(declaration,value);
 	}
-
+	
 	public static FodotPredicateEnumeration createPredicateEnumeration(
 			FodotPredicateDeclaration declaration, List<? extends IFodotPredicateEnumerationElement> elements) {
 		return new FodotPredicateEnumeration(declaration, elements);
 	}
-	
+
 	public static FodotPredicateEnumeration createPredicateEnumeration(FodotPredicateDeclaration declaration) {
 		return createPredicateEnumeration(declaration, null);
 	}
-	
+
 	public static FodotPredicateEnumerationElement createPredicateEnumerationElement(
 			FodotPredicateDeclaration declaration, List<? extends IFodotTypeEnumerationElement> elements) {
 		return new FodotPredicateEnumerationElement(elements);
@@ -403,7 +452,7 @@ public class FodotElementBuilder {
 	public static FodotTypeEnumeration createTypeEnumeration(FodotTypeDeclaration type, Collection<? extends IFodotTypeEnumerationElement> values) {
 		return new FodotTypeEnumeration(type.getType(), values);
 	}
-	
+
 	public static FodoTypeFunctionEnumerationElement createTypeFunctionEnumerationElement(FodotTypeFunctionDeclaration declaration,
 			List<? extends IFodotTypeEnumerationElement> elements) {
 		return new FodoTypeFunctionEnumerationElement(declaration,elements);
@@ -437,12 +486,12 @@ public class FodotElementBuilder {
 	public static FodotInductiveFunction createInductiveFunctionHead(FodotFunction function, IFodotTerm functionResult) {
 		return new FodotInductiveFunction(function, functionResult);
 	}
-	
+
 	public static FodotInductiveSentence createInductiveSentence(IFodotInductiveDefinitionElement form) {
 		form = FormulaUtil.makeVariableFreeInductive(form);
 		return new FodotInductiveSentence(form);
 	}
-	
+
 	public static FodotInductiveQuantifier createInductiveQuantifier(FodotQuantifier quantifier) {
 		if (! (quantifier.getFormula() instanceof IFodotInductiveDefinitionElement) ) {
 			throw new FodotException(
@@ -456,7 +505,7 @@ public class FodotElementBuilder {
 	public static FodotInductiveQuantifier createInductiveForAll(Set<FodotVariable> var, IFodotInductiveDefinitionElement form) {
 		return new FodotInductiveQuantifier(FORALL_SYMBOL, var, form);
 	}
-	
+
 	//SENTENCE	
 	public static FodotSentence createSentence(IFodotFormula formula) {
 		formula = FormulaUtil.makeVariableFree(formula);
@@ -638,7 +687,7 @@ public class FodotElementBuilder {
 	public static FodotVocabulary createVocabulary(String name, Collection<? extends IFodotVocabularyElement> elements) {
 		return new FodotVocabulary(name, elements);
 	}
-	
+
 	public static FodotVocabulary createVocabulary(String name) {
 		return createVocabulary(name, null);
 	}
@@ -646,11 +695,11 @@ public class FodotElementBuilder {
 	public static FodotVocabulary createVocabulary() {
 		return createVocabulary(null, null);
 	}
-	
+
 	public static FodotLTCVocabulary createLTCVocabulary(String name, Collection<? extends IFodotVocabularyElement> elements) {
 		return new FodotLTCVocabulary(name, elements);
 	}
-	
+
 	public static FodotLTCVocabulary createLTCVocabulary(String name) {
 		return createLTCVocabulary(name, null);
 	}
@@ -667,7 +716,7 @@ public class FodotElementBuilder {
 	public static IFodotFile createFodotFile(Collection<? extends IFodotFileElement> elements) {
 		return createFodotFile(null, elements);
 	}
-	
+
 	public static IFodotFile createFodotFile(FodotVocabulary voc, FodotTheory theory, FodotStructure struc, FodotProcedures procedures, FodotIncludeHolder imports) {
 		return createFodotFile(imports,Arrays.asList(voc,theory,struc,procedures));
 	}
