@@ -14,9 +14,9 @@ public class GdlPredicateData implements IGdlArgumentListData {
 	private boolean isDynamic = false;
 	private boolean typesLocked = false;
 	
-	public GdlPredicateData(List<FodotType> argumentTypes, boolean typesLocked) {
-		this.argumentTypes = argumentTypes;
-		this.typesLocked = typesLocked;
+	public GdlPredicateData(List<FodotType> argArgumentTypes, boolean argTypesLocked) {
+		this.argumentTypes = new ArrayList<FodotType>(argArgumentTypes);
+		this.typesLocked = argTypesLocked;
 	}
 
 	/**********************************************
@@ -33,6 +33,12 @@ public class GdlPredicateData implements IGdlArgumentListData {
 			throw new GdlTypeIdentificationError("Can't update a locked type!");
 		}
 		this.argumentTypes.set(index, type);
+	}
+	public void addArgumentType(FodotType argType) {
+		this.argumentTypes.add(argType);
+	}
+	public int getAmountOfArguments() {
+		return argumentTypes.size();
 	}
 	public void lockTypes() {
 		this.typesLocked = true;

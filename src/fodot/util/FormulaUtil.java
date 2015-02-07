@@ -36,7 +36,7 @@ public class FormulaUtil {
 	} 
 	
 	public static List<FodotType> createTypeList(FodotType type, int amount) {
-		List<FodotType> result = new ArrayList<>();
+		List<FodotType> result = new ArrayList<FodotType>();
 		for (int i = 0; i < amount; i++) {
 			result.add(type);
 		}

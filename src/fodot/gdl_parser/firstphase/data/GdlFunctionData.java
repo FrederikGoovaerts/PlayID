@@ -32,6 +32,10 @@ public class GdlFunctionData implements IGdlTermData, IGdlArgumentListData {
 		return new ArrayList<FodotType>(argumentTypes);
 	}
 	
+	public int getAmountOfArguments() {
+		return argumentTypes.size();
+	}
+	
 	public void setArgumentType(int index, FodotType type) {
 		this.argumentTypes.set(index, type);
 	}

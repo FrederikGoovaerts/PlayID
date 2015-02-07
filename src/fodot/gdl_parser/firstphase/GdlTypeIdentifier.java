@@ -1,6 +1,11 @@
 package fodot.gdl_parser.firstphase;
 
-import static fodot.objects.FodotElementBuilder.*;
+import static fodot.objects.FodotElementBuilder.createConstant;
+import static fodot.objects.FodotElementBuilder.createPredicateDeclaration;
+import static fodot.objects.FodotElementBuilder.createType;
+import static fodot.objects.FodotElementBuilder.createTypeFunctionDeclaration;
+import static fodot.objects.FodotElementBuilder.createVariable;
+import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,6 +104,8 @@ public class GdlTypeIdentifier {
 		initPredicate(rolePred,		Arrays.asList(playerType),					true);
 		initPredicate(terminalPred,	new ArrayList<FodotType>(),					true);
 		initPredicate(truePred,		Arrays.asList(unfilledType),				true);
+		
+		makeDynamic(doesPred);
 	}
 
 	//GETTERS
@@ -236,9 +243,13 @@ public class GdlTypeIdentifier {
 			updateFunctionType(head, givenType);
 		}
 	}
-	
+
 	public void makeDynamic(GdlRelation predicate) {
-		predicates.get(new GdlPredicateDeclaration(predicate)).makeDynamic();
+		makeDynamic(new GdlPredicateDeclaration(predicate));
+	}
+	
+	public void makeDynamic(GdlPredicateDeclaration predicate) {
+		predicates.get(predicate).makeDynamic();		
 	}
 	/**********************************************/
 
@@ -379,21 +390,84 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Resulting GdlFodotData generator
 	 ***********************************************/
+	public void fillInMissingTypes() {
+		// SET ALL "unfilled" TO "All".
+		/* TODO: You can identify "chains" of types, so you can subdivide all
+		 * into more specific types. This will improve grounding in IDP.
+		 * We need to prove the correctness of this though. (or disprove the current correctness)
+		 */
+		
+		//Add time variable to all dynamic predicates
+		for (GdlPredicateDeclaration predicate : predicates.keySet()) {
+			GdlPredicateData data = predicates.get(predicate);
+			if (data.isDynamic()) {
+				data.addArgumentType(timeType);
+			}
+		}
+
+		//Constants to all
+		for (GdlConstant constant : constants.keySet()) {
+			GdlConstantData data = constants.get(constant);
+			if (data.getType().equals(unfilledType)) {
+				updateConstantType(constant, allType);
+			}
+		}
+
+		//Variables to all
+		for (GdlVariableDeclaration variable : variables.keySet()) {
+			GdlVariableData data = variables.get(variable);
+			if (data.getType().equals(unfilledType)) {
+				updateVariableType(variable, allType);
+			}
+		}
+
+		//Predicate arguments to all
+		for (GdlPredicateDeclaration predicate : predicates.keySet()) {
+			GdlPredicateData data = predicates.get(predicate);
+			for (int i = 0; i < data.getAmountOfArguments(); i++) {
+				if (data.getArgumentType(i).equals(unfilledType)) {
+					updatePredicateArgumentType(predicate, i, allType);
+				}				
+			}
+		}
+
+		//Function arguments to all
+		for (GdlFunctionDeclaration function : functions.keySet()) {
+			GdlFunctionData data = functions.get(function);
+			for (int i = 0; i < data.getAmountOfArguments(); i++) {
+				if (data.getArgumentType(i).equals(unfilledType)) {
+					updateFunctionArgumentType(function, i, allType);
+				}				
+			}
+		}
+
+
+		//Function types to all
+		for (GdlFunctionDeclaration function : functions.keySet()) {
+			GdlFunctionData data = functions.get(function);
+			if (data.getType().equals(unfilledType)) {
+				updateFunctionType(function, allType);
+			}
+		}
+	}
+
 	public GdlFodotData getResultingData() {
+		
+		fillInMissingTypes();
+		
 		Map<GdlConstant, FodotConstant> constantsMap = new HashMap<GdlConstant, FodotConstant>();
 		Map<GdlFunctionDeclaration, FodotFunctionDeclaration> functionDeclarations = new HashMap<GdlFunctionDeclaration, FodotFunctionDeclaration>();
 		Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations = new HashMap<GdlPredicateDeclaration, FodotPredicateDeclaration>();
 		Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule = new HashMap<GdlRule, Map<GdlVariable, FodotVariable>>();
 		Set<GdlPredicateDeclaration> dynamicPredicates = new HashSet<GdlPredicateDeclaration>();
-
-		//TODO: mapping of TypeIdentifier data to GdlFodotData data
 		
+		//GENERATE SETS FOR GDLFODOTDATA
 		for (GdlConstant c : constants.keySet()) {
 			GdlConstantData data = constants.get(c);
 			FodotConstant fc = createConstant( NameUtil.convertToValidConstantName(c.getValue()) , data.getType());
 			constantsMap.put(c, fc);
 		}
-		
+
 		for (GdlFunctionDeclaration f : functions.keySet()) {
 			GdlFunctionData data = functions.get(f);
 			FodotFunctionDeclaration ff = createTypeFunctionDeclaration(
@@ -401,39 +475,40 @@ public class GdlTypeIdentifier {
 					data.getArgumentTypes(),
 					data.getType());
 			functionDeclarations.put(f, ff);
+			System.out.println(ff.toCode());
 		}
-				
+
 		for (GdlPredicateDeclaration p : predicates.keySet()) {
 			GdlPredicateData data = predicates.get(p);
 			FodotPredicateDeclaration pf = createPredicateDeclaration(
 					NameUtil.convertToValidPredicateName(p.getName().getValue()),
 					data.getArgumentTypes());
 			predicateDeclarations.put(p, pf);
-			
+			System.out.println(pf.toCode());
+
 			if (data.isDynamic()) {
 				dynamicPredicates.add(p);
 			}
 		}		
-		
+
 		for (GdlVariableDeclaration var : variables.keySet()) {
 			GdlRule location = var.getLocation();
 			if (!variablesPerRule.containsKey(var.getLocation())) {
 				variablesPerRule.put(location, new HashMap<GdlVariable,FodotVariable>());
 			}
 			Set<FodotVariable> usedVariables = new HashSet<FodotVariable>( variablesPerRule.get( location ).values() );
-			
+
 			GdlVariableData data = variables.get(var);
 			FodotVariable fvar = createVariable(var.getVariable().getName(), data.getType(), usedVariables);
-			
+
 			variablesPerRule.get(location).put(var.getVariable(), fvar);			
 		}
-		
-		
-				System.out.println("c"+constants.keySet());
-				System.out.println("f"+functionDeclarations.keySet());
-				System.out.println("p"+predicateDeclarations.keySet());
-				System.out.println("v"+variablesPerRule.keySet());
-				System.out.println("d"+dynamicPredicates);
+
+		System.out.println(timeType.getDeclaration().toCode());
+		System.out.println(playerType.getDeclaration().toCode());
+		System.out.println(actionType.getDeclaration().toCode());
+		System.out.println(scoreType.getDeclaration().toCode());
+		System.out.println(allType.getDeclaration().toCode());
 
 		return new GdlFodotData(
 				this.timeType, this.playerType, this.actionType, this.scoreType, this.allType,
@@ -453,7 +528,7 @@ public class GdlTypeIdentifier {
 	/* =======================================
 	 * ====== TRANSFORMER: THE VISITOR ======
 	 * ======================================= */
- 
+
 	/**
 	 * This class will be used to visit the relations and rules.
 	 * It will use the GdlRuleElementsVisitor to visit the rules deeper.
@@ -525,7 +600,7 @@ public class GdlTypeIdentifier {
 			visitRuleBody(rule);
 		}		
 
-		
+
 		//Helper
 		private void visitRuleBody(GdlRule rule) {
 			GdlRuleBodyVisitor bodyVisitor = new GdlRuleBodyVisitor(rule);
@@ -541,18 +616,18 @@ public class GdlTypeIdentifier {
 		public GdlRuleBodyVisitor(GdlRule rule) {
 			this.rule = rule;
 		}
-		
+
 		public void visitBodyElements() {	
 			visitLiterals(rule.getBody());
 		}
-		
+
 		private void visitLiterals(Collection<? extends GdlLiteral> literals) {
 			for (GdlLiteral lit : literals) {
 				visitLiteral(lit);
 			}	
-			
+
 		}
-		
+
 		private void visitLiteral(GdlLiteral lit) {
 			if (lit instanceof GdlDistinct) {
 				visitDistinct( (GdlDistinct) lit);
@@ -566,7 +641,7 @@ public class GdlTypeIdentifier {
 				throw new GdlTypeIdentificationError();
 			}
 		}
-		
+
 		//Basic literals
 		private void visitDistinct(GdlDistinct distinct) {
 			visitArguments(rule, Arrays.asList(distinct.getArg1(), distinct.getArg2()), getDistinct());
@@ -577,7 +652,7 @@ public class GdlTypeIdentifier {
 		public void visitOr(GdlOr or) {
 			visitLiterals(or.getDisjuncts());
 		}
-		
+
 		//Sentences
 		public void visitSentence(GdlSentence sentence) {
 			if (sentence instanceof GdlRelation) {
@@ -619,7 +694,7 @@ public class GdlTypeIdentifier {
 			}
 		}
 	}
-	
+
 	public void visitPredicateArguments(GdlRule rule, GdlRelation predicate) {
 		this.visitArguments(rule, predicate.getBody(), new GdlPredicateDeclaration(predicate) );
 	}
