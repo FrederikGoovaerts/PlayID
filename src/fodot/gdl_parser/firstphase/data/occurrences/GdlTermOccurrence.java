@@ -1,21 +1,21 @@
 package fodot.gdl_parser.firstphase.data.occurrences;
 
-import org.ggp.base.util.gdl.grammar.Gdl;
+import fodot.gdl_parser.firstphase.data.declarations.IGdlArgumentListDeclaration;
 
 public abstract class GdlTermOccurrence implements IGdlTermOccurrence {
-	private Gdl directParent;
+	private IGdlArgumentListDeclaration directParent;
 	private int argumentIndex;
 
-	public GdlTermOccurrence(Gdl directParent, int argumentIndex) {
+	public GdlTermOccurrence(IGdlArgumentListDeclaration directParent, int argumentIndex) {
 		setDirectParent(directParent);
 		setArgumentIndex(argumentIndex);
 	}
 
-	public Gdl getDirectParent() {
+	public IGdlArgumentListDeclaration getDirectParent() {
 		return directParent;
 	}
 
-	private void setDirectParent(Gdl directParent) {
+	private void setDirectParent(IGdlArgumentListDeclaration directParent) {
 		this.directParent = directParent;
 	}
 

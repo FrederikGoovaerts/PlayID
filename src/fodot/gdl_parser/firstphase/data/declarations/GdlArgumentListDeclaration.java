@@ -2,15 +2,33 @@ package fodot.gdl_parser.firstphase.data.declarations;
 
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 
-public abstract class GdlArgumentedListDeclaration {
+public abstract class GdlArgumentListDeclaration implements IGdlArgumentListDeclaration {
 	private GdlConstant name;
 	private int arity;
-	
-	public GdlArgumentedListDeclaration(GdlConstant name, int arity) {
+
+	public GdlArgumentListDeclaration(GdlConstant name, int arity) {
 		super();
 		this.name = name;
 		this.arity = arity;
 	}
+	
+	/**********************************************
+	 *  Class properties
+	 ***********************************************/
+	public GdlConstant getName() {
+		return name;
+	}
+
+	public int getArity() {
+		return arity;
+	}
+	/**********************************************/
+	
+	
+	/**********************************************
+	 *  Hashcode & Equals
+	 ***********************************************/
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -27,7 +45,7 @@ public abstract class GdlArgumentedListDeclaration {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		GdlArgumentedListDeclaration other = (GdlArgumentedListDeclaration) obj;
+		GdlArgumentListDeclaration other = (GdlArgumentListDeclaration) obj;
 		if (arity != other.arity)
 			return false;
 		if (name == null) {
@@ -36,6 +54,13 @@ public abstract class GdlArgumentedListDeclaration {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}	
+	
+	@Override 
+	public String toString() {
+		return getName().toString() + "/" + getArity();
 	}
+
+	/**********************************************/
 
 }

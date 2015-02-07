@@ -1,25 +1,26 @@
 package fodot.gdl_parser.firstphase.data.occurrences;
 
-import org.ggp.base.util.gdl.grammar.Gdl;
 import org.ggp.base.util.gdl.grammar.GdlFunction;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 
-public class GdlFunctionOccurrence extends GdlArgumentListOccurrence implements IGdlTermOccurrence{
+import fodot.gdl_parser.firstphase.data.declarations.IGdlArgumentListDeclaration;
 
-	private Gdl parent;
+public class GdlFunctionOccurrence extends GdlArgumentListOccurrence implements IGdlTermOccurrence {
+
+	private IGdlArgumentListDeclaration parent;
 	private int argumentIndex;
 	
-	public GdlFunctionOccurrence(GdlRule rule, Gdl directParent, int argumentIndex, GdlFunction function) {
+	public GdlFunctionOccurrence(GdlRule rule, IGdlArgumentListDeclaration directParent, int argumentIndex, GdlFunction function) {
 		super(rule, function.getBody());
 		setDirectParent(directParent);
 		setArgumentIndex(argumentIndex);
 	}
 
-	public Gdl getDirectParent() {
+	public IGdlArgumentListDeclaration getDirectParent() {
 		return parent;
 	}
 
-	public void setDirectParent(Gdl parent) {
+	public void setDirectParent(IGdlArgumentListDeclaration parent) {
 		this.parent = parent;
 	}
 
