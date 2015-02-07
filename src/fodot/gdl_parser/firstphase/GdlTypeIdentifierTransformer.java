@@ -36,15 +36,15 @@ import fodot.gdl_parser.firstphase.data.declarations.IGdlArgumentListDeclaration
 class GdlTypeIdentifierTransformer implements GdlTransformer {
 
 	private GdlTypeIdentifier identifier;
-	
+
 	public GdlTypeIdentifierTransformer(GdlTypeIdentifier argIdentifier) {
 		this.identifier = argIdentifier;
 	}
-	
+
 	public GdlTypeIdentifier getIdentifier() {
 		return identifier;
 	}
-	
+
 	/**********************************************
 	 *  Relation processing: only for type defining.
 	 *  Most of the time, you won't add the occurrence
@@ -58,8 +58,16 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 
 	@Override
 	public void processInitRelation(GdlRelation relation) {
-		visitArguments(null, relation.getBody(), getIdentifier().getInit());
-		//			makeDynamic(relation.get(0)); //Is this right? It has an initial status, so it must be dynamic, right?
+
+		GdlRelation argumentRelation = convertToPredicate(relation.get(0));
+
+		//Visit argument
+		getIdentifier().addPredicateOccurrence(null, argumentRelation);
+		visitPredicateArguments(null, argumentRelation);
+
+		//Make argument dynamic
+		//Is this right? It has an initial status, so it must be dynamic, right?
+		getIdentifier().makeDynamic(argumentRelation);
 	}
 
 	@Override
@@ -80,15 +88,15 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 	 ***********************************************/
 	@Override
 	public void processNextRule(GdlRule rule) {
-		GdlRelation argumentRelation = getPredicate(rule.getHead().get(0));
-		
+		GdlRelation argumentRelation = convertToPredicate(rule.getHead().get(0));
+
 		//Visit argument
 		getIdentifier().addPredicateOccurrence(rule, argumentRelation);
 		visitPredicateArguments(rule, argumentRelation);
-		
+
 		//Make argument dynamic
 		getIdentifier().makeDynamic(argumentRelation);
-		
+
 		visitRuleBody(rule);
 	}
 
@@ -180,8 +188,12 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 			}
 		}
 		private void visitRelation(GdlRelation predicate) {
-			getIdentifier().addPredicateOccurrence(rule, predicate);
-			visitPredicateArguments(rule, predicate);
+			if (getIdentifier().getTrue().equals(new GdlPredicateDeclaration(predicate))) {
+				visitRelation(convertToPredicate(predicate.get(0)));
+			} else {
+				getIdentifier().addPredicateOccurrence(rule, predicate);
+				visitPredicateArguments(rule, predicate);
+			}
 		}
 		private void visitProposition(GdlProposition proposition) {
 			//TODO what to do with these?
@@ -218,9 +230,9 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 	public void visitFunctionArguments(GdlRule rule, GdlFunction function) {
 		this.visitArguments(rule, function.getBody(), new GdlFunctionDeclaration(function) );
 	}
-	
+
 	//Cast helper
-	public GdlRelation getPredicate(GdlTerm term) {
+	public GdlRelation convertToPredicate(GdlTerm term) {
 		GdlSentence sentence = term.toSentence();
 		GdlRelation relation = GdlPool.getRelation(sentence.getName(), sentence.getBody());
 		return relation;

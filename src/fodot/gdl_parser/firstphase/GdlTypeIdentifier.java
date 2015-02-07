@@ -483,7 +483,7 @@ public class GdlTypeIdentifier {
 					data.getArgumentTypes(),
 					data.getType());
 			functionDeclarations.put(f, ff);
-			System.out.println(ff.toCode());
+			System.out.println(ff.toCode() + " :: function");
 		}
 
 		for (GdlPredicateDeclaration p : predicates.keySet()) {
