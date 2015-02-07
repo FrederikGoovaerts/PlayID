@@ -102,31 +102,34 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 
 	@Override
 	public void processLegalRule(GdlRule rule) {
-		visitArguments(rule, rule.getHead().getBody(), getIdentifier().getLegal());
-		visitRuleBody(rule);
+		visitRule(rule);
 	}
 
 	@Override
 	public void processGoalRule(GdlRule rule) {
-		visitArguments(rule, rule.getHead().getBody(), getIdentifier().getGoal());
-		visitRuleBody(rule);
+		visitRule(rule);
 	}
 
 	@Override
 	public void processTerminalRule(GdlRule rule) {
 		assert rule.getHead().arity() == 0;
-		visitArguments(rule, rule.getHead().getBody(), getIdentifier().getTerminal());
-		visitRuleBody(rule);
+		visitRule(rule);
 	}
 
 	@Override
 	public void processDefinitionRule(GdlRule rule) {
-		getIdentifier().addPredicateOccurrence(rule, GdlPool.getRelation(rule.getHead().getName()));
-		visitRuleBody(rule);
+		visitRule(rule);
 	}		
 
 
 	//Helper
+	private void visitRule(GdlRule rule) {
+		GdlRelation relation = convertToPredicate(rule.getHead());
+		getIdentifier().addPredicateOccurrence(rule, relation);
+		visitPredicateArguments(rule, relation);
+		visitRuleBody(rule);
+	}
+	
 	private void visitRuleBody(GdlRule rule) {
 		GdlRuleBodyVisitor bodyVisitor = new GdlRuleBodyVisitor(rule);
 		bodyVisitor.visitBodyElements();
@@ -232,8 +235,12 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 	}
 
 	//Cast helper
-	public GdlRelation convertToPredicate(GdlTerm term) {
+	private GdlRelation convertToPredicate(GdlTerm term) {
 		GdlSentence sentence = term.toSentence();
+		return convertToPredicate(sentence);
+	}
+	
+	private GdlRelation convertToPredicate(GdlSentence sentence) {
 		GdlRelation relation = GdlPool.getRelation(sentence.getName(), sentence.getBody());
 		return relation;
 	}

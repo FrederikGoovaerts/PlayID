@@ -173,8 +173,8 @@ public class GdlTypeIdentifier {
 		}
 		throw new GdlTypeIdentificationError("Given declaration isn't a known predicate or function:" + decl);
 	}
-	
-	
+
+
 
 	/**********************************************
 	 *  Adding occurrences of elements.
@@ -398,13 +398,7 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Resulting GdlFodotData generator
 	 ***********************************************/
-	public void fillInMissingTypes() {
-		// SET ALL "unfilled" TO "All".
-		/* TODO: You can identify "chains" of types, so you can subdivide all
-		 * into more specific types. This will improve grounding in IDP.
-		 * We need to prove the correctness of this though. (or disprove the current correctness)
-		 */
-
+	private void addTimeVariableToDynamicPredicates() {
 		//Add time variable to all dynamic predicates
 		for (GdlPredicateDeclaration predicate : predicates.keySet()) {
 			GdlPredicateData data = predicates.get(predicate);
@@ -412,12 +406,22 @@ public class GdlTypeIdentifier {
 				data.addArgumentType(timeType);
 			}
 		}
+	}
+	
+	private void fillMissingTypes() {
+		// SET ALL "unfilled" TO "All".
+		/* TODO: You can identify "chains" of types, so you can subdivide all
+		 * into more specific types. This will improve grounding in IDP.
+		 * We need to prove the correctness of this though. (or disprove the current correctness)
+		 */
+
+		FodotType fillType = this.allType;
 
 		//Constants to all
 		for (GdlConstant constant : constants.keySet()) {
 			GdlConstantData data = constants.get(constant);
 			if (data.getType().equals(unfilledType)) {
-				updateConstantType(constant, allType);
+				updateConstantType(constant, fillType);
 			}
 		}
 
@@ -425,7 +429,7 @@ public class GdlTypeIdentifier {
 		for (GdlVariableDeclaration variable : variables.keySet()) {
 			GdlVariableData data = variables.get(variable);
 			if (data.getType().equals(unfilledType)) {
-				updateVariableType(variable, allType);
+				updateVariableType(variable, fillType);
 			}
 		}
 
@@ -434,7 +438,7 @@ public class GdlTypeIdentifier {
 			GdlPredicateData data = predicates.get(predicate);
 			for (int i = 0; i < data.getAmountOfArguments(); i++) {
 				if (data.getArgumentType(i).equals(unfilledType)) {
-					updatePredicateArgumentType(predicate, i, allType);
+					updatePredicateArgumentType(predicate, i, fillType);
 				}				
 			}
 		}
@@ -444,7 +448,7 @@ public class GdlTypeIdentifier {
 			GdlFunctionData data = functions.get(function);
 			for (int i = 0; i < data.getAmountOfArguments(); i++) {
 				if (data.getArgumentType(i).equals(unfilledType)) {
-					updateFunctionArgumentType(function, i, allType);
+					updateFunctionArgumentType(function, i, fillType);
 				}				
 			}
 		}
@@ -454,14 +458,15 @@ public class GdlTypeIdentifier {
 		for (GdlFunctionDeclaration function : functions.keySet()) {
 			GdlFunctionData data = functions.get(function);
 			if (data.getType().equals(unfilledType)) {
-				updateFunctionType(function, allType);
+				updateFunctionType(function, fillType);
 			}
 		}
 	}
 
 	public GdlFodotData getResultingData() {
 
-		fillInMissingTypes();
+		fillMissingTypes();
+		addTimeVariableToDynamicPredicates();
 
 		Map<GdlConstant, FodotConstant> constantsMap = new HashMap<GdlConstant, FodotConstant>();
 		Map<GdlFunctionDeclaration, FodotFunctionDeclaration> functionDeclarations = new HashMap<GdlFunctionDeclaration, FodotFunctionDeclaration>();
