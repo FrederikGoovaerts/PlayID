@@ -9,7 +9,6 @@ import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,16 +16,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ggp.base.util.gdl.grammar.GdlConstant;
-import org.ggp.base.util.gdl.grammar.GdlDistinct;
 import org.ggp.base.util.gdl.grammar.GdlFunction;
-import org.ggp.base.util.gdl.grammar.GdlLiteral;
-import org.ggp.base.util.gdl.grammar.GdlNot;
-import org.ggp.base.util.gdl.grammar.GdlOr;
 import org.ggp.base.util.gdl.grammar.GdlPool;
-import org.ggp.base.util.gdl.grammar.GdlProposition;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
-import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
@@ -104,7 +97,7 @@ public class GdlTypeIdentifier {
 		initPredicate(rolePred,		Arrays.asList(playerType),					true);
 		initPredicate(terminalPred,	new ArrayList<FodotType>(),					true);
 		initPredicate(truePred,		Arrays.asList(unfilledType),				true);
-		
+
 		makeDynamic(doesPred);
 	}
 
@@ -247,7 +240,7 @@ public class GdlTypeIdentifier {
 	public void makeDynamic(GdlRelation predicate) {
 		makeDynamic(new GdlPredicateDeclaration(predicate));
 	}
-	
+
 	public void makeDynamic(GdlPredicateDeclaration predicate) {
 		predicates.get(predicate).makeDynamic();		
 	}
@@ -396,7 +389,7 @@ public class GdlTypeIdentifier {
 		 * into more specific types. This will improve grounding in IDP.
 		 * We need to prove the correctness of this though. (or disprove the current correctness)
 		 */
-		
+
 		//Add time variable to all dynamic predicates
 		for (GdlPredicateDeclaration predicate : predicates.keySet()) {
 			GdlPredicateData data = predicates.get(predicate);
@@ -452,15 +445,15 @@ public class GdlTypeIdentifier {
 	}
 
 	public GdlFodotData getResultingData() {
-		
+
 		fillInMissingTypes();
-		
+
 		Map<GdlConstant, FodotConstant> constantsMap = new HashMap<GdlConstant, FodotConstant>();
 		Map<GdlFunctionDeclaration, FodotFunctionDeclaration> functionDeclarations = new HashMap<GdlFunctionDeclaration, FodotFunctionDeclaration>();
 		Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations = new HashMap<GdlPredicateDeclaration, FodotPredicateDeclaration>();
 		Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule = new HashMap<GdlRule, Map<GdlVariable, FodotVariable>>();
 		Set<GdlPredicateDeclaration> dynamicPredicates = new HashSet<GdlPredicateDeclaration>();
-		
+
 		//GENERATE SETS FOR GDLFODOTDATA
 		for (GdlConstant c : constants.keySet()) {
 			GdlConstantData data = constants.get(c);
@@ -522,185 +515,7 @@ public class GdlTypeIdentifier {
 	 *  GdlTransformer creator
 	 ***********************************************/
 	public GdlTransformer createTransformer() {
-		return new GdlTypeIdentifierTransformer();
-	}
-
-	/* =======================================
-	 * ====== TRANSFORMER: THE VISITOR ======
-	 * ======================================= */
-
-	/**
-	 * This class will be used to visit the relations and rules.
-	 * It will use the GdlRuleElementsVisitor to visit the rules deeper.
-	 * @author Thomas Winters
-	 */
-	private class GdlTypeIdentifierTransformer implements GdlTransformer {
-
-		/**********************************************
-		 *  Relation processing: only for type defining.
-		 *  Most of the time, you won't add the occurrence
-		 *  because init, legal etc are not part of our GDL file
-		 ***********************************************/
-
-		@Override
-		public void processRoleRelation(GdlRelation relation) {
-			visitArguments(null, relation.getBody(), getRole());
-		}
-
-		@Override
-		public void processInitRelation(GdlRelation relation) {
-			visitArguments(null, relation.getBody(), getInit());
-			//			makeDynamic(relation.get(0)); //Is this right? It has an initial status, so it must be dynamic, right?
-		}
-
-		@Override
-		public void processStaticPredicateRelation(GdlRelation relation) {
-			addPredicateOccurrence(null, relation);
-			visitPredicateArguments(null, relation);
-		}
-
-		@Override
-		public void processLegalRelation(GdlRelation relation) {
-			visitArguments(null, relation.getBody(), getLegal());
-		}
-
-		/**********************************************/
-
-		/**********************************************
-		 *  Rule processing
-		 ***********************************************/
-		@Override
-		public void processNextRule(GdlRule rule) {
-			visitArguments(rule, rule.getHead().getBody(), getNext());
-			visitRuleBody(rule);
-		}
-
-		@Override
-		public void processLegalRule(GdlRule rule) {
-			visitArguments(rule, rule.getHead().getBody(), getLegal());
-			visitRuleBody(rule);
-		}
-
-		@Override
-		public void processGoalRule(GdlRule rule) {
-			visitArguments(rule, rule.getHead().getBody(), getGoal());
-			visitRuleBody(rule);
-		}
-
-		@Override
-		public void processTerminalRule(GdlRule rule) {
-			assert rule.getHead().arity() == 0;
-			visitArguments(rule, rule.getHead().getBody(), getTerminal());
-			visitRuleBody(rule);
-		}
-
-		@Override
-		public void processDefinitionRule(GdlRule rule) {
-			addPredicateOccurrence(rule, GdlPool.getRelation(rule.getHead().getName()));
-			visitRuleBody(rule);
-		}		
-
-
-		//Helper
-		private void visitRuleBody(GdlRule rule) {
-			GdlRuleBodyVisitor bodyVisitor = new GdlRuleBodyVisitor(rule);
-			bodyVisitor.visitBodyElements();
-		}
-	}
-	/**********************************************/
-
-	private class GdlRuleBodyVisitor {
-		//We will need this rule so we can tell what variables are the same.
-		private GdlRule rule;
-
-		public GdlRuleBodyVisitor(GdlRule rule) {
-			this.rule = rule;
-		}
-
-		public void visitBodyElements() {	
-			visitLiterals(rule.getBody());
-		}
-
-		private void visitLiterals(Collection<? extends GdlLiteral> literals) {
-			for (GdlLiteral lit : literals) {
-				visitLiteral(lit);
-			}	
-
-		}
-
-		private void visitLiteral(GdlLiteral lit) {
-			if (lit instanceof GdlDistinct) {
-				visitDistinct( (GdlDistinct) lit);
-			} else if (lit instanceof GdlNot) {
-				visitNot( (GdlNot) lit);
-			} else if (lit instanceof GdlOr) {
-				visitOr( (GdlOr) lit);
-			} else if (lit instanceof GdlSentence) {
-				visitSentence( (GdlSentence) lit);
-			} else {
-				throw new GdlTypeIdentificationError();
-			}
-		}
-
-		//Basic literals
-		private void visitDistinct(GdlDistinct distinct) {
-			visitArguments(rule, Arrays.asList(distinct.getArg1(), distinct.getArg2()), getDistinct());
-		}		
-		public void visitNot(GdlNot not) {
-			visitLiteral(not.getBody());
-		}
-		public void visitOr(GdlOr or) {
-			visitLiterals(or.getDisjuncts());
-		}
-
-		//Sentences
-		public void visitSentence(GdlSentence sentence) {
-			if (sentence instanceof GdlRelation) {
-				visitRelation( (GdlRelation) sentence);
-			} else if (sentence instanceof GdlProposition) {
-				visitProposition( (GdlProposition) sentence);
-			} else {
-				throw new GdlTypeIdentificationError();
-			}
-		}
-		private void visitRelation(GdlRelation predicate) {
-			addPredicateOccurrence(rule, predicate);
-			visitPredicateArguments(rule, predicate);
-		}
-		private void visitProposition(GdlProposition proposition) {
-			//TODO what to do with these?
-			// Do nothing
-		}
-
-	}
-
-
-	/**********************************************
-	 *  Inner elemens visitor
-	 ***********************************************/
-	public void visitArguments(GdlRule rule, List<GdlTerm> terms, IGdlArgumentListDeclaration parent) {
-		for (int i = 0; i < terms.size(); i++) {
-			GdlTerm term = terms.get(i);
-			if (term instanceof GdlConstant) {
-				addConstantOccurrence(parent, i, (GdlConstant) term);
-			} else if (term instanceof GdlVariable) {
-				addVariableOccurrence(rule, parent, i, (GdlVariable) term);
-			} else if (term instanceof GdlFunction) {
-				GdlFunction func = (GdlFunction) term;
-				addFunctionOccurrence(rule, parent, i, func);
-				visitFunctionArguments(rule, func);
-			} else {
-				throw new GdlTypeIdentificationError();
-			}
-		}
-	}
-
-	public void visitPredicateArguments(GdlRule rule, GdlRelation predicate) {
-		this.visitArguments(rule, predicate.getBody(), new GdlPredicateDeclaration(predicate) );
-	}
-
-	public void visitFunctionArguments(GdlRule rule, GdlFunction function) {
-		this.visitArguments(rule, function.getBody(), new GdlFunctionDeclaration(function) );
+		return new GdlTypeIdentifierTransformer(this);
 	}
 	/**********************************************/
 
