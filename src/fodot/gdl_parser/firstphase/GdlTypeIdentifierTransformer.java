@@ -80,7 +80,15 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 	 ***********************************************/
 	@Override
 	public void processNextRule(GdlRule rule) {
-		visitArguments(rule, rule.getHead().getBody(), getIdentifier().getNext());
+		GdlRelation argumentRelation = getPredicate(rule.getHead().get(0));
+		
+		//Visit argument
+		getIdentifier().addPredicateOccurrence(rule, argumentRelation);
+		visitPredicateArguments(rule, argumentRelation);
+		
+		//Make argument dynamic
+		getIdentifier().makeDynamic(argumentRelation);
+		
 		visitRuleBody(rule);
 	}
 
@@ -209,5 +217,12 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 
 	public void visitFunctionArguments(GdlRule rule, GdlFunction function) {
 		this.visitArguments(rule, function.getBody(), new GdlFunctionDeclaration(function) );
+	}
+	
+	//Cast helper
+	public GdlRelation getPredicate(GdlTerm term) {
+		GdlSentence sentence = term.toSentence();
+		GdlRelation relation = GdlPool.getRelation(sentence.getName(), sentence.getBody());
+		return relation;
 	}
 }

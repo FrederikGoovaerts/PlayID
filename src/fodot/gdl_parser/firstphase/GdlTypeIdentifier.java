@@ -163,13 +163,26 @@ public class GdlTypeIdentifier {
 	}
 	/**********************************************/
 
+	private FodotType getArgumentType(IGdlArgumentListDeclaration decl,
+			int argumentIndex) {
+		if (functions.containsKey(decl)) {
+			return functions.get(decl).getArgumentType(argumentIndex);
+		}
+		if (predicates.containsKey(decl)) {
+			return predicates.get(decl).getArgumentType(argumentIndex);
+		}
+		throw new GdlTypeIdentificationError("Given declaration isn't a known predicate or function:" + decl);
+	}
+	
+	
 
 	/**********************************************
 	 *  Adding occurrences of elements.
 	 *  This should be done by a visitor.
 	 ***********************************************/
 	public void addConstantOccurrence(IGdlArgumentListDeclaration directParent, int argumentIndex, GdlConstant constant) {
-		addConstantOccurrence(directParent, argumentIndex, constant, unfilledType);
+		FodotType foundType = getArgumentType(directParent, argumentIndex);
+		addConstantOccurrence(directParent, argumentIndex, constant, foundType);
 	}
 
 	public void addConstantOccurrence(IGdlArgumentListDeclaration directParent, int argumentIndex, GdlConstant constant, FodotType givenType) {
@@ -188,7 +201,8 @@ public class GdlTypeIdentifier {
 	}
 
 	public void addVariableOccurrence(GdlRule parentRule, IGdlArgumentListDeclaration directParent, int argumentIndex, GdlVariable variable) {
-		addVariableOccurrence(parentRule, directParent, argumentIndex, variable, unfilledType);
+		FodotType foundType = getArgumentType(directParent, argumentIndex);
+		addVariableOccurrence(parentRule, directParent, argumentIndex, variable, foundType);
 	}
 
 	public void addVariableOccurrence(GdlRule parentRule, IGdlArgumentListDeclaration directParent, int argumentIndex, GdlVariable argVariable, FodotType givenType) {
@@ -220,7 +234,8 @@ public class GdlTypeIdentifier {
 	}
 
 	public void addFunctionOccurrence(GdlRule parentRule, IGdlArgumentListDeclaration directParent, int argumentIndex, GdlFunction function) {
-		addFunctionOccurrence(parentRule, directParent, argumentIndex, function, unfilledType);
+		FodotType foundType = getArgumentType(directParent, argumentIndex);
+		addFunctionOccurrence(parentRule, directParent, argumentIndex, function, foundType);
 	}
 
 	public void addFunctionOccurrence(GdlRule parentRule, IGdlArgumentListDeclaration directParent, int argumentIndex, GdlFunction function, FodotType givenType) {
