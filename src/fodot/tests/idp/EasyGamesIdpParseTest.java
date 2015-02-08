@@ -1,4 +1,4 @@
-package fodot.tests;
+package fodot.tests.idp;
 
 import java.io.File;
 import java.io.IOException;

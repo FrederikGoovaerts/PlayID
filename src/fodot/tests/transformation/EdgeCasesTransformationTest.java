@@ -1,4 +1,4 @@
-package fodot.tests.specialcases;
+package fodot.tests.transformation;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +16,7 @@ import fodot.gdl_parser.GdlParser;
  *
  */
 @SuppressWarnings("unused")
-public class SpecialCasesTransformationTest {
+public class EdgeCasesTransformationTest {
 
 	private static final String GAMES_LOCATION = "resources/games/special/";
 	private static final String DEFAULT_EXTENSION = ".kif";

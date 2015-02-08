@@ -1,11 +1,12 @@
-package fodot.tests.specialcases;
+package fodot.tests.idp;
 
 import java.io.File;
 import java.io.IOException;
 
 import fodot.communication.PlayIdProcessor;
+import fodot.tests.transformation.EdgeCasesTransformationTest;
 
-public class SpecialCaseIdpParseTest extends SpecialCasesTransformationTest {
+public class EdgeCasesIdpTest extends EdgeCasesTransformationTest {
 
 	@Override
 	protected void testFor(String gameName) {

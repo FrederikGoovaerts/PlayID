@@ -1,4 +1,4 @@
-package fodot.tests.singleplayer;
+package fodot.tests.idp;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +26,7 @@ import fodot.exceptions.idp.NoValidModelsException;
 import fodot.exceptions.idp.OutOfResourcesException;
 import fodot.exceptions.idp.UnsatisfiableIdpFileException;
 import fodot.gdl_parser.FodotGameFactory;
+import fodot.tests.transformation.SingleplayerTransformationTest;
 
 public class SingleplayerIdpParseTest extends SingleplayerTransformationTest {
 

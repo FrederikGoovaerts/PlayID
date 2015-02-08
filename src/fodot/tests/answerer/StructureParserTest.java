@@ -1,4 +1,4 @@
-package fodot.tests;
+package fodot.tests.answerer;
 
 import static fodot.objects.FodotElementBuilder.createConstant;
 import static fodot.objects.FodotElementBuilder.createConstantFunctionEnumeration;

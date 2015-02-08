@@ -504,7 +504,7 @@ public class GdlTypeIdentifier {
 					data.getArgumentTypes(),
 					data.getType());
 			functionDeclarations.put(f, ff);
-			System.out.println(ff.toCode() + " :: function");
+//			System.out.println(ff.toCode() + " :: function");
 		}
 
 		for (GdlPredicateDeclaration p : predicates.keySet()) {
@@ -514,7 +514,7 @@ public class GdlTypeIdentifier {
 						NameUtil.convertToValidPredicateName(p.getName().getValue()),
 						data.getArgumentTypes());
 				predicateDeclarations.put(p, pf);
-				System.out.println(pf.toCode());
+//				System.out.println(pf.toCode());
 
 				if (data.isDynamic()) {
 					dynamicPredicates.add(p);
@@ -535,11 +535,11 @@ public class GdlTypeIdentifier {
 			variablesPerRule.get(location).put(var.getVariable(), fvar);			
 		}
 
-		System.out.println(timeType.getDeclaration().toCode());
-		System.out.println(playerType.getDeclaration().toCode());
-		System.out.println(actionType.getDeclaration().toCode());
-		System.out.println(scoreType.getDeclaration().toCode());
-		System.out.println(allType.getDeclaration().toCode());
+//		System.out.println(timeType.getDeclaration().toCode());
+//		System.out.println(playerType.getDeclaration().toCode());
+//		System.out.println(actionType.getDeclaration().toCode());
+//		System.out.println(scoreType.getDeclaration().toCode());
+//		System.out.println(allType.getDeclaration().toCode());
 
 		return new GdlVocabulary(
 				this.timeType, this.playerType, this.actionType, 
