@@ -14,10 +14,14 @@ public class VariableRegisterer {
 	private Set<FodotVariable> usedVariables;
 	
 	public VariableRegisterer() {
-		this.variableMap = new HashMap<GdlVariable, FodotVariable>();
-		this.usedVariables = new HashSet<FodotVariable>();
+		this(new HashMap<GdlVariable, FodotVariable>());
 	}
 	
+	public VariableRegisterer(Map<GdlVariable, FodotVariable> variables) {
+		this.variableMap = variables;
+		this.usedVariables = new HashSet<FodotVariable>();
+	}
+
 	/**********************************************
 	 *  Register block
 	 ***********************************************/

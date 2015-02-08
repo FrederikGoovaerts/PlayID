@@ -4,6 +4,7 @@ import static fodot.objects.FodotElementBuilder.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlDistinct;
@@ -47,8 +48,13 @@ public class GdlFodotSentenceTransformer {
 		setVariableRegisterer(variableMap);
 	}
 
+	public GdlFodotSentenceTransformer(GdlFodotTransformer trans,
+			Map<GdlVariable, FodotVariable> variables) {
+		this(trans, new VariableRegisterer(variables));
+	}
+	
 	public GdlFodotSentenceTransformer(GdlFodotTransformer trans) {
-		this(trans, null);
+		this(trans, new VariableRegisterer());
 	}
 	/**********************************************/
 
