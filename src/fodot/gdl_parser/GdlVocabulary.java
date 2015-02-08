@@ -1,6 +1,7 @@
 package fodot.gdl_parser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,8 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 			Map<GdlFunctionDeclaration, FodotFunctionDeclaration> functionDeclarations,
 			Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations,
 			Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule,
-			Set<GdlPredicateDeclaration> dynamicPredicates) {
+			Set<GdlPredicateDeclaration> dynamicPredicates,
+			Set<GdlPredicateDeclaration> fluentPredicates) {
 		super();
 		this.timeType = timeType;
 		this.playerType = playerType;
@@ -51,6 +53,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		this.predicateDeclarations = predicateDeclarations;
 		this.variablesPerRule = variablesPerRule;
 		this.dynamicPredicates = dynamicPredicates;
+		this.fluentPredicates = fluentPredicates;
 		
 		initialiseInverseMaps();
 	}
@@ -93,6 +96,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	//Info
 	private Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule;
 	private Set<GdlPredicateDeclaration> dynamicPredicates;
+	private Set<GdlPredicateDeclaration> fluentPredicates;
 
 	public FodotConstant getConstant(GdlConstant constant) {
 		return constants.get(constant);
@@ -109,14 +113,35 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 
 	public FodotPredicateDeclaration getPredicateDeclaration(GdlRelation predicate) {
 		GdlPredicateDeclaration declaration = new GdlPredicateDeclaration(predicate);		
+		return getPredicateDeclaration(declaration);
+	}
+	
+	public FodotPredicateDeclaration getPredicateDeclaration(GdlPredicateDeclaration declaration) {
 		return predicateDeclarations.get(declaration);
+	}
+	
+	public Collection<GdlPredicateDeclaration> getPredicates() {
+		return predicateDeclarations.keySet();
 	}
 
 	public boolean isDynamic(GdlRelation predicate) {
 		GdlPredicateDeclaration declaration = new GdlPredicateDeclaration(predicate);
+		return isDynamic(declaration);
+	}
+	
+	public boolean isDynamic(GdlPredicateDeclaration declaration) {
 		return dynamicPredicates.contains(declaration);
 	}
 
+	public boolean isFluent(GdlRelation predicate) {
+		GdlPredicateDeclaration declaration = new GdlPredicateDeclaration(predicate);
+		return isFluent(declaration);
+	}
+	
+	public boolean isFluent(GdlPredicateDeclaration declaration) {
+		return fluentPredicates.contains(declaration);
+	}
+	
 	/**********************************************/
 
 	/**********************************************
