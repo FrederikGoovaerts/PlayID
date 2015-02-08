@@ -26,7 +26,7 @@ import org.ggp.base.util.gdl.grammar.GdlVariable;
 import fodot.exceptions.gdl.GdlParsingOrderException;
 import fodot.exceptions.gdl.GdlTransformationException;
 import fodot.gdl_parser.FodotGameFactory;
-import fodot.gdl_parser.GdlFodotData;
+import fodot.gdl_parser.GdlVocabulary;
 import fodot.gdl_parser.GdlTransformer;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.file.IFodotFile;
@@ -55,11 +55,11 @@ public class GdlFodotTransformer implements GdlTransformer {
 	
 	/***************************************************************************
 	 * Constructor
-	 * @param data 	The data created by the first pass through the GDL file
+	 * @param gdlVocabulary 	The data created by the first pass through the GDL file
 	 **************************************************************************/
 
-	public GdlFodotTransformer(GdlFodotData data){
-		this.data = data;
+	public GdlFodotTransformer(GdlVocabulary gdlVocabulary){
+		this.gdlVocabulary = gdlVocabulary;
 		this.cleanAndInitializeBuilder();
 	}
 
@@ -68,12 +68,12 @@ public class GdlFodotTransformer implements GdlTransformer {
 	 **************************************************************************/
 
 	/**********************************************
-	 *  Data
+	 *  GDL Vocabulary
 	 ***********************************************/
-	private GdlFodotData data;
+	private GdlVocabulary gdlVocabulary;
 	
-	public GdlFodotData getGdlData() {
-		return data;
+	public GdlVocabulary getGdlVocabulary() {
+		return gdlVocabulary;
 	}
 
 	/**********************************************/
@@ -93,23 +93,23 @@ public class GdlFodotTransformer implements GdlTransformer {
 	 */
 
 	public FodotType getTimeType(){
-		return getGdlData().getTimeType();
+		return getGdlVocabulary().getTimeType();
 	}
 
 	public FodotType getPlayerType() {
-		return getGdlData().getPlayerType();
+		return getGdlVocabulary().getPlayerType();
 	}
 
 	public FodotType getActionType() {
-		return getGdlData().getActionType();
+		return getGdlVocabulary().getActionType();
 	}
 
 	public FodotType getScoreType() {
-		return getGdlData().getScoreType();
+		return getGdlVocabulary().getScoreType();
 	}
 
 	public FodotType getAllType() {
-		return getGdlData().getAllType();
+		return getGdlVocabulary().getAllType();
 	}
 
 
@@ -138,10 +138,11 @@ public class GdlFodotTransformer implements GdlTransformer {
 	}
 
 	public FodotConstant convertRawRole(GdlConstant term){
-		String rawName = term.getValue();
-		FodotConstant toReturn = createConstant(rawName, this.getPlayerType());
-		addTranslation(toReturn, term);
-		return toReturn;
+		return getGdlVocabulary().getConstant(term);
+//		String rawName = term.getValue();
+//		FodotConstant toReturn = createConstant(rawName, this.getPlayerType());
+//		addTranslation(toReturn, term);
+//		return toReturn;
 	}
 
 	/*** End of Roles subsection ***/
@@ -209,26 +210,28 @@ public class GdlFodotTransformer implements GdlTransformer {
 	 * Constants
 	 */
 
-	private void addConstant(FodotConstant constant) {
-		getAllType().addDomainElement(constant);
-	}
-
-	private boolean isConstantRegistered(FodotConstant constant) {
-		return getAllType().containsDomainElement(constant);
-	}
+//	private void addConstant(FodotConstant constant) {
+//		throw new RuntimeException();
+//	}
+//
+//	private boolean isConstantRegistered(FodotConstant constant) {
+//		return getAllType().containsDomainElement(constant);
+//	}
 
 	public FodotConstant convertRawConstantName(GdlConstant constant) {
 		return convertConstantName(constant, getAllType());
 	}
 
 	public FodotConstant convertConstantName(GdlConstant constant, FodotType type) {
-		String rawName = constant.getValue();
-
-		String constantName = NameUtil.convertToValidConstantName(rawName, type);
-
-		FodotConstant toReturn = createConstant(constantName, type);
-		addTranslation(toReturn, constant);
-		return toReturn;
+		
+		return getGdlVocabulary().getConstant(constant);
+		
+//		String rawName = constant.getValue();
+//
+//		String constantName = NameUtil.convertToValidConstantName(rawName, type);
+//
+//		FodotConstant toReturn = createConstant(constantName, type);
+//		return toReturn;
 	}
 
 	/*** End of Constants subsection ***/
@@ -515,9 +518,6 @@ public class GdlFodotTransformer implements GdlTransformer {
 			IFodotTerm term = sentenceTrans.generateTerm(sentence.get(i));
 			if(term instanceof FodotConstant) {
 				staticValues.add((FodotConstant) term);
-				if(!isConstantRegistered((FodotConstant)term)) {
-					this.addConstant((FodotConstant)term);
-				}
 			} else if (term instanceof FodotFunction) {
 				FodotFunction func = (FodotFunction) term;
 				staticValues.add(createTypeFunctionEnumerationElement((FodotTypeFunctionDeclaration) func.getDeclaration(), extractEnumerationList(sentence.get(i).toSentence())));				
@@ -701,7 +701,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 				throw new IllegalStateException("Predicate differs in arity from before!");
 		}
 
-		registerConstants(predSentence);
+//		registerConstants(predSentence);
 
 		return pred;
 	}
@@ -729,7 +729,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 				throw new IllegalStateException("Predicate differs in arity from before!");
 		}
 
-		registerConstants(predSentence);
+//		registerConstants(predSentence);
 
 		return predDecl;
 	}
@@ -741,31 +741,18 @@ public class GdlFodotTransformer implements GdlTransformer {
 	 * be registered by now.
 	 * @param sentence
 	 */
-	private void registerConstants(GdlSentence sentence) {
-		for (int i = 0; i < sentence.arity(); i++) {
-			GdlTerm term = sentence.get(i);
-			if(term.isGround()) {
-				//Term is a constant, and only has a name, and arity 0
-				GdlConstant constant = (GdlConstant) term;
-				FodotConstant fodotConstant = convertRawConstantName(constant);
-				if(!isConstantRegistered(fodotConstant))
-					addConstant(fodotConstant);
-			}
-		}
-	}
-
-	Map<FodotConstant, GdlTerm> constantsMap = new HashMap<FodotConstant, GdlTerm> ();
-	Map<FodotTypeFunctionDeclaration, GdlConstant> predicateTermMap = new HashMap<FodotTypeFunctionDeclaration, GdlConstant> ();
-	//	Map<GdlTerm, IFodotTerm> translationsFromGdl = new HashMap<GdlTerm, IFodotTerm>();
-
-	public void addTranslation(FodotConstant fodot, GdlTerm gdl) {
-		constantsMap.put(fodot, gdl);
-	}
-
-	public void addTranslation(FodotTypeFunctionDeclaration fodot, GdlConstant name) {
-		predicateTermMap.put(fodot, name);
-	}
-
+//	private void registerConstants(GdlSentence sentence) {
+//		for (int i = 0; i < sentence.arity(); i++) {
+//			GdlTerm term = sentence.get(i);
+//			if(term.isGround()) {
+//				//Term is a constant, and only has a name, and arity 0
+//				GdlConstant constant = (GdlConstant) term;
+//				FodotConstant fodotConstant = convertRawConstantName(constant);
+//				if(!isConstantRegistered(fodotConstant))
+//					addConstant(fodotConstant);
+//			}
+//		}
+//	}
 
 	/***************************************************************************
 	 * Helper methods

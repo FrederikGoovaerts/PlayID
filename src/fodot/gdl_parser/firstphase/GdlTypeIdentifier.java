@@ -24,7 +24,7 @@ import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
 import fodot.exceptions.gdl.GdlTypeIdentificationError;
-import fodot.gdl_parser.GdlFodotData;
+import fodot.gdl_parser.GdlVocabulary;
 import fodot.gdl_parser.GdlTransformer;
 import fodot.gdl_parser.firstphase.data.GdlConstantData;
 import fodot.gdl_parser.firstphase.data.GdlFunctionData;
@@ -471,7 +471,7 @@ public class GdlTypeIdentifier {
 		}
 	}
 
-	public GdlFodotData generateTranslationData() {
+	public GdlVocabulary generateTranslationData() {
 
 		fillMissingTypes();
 		addTimeVariableToDynamicPredicates();
@@ -531,7 +531,7 @@ public class GdlTypeIdentifier {
 		System.out.println(scoreType.getDeclaration().toCode());
 		System.out.println(allType.getDeclaration().toCode());
 
-		return new GdlFodotData(
+		return new GdlVocabulary(
 				this.timeType, this.playerType, this.actionType, 
 				this.scoreType, this.allType,
 				

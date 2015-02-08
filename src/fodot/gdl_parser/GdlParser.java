@@ -43,6 +43,7 @@ public class GdlParser {
 	
 	//Processing
 	private GdlTypeIdentifier identifier = new GdlTypeIdentifier();
+	private GdlVocabulary gdlVocabulary;
 	private GdlFodotTransformer fodotTransformer;
 	
 	//Output
@@ -73,13 +74,13 @@ public class GdlParser {
 		 */
 		
 		GdlInspector.inspect(game, getIdentifier().createTransformer());
-		GdlFodotData data = getIdentifier().generateTranslationData();
+		this.gdlVocabulary = getIdentifier().generateTranslationData();
 		
 		/*
 		 * Second phase:
 		 * Visit every rule and translate it
 		 */
-		setFodotTransformer( new GdlFodotTransformer(data) );
+		setFodotTransformer( new GdlFodotTransformer(this.gdlVocabulary) );
 		GdlInspector.inspect( game, getFodotTransformer() );
 		setFodot( getFodotTransformer().buildFodot() );
 

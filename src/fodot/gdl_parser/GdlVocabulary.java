@@ -27,9 +27,9 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 
-public class GdlFodotData implements IFodotGdlTranslator {
+public class GdlVocabulary implements IFodotGdlTranslator {
 
-	public GdlFodotData(
+	public GdlVocabulary(
 			FodotType timeType,
 			FodotType playerType,
 			FodotType actionType,
@@ -141,15 +141,15 @@ public class GdlFodotData implements IFodotGdlTranslator {
 		}
 	}
 	
-	public GdlConstant getConstant(FodotConstant constant) {
+	public GdlConstant getGdlConstant(FodotConstant constant) {
 		return constantsInverse.get(constant);
 	}
 	
-	public GdlFunctionDeclaration getFunctionDeclaration(FodotFunctionDeclaration func) {
+	public GdlFunctionDeclaration getGdlFunctionDeclaration(FodotFunctionDeclaration func) {
 		return functionsInverse.get(func);
 	}
 	
-	public GdlPredicateDeclaration getPredicateDeclaration(FodotPredicateDeclaration pred) {
+	public GdlPredicateDeclaration getGdlPredicateDeclaration(FodotPredicateDeclaration pred) {
 		return predicatesInverse.get(pred);
 	}
 	
@@ -159,13 +159,13 @@ public class GdlFodotData implements IFodotGdlTranslator {
 		if (fodot instanceof FodotConstant) {
 			FodotConstant casted = (FodotConstant) fodot;
 			
-			assert getConstant(casted) != null;			
-			return getConstant(casted);
+			assert getGdlConstant(casted) != null;			
+			return getGdlConstant(casted);
 		}
 		if (fodot instanceof FodoTypeFunctionEnumerationElement) {
 			FodoTypeFunctionEnumerationElement casted = (FodoTypeFunctionEnumerationElement) fodot;
 			FodotTypeFunctionDeclaration decl = casted.getDeclaration();
-			GdlFunctionDeclaration gdlFunc = getFunctionDeclaration(decl);
+			GdlFunctionDeclaration gdlFunc = getGdlFunctionDeclaration(decl);
 			GdlConstant name = gdlFunc.getName();
 			
 			List<GdlTerm> body = new ArrayList<GdlTerm>();

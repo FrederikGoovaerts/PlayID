@@ -371,7 +371,6 @@ public class GdlFodotSentenceTransformer {
 
 	public FodotFunction generateTypeFunction(GdlFunction function, FodotTypeFunctionDeclaration declaration) {
 		FodotFunction result = createFunction(declaration, processSentenceArguments(function.toSentence(), declaration));
-		trans.addTranslation(declaration, function.getName());
 		return result;
 	}
 
