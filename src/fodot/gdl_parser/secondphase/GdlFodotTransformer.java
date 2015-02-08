@@ -535,7 +535,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 			throw new IllegalArgumentException("Given rule is not a 'next' rule!");
 		this.processingRules = true;
 
-		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
+		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this, getGdlVocabulary().getVariables(rule));
 
 		//process (fluent) predicate in head
 		GdlTerm nextGdlTerm = rule.getHead().get(0);
@@ -562,7 +562,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 	public void processLegalRule(GdlRule rule) {
 		// legal(player, action) ==> do(time,player,action)
 
-		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
+		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this, getGdlVocabulary().getVariables(rule));
 
 		IFodotTerm player;
 		GdlTerm playerGdlTerm = rule.getHead().get(0);
@@ -607,7 +607,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 			throw new IllegalArgumentException("Rule is not a goal rule!");
 		this.processingRules = true;
 
-		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
+		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this, getGdlVocabulary().getVariables(rule));
 
 		GdlTerm playerGdlTerm = rule.getHead().get(0);
 		GdlTerm scoreGdlTerm = rule.getHead().get(1);
@@ -649,7 +649,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 			throw new IllegalArgumentException("Rule is not a terminal rule!");
 		this.processingRules = true;
 
-		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
+		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this, getGdlVocabulary().getVariables(rule));
 		IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
 
 		this.addTerminal(condition);
@@ -659,7 +659,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 	@Override
 	public void processDefinitionRule(GdlRule rule) {
 		this.processingRules = true;
-		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
+		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this, getGdlVocabulary().getVariables(rule));
 
 		//process (compound static) predicate in head
 		GdlSentence predSentence = rule.getHead();
