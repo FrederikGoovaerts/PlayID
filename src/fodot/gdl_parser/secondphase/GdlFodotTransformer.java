@@ -1,6 +1,5 @@
 package fodot.gdl_parser.secondphase;
 
-import static fodot.objects.FodotElementBuilder.createConstant;
 import static fodot.objects.FodotElementBuilder.createExists;
 import static fodot.objects.FodotElementBuilder.createImplies;
 import static fodot.objects.FodotElementBuilder.createPredicate;
@@ -26,8 +25,10 @@ import org.ggp.base.util.gdl.grammar.GdlVariable;
 import fodot.exceptions.gdl.GdlParsingOrderException;
 import fodot.exceptions.gdl.GdlTransformationException;
 import fodot.gdl_parser.FodotGameFactory;
-import fodot.gdl_parser.GdlVocabulary;
 import fodot.gdl_parser.GdlTransformer;
+import fodot.gdl_parser.GdlVocabulary;
+import fodot.gdl_parser.secondphase.data.FodotCompoundData;
+import fodot.gdl_parser.secondphase.data.FodotNextData;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
@@ -52,7 +53,7 @@ import fodot.util.NameUtil;
  * GdlRules. If this is not respected, a GdlParsingOrderException will be thrown.
  */
 public class GdlFodotTransformer implements GdlTransformer {
-	
+
 	/***************************************************************************
 	 * Constructor
 	 * @param gdlVocabulary 	The data created by the first pass through the GDL file
@@ -71,14 +72,14 @@ public class GdlFodotTransformer implements GdlTransformer {
 	 *  GDL Vocabulary
 	 ***********************************************/
 	private GdlVocabulary gdlVocabulary;
-	
+
 	public GdlVocabulary getGdlVocabulary() {
 		return gdlVocabulary;
 	}
 
 	/**********************************************/
 
-	
+
 	/*************************************
 	 * Processing state
 	 */
@@ -139,10 +140,10 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 	public FodotConstant convertRawRole(GdlConstant term){
 		return getGdlVocabulary().getConstant(term);
-//		String rawName = term.getValue();
-//		FodotConstant toReturn = createConstant(rawName, this.getPlayerType());
-//		addTranslation(toReturn, term);
-//		return toReturn;
+		//		String rawName = term.getValue();
+		//		FodotConstant toReturn = createConstant(rawName, this.getPlayerType());
+		//		addTranslation(toReturn, term);
+		//		return toReturn;
 	}
 
 	/*** End of Roles subsection ***/
@@ -210,28 +211,28 @@ public class GdlFodotTransformer implements GdlTransformer {
 	 * Constants
 	 */
 
-//	private void addConstant(FodotConstant constant) {
-//		throw new RuntimeException();
-//	}
-//
-//	private boolean isConstantRegistered(FodotConstant constant) {
-//		return getAllType().containsDomainElement(constant);
-//	}
+	//	private void addConstant(FodotConstant constant) {
+	//		throw new RuntimeException();
+	//	}
+	//
+	//	private boolean isConstantRegistered(FodotConstant constant) {
+	//		return getAllType().containsDomainElement(constant);
+	//	}
 
 	public FodotConstant convertRawConstantName(GdlConstant constant) {
 		return convertConstantName(constant, getAllType());
 	}
 
 	public FodotConstant convertConstantName(GdlConstant constant, FodotType type) {
-		
+
 		return getGdlVocabulary().getConstant(constant);
-		
-//		String rawName = constant.getValue();
-//
-//		String constantName = NameUtil.convertToValidConstantName(rawName, type);
-//
-//		FodotConstant toReturn = createConstant(constantName, type);
-//		return toReturn;
+
+		//		String rawName = constant.getValue();
+		//
+		//		String constantName = NameUtil.convertToValidConstantName(rawName, type);
+		//
+		//		FodotConstant toReturn = createConstant(constantName, type);
+		//		return toReturn;
 	}
 
 	/*** End of Constants subsection ***/
@@ -299,20 +300,17 @@ public class GdlFodotTransformer implements GdlTransformer {
 	 * Next rules
 	 */
 
-	private Map<FodotPredicateDeclaration,Set<Pair<FodotPredicate, IFodotFormula>>> nextMap;
+	private Map<FodotPredicateDeclaration,Set<FodotNextData>> nextMap;
 
-	public Map<FodotPredicateDeclaration,Set<Pair<FodotPredicate, IFodotFormula>>> getNextMap() {
+	public Map<FodotPredicateDeclaration,Set<FodotNextData>> getNextMap() {
 		return new HashMap<>(nextMap);
 	}
 
-	private void addNext(FodotPredicateDeclaration predicate, Pair<FodotPredicate, IFodotFormula> condition) {
-		if(nextMap.containsKey(predicate)){
-			nextMap.get(predicate).add(condition);
-		} else {
-			Set<Pair<FodotPredicate, IFodotFormula>> newSet = new HashSet<>();
-			newSet.add(condition);
-			nextMap.put(predicate,newSet);
+	private void addNext(FodotPredicateDeclaration predicate, FodotNextData data) {
+		if (!nextMap.containsKey(predicate)){
+			nextMap.put(predicate, new HashSet<FodotNextData>());
 		}
+		nextMap.get(predicate).add(data);
 	}
 
 	/*** End of Next rules subsection ***/
@@ -382,22 +380,19 @@ public class GdlFodotTransformer implements GdlTransformer {
 	/*************************************
 	 * Compound Static Predicates
 	 */
-	private Map<FodotPredicateDeclaration,Set<Pair<FodotPredicate, IFodotFormula>>> compoundMap;
+	private Map<FodotPredicateDeclaration, Set<FodotCompoundData>> compoundMap;
 
-	public Map<FodotPredicateDeclaration,Set<Pair<FodotPredicate, IFodotFormula>>> getCompoundMap() {
+	public Map<FodotPredicateDeclaration, Set<FodotCompoundData>> getCompoundMap() {
 		return new HashMap<>(compoundMap);
 	}
 
 	private void addCompound(
 			FodotPredicateDeclaration predicate,
-			Pair<FodotPredicate, IFodotFormula> pair) {
-		if(compoundMap.containsKey(predicate)){
-			compoundMap.get(predicate).add(pair);
-		} else {
-			Set<Pair<FodotPredicate, IFodotFormula>> newSet = new HashSet<>();
-			newSet.add(pair);
-			compoundMap.put(predicate,newSet);
+			FodotCompoundData data) {
+		if(!compoundMap.containsKey(predicate)){
+			compoundMap.put(predicate,new HashSet<FodotCompoundData>());
 		}
+		compoundMap.get(predicate).add(data);
 	}
 
 	/*** End of Compound Static Predicates subsection ***/
@@ -472,7 +467,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		if(processingRules)
 			throw new GdlParsingOrderException("A rule has already been processed," +
 					"processing relations is not allowed anymore.");
-		
+
 		// Static: (pred x1 .. xn)
 		String originalPredName = relation.getName().getValue();
 		String predName = NameUtil.convertToValidPredicateName(originalPredName);
@@ -507,8 +502,8 @@ public class GdlFodotTransformer implements GdlTransformer {
 	public void processLegalRelation(GdlRelation relation) {
 		//Do Nothing
 	}
-	
-	
+
+
 	private List<IFodotTypeEnumerationElement> extractEnumerationList(GdlSentence sentence) {
 
 		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
@@ -525,7 +520,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 				throw new GdlTransformationException("Not a valid argument in a predicate");
 			}
 		}
-		
+
 		return staticValues;
 	}
 
@@ -554,7 +549,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 			IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
 
 			//add the combination as a next rule
-			this.addNext(originalPredicateDecl, Pair.of(causePred, condition));
+			this.addNext(originalPredicateDecl, new FodotNextData(causePred, condition));
 		}
 	}
 
@@ -672,7 +667,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
 
 		//add the combination as a next rule
-		this.addCompound(originalPredicate, Pair.of(compoundStaticPred, condition));
+		this.addCompound(originalPredicate, new FodotCompoundData(compoundStaticPred, condition));
 	}
 
 	//TODO: nakijken waar deze return niet gebruikt wordt
@@ -701,7 +696,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 				throw new IllegalStateException("Predicate differs in arity from before!");
 		}
 
-//		registerConstants(predSentence);
+		//		registerConstants(predSentence);
 
 		return pred;
 	}
@@ -729,7 +724,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 				throw new IllegalStateException("Predicate differs in arity from before!");
 		}
 
-//		registerConstants(predSentence);
+		//		registerConstants(predSentence);
 
 		return predDecl;
 	}
@@ -741,18 +736,18 @@ public class GdlFodotTransformer implements GdlTransformer {
 	 * be registered by now.
 	 * @param sentence
 	 */
-//	private void registerConstants(GdlSentence sentence) {
-//		for (int i = 0; i < sentence.arity(); i++) {
-//			GdlTerm term = sentence.get(i);
-//			if(term.isGround()) {
-//				//Term is a constant, and only has a name, and arity 0
-//				GdlConstant constant = (GdlConstant) term;
-//				FodotConstant fodotConstant = convertRawConstantName(constant);
-//				if(!isConstantRegistered(fodotConstant))
-//					addConstant(fodotConstant);
-//			}
-//		}
-//	}
+	//	private void registerConstants(GdlSentence sentence) {
+	//		for (int i = 0; i < sentence.arity(); i++) {
+	//			GdlTerm term = sentence.get(i);
+	//			if(term.isGround()) {
+	//				//Term is a constant, and only has a name, and arity 0
+	//				GdlConstant constant = (GdlConstant) term;
+	//				FodotConstant fodotConstant = convertRawConstantName(constant);
+	//				if(!isConstantRegistered(fodotConstant))
+	//					addConstant(fodotConstant);
+	//			}
+	//		}
+	//	}
 
 	/***************************************************************************
 	 * Helper methods

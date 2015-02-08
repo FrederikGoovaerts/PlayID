@@ -49,6 +49,8 @@ import java.util.Set;
 import org.ggp.base.util.Pair;
 
 import fodot.gdl_parser.secondphase.GdlFodotTransformer;
+import fodot.gdl_parser.secondphase.data.FodotCompoundData;
+import fodot.gdl_parser.secondphase.data.FodotNextData;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.comments.FodotComment;
 import fodot.objects.file.IFodotFile;
@@ -301,15 +303,15 @@ public class FodotGameFactory {
          *     *dit voor elke causation van hetzelfde predicaat*
          * }
          */
-        Map<FodotPredicateDeclaration, Set<Pair<FodotPredicate, IFodotFormula>>> nextMap = source.getNextMap();
+        Map<FodotPredicateDeclaration, Set<FodotNextData>> nextMap = source.getNextMap();
         if (!nextMap.isEmpty()) {
             toReturn.addElement(createBlankLines(1));
             toReturn.addElement(createComment("The fluent predicates' causations"));
         }
         for (FodotPredicateDeclaration predicate : nextMap.keySet()) {
             List<FodotInductiveSentence> definitions = new ArrayList<>();
-            for (Pair<FodotPredicate, IFodotFormula> pair : nextMap.get(predicate)) {
-                definitions.add(createInductiveSentence(createInductiveDefinitionConnector(pair.left, pair.right)));
+            for (FodotNextData data : nextMap.get(predicate)) {
+                definitions.add(createInductiveSentence(createInductiveDefinitionConnector(data.getPredicate(), data.getFormula())));
             }
             toReturn.addElement(createInductiveDefinition(definitions));
         }
@@ -322,15 +324,15 @@ public class FodotGameFactory {
          *     *dit voor elke causation van hetzelfde predicaat*
          * }
          */
-        Map<FodotPredicateDeclaration, Set<Pair<FodotPredicate, IFodotFormula>>> compoundMap = source.getCompoundMap();
+        Map<FodotPredicateDeclaration, Set<FodotCompoundData>> compoundMap = source.getCompoundMap();
         if (!compoundMap.isEmpty()) {
             toReturn.addElement(createBlankLines(1));
             toReturn.addElement(createComment("The static predicates' causations"));
         }
         for (FodotPredicateDeclaration predicate : compoundMap.keySet()) {
             List<FodotInductiveSentence> definitions = new ArrayList<>();
-            for (Pair<FodotPredicate, IFodotFormula> pair : compoundMap.get(predicate)) {
-                definitions.add(createInductiveSentence(createInductiveDefinitionConnector(pair.left, pair.right)));
+            for (FodotCompoundData data : compoundMap.get(predicate)) {
+                definitions.add(createInductiveSentence(createInductiveDefinitionConnector(data.getPredicate(), data.getFormula())));
             }
             toReturn.addElement(createInductiveDefinition(definitions));
         }

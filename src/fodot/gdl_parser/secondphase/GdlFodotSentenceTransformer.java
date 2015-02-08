@@ -351,11 +351,11 @@ public class GdlFodotSentenceTransformer {
 			elements.add(element);
 
 			//Improve declaration types (if variable was already mapped)
-			FodotType actualType = element.getType();
-			if (currentArgType != actualType && currentArgType == trans.getAllType()) {
-				System.out.println("fixed " + declaration.getName() + " arg("+i+") to " + actualType);
-				declaration.setArgumentType(i+argumentOffset, actualType);
-			}
+//			FodotType actualType = element.getType();
+//			if (currentArgType != actualType && currentArgType == trans.getAllType()) {
+//				System.out.println("fixed " + declaration.getName() + " arg("+i+") to " + actualType);
+//				declaration.setArgumentType(i+argumentOffset, actualType);
+//			}
 
 
 		}

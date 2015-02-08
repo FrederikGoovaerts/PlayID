@@ -87,6 +87,8 @@ public class GdlTypeIdentifier {
 	private GdlPredicateDeclaration terminalPred = new GdlPredicateDeclaration ( GdlPool.getConstant("terminal"), 0);
 	private GdlPredicateDeclaration truePred = new GdlPredicateDeclaration ( GdlPool.getConstant("true"), 1);
 
+	private List<GdlPredicateDeclaration> defaultPredicates;
+
 	private void initDefaultPredicates() {
 		initPredicate(distinctPred,	Arrays.asList(unfilledType, unfilledType),	true);
 		initPredicate(doesPred,		Arrays.asList(playerType, actionType),		true);
@@ -99,6 +101,8 @@ public class GdlTypeIdentifier {
 		initPredicate(truePred,		Arrays.asList(unfilledType),				true);
 
 		makeDynamic(doesPred);
+
+		defaultPredicates = Arrays.asList(distinctPred, doesPred, goalPred, initPred, legalPred, nextPred, rolePred, terminalPred, truePred);
 	}
 
 	//GETTERS
@@ -128,6 +132,10 @@ public class GdlTypeIdentifier {
 	}
 	public GdlPredicateDeclaration getTrue() {
 		return truePred;
+	}
+
+	public List<GdlPredicateDeclaration> getDefaultPredicates() {
+		return defaultPredicates;
 	}
 	/**********************************************/
 
@@ -408,7 +416,7 @@ public class GdlTypeIdentifier {
 			}
 		}
 	}
-	
+
 	private void fillMissingTypes() {
 		// SET ALL "unfilled" TO "All".
 		/* TODO: You can identify "chains" of types, so you can subdivide all
@@ -422,7 +430,7 @@ public class GdlTypeIdentifier {
 		for (GdlConstant constant : constants.keySet()) {
 			GdlConstantData data = constants.get(constant);
 			if (data.getType().equals(unfilledType)) {
-//				updateConstantType(constant, fillType);
+				//				updateConstantType(constant, fillType);
 				data.setType(fillType);
 			}
 		}
@@ -431,7 +439,7 @@ public class GdlTypeIdentifier {
 		for (GdlVariableDeclaration variable : variables.keySet()) {
 			GdlVariableData data = variables.get(variable);
 			if (data.getType().equals(unfilledType)) {
-//				updateVariableType(variable, fillType);
+				//				updateVariableType(variable, fillType);
 				data.setType(fillType);
 			}
 		}
@@ -441,7 +449,7 @@ public class GdlTypeIdentifier {
 		for (GdlFunctionDeclaration function : functions.keySet()) {
 			GdlFunctionData data = functions.get(function);
 			if (data.getType().equals(unfilledType)) {
-//				updateFunctionType(function, fillType);
+				//				updateFunctionType(function, fillType);
 				data.setType(fillType);
 			}
 		}
@@ -451,7 +459,7 @@ public class GdlTypeIdentifier {
 			GdlPredicateData data = predicates.get(predicate);
 			for (int i = 0; i < data.getAmountOfArguments(); i++) {
 				if (data.getArgumentType(i).equals(unfilledType)) {
-//					updatePredicateArgumentType(predicate, i, fillType);
+					//					updatePredicateArgumentType(predicate, i, fillType);
 					if (!data.isTypeLocked()) {
 						data.setArgumentType(i, fillType);
 					}
@@ -464,7 +472,7 @@ public class GdlTypeIdentifier {
 			GdlFunctionData data = functions.get(function);
 			for (int i = 0; i < data.getAmountOfArguments(); i++) {
 				if (data.getArgumentType(i).equals(unfilledType)) {
-//					updateFunctionArgumentType(function, i, fillType);
+					//					updateFunctionArgumentType(function, i, fillType);
 					data.setArgumentType(i, fillType);
 				}				
 			}
@@ -500,15 +508,17 @@ public class GdlTypeIdentifier {
 		}
 
 		for (GdlPredicateDeclaration p : predicates.keySet()) {
-			GdlPredicateData data = predicates.get(p);
-			FodotPredicateDeclaration pf = createPredicateDeclaration(
-					NameUtil.convertToValidPredicateName(p.getName().getValue()),
-					data.getArgumentTypes());
-			predicateDeclarations.put(p, pf);
-			System.out.println(pf.toCode());
+			if (!getDefaultPredicates().contains(p)) {
+				GdlPredicateData data = predicates.get(p);
+				FodotPredicateDeclaration pf = createPredicateDeclaration(
+						NameUtil.convertToValidPredicateName(p.getName().getValue()),
+						data.getArgumentTypes());
+				predicateDeclarations.put(p, pf);
+				System.out.println(pf.toCode());
 
-			if (data.isDynamic()) {
-				dynamicPredicates.add(p);
+				if (data.isDynamic()) {
+					dynamicPredicates.add(p);
+				}
 			}
 		}		
 
@@ -534,7 +544,7 @@ public class GdlTypeIdentifier {
 		return new GdlVocabulary(
 				this.timeType, this.playerType, this.actionType, 
 				this.scoreType, this.allType,
-				
+
 				constantsMap, functionDeclarations, predicateDeclarations,
 				variablesPerRule, dynamicPredicates);
 	}
