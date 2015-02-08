@@ -1,23 +1,33 @@
 package fodot.gdl_parser;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlFunction;
+import org.ggp.base.util.gdl.grammar.GdlPool;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
+import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
+import fodot.communication.gdloutput.IFodotGdlTranslator;
+import fodot.exceptions.gdl.GdlTransformationException;
 import fodot.gdl_parser.firstphase.data.declarations.GdlFunctionDeclaration;
 import fodot.gdl_parser.firstphase.data.declarations.GdlPredicateDeclaration;
+import fodot.objects.structure.elements.typenum.elements.FodoTypeFunctionEnumerationElement;
+import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 
-public class GdlFodotData {
+public class GdlFodotData implements IFodotGdlTranslator {
 
 	public GdlFodotData(
 			FodotType timeType,
@@ -41,6 +51,8 @@ public class GdlFodotData {
 		this.predicateDeclarations = predicateDeclarations;
 		this.variablesPerRule = variablesPerRule;
 		this.dynamicPredicates = dynamicPredicates;
+		
+		initialiseInverseMaps();
 	}
 
 	/**********************************************
@@ -103,6 +115,66 @@ public class GdlFodotData {
 	public boolean isDynamic(GdlRelation predicate) {
 		GdlPredicateDeclaration declaration = new GdlPredicateDeclaration(predicate);
 		return dynamicPredicates.contains(declaration);
+	}
+
+	/**********************************************/
+
+	/**********************************************
+	 *  Translations
+	 ***********************************************/
+	
+	private Map<FodotConstant, GdlConstant> constantsInverse = new HashMap<FodotConstant, GdlConstant>();
+	private Map<FodotFunctionDeclaration, GdlFunctionDeclaration> functionsInverse = new HashMap<FodotFunctionDeclaration, GdlFunctionDeclaration>();
+	private Map<FodotPredicateDeclaration, GdlPredicateDeclaration> predicatesInverse = new HashMap<FodotPredicateDeclaration, GdlPredicateDeclaration>();
+	
+	private void initialiseInverseMaps() {
+		for (GdlConstant constant : constants.keySet()) {
+			constantsInverse.put(constants.get(constant), constant);
+		}
+
+		for (GdlFunctionDeclaration func : functionDeclarations.keySet()) {
+			functionsInverse.put(functionDeclarations.get(func), func);
+		}
+		
+		for (GdlPredicateDeclaration pred : predicateDeclarations.keySet()) {
+			predicatesInverse.put(predicateDeclarations.get(pred), pred);
+		}
+	}
+	
+	public GdlConstant getConstant(FodotConstant constant) {
+		return constantsInverse.get(constant);
+	}
+	
+	public GdlFunctionDeclaration getFunctionDeclaration(FodotFunctionDeclaration func) {
+		return functionsInverse.get(func);
+	}
+	
+	public GdlPredicateDeclaration getPredicateDeclaration(FodotPredicateDeclaration pred) {
+		return predicatesInverse.get(pred);
+	}
+	
+
+	@Override
+	public GdlTerm translate(IFodotTypeEnumerationElement fodot) {
+		if (fodot instanceof FodotConstant) {
+			FodotConstant casted = (FodotConstant) fodot;
+			
+			assert getConstant(casted) != null;			
+			return getConstant(casted);
+		}
+		if (fodot instanceof FodoTypeFunctionEnumerationElement) {
+			FodoTypeFunctionEnumerationElement casted = (FodoTypeFunctionEnumerationElement) fodot;
+			FodotTypeFunctionDeclaration decl = casted.getDeclaration();
+			GdlFunctionDeclaration gdlFunc = getFunctionDeclaration(decl);
+			GdlConstant name = gdlFunc.getName();
+			
+			List<GdlTerm> body = new ArrayList<GdlTerm>();
+			for (IFodotTypeEnumerationElement el : casted.getElements()) {
+				body.add(translate(el));
+			}
+			return GdlPool.getRelation(name, body).toTerm();
+		}
+		throw new GdlTransformationException("Can't translate " + fodot);
 	}
 
 	/**********************************************/

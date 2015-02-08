@@ -17,14 +17,14 @@ import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.CollectionPrinter;
 
-public abstract class FodotAbstractArgumentList extends FodotElement implements IFodotSentenceElement {
+public abstract class FodotArgumentList extends FodotElement implements IFodotSentenceElement {
 	
 	private static final int BINDING_ORDER = -1;
 	
 	private FodotArgumentListDeclaration declaration;
 	private List<IFodotTerm> arguments;
 	
-	public FodotAbstractArgumentList(FodotArgumentListDeclaration decl, List<IFodotTerm> arguments) {
+	public FodotArgumentList(FodotArgumentListDeclaration decl, List<IFodotTerm> arguments) {
 		super();
 		setDeclaration(decl);
 		setArguments(arguments);
@@ -136,7 +136,7 @@ public abstract class FodotAbstractArgumentList extends FodotElement implements 
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		FodotAbstractArgumentList other = (FodotAbstractArgumentList) obj;
+		FodotArgumentList other = (FodotArgumentList) obj;
 		if (arguments == null) {
 			if (other.arguments != null)
 				return false;

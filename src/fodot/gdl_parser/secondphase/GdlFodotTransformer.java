@@ -17,14 +17,12 @@ import java.util.Set;
 
 import org.ggp.base.util.Pair;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
-import org.ggp.base.util.gdl.grammar.GdlPool;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
-import fodot.communication.gdloutput.IFodotGdlTranslator;
 import fodot.exceptions.gdl.GdlParsingOrderException;
 import fodot.exceptions.gdl.GdlTransformationException;
 import fodot.gdl_parser.FodotGameFactory;
@@ -34,7 +32,6 @@ import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
-import fodot.objects.structure.elements.typenum.elements.FodoTypeFunctionEnumerationElement;
 import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
@@ -54,7 +51,7 @@ import fodot.util.NameUtil;
  * For correct utilization of this class, non-GdlRules should be processed before
  * GdlRules. If this is not respected, a GdlParsingOrderException will be thrown.
  */
-public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator {
+public class GdlFodotTransformer implements GdlTransformer {
 	
 	/***************************************************************************
 	 * Constructor
@@ -767,29 +764,6 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 
 	public void addTranslation(FodotTypeFunctionDeclaration fodot, GdlConstant name) {
 		predicateTermMap.put(fodot, name);
-	}
-
-	@Override
-	public GdlTerm translate(IFodotTypeEnumerationElement fodot) {
-		if (fodot instanceof FodotConstant) {
-			FodotConstant casted = (FodotConstant) fodot;
-			if (constantsMap.containsKey(casted)) {
-				return constantsMap.get(casted);
-			}
-		}
-		if (fodot instanceof FodoTypeFunctionEnumerationElement) {
-			FodoTypeFunctionEnumerationElement casted = (FodoTypeFunctionEnumerationElement) fodot;
-			FodotTypeFunctionDeclaration decl = casted.getDeclaration();
-			if (predicateTermMap.containsKey(decl)) {
-				GdlConstant name = predicateTermMap.get(decl);
-				List<GdlTerm> body = new ArrayList<GdlTerm>();
-				for (IFodotTypeEnumerationElement el : casted.getElements()) {
-					body.add(translate(el));
-				}
-				return GdlPool.getRelation(name, body).toTerm();
-			}
-		}
-		return null;
 	}
 
 

@@ -3,12 +3,12 @@ package fodot.objects.theory.elements.terms;
 import java.util.List;
 
 import fodot.objects.structure.elements.IFodotEnumerationElement;
-import fodot.objects.theory.elements.formulas.FodotAbstractArgumentList;
+import fodot.objects.theory.elements.formulas.FodotArgumentList;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 
 @Deprecated
-public class FodotPredicateTerm extends FodotAbstractArgumentList
+public class FodotPredicateTerm extends FodotArgumentList
 		implements IFodotTerm, IFodotEnumerationElement {
 
 	public FodotPredicateTerm(FodotTypeFunctionDeclaration decl, List<IFodotTerm> arguments) {

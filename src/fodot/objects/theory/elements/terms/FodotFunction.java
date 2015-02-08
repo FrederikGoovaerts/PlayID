@@ -2,11 +2,11 @@ package fodot.objects.theory.elements.terms;
 
 import java.util.List;
 
-import fodot.objects.theory.elements.formulas.FodotAbstractArgumentList;
+import fodot.objects.theory.elements.formulas.FodotArgumentList;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 
-public class FodotFunction extends FodotAbstractArgumentList implements IFodotTerm {
+public class FodotFunction extends FodotArgumentList implements IFodotTerm {
 	
 	public FodotFunction(FodotFunctionDeclaration decl, List<IFodotTerm> arguments) {
 		super(decl, arguments);
