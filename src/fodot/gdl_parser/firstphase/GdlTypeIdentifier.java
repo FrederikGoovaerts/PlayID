@@ -377,6 +377,7 @@ public class GdlTypeIdentifier {
 		data.setArgumentType(argumentNr, foundType);
 
 		//Update all occurrences
+		//TODO save each argumentoccurrence in data, add it when adding terms.
 		for (GdlArgumentListOccurrence occ : data.getOccurences()) {
 			GdlTerm term = occ.getArgument(argumentNr);
 			if (term instanceof GdlConstant) {
@@ -421,7 +422,8 @@ public class GdlTypeIdentifier {
 		for (GdlConstant constant : constants.keySet()) {
 			GdlConstantData data = constants.get(constant);
 			if (data.getType().equals(unfilledType)) {
-				updateConstantType(constant, fillType);
+//				updateConstantType(constant, fillType);
+				data.setType(fillType);
 			}
 		}
 
@@ -429,7 +431,18 @@ public class GdlTypeIdentifier {
 		for (GdlVariableDeclaration variable : variables.keySet()) {
 			GdlVariableData data = variables.get(variable);
 			if (data.getType().equals(unfilledType)) {
-				updateVariableType(variable, fillType);
+//				updateVariableType(variable, fillType);
+				data.setType(fillType);
+			}
+		}
+
+
+		//Function types to all
+		for (GdlFunctionDeclaration function : functions.keySet()) {
+			GdlFunctionData data = functions.get(function);
+			if (data.getType().equals(unfilledType)) {
+//				updateFunctionType(function, fillType);
+				data.setType(fillType);
 			}
 		}
 
@@ -438,7 +451,10 @@ public class GdlTypeIdentifier {
 			GdlPredicateData data = predicates.get(predicate);
 			for (int i = 0; i < data.getAmountOfArguments(); i++) {
 				if (data.getArgumentType(i).equals(unfilledType)) {
-					updatePredicateArgumentType(predicate, i, fillType);
+//					updatePredicateArgumentType(predicate, i, fillType);
+					if (!data.isTypeLocked()) {
+						data.setArgumentType(i, fillType);
+					}
 				}				
 			}
 		}
@@ -448,22 +464,14 @@ public class GdlTypeIdentifier {
 			GdlFunctionData data = functions.get(function);
 			for (int i = 0; i < data.getAmountOfArguments(); i++) {
 				if (data.getArgumentType(i).equals(unfilledType)) {
-					updateFunctionArgumentType(function, i, fillType);
+//					updateFunctionArgumentType(function, i, fillType);
+					data.setArgumentType(i, fillType);
 				}				
-			}
-		}
-
-
-		//Function types to all
-		for (GdlFunctionDeclaration function : functions.keySet()) {
-			GdlFunctionData data = functions.get(function);
-			if (data.getType().equals(unfilledType)) {
-				updateFunctionType(function, fillType);
 			}
 		}
 	}
 
-	public GdlFodotData getResultingData() {
+	public GdlFodotData generateTranslationData() {
 
 		fillMissingTypes();
 		addTimeVariableToDynamicPredicates();
@@ -477,7 +485,7 @@ public class GdlTypeIdentifier {
 		//GENERATE SETS FOR GDLFODOTDATA
 		for (GdlConstant c : constants.keySet()) {
 			GdlConstantData data = constants.get(c);
-			FodotConstant fc = createConstant( NameUtil.convertToValidConstantName(c.getValue()) , data.getType());
+			FodotConstant fc = createConstant( NameUtil.convertToValidConstantName(c.getValue(), data.getType()) , data.getType());
 			constantsMap.put(c, fc);
 		}
 
@@ -524,7 +532,9 @@ public class GdlTypeIdentifier {
 		System.out.println(allType.getDeclaration().toCode());
 
 		return new GdlFodotData(
-				this.timeType, this.playerType, this.actionType, this.scoreType, this.allType,
+				this.timeType, this.playerType, this.actionType, 
+				this.scoreType, this.allType,
+				
 				constantsMap, functionDeclarations, predicateDeclarations,
 				variablesPerRule, dynamicPredicates);
 	}

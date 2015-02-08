@@ -70,9 +70,9 @@ public class NameUtil {
 		return "pr_" + newName;
 	}
 
-	public static String convertToValidConstantName(String name) {
+	public static String convertToValidConstantName(String name, FodotType type) {
 		//TODO: optimize this
-		if (name.substring(0, 1).matches("[0-9]")) {
+		if (name.substring(0, 1).matches("^[0-9]+$") && !type.isASubtypeOf(FodotType.INTEGER)) {
 			return "i_" + name;
 		}
 		return name;

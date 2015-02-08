@@ -73,7 +73,7 @@ public class GdlParser {
 		 */
 		
 		GdlInspector.inspect(game, getIdentifier().createTransformer());
-		GdlFodotData data = getIdentifier().getResultingData();
+		GdlFodotData data = getIdentifier().generateTranslationData();
 		
 		/*
 		 * Second phase:

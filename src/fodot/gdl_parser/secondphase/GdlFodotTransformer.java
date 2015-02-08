@@ -142,7 +142,7 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 
 	public FodotConstant convertRawRole(GdlConstant term){
 		String rawName = term.getValue();
-		FodotConstant toReturn = createConstant("p_" + rawName, this.getPlayerType());
+		FodotConstant toReturn = createConstant(rawName, this.getPlayerType());
 		addTranslation(toReturn, term);
 		return toReturn;
 	}
@@ -227,12 +227,7 @@ public class GdlFodotTransformer implements GdlTransformer, IFodotGdlTranslator 
 	public FodotConstant convertConstantName(GdlConstant constant, FodotType type) {
 		String rawName = constant.getValue();
 
-		String constantName;
-		if (rawName.matches("^[0-9]+$") && !type.isASubtypeOf(FodotType.INTEGER)) {
-			constantName = "i" + rawName;
-		} else {
-			constantName = rawName;
-		}
+		String constantName = NameUtil.convertToValidConstantName(rawName, type);
 
 		FodotConstant toReturn = createConstant(constantName, type);
 		addTranslation(toReturn, constant);
