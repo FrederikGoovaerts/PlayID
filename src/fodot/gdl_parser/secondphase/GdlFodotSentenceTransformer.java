@@ -235,7 +235,7 @@ public class GdlFodotSentenceTransformer {
 	 ***********************************************/
 	public IFodotTerm generateTerm(GdlTerm term, FodotType argType) {
 		if (term instanceof GdlConstant) {
-				return trans.convertConstantName((GdlConstant) term, argType);
+				return trans.getGdlVocabulary().getConstant((GdlConstant) term);
 		} else if (term instanceof GdlVariable) {
 			return generateVariable((GdlVariable) term, argType);
 		} else if (term instanceof GdlFunction){

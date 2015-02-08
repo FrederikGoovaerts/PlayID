@@ -218,22 +218,22 @@ public class GdlFodotTransformer implements GdlTransformer {
 	//	private boolean isConstantRegistered(FodotConstant constant) {
 	//		return getAllType().containsDomainElement(constant);
 	//	}
-
-	public FodotConstant convertRawConstantName(GdlConstant constant) {
-		return convertConstantName(constant, getAllType());
-	}
-
-	public FodotConstant convertConstantName(GdlConstant constant, FodotType type) {
-
-		return getGdlVocabulary().getConstant(constant);
-
+//
+//	public FodotConstant convertRawConstantName(GdlConstant constant) {
+//		return convertConstantName(constant, getAllType());
+//	}
+//
+//	public FodotConstant convertConstantName(GdlConstant constant, FodotType type) {
+//
+//		return getGdlVocabulary().getConstant(constant);
+//
 		//		String rawName = constant.getValue();
 		//
 		//		String constantName = NameUtil.convertToValidConstantName(rawName, type);
 		//
 		//		FodotConstant toReturn = createConstant(constantName, type);
 		//		return toReturn;
-	}
+//	}
 
 	/*** End of Constants subsection ***/
 
