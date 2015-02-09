@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import fodot.gdl_parser.firstphase.data.declarations.IGdlTermDeclaration;
-import fodot.gdl_parser.firstphase.data.occurrences.IGdlTermOccurrence;
 import fodot.objects.vocabulary.elements.FodotType;
 public abstract class GdlArgumentListData implements IGdlArgumentListData {
 	private List<FodotType> argumentTypes;

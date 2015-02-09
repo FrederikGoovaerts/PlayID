@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import fodot.gdl_parser.firstphase.data.declarations.IGdlTermDeclaration;
-import fodot.gdl_parser.firstphase.data.occurrences.IGdlTermOccurrence;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlArgumentListOccurrence;
 import fodot.objects.vocabulary.elements.FodotType;
  

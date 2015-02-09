@@ -27,6 +27,7 @@ import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
+import fodot.util.CollectionPrinter;
 
 public class GdlVocabulary implements IFodotGdlTranslator {
 
@@ -192,5 +193,20 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 
 	/**********************************************/
 
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("== GDL VOCABULARY ==\n");
+		builder.append(CollectionPrinter.printStringList("", "\n\n", "\n", CollectionPrinter.toCode(predicateDeclarations.values())));		
+		
+		builder.append(timeType.getDeclaration().toCode()+"\n");
+		builder.append(playerType.getDeclaration().toCode()+"\n");
+		builder.append(actionType.getDeclaration().toCode()+"\n");
+		builder.append(scoreType.getDeclaration().toCode()+"\n");
+		builder.append(allType.getDeclaration().toCode()+"\n");
+		builder.append("====================\n");
+		return builder.toString();
+	}
 
 }
