@@ -66,7 +66,6 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 		visitPredicateArguments(null, argumentRelation);
 
 		//Make argument dynamic
-		//Is this right? It has an initial status, so it must be dynamic, right?
 		getIdentifier().makeDynamic(argumentRelation);
 	}
 
@@ -192,15 +191,28 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 		}
 		private void visitRelation(GdlRelation predicate) {
 			if (getIdentifier().getTrue().equals(new GdlPredicateDeclaration(predicate))) {
-				visitRelation(convertToPredicate(predicate.get(0)));
+				visitTrue(predicate);
 			} else {
 				getIdentifier().addPredicateOccurrence(rule, predicate);
 				visitPredicateArguments(rule, predicate);
 			}
 		}
+		private void visitTrue(GdlRelation predicate) {
+			GdlRelation innerPredicate = convertToPredicate(predicate.get(0));
+			visitRelation(innerPredicate);
+			
+			getIdentifier().makeDynamic(innerPredicate);
+			
+		}
 		private void visitProposition(GdlProposition proposition) {
-			//TODO what to do with these?
-			// Do nothing
+			//Propositions are predicates without arguments.
+			//Hypothese: These are always dynamic, as they don't serve a better purpose
+			GdlRelation relation = convertToPredicate(proposition);
+			
+			visitRelation(relation);
+			
+			//Make dynamic
+			getIdentifier().makeDynamic(relation);
 		}
 
 	}
