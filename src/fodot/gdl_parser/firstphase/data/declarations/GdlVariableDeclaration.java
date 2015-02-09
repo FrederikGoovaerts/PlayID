@@ -3,7 +3,7 @@ package fodot.gdl_parser.firstphase.data.declarations;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
-public class GdlVariableDeclaration {
+public class GdlVariableDeclaration implements IGdlTermDeclaration {
 	private GdlVariable variable;
 	private GdlRule location;
 	

@@ -24,18 +24,20 @@ import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
 import fodot.exceptions.gdl.GdlTypeIdentificationError;
-import fodot.gdl_parser.GdlVocabulary;
 import fodot.gdl_parser.GdlTransformer;
+import fodot.gdl_parser.GdlVocabulary;
 import fodot.gdl_parser.firstphase.data.GdlConstantData;
 import fodot.gdl_parser.firstphase.data.GdlFunctionData;
 import fodot.gdl_parser.firstphase.data.GdlPredicateData;
 import fodot.gdl_parser.firstphase.data.GdlVariableData;
 import fodot.gdl_parser.firstphase.data.IGdlArgumentListData;
 import fodot.gdl_parser.firstphase.data.IGdlTermData;
+import fodot.gdl_parser.firstphase.data.declarations.GdlConstantDeclaration;
 import fodot.gdl_parser.firstphase.data.declarations.GdlFunctionDeclaration;
 import fodot.gdl_parser.firstphase.data.declarations.GdlPredicateDeclaration;
 import fodot.gdl_parser.firstphase.data.declarations.GdlVariableDeclaration;
 import fodot.gdl_parser.firstphase.data.declarations.IGdlArgumentListDeclaration;
+import fodot.gdl_parser.firstphase.data.declarations.IGdlTermDeclaration;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlArgumentListOccurrence;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlConstantOccurrence;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlFunctionOccurrence;
@@ -55,7 +57,7 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Data maps
 	 ***********************************************/
-	private Map<GdlConstant, GdlConstantData> constants = new HashMap<GdlConstant, GdlConstantData>();
+	private Map<GdlConstantDeclaration, GdlConstantData> constants = new HashMap<GdlConstantDeclaration, GdlConstantData>();
 	private Map<GdlVariableDeclaration, GdlVariableData> variables = new HashMap<GdlVariableDeclaration, GdlVariableData>();
 	private Map<GdlPredicateDeclaration, GdlPredicateData> predicates = new HashMap<GdlPredicateDeclaration, GdlPredicateData>();	
 	private Map<GdlFunctionDeclaration, GdlFunctionData> functions = new HashMap<GdlFunctionDeclaration, GdlFunctionData>();
@@ -152,7 +154,7 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Initialize entries
 	 ***********************************************/
-	private void initConstant(GdlConstant constant, FodotType givenType) {
+	private void initConstant(GdlConstantDeclaration constant, FodotType givenType) {
 		constants.put(constant, new GdlConstantData(givenType));
 	}
 	private void initVariable(GdlVariableDeclaration variable, FodotType givenType) {
@@ -195,19 +197,21 @@ public class GdlTypeIdentifier {
 
 	public void addConstantOccurrence(IGdlArgumentListDeclaration directParent, int argumentIndex, GdlConstant constant, FodotType givenType) {
 
+		GdlConstantDeclaration decl = new GdlConstantDeclaration(constant);
+		
 		//Initialize list if first occurrence of constant
-		if (constants.get(constant) == null) {
-			initConstant(constant, givenType);
+		if (constants.get(decl) == null) {
+			initConstant(new GdlConstantDeclaration(constant), givenType);
 		}
-		constants.get(constant).addOccurences( new GdlConstantOccurrence(directParent, argumentIndex) );
-
+		constants.get(decl).addOccurences( new GdlConstantOccurrence(directParent, argumentIndex) );
+		addArgumentOccurrence(directParent, argumentIndex, decl);
+		
 		//Edit typing if necessary
 		if (!givenType.equals(unfilledType)) {
-			updateConstantType(constant, givenType);
+			updateConstantType(decl, givenType);
 		}
 
 	}
-
 	public void addVariableOccurrence(GdlRule parentRule, IGdlArgumentListDeclaration directParent, int argumentIndex, GdlVariable variable) {
 		FodotType foundType = getArgumentType(directParent, argumentIndex);
 		addVariableOccurrence(parentRule, directParent, argumentIndex, variable, foundType);
@@ -222,6 +226,7 @@ public class GdlTypeIdentifier {
 			initVariable(variable, givenType);
 		}
 		variables.get(variable).addOccurences( new GdlVariableOccurrence(directParent, argumentIndex) );
+		addArgumentOccurrence(directParent, argumentIndex, variable);
 
 		//Edit typing if necessary
 		if (!givenType.equals(unfilledType)) {
@@ -229,18 +234,7 @@ public class GdlTypeIdentifier {
 		}
 
 	}
-
-	public void addPredicateOccurrence(GdlRule parentRule, GdlRelation predicate) {
-		GdlPredicateDeclaration head = new GdlPredicateDeclaration( predicate );
-
-		//Initialize list if first occurrence of the predicate
-		if (predicates.get(head) == null) {
-			initPredicate(head);
-		}
-		predicates.get(head).addOccurence( new GdlPredicateOccurrence(parentRule, predicate) );
-
-	}
-
+	
 	public void addFunctionOccurrence(GdlRule parentRule, IGdlArgumentListDeclaration directParent, int argumentIndex, GdlFunction function) {
 		FodotType foundType = getArgumentType(directParent, argumentIndex);
 		addFunctionOccurrence(parentRule, directParent, argumentIndex, function, foundType);
@@ -254,10 +248,35 @@ public class GdlTypeIdentifier {
 			initFunction(head, givenType);
 		}
 		functions.get(head).addOccurence( new GdlFunctionOccurrence(parentRule, directParent, argumentIndex, function) );
+		addArgumentOccurrence(directParent, argumentIndex, head);
 
 		if (!givenType.equals(unfilledType)) {
 			updateFunctionType(head, givenType);
 		}
+	}
+
+	private void addArgumentOccurrence(
+			IGdlArgumentListDeclaration argumentList, int argumentIndex,
+			IGdlTermDeclaration termDeclaration) {
+		if (predicates.containsKey(argumentList)) {
+			predicates.get(argumentList).addArgumentOccurrence(argumentIndex, termDeclaration);
+		} else if (functions.containsKey(argumentList)) {
+			functions.get(argumentList).addArgumentOccurrence(argumentIndex, termDeclaration);
+		} else {
+			throw new GdlTypeIdentificationError("Predicate or function not found!");
+		}
+	}
+
+
+	public void addPredicateOccurrence(GdlRule parentRule, GdlRelation predicate) {
+		GdlPredicateDeclaration head = new GdlPredicateDeclaration( predicate );
+
+		//Initialize list if first occurrence of the predicate
+		if (predicates.get(head) == null) {
+			initPredicate(head);
+		}
+		predicates.get(head).addOccurence( new GdlPredicateOccurrence(parentRule, predicate) );
+
 	}
 
 	public void makeDynamic(GdlRelation predicate) {
@@ -287,7 +306,7 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Intrinsic Types
 	 ***********************************************/
-	private void updateConstantType(GdlConstant argConstant, FodotType foundType) {
+	private void updateConstantType(GdlConstantDeclaration argConstant, FodotType foundType) {
 		if (!constants.containsKey(argConstant)) {
 			initConstant(argConstant, foundType);
 		}
@@ -334,9 +353,7 @@ public class GdlTypeIdentifier {
 		//Update all occurrences
 		for (IGdlTermOccurrence occ : data.getOccurences()) {
 			IGdlArgumentListDeclaration parent = occ.getDirectParent();
-			if (parent == null) {
-				//no op
-			} else if (parent instanceof GdlPredicateDeclaration) {
+			if (parent instanceof GdlPredicateDeclaration) {
 				updatePredicateArgumentType( (GdlPredicateDeclaration) parent, occ.getArgumentIndex(), foundType);
 			} else if (parent instanceof GdlFunctionDeclaration) {
 				updateFunctionArgumentType( (GdlFunctionDeclaration) parent, occ.getArgumentIndex(), foundType);				
@@ -394,17 +411,28 @@ public class GdlTypeIdentifier {
 
 		//Update all occurrences
 		//TODO save each argumentoccurrence in data, add it when adding terms.
-		for (GdlArgumentListOccurrence occ : data.getOccurences()) {
-			GdlTerm term = occ.getArgument(argumentNr);
-			if (term instanceof GdlConstant) {
-				updateConstantType( (GdlConstant) term, foundType );
-			} else if (term instanceof GdlVariable) {
-				GdlRule rule = occ.getRule();
-				updateVariableType( new GdlVariableDeclaration((GdlVariable) term, rule), foundType );
-			} else if (term instanceof GdlFunction) {
-				updateFunctionType( new GdlFunctionDeclaration((GdlFunction) term), foundType);
+		
+		for (IGdlTermDeclaration occ : data.getArgumentOccurrences(argumentNr)) {
+			if (occ instanceof GdlConstantDeclaration) {
+				updateConstantType( (GdlConstantDeclaration) occ, foundType );
+			} else if (occ instanceof GdlVariableDeclaration) {
+				updateVariableType((GdlVariableDeclaration) occ, foundType );
+			} else if (occ instanceof GdlFunctionDeclaration) {
+				updateFunctionType( (GdlFunctionDeclaration) occ, foundType);
 			}
 		}
+		
+//		for (GdlArgumentListOccurrence occ : data.getOccurences()) {
+//			GdlTerm term = occ.getArgument(argumentNr);
+//			if (term instanceof GdlConstant) {
+//				updateConstantType( (GdlConstant) term, foundType );
+//			} else if (term instanceof GdlVariable) {
+//				GdlRule rule = occ.getRule();
+//				updateVariableType( new GdlVariableDeclaration((GdlVariable) term, rule), foundType );
+//			} else if (term instanceof GdlFunction) {
+//				updateFunctionType( new GdlFunctionDeclaration((GdlFunction) term), foundType);
+//			}
+//		}
 
 	}
 	/**********************************************/
@@ -435,7 +463,7 @@ public class GdlTypeIdentifier {
 		FodotType fillType = this.allType;
 
 		//Constants to all
-		for (GdlConstant constant : constants.keySet()) {
+		for (GdlConstantDeclaration constant : constants.keySet()) {
 			GdlConstantData data = constants.get(constant);
 			if (data.getType().equals(unfilledType)) {
 				//				updateConstantType(constant, fillType);
@@ -500,10 +528,10 @@ public class GdlTypeIdentifier {
 		Set<GdlPredicateDeclaration> fluentPredicates = new HashSet<GdlPredicateDeclaration>();
 
 		//GENERATE SETS FOR GDLFODOTDATA
-		for (GdlConstant c : constants.keySet()) {
+		for (GdlConstantDeclaration c : constants.keySet()) {
 			GdlConstantData data = constants.get(c);
-			FodotConstant fc = createConstant( NameUtil.convertToValidConstantName(c.getValue(), data.getType()) , data.getType());
-			constantsMap.put(c, fc);
+			FodotConstant fc = createConstant( NameUtil.convertToValidConstantName(c.getConstant().getValue(), data.getType()) , data.getType());
+			constantsMap.put(c.getConstant(), fc);
 		}
 
 		for (GdlFunctionDeclaration f : functions.keySet()) {

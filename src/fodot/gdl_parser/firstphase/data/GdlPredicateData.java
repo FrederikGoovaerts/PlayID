@@ -7,39 +7,26 @@ import fodot.exceptions.gdl.GdlTypeIdentificationError;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlPredicateOccurrence;
 import fodot.objects.vocabulary.elements.FodotType;
 
-public class GdlPredicateData implements IGdlArgumentListData {
+public class GdlPredicateData extends GdlArgumentListData {
 
-	private List<FodotType> argumentTypes;
 	private List<GdlPredicateOccurrence> occurrences = new ArrayList<GdlPredicateOccurrence>();
 	private boolean isDynamic = false;
 	private boolean isFluent = false;
 	private boolean typesLocked = false;
 	
 	public GdlPredicateData(List<FodotType> argArgumentTypes, boolean argTypesLocked) {
-		this.argumentTypes = new ArrayList<FodotType>(argArgumentTypes);
+		super(new ArrayList<FodotType>(argArgumentTypes));
 		this.typesLocked = argTypesLocked;
 	}
 
 	/**********************************************
 	 *  Arguments
 	 ***********************************************/
-	public FodotType getArgumentType(int index) {
-		return this.argumentTypes.get(index);
-	}	
-	public List<FodotType> getArgumentTypes() {
-		return new ArrayList<FodotType>(argumentTypes);
-	}
 	public void setArgumentType(int index, FodotType type) {
 		if (typesLocked) {
 			throw new GdlTypeIdentificationError("Can't update a locked type!");
 		}
-		this.argumentTypes.set(index, type);
-	}
-	public void addArgumentType(FodotType argType) {
-		this.argumentTypes.add(argType);
-	}
-	public int getAmountOfArguments() {
-		return argumentTypes.size();
+		super.setArgumentType(index, type);
 	}
 	public void lockTypes() {
 		this.typesLocked = true;
