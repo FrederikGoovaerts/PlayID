@@ -40,8 +40,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 			Map<GdlFunctionDeclaration, FodotFunctionDeclaration> functionDeclarations,
 			Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations,
 			Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule,
-			Set<GdlPredicateDeclaration> dynamicPredicates,
-			Set<GdlPredicateDeclaration> fluentPredicates) {
+			Set<GdlPredicateDeclaration> dynamicPredicates) {
 		super();
 		this.timeType = timeType;
 		this.playerType = playerType;
@@ -53,7 +52,6 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		this.predicateDeclarations = predicateDeclarations;
 		this.variablesPerRule = variablesPerRule;
 		this.dynamicPredicates = dynamicPredicates;
-		this.fluentPredicates = fluentPredicates;
 		
 		initialiseInverseMaps();
 	}
@@ -96,7 +94,6 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	//Info
 	private Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule;
 	private Set<GdlPredicateDeclaration> dynamicPredicates;
-	private Set<GdlPredicateDeclaration> fluentPredicates;
 
 	public FodotConstant getConstant(GdlConstant constant) {
 		return constants.get(constant);
@@ -133,15 +130,6 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		return dynamicPredicates.contains(declaration);
 	}
 
-	public boolean isFluent(GdlRelation predicate) {
-		GdlPredicateDeclaration declaration = new GdlPredicateDeclaration(predicate);
-		return isFluent(declaration);
-	}
-	
-	public boolean isFluent(GdlPredicateDeclaration declaration) {
-		return fluentPredicates.contains(declaration);
-	}
-	
 	/**********************************************/
 
 	/**********************************************

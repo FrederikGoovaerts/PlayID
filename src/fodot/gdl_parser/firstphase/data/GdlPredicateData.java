@@ -11,7 +11,6 @@ public class GdlPredicateData extends GdlArgumentListData {
 
 	private List<GdlPredicateOccurrence> occurrences = new ArrayList<GdlPredicateOccurrence>();
 	private boolean isDynamic = false;
-	private boolean isFluent = false;
 	private boolean typesLocked = false;
 	
 	public GdlPredicateData(List<FodotType> argArgumentTypes, boolean argTypesLocked) {
@@ -58,14 +57,6 @@ public class GdlPredicateData extends GdlArgumentListData {
 	
 	public boolean isDynamic() {
 		return this.isDynamic;
-	}
-	
-	public void makeFluent() {
-		this.isFluent = true;
-	}
-	
-	public boolean isFluent() {
-		return this.isFluent;
 	}
 	/**********************************************/
 }

@@ -287,13 +287,6 @@ public class GdlTypeIdentifier {
 		predicates.get(predicate).makeDynamic();		
 	}
 	
-	public void makeFluent(GdlRelation predicate) {
-		makeFluent(new GdlPredicateDeclaration(predicate));
-	}
-	
-	public void makeFluent(GdlPredicateDeclaration predicate) {
-		predicates.get(predicate).makeFluent();
-	}
 	/**********************************************/
 
 
@@ -525,7 +518,6 @@ public class GdlTypeIdentifier {
 		Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations = new HashMap<GdlPredicateDeclaration, FodotPredicateDeclaration>();
 		Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule = new HashMap<GdlRule, Map<GdlVariable, FodotVariable>>();
 		Set<GdlPredicateDeclaration> dynamicPredicates = new HashSet<GdlPredicateDeclaration>();
-		Set<GdlPredicateDeclaration> fluentPredicates = new HashSet<GdlPredicateDeclaration>();
 
 		//GENERATE SETS FOR GDLFODOTDATA
 		for (GdlConstantDeclaration c : constants.keySet()) {
@@ -556,9 +548,6 @@ public class GdlTypeIdentifier {
 				if (data.isDynamic()) {
 					dynamicPredicates.add(p);
 				}
-				if (data.isFluent()) {
-					fluentPredicates.add(p);
-				}
 			}
 		}		
 
@@ -586,7 +575,7 @@ public class GdlTypeIdentifier {
 				this.scoreType, this.allType,
 
 				constantsMap, functionDeclarations, predicateDeclarations,
-				variablesPerRule, dynamicPredicates, fluentPredicates);
+				variablesPerRule, dynamicPredicates);
 	}
 	/**********************************************/
 

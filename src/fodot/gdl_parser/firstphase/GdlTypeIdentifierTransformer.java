@@ -67,7 +67,7 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 
 		//Make argument dynamic
 		//Is this right? It has an initial status, so it must be dynamic, right?
-		getIdentifier().makeFluent(argumentRelation);
+		getIdentifier().makeDynamic(argumentRelation);
 	}
 
 	@Override
