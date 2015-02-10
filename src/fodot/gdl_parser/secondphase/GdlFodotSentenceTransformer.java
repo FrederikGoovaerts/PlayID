@@ -207,8 +207,6 @@ public class GdlFodotSentenceTransformer {
 				playerTerm,
 				actionFodotTerm
 				);
-		//TODO: uncomment this as soon as translations are working
-		//        trans.addTranslation(actionPredicate, actionPredSentence.toString());
 		return actionPredicate;
 
 

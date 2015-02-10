@@ -10,4 +10,8 @@ public class GdlPredicateDeclaration extends GdlArgumentListDeclaration {
 	public GdlPredicateDeclaration(GdlRelation relation) {
 		this(relation.getName(), relation.arity());
 	}
+	@Override
+	public String toString() {
+		return "[Predicate: " + getName().getValue() + "]";
+	}
 }

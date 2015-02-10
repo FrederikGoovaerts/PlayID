@@ -12,6 +12,11 @@ public class GdlConstantDeclaration implements IGdlTermDeclaration {
 	public GdlConstant getConstant() {
 		return constant;
 	}
+	
+	@Override
+	public String toString() {
+		return "[Constant: " + constant.getValue() + "]";
+	}
 
 	@Override
 	public int hashCode() {

@@ -39,6 +39,7 @@ import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.util.CollectionPrinter;
 import fodot.util.FormulaUtil;
 import fodot.util.NameUtil;
 
@@ -98,7 +99,7 @@ public class GdlTypeIdentifier {
 		registerDynamicPredicate(legalPred);
 		registerDynamicPredicate(terminalPred);
 		registerDynamicPredicate(goalPred);
-		
+
 		defaultPredicates = Arrays.asList(distinctPred, doesPred, goalPred, initPred, legalPred, nextPred, rolePred, terminalPred, truePred);
 		unfilledDefaultPredicates = Arrays.asList(distinctPred, initPred, nextPred, truePred);
 	}
@@ -170,7 +171,7 @@ public class GdlTypeIdentifier {
 				updateArgumentListArgumentType(predicate, i, argArgumentTypes.get(i));
 			}
 		}
-		
+
 		if (lockedTypes) {
 			argumentLists.get(predicate).lockTypes();
 		}
@@ -183,9 +184,6 @@ public class GdlTypeIdentifier {
 	 *  Adding occurrences of elements.
 	 *  This should be done by a visitor.
 	 ***********************************************/
-	//TODO enkel term occurrence tracking, niet specifiek subklasse. Ook maar twee mappings: terms en argumentlist mappings
-
-
 	private void addTermOccurrence(IGdlArgumentListDeclaration directParent, int argumentIndex, IGdlTermDeclaration decl) {		
 		//Initialize list if first occurrence of constant
 		if (terms.get(decl) == null) {
@@ -199,7 +197,7 @@ public class GdlTypeIdentifier {
 
 		//Edit typing if necessary
 		FodotType foundType = argumentLists.get(directParent).getArgumentType(argumentIndex);
-		if (!foundType.equals(unfilledType)) {
+		if (!foundType.equals(unfilledType) && !foundType.containsSupertype(FodotType.INTEGER)) {
 			updateTermType(decl, foundType);
 		}
 	}
@@ -229,7 +227,7 @@ public class GdlTypeIdentifier {
 	}
 
 	private void addArgumentListOccurrence(IGdlArgumentListDeclaration declaration) {
-		if (argumentLists.get(declaration) == null) {
+		if (!argumentLists.containsKey(declaration)) {
 			initArgumentList(declaration);
 		}		
 	}
@@ -298,19 +296,19 @@ public class GdlTypeIdentifier {
 
 		//What if it already has a type?
 		if (!data.getType().equals(unfilledType) && !data.getType().equals(foundType)) {
-			//TODO: add to both domains OR make a type that's a subtype of both, we'll see!
-			throw new GdlTypeIdentificationError("Type collision: \nOld: " + data.getType() + "\nNew: " + foundType);
+			throw new GdlTypeIdentificationError("Type collision in "+ declaration +" \nOld: " + data.getType() + "\nNew: " + foundType);
 		}
 
-		//Set the new type
-		data.setType(foundType);
-
 		//Constants can't push scoretype updates.
-		if (! ((declaration instanceof GdlConstantDeclaration) && data.getType().equals(scoreType) ) ) {
+		if (!data.getType().equals(scoreType) ) {
+			//Set the new type
+			data.setType(foundType);
+
 			//Update all occurrences
 			for (GdlTermOccurrence occ : data.getOccurences()) {
 				IGdlArgumentListDeclaration parent = occ.getDirectParent();
 				if (!argumentLists.get(parent).getArgumentType(occ.getArgumentIndex()).equals(foundType)) {
+					System.out.println("::)"+declaration + " :: " + foundType);
 					updateArgumentListArgumentType( parent, occ.getArgumentIndex(), foundType);		
 				}
 			}		
@@ -335,14 +333,14 @@ public class GdlTypeIdentifier {
 		if (!argumentLists.containsKey(declaration)) {
 			initArgumentList(declaration);
 		}
-		
+
 		GdlArgumentListData data = argumentLists.get(declaration);
-		
+
 		//Don't update typelocked things
 		if (data.isTypeLocked()) {
 			return;
 		}
-		
+
 		//What if it already has a type?
 		if (!data.getArgumentType(argumentNr).equals(unfilledType)) {
 			throw new GdlTypeIdentificationError("Type collision in " + data);
@@ -352,9 +350,11 @@ public class GdlTypeIdentifier {
 		data.setArgumentType(argumentNr, foundType);
 
 		//Update all occurred arguments
-		for (IGdlTermDeclaration decl : data.getArgumentOccurrences(argumentNr)) {
-			if (!terms.get(decl).getType().equals(foundType)) {
-				updateTermType(decl, foundType);
+		for (IGdlTermDeclaration term : data.getArgumentOccurrences(argumentNr)) {
+			if (!terms.get(term).getType().equals(foundType)) {
+				if (!foundType.containsSupertype(FodotType.INTEGER)) {
+					updateTermType(term, foundType);
+				}
 			}
 		}
 
@@ -388,17 +388,17 @@ public class GdlTypeIdentifier {
 		for (IGdlTermDeclaration term : terms.keySet()) {
 			GdlTermData data = terms.get(term);
 			if (data.getType().equals(unfilledType)) {
-				//				updateConstantType(constant, fillType);
-				data.setType(fillType);
+				updateTermType(term, fillType);
+				//				data.setType(fillType);
 			}
 		}
 
 		//Predicate arguments to all
-		for (IGdlArgumentListDeclaration predicate : argumentLists.keySet()) {
-			GdlArgumentListData data = argumentLists.get(predicate);
+		for (IGdlArgumentListDeclaration argumentList : argumentLists.keySet()) {
+			GdlArgumentListData data = argumentLists.get(argumentList);
 			for (int i = 0; i < data.getAmountOfArguments(); i++) {
 				if (data.getArgumentType(i).equals(unfilledType)) {
-					//					updatePredicateArgumentType(predicate, i, fillType);
+					//					updateArgumentListArgumentType(argumentList, i, fillType);
 					if (!data.isTypeLocked()) {
 						data.setArgumentType(i, fillType);
 					}
@@ -463,7 +463,7 @@ public class GdlTypeIdentifier {
 
 				constantsMap, variablesPerRule,
 				functionDeclarations, predicateDeclarations,
-				
+
 				this.dynamicPredicates);
 
 		System.out.println(vocabulary.toString());

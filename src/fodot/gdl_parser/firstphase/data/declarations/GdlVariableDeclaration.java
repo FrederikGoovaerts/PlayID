@@ -30,6 +30,10 @@ public class GdlVariableDeclaration implements IGdlTermDeclaration {
 	}
 
 	@Override
+	public String toString() {
+		return "[Variable: " + getVariable().getName() + "]";
+	}
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

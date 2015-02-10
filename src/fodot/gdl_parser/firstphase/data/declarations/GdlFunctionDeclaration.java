@@ -6,4 +6,8 @@ public class GdlFunctionDeclaration extends GdlArgumentListDeclaration implement
 	public GdlFunctionDeclaration(GdlFunction function) {
 		super(function.getName(), function.arity());
 	}
+	@Override
+	public String toString() {
+		return "[Function: " + getName().getValue() + "]";
+	}
 }
