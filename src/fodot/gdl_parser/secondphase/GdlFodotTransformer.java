@@ -576,7 +576,6 @@ public class GdlFodotTransformer implements GdlTransformer {
 						player,
 						actionTerm
 						);
-
 		FodotPredicate doPred = 
 				createPredicate(
 						this.getDoPredicateDeclaration(),

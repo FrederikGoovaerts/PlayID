@@ -17,7 +17,6 @@ import org.ggp.base.util.gdl.grammar.GdlRule;
 import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
-import org.python.antlr.op.IsDerived;
 
 import fodot.exceptions.gdl.GdlTypeIdentificationError;
 import fodot.gdl_parser.GdlTransformer;

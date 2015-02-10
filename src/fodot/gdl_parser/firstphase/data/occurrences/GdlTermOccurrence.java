@@ -2,7 +2,7 @@ package fodot.gdl_parser.firstphase.data.occurrences;
 
 import fodot.gdl_parser.firstphase.data.declarations.IGdlArgumentListDeclaration;
 
-public abstract class GdlTermOccurrence implements IGdlTermOccurrence {
+public class GdlTermOccurrence implements IGdlTermOccurrence {
 	private IGdlArgumentListDeclaration directParent;
 	private int argumentIndex;
 
