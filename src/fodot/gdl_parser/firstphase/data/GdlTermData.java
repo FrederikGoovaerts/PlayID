@@ -7,7 +7,7 @@ import java.util.Set;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlTermOccurrence;
 import fodot.objects.vocabulary.elements.FodotType;
 
-public class GdlTermData {
+public class GdlTermData implements IGdlTermData {
 	private FodotType type;
 	private Set<GdlTermOccurrence> occurrences = new HashSet<GdlTermOccurrence>();
 	
@@ -27,7 +27,7 @@ public class GdlTermData {
 		return occurrences;
 	}
 	
-	public void addOccurences(GdlTermOccurrence occurrence) {
+	public void addOccurence(GdlTermOccurrence occurrence) {
 		this.occurrences.add(occurrence);
 	}
 }

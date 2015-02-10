@@ -10,7 +10,6 @@ import fodot.objects.vocabulary.elements.FodotType;
 public class GdlPredicateData extends GdlArgumentListData {
 
 	private List<GdlPredicateOccurrence> occurrences = new ArrayList<GdlPredicateOccurrence>();
-	private boolean isDynamic = false;
 	private boolean typesLocked = false;
 	
 	public GdlPredicateData(List<FodotType> argArgumentTypes, boolean argTypesLocked) {

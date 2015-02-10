@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fodot.exceptions.gdl.GdlTypeIdentificationError;
 import fodot.gdl_parser.firstphase.data.declarations.IGdlTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
-public abstract class GdlArgumentListData implements IGdlArgumentListData {
+public class GdlArgumentListData implements IGdlArgumentListData {
 	private List<FodotType> argumentTypes;
 	private Map<Integer, Set<IGdlTermDeclaration>> argumentOccurrences = new HashMap<Integer, Set<IGdlTermDeclaration>>();
+	private boolean typeLocked;
 	
 	public GdlArgumentListData(List<FodotType> argumentTypes) {
 		super();
@@ -28,7 +30,16 @@ public abstract class GdlArgumentListData implements IGdlArgumentListData {
 		return new ArrayList<FodotType>(argumentTypes);
 	}
 	public void setArgumentType(int index, FodotType type) {
+		if (isTypeLocked()) {
+			throw new GdlTypeIdentificationError("Can't update a locked type!");
+		}
 		this.argumentTypes.set(index, type);
+	}
+	public void lockTypes() {
+		this.typeLocked = true;
+	}
+	public boolean isTypeLocked() {
+		return this.typeLocked;
 	}
 	public void addArgumentType(FodotType argType) {
 		this.argumentTypes.add(argType);
@@ -36,6 +47,10 @@ public abstract class GdlArgumentListData implements IGdlArgumentListData {
 	public int getAmountOfArguments() {
 		return argumentTypes.size();
 	}
+	
+	/**********************************************
+	 *  Occurrences
+	 ***********************************************/
 	@Override
 	public void addArgumentOccurrence(int i, IGdlTermDeclaration term) {
 		argumentOccurrences.get(i).add(term);		
@@ -44,4 +59,5 @@ public abstract class GdlArgumentListData implements IGdlArgumentListData {
 	public Collection<IGdlTermDeclaration>  getArgumentOccurrences(int index) {
 		return argumentOccurrences.get(index);
 	}
+	/**********************************************/
 }

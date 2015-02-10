@@ -13,5 +13,5 @@ public interface IGdlArgumentListData {
 	void setArgumentType(int index, FodotType type);
 	void addArgumentOccurrence(int i, IGdlTermDeclaration term);
 	Collection<? extends IGdlTermDeclaration> getArgumentOccurrences(int i);
-	Collection<? extends GdlArgumentListOccurrence> getOccurences();
+//	Collection<? extends GdlArgumentListOccurrence> getOccurences();
 }
