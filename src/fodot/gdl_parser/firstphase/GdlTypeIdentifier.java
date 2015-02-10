@@ -83,7 +83,7 @@ public class GdlTypeIdentifier {
 	private GdlPredicateDeclaration truePred = new GdlPredicateDeclaration ( GdlPool.getConstant("true"), 1);
 
 	private List<GdlPredicateDeclaration> defaultPredicates;
-	private List<GdlPredicateDeclaration> unfilledPredicates;
+	private List<GdlPredicateDeclaration> unfilledDefaultPredicates;
 
 	private void initDefaultPredicates() {
 		initPredicate(distinctPred,	Arrays.asList(unfilledType, unfilledType),	true);
@@ -96,12 +96,12 @@ public class GdlTypeIdentifier {
 		initPredicate(terminalPred,	new ArrayList<FodotType>(),					true);
 		initPredicate(truePred,		Arrays.asList(unfilledType),				true);
 
-		makeDynamic(doesPred);
-		makeDynamic(legalPred);
-		makeDynamic(terminalPred);
+		registerDynamicPredicate(doesPred);
+		registerDynamicPredicate(legalPred);
+		registerDynamicPredicate(terminalPred);
 
 		defaultPredicates = Arrays.asList(distinctPred, doesPred, goalPred, initPred, legalPred, nextPred, rolePred, terminalPred, truePred);
-		unfilledPredicates = Arrays.asList(distinctPred, initPred, nextPred, truePred);
+		unfilledDefaultPredicates = Arrays.asList(distinctPred, initPred, nextPred, truePred);
 	}
 
 	//GETTERS
@@ -137,8 +137,8 @@ public class GdlTypeIdentifier {
 		return defaultPredicates;
 	}
 
-	public List<GdlPredicateDeclaration> getUnfilledPredicates() {
-		return unfilledPredicates;
+	public List<GdlPredicateDeclaration> getUnfilledDefaultPredicates() {
+		return unfilledDefaultPredicates;
 	}
 	/**********************************************/
 
@@ -193,15 +193,6 @@ public class GdlTypeIdentifier {
 	}
 	/**********************************************/
 
-	//TODO remove
-	private FodotType getArgumentType(IGdlArgumentListDeclaration decl,
-			int argumentIndex) {
-		if (argumentLists.containsKey(decl)) {
-			return argumentLists.get(decl).getArgumentType(argumentIndex);
-		}
-		throw new GdlTypeIdentificationError("Given declaration isn't a known predicate or function:" + decl);
-	}
-
 
 
 	/**********************************************
@@ -211,9 +202,7 @@ public class GdlTypeIdentifier {
 	//TODO enkel term occurrence tracking, niet specifiek subklasse. Ook maar twee mappings: terms en argumentlist mappings
 
 
-	private void addTermOccurrence(IGdlArgumentListDeclaration directParent, int argumentIndex, IGdlTermDeclaration decl) {
-		FodotType foundType = getArgumentType(directParent, argumentIndex);
-		
+	private void addTermOccurrence(IGdlArgumentListDeclaration directParent, int argumentIndex, IGdlTermDeclaration decl) {		
 		//Initialize list if first occurrence of constant
 		if (terms.get(decl) == null) {
 			initTerm(decl);
@@ -222,8 +211,10 @@ public class GdlTypeIdentifier {
 		//Add occurrences
 		terms.get(decl).addOccurence( new GdlTermOccurrence(directParent, argumentIndex) );
 		argumentLists.get(directParent).addArgumentOccurrence(argumentIndex, decl);
+		
 
 		//Edit typing if necessary
+		FodotType foundType = argumentLists.get(directParent).getArgumentType(argumentIndex);
 		if (!foundType.equals(unfilledType)) {
 			updateTermType(decl, foundType);
 		}
@@ -259,35 +250,44 @@ public class GdlTypeIdentifier {
 		}		
 	}
 
-	public void makeRuleDynamic(GdlRule rule) {
+	/**********************************************
+	 *  Time dependent rules
+	 ***********************************************/
+	public void registerTimeDependent(GdlRule rule) {
 		dynamicRules.add(rule);
 	}
 
-	public boolean isDynamic(GdlRule rule) {
+	public boolean isTimeDependentRule(GdlRule rule) {
 		return dynamicRules.contains(rule);
 	}
-
-	public void makePredicateDynamic(GdlRelation predicate) {
-		makeDynamic(new GdlPredicateDeclaration(predicate));
+	/**********************************************/
+	
+	
+	/**********************************************
+	 *  Dynamic predicates
+	 ***********************************************/
+	public void registerDynamicPredicate(GdlRelation predicate) {
+		registerDynamicPredicate(new GdlPredicateDeclaration(predicate));
 	}
 
-	public void makeDynamic(GdlPredicateDeclaration predicate) {
+	public void registerDynamicPredicate(GdlPredicateDeclaration predicate) {
 		if (!argumentLists.containsKey(predicate)) {
 			initPredicate(predicate);
 		}
 		dynamicPredicates.add(predicate);		
 	}
 
-	public boolean isDynamic(GdlRelation predicate) {
-		return isDynamic(new GdlPredicateDeclaration(predicate));
+	public boolean isDynamicPredicate(GdlRelation predicate) {
+		return isDynamicPredicate(new GdlPredicateDeclaration(predicate));
 	}
 
-	public boolean isDynamic(GdlPredicateDeclaration predicate) {
+	public boolean isDynamicPredicate(GdlPredicateDeclaration predicate) {
 		if (!argumentLists.containsKey(predicate)) {
 			initPredicate(predicate);
 		}
 		return dynamicPredicates.contains(predicate);
 	}
+	/**********************************************/
 
 	/**********************************************/
 
@@ -487,7 +487,7 @@ public class GdlTypeIdentifier {
 		}
 
 		for (IGdlArgumentListDeclaration p : argumentLists.keySet()) {
-			if (!getUnfilledPredicates().contains(p)) {
+			if (!getUnfilledDefaultPredicates().contains(p)) {
 				GdlArgumentListData data = argumentLists.get(p);
 				if (p instanceof GdlPredicateDeclaration) {
 					GdlPredicateDeclaration pd = (GdlPredicateDeclaration) p;

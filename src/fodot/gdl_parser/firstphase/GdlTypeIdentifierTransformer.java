@@ -66,7 +66,7 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 		visitPredicateArguments(null, argumentRelation);
 
 		//Make argument dynamic
-		getIdentifier().makePredicateDynamic(argumentRelation);
+		getIdentifier().registerDynamicPredicate(argumentRelation);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 		visitPredicateArguments(rule, argumentRelation);
 
 		//Make argument dynamic
-		getIdentifier().makePredicateDynamic(argumentRelation);
+		getIdentifier().registerDynamicPredicate(argumentRelation);
 
 		visitRuleBody(rule);
 	}
@@ -126,8 +126,8 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 		GdlRelation relation = convertToPredicate(rule.getHead());
 
 		//If the head is dynamic, then so is the rule
-		if (getIdentifier().isDynamic(relation)) {
-			getIdentifier().makeRuleDynamic(rule);
+		if (getIdentifier().isDynamicPredicate(relation)) {
+			getIdentifier().registerTimeDependent(rule);
 		}
 		
 		getIdentifier().addPredicateOccurrence(rule, relation);
@@ -135,8 +135,8 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 		visitRuleBody(rule);
 	
 		//If the body turned out to be dynamic, then so is the head
-		if (getIdentifier().isDynamic(rule)) {
-			getIdentifier().makePredicateDynamic(relation);
+		if (getIdentifier().isTimeDependentRule(rule)) {
+			getIdentifier().registerDynamicPredicate(relation);
 		}
 		
 	}
@@ -207,8 +207,8 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 			} else {
 				getIdentifier().addPredicateOccurrence(rule, predicate);
 				visitPredicateArguments(rule, predicate);
-				if (getIdentifier().isDynamic(predicate)) {
-					getIdentifier().makeRuleDynamic(rule);
+				if (getIdentifier().isDynamicPredicate(predicate)) {
+					getIdentifier().registerTimeDependent(rule);
 				}
 			}
 		}
@@ -216,8 +216,8 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 			GdlRelation innerPredicate = convertToPredicate(predicate.get(0));
 			visitRelation(innerPredicate);
 			
-			getIdentifier().makePredicateDynamic(innerPredicate);
-			getIdentifier().makeRuleDynamic(rule);
+			getIdentifier().registerDynamicPredicate(innerPredicate);
+			getIdentifier().registerTimeDependent(rule);
 			
 		}
 		private void visitProposition(GdlProposition proposition) {
@@ -228,8 +228,8 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 			visitRelation(relation);
 			
 			//Make dynamic
-			getIdentifier().makePredicateDynamic(relation);
-			getIdentifier().makeRuleDynamic(rule);
+			getIdentifier().registerDynamicPredicate(relation);
+			getIdentifier().registerTimeDependent(rule);
 		}
 
 	}
