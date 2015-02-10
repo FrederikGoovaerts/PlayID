@@ -88,6 +88,7 @@ public class GdlTypeIdentifier {
 	private GdlPredicateDeclaration truePred = new GdlPredicateDeclaration ( GdlPool.getConstant("true"), 1);
 
 	private List<GdlPredicateDeclaration> defaultPredicates;
+	private List<GdlPredicateDeclaration> unfilledPredicates;
 
 	private void initDefaultPredicates() {
 		initPredicate(distinctPred,	Arrays.asList(unfilledType, unfilledType),	true);
@@ -101,8 +102,10 @@ public class GdlTypeIdentifier {
 		initPredicate(truePred,		Arrays.asList(unfilledType),				true);
 
 		makeDynamic(doesPred);
+		makeDynamic(legalPred);
 
 		defaultPredicates = Arrays.asList(distinctPred, doesPred, goalPred, initPred, legalPred, nextPred, rolePred, terminalPred, truePred);
+		unfilledPredicates = Arrays.asList(distinctPred, initPred, nextPred, terminalPred, truePred);
 	}
 
 	//GETTERS
@@ -136,6 +139,10 @@ public class GdlTypeIdentifier {
 
 	public List<GdlPredicateDeclaration> getDefaultPredicates() {
 		return defaultPredicates;
+	}
+
+	public List<GdlPredicateDeclaration> getUnfilledPredicates() {
+		return unfilledPredicates;
 	}
 	/**********************************************/
 
@@ -348,22 +355,25 @@ public class GdlTypeIdentifier {
 		//Set the new type
 		data.setType(foundType);
 
-		//Update all occurrences
-		for (IGdlTermOccurrence occ : data.getOccurences()) {
-			IGdlArgumentListDeclaration parent = occ.getDirectParent();
-			if (parent instanceof GdlPredicateDeclaration) {
-				GdlPredicateDeclaration decl = (GdlPredicateDeclaration) parent;
-				if (!predicates.get(decl).getArgumentType(occ.getArgumentIndex()).equals(foundType)) {
-					updatePredicateArgumentType( decl, occ.getArgumentIndex(), foundType);
-				}
-			} else if (parent instanceof GdlFunctionDeclaration) {
-				GdlFunctionDeclaration decl = (GdlFunctionDeclaration) parent;
-				if (!functions.get(decl).getArgumentType(occ.getArgumentIndex()).equals(foundType)) {
-					updateFunctionArgumentType( decl, occ.getArgumentIndex(), foundType);		
-				}
-			} else {
-				throw new GdlTypeIdentificationError("Terms should appear in anything else but functions and predicates, right?");
-			}		
+		//Constants can't push scoretype updates.
+		if (! ((data instanceof GdlConstantData) && ((GdlConstantData)data).getType().equals(scoreType) ) ) {
+			//Update all occurrences
+			for (IGdlTermOccurrence occ : data.getOccurences()) {
+				IGdlArgumentListDeclaration parent = occ.getDirectParent();
+				if (parent instanceof GdlPredicateDeclaration) {
+					GdlPredicateDeclaration decl = (GdlPredicateDeclaration) parent;
+					if (!predicates.get(decl).getArgumentType(occ.getArgumentIndex()).equals(foundType)) {
+						updatePredicateArgumentType( decl, occ.getArgumentIndex(), foundType);
+					}
+				} else if (parent instanceof GdlFunctionDeclaration) {
+					GdlFunctionDeclaration decl = (GdlFunctionDeclaration) parent;
+					if (!functions.get(decl).getArgumentType(occ.getArgumentIndex()).equals(foundType)) {
+						updateFunctionArgumentType( decl, occ.getArgumentIndex(), foundType);		
+					}
+				} else {
+					throw new GdlTypeIdentificationError("Terms should appear in anything else but functions and predicates, right?");
+				}		
+			}
 		}
 	}
 	/**********************************************/
@@ -547,7 +557,7 @@ public class GdlTypeIdentifier {
 		}
 
 		for (GdlPredicateDeclaration p : predicates.keySet()) {
-			if (!getDefaultPredicates().contains(p)) {
+			if (!getUnfilledPredicates().contains(p)) {
 				GdlPredicateData data = predicates.get(p);
 				FodotPredicateDeclaration pf = createPredicateDeclaration(
 						NameUtil.convertToValidPredicateName(p.getName().getValue()),

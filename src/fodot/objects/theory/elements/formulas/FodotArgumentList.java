@@ -84,7 +84,7 @@ public abstract class FodotArgumentList extends FodotElement implements IFodotSe
 			//Check if the types are "linked"
 			if (!givenType.isASubtypeOf(expectedType)
 					&& !expectedType.isASubtypeOf(givenType)) {
-				throw new InvalidTypeException("Argument " + i + " of " + arguments.size() + " in " + getName(), arguments.get(i).getType(), argumentTypes.get(i));
+				throw new InvalidTypeException("Argument " + (i+1) + " of " + arguments.size() + " in " + getName(), arguments.get(i).getType(), argumentTypes.get(i));
 			}
 		}
 	}
