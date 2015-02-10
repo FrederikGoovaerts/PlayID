@@ -38,9 +38,9 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 			FodotType scoreType,
 			FodotType allType,
 			Map<GdlConstant, FodotConstant> constants,
+			Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule,
 			Map<GdlFunctionDeclaration, FodotFunctionDeclaration> functionDeclarations,
 			Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations,
-			Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule,
 			Set<GdlPredicateDeclaration> dynamicPredicates) {
 		super();
 		this.timeType = timeType;
