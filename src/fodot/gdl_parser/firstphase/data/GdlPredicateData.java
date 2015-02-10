@@ -46,17 +46,4 @@ public class GdlPredicateData extends GdlArgumentListData {
 		this.occurrences.add(occurrence);
 	}
 	/**********************************************/
-	
-	
-	/**********************************************
-	 *  Dynamic
-	 ***********************************************/
-	public void makeDynamic() {
-		this.isDynamic = true;
-	}
-	
-	public boolean isDynamic() {
-		return this.isDynamic;
-	}
-	/**********************************************/
 }

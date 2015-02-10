@@ -55,18 +55,19 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Data maps
 	 ***********************************************/
-	
+
 	//TODO delate:
 	private Map<GdlConstantDeclaration, GdlConstantData> constants = new HashMap<GdlConstantDeclaration, GdlConstantData>();
 	private Map<GdlVariableDeclaration, GdlVariableData> variables = new HashMap<GdlVariableDeclaration, GdlVariableData>();
 	private Map<GdlPredicateDeclaration, GdlPredicateData> predicates = new HashMap<GdlPredicateDeclaration, GdlPredicateData>();	
 	private Map<GdlFunctionDeclaration, GdlFunctionData> functions = new HashMap<GdlFunctionDeclaration, GdlFunctionData>();
-	
+
 	//new sets
 	private Map<IGdlTermDeclaration, IGdlTermData> terms = new HashMap<>();
 	private Map<IGdlArgumentListDeclaration, IGdlArgumentListData> argumentLists = new HashMap<>();
-	
-	private Set<GdlRule> dynamicRules = new HashSet<GdlRule>();
+
+	private Set<GdlPredicateDeclaration> dynamicPredicates = new HashSet<>();
+	private Set<GdlRule> dynamicRules = new HashSet<>();
 	/**********************************************/
 
 
@@ -111,9 +112,10 @@ public class GdlTypeIdentifier {
 
 		makeDynamic(doesPred);
 		makeDynamic(legalPred);
+		makeDynamic(terminalPred);
 
 		defaultPredicates = Arrays.asList(distinctPred, doesPred, goalPred, initPred, legalPred, nextPred, rolePred, terminalPred, truePred);
-		unfilledPredicates = Arrays.asList(distinctPred, initPred, nextPred, terminalPred, truePred);
+		unfilledPredicates = Arrays.asList(distinctPred, initPred, nextPred, truePred);
 	}
 
 	//GETTERS
@@ -306,11 +308,11 @@ public class GdlTypeIdentifier {
 	public void makeRuleDynamic(GdlRule rule) {
 		dynamicRules.add(rule);
 	}
-	
+
 	public boolean isDynamic(GdlRule rule) {
 		return dynamicRules.contains(rule);
 	}
-	
+
 	public void makePredicateDynamic(GdlRelation predicate) {
 		makeDynamic(new GdlPredicateDeclaration(predicate));
 	}
@@ -319,18 +321,18 @@ public class GdlTypeIdentifier {
 		if (!predicates.containsKey(predicate)) {
 			initPredicate(predicate);
 		}
-		predicates.get(predicate).makeDynamic();		
+		dynamicPredicates.add(predicate);		
 	}
 
 	public boolean isDynamic(GdlRelation predicate) {
 		return isDynamic(new GdlPredicateDeclaration(predicate));
 	}
-	
+
 	public boolean isDynamic(GdlPredicateDeclaration predicate) {
 		if (!predicates.containsKey(predicate)) {
 			initPredicate(predicate);
 		}
-		return predicates.get(predicate).isDynamic();
+		return dynamicPredicates.contains(predicate);
 	}
 
 	/**********************************************/
@@ -489,11 +491,9 @@ public class GdlTypeIdentifier {
 	 ***********************************************/
 	private void addTimeVariableToDynamicPredicates() {
 		//Add time variable to all dynamic predicates
-		for (GdlPredicateDeclaration predicate : predicates.keySet()) {
+		for (GdlPredicateDeclaration predicate : dynamicPredicates) {
 			GdlPredicateData data = predicates.get(predicate);
-			if (data.isDynamic()) {
-				data.addArgumentType(timeType);
-			}
+			data.addArgumentType(timeType);
 		}
 	}
 
@@ -568,7 +568,6 @@ public class GdlTypeIdentifier {
 		Map<GdlFunctionDeclaration, FodotFunctionDeclaration> functionDeclarations = new HashMap<GdlFunctionDeclaration, FodotFunctionDeclaration>();
 		Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations = new HashMap<GdlPredicateDeclaration, FodotPredicateDeclaration>();
 		Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule = new HashMap<GdlRule, Map<GdlVariable, FodotVariable>>();
-		Set<GdlPredicateDeclaration> dynamicPredicates = new HashSet<GdlPredicateDeclaration>();
 
 		//GENERATE SETS FOR GDLFODOTDATA
 		for (GdlConstantDeclaration c : constants.keySet()) {
@@ -593,13 +592,9 @@ public class GdlTypeIdentifier {
 						NameUtil.convertToValidPredicateName(p.getName().getValue()),
 						data.getArgumentTypes());
 				predicateDeclarations.put(p, pf);
-
-				if (data.isDynamic()) {
-					dynamicPredicates.add(p);
-				}
 			}
 		}		
-
+		
 		for (GdlVariableDeclaration var : variables.keySet()) {
 			GdlRule location = var.getLocation();
 			if (!variablesPerRule.containsKey(var.getLocation())) {
@@ -618,7 +613,7 @@ public class GdlTypeIdentifier {
 				this.scoreType, this.allType,
 
 				constantsMap, functionDeclarations, predicateDeclarations,
-				variablesPerRule, dynamicPredicates);
+				variablesPerRule, this.dynamicPredicates);
 
 		System.out.println(vocabulary.toString());
 

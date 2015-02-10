@@ -28,7 +28,7 @@ public class GdlParser {
 	 **************************************************************************/
 
 	public static void main(String[] args) {
-		File file = new File("resources/games/blocks.kif");
+		File file = new File("resources/games/ticTacToe.kif");
 		GdlParser test = new GdlParser(file);
 		test.run();
 	}
