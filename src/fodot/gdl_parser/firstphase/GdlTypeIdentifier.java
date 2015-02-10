@@ -35,7 +35,6 @@ import fodot.gdl_parser.firstphase.data.declarations.GdlVariableDeclaration;
 import fodot.gdl_parser.firstphase.data.declarations.IGdlArgumentListDeclaration;
 import fodot.gdl_parser.firstphase.data.declarations.IGdlTermDeclaration;
 import fodot.gdl_parser.firstphase.data.occurrences.GdlTermOccurrence;
-import fodot.gdl_parser.firstphase.data.occurrences.IGdlTermOccurrence;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotFunctionDeclaration;
@@ -328,7 +327,7 @@ public class GdlTypeIdentifier {
 		//Constants can't push scoretype updates.
 		if (! ((declaration instanceof GdlConstantDeclaration) && data.getType().equals(scoreType) ) ) {
 			//Update all occurrences
-			for (IGdlTermOccurrence occ : data.getOccurences()) {
+			for (GdlTermOccurrence occ : data.getOccurences()) {
 				IGdlArgumentListDeclaration parent = occ.getDirectParent();
 				if (!argumentLists.get(parent).getArgumentType(occ.getArgumentIndex()).equals(foundType)) {
 					updateFunctionArgumentType( parent, occ.getArgumentIndex(), foundType);		
