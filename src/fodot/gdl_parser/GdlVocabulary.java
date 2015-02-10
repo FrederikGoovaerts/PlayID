@@ -205,6 +205,11 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		builder.append(actionType.getDeclaration().toCode()+"\n");
 		builder.append(scoreType.getDeclaration().toCode()+"\n");
 		builder.append(allType.getDeclaration().toCode()+"\n");
+		builder.append("\n");
+		builder.append("Dynamic predicates: \n");
+		for (GdlPredicateDeclaration decl : dynamicPredicates) {
+			builder.append(predicateDeclarations.get(decl).toCode() + "\n");
+		}
 		builder.append("====================\n");
 		return builder.toString();
 	}

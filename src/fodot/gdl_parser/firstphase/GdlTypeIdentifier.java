@@ -59,6 +59,7 @@ public class GdlTypeIdentifier {
 	private Map<GdlVariableDeclaration, GdlVariableData> variables = new HashMap<GdlVariableDeclaration, GdlVariableData>();
 	private Map<GdlPredicateDeclaration, GdlPredicateData> predicates = new HashMap<GdlPredicateDeclaration, GdlPredicateData>();	
 	private Map<GdlFunctionDeclaration, GdlFunctionData> functions = new HashMap<GdlFunctionDeclaration, GdlFunctionData>();
+	private Set<GdlRule> dynamicRules = new HashSet<GdlRule>();
 	/**********************************************/
 
 
@@ -295,12 +296,34 @@ public class GdlTypeIdentifier {
 
 	}
 
-	public void makeDynamic(GdlRelation predicate) {
+	public void makeRuleDynamic(GdlRule rule) {
+		dynamicRules.add(rule);
+	}
+	
+	public boolean isDynamic(GdlRule rule) {
+		return dynamicRules.contains(rule);
+	}
+	
+	public void makePredicateDynamic(GdlRelation predicate) {
 		makeDynamic(new GdlPredicateDeclaration(predicate));
 	}
 
 	public void makeDynamic(GdlPredicateDeclaration predicate) {
+		if (!predicates.containsKey(predicate)) {
+			initPredicate(predicate);
+		}
 		predicates.get(predicate).makeDynamic();		
+	}
+
+	public boolean isDynamic(GdlRelation predicate) {
+		return isDynamic(new GdlPredicateDeclaration(predicate));
+	}
+	
+	public boolean isDynamic(GdlPredicateDeclaration predicate) {
+		if (!predicates.containsKey(predicate)) {
+			initPredicate(predicate);
+		}
+		return predicates.get(predicate).isDynamic();
 	}
 
 	/**********************************************/
