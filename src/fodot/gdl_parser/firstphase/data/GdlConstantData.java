@@ -22,11 +22,12 @@ public class GdlConstantData implements IGdlTermData {
 		this.type = type;
 	}
 	
+	@Override
 	public List<GdlConstantOccurrence> getOccurences() {
 		return occurrences;
 	}
 	
-	public void addOccurences(GdlConstantOccurrence occurrence) {
+	public void addOccurence(GdlConstantOccurrence occurrence) {
 		this.occurrences.add(occurrence);
 	}
 	

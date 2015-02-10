@@ -8,5 +8,5 @@ import fodot.objects.vocabulary.elements.FodotType;
 public interface IGdlTermData {
 	FodotType getType();
 	void setType(FodotType type);
-	public Collection<? extends IGdlTermOccurrence> getOccurences();
+	Collection<? extends IGdlTermOccurrence> getOccurences();
 }

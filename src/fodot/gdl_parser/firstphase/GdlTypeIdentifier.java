@@ -55,10 +55,17 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Data maps
 	 ***********************************************/
+	
+	//TODO delate:
 	private Map<GdlConstantDeclaration, GdlConstantData> constants = new HashMap<GdlConstantDeclaration, GdlConstantData>();
 	private Map<GdlVariableDeclaration, GdlVariableData> variables = new HashMap<GdlVariableDeclaration, GdlVariableData>();
 	private Map<GdlPredicateDeclaration, GdlPredicateData> predicates = new HashMap<GdlPredicateDeclaration, GdlPredicateData>();	
 	private Map<GdlFunctionDeclaration, GdlFunctionData> functions = new HashMap<GdlFunctionDeclaration, GdlFunctionData>();
+	
+	//new sets
+	private Map<IGdlTermDeclaration, IGdlTermData> terms = new HashMap<>();
+	private Map<IGdlArgumentListDeclaration, IGdlArgumentListData> argumentLists = new HashMap<>();
+	
 	private Set<GdlRule> dynamicRules = new HashSet<GdlRule>();
 	/**********************************************/
 
@@ -220,7 +227,7 @@ public class GdlTypeIdentifier {
 		if (constants.get(decl) == null) {
 			initConstant(new GdlConstantDeclaration(constant), givenType);
 		}
-		constants.get(decl).addOccurences( new GdlConstantOccurrence(directParent, argumentIndex) );
+		constants.get(decl).addOccurence( new GdlConstantOccurrence(directParent, argumentIndex) );
 		addArgumentOccurrence(directParent, argumentIndex, decl);
 
 		//Edit typing if necessary
