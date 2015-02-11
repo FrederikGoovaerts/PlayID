@@ -36,10 +36,10 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 			FodotType playerType,
 			FodotType actionType,
 			FodotType scoreType,
-			FodotType allType,
+			List<FodotType> otherTypes,
 			Map<GdlConstant, FodotConstant> constants,
 			Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule,
-			Map<GdlFunctionDeclaration, FodotFunctionDeclaration> functionDeclarations,
+			Map<GdlFunctionDeclaration, FodotTypeFunctionDeclaration> functionDeclarations,
 			Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations,
 			Set<GdlPredicateDeclaration> dynamicPredicates) {
 		super();
@@ -47,7 +47,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		this.playerType = playerType;
 		this.actionType = actionType;
 		this.scoreType = scoreType;
-		this.allType = allType;
+		this.otherTypes = otherTypes;
 		this.constants = constants;
 		this.functionDeclarations = functionDeclarations;
 		this.predicateDeclarations = predicateDeclarations;
@@ -64,7 +64,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	private FodotType playerType;
 	private FodotType actionType;
 	private FodotType scoreType;
-	private FodotType allType;
+	private List<FodotType> otherTypes;
 
 	public FodotType getTimeType() {
 		return timeType;
@@ -78,6 +78,12 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	public FodotType getScoreType() {
 		return scoreType;
 	}
+	public List<FodotType> getOtherType() {
+		return otherTypes;
+	}
+
+//TODO temporal solution: all type has to be removed.
+	private FodotType allType = new FodotType("All");
 	public FodotType getAllType() {
 		return allType;
 	}
@@ -89,7 +95,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	 ***********************************************/
 	//Translations
 	private Map<GdlConstant, FodotConstant> constants;
-	private Map<GdlFunctionDeclaration, FodotFunctionDeclaration> functionDeclarations;
+	private Map<GdlFunctionDeclaration, FodotTypeFunctionDeclaration> functionDeclarations;
 	private Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations;
 
 	//Info
@@ -103,8 +109,12 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	public Map<GdlVariable, FodotVariable> getVariables(GdlRule rule) {
 		return variablesPerRule.get(rule);
 	}
+	
+	public FodotVariable getVariable(GdlRule rule, GdlVariable variable) {
+		return getVariables(rule).get(variable);
+	}
 
-	public FodotFunctionDeclaration getFunctionDeclaration(GdlFunction function) {
+	public FodotTypeFunctionDeclaration getFunctionDeclaration(GdlFunction function) {
 		GdlFunctionDeclaration declaration = new GdlFunctionDeclaration(function);	
 		return functionDeclarations.get(declaration);
 	}
@@ -204,7 +214,9 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		builder.append(playerType.getDeclaration().toCode()+"\n");
 		builder.append(actionType.getDeclaration().toCode()+"\n");
 		builder.append(scoreType.getDeclaration().toCode()+"\n");
-		builder.append(allType.getDeclaration().toCode()+"\n");
+		for (FodotType t : otherTypes) {
+			builder.append(t.getDeclaration().toCode()+"\n");			
+		}
 		builder.append("====================\n");
 		return builder.toString();
 	}

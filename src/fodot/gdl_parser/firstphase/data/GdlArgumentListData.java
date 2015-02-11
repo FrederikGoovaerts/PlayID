@@ -3,7 +3,7 @@ package fodot.gdl_parser.firstphase.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +20,7 @@ public class GdlArgumentListData implements IGdlArgumentListData {
 		super();
 		this.argumentTypes = argumentTypes;
 		for (int i = 0; i < argumentTypes.size(); i++) {
-			argumentOccurrences.put(i, new HashSet<IGdlTermDeclaration>());
+			argumentOccurrences.put(i, new LinkedHashSet<IGdlTermDeclaration>());
 		}
 	}
 	public FodotType getArgumentType(int index) {
@@ -41,8 +41,8 @@ public class GdlArgumentListData implements IGdlArgumentListData {
 	public boolean isTypeLocked() {
 		return this.typeLocked;
 	}
-	public void addArgumentType(FodotType argType) {
-		this.argumentTypes.add(argType);
+	public void addArgumentType(int i, FodotType argType) {
+		this.argumentTypes.add(i, argType);
 	}
 	public int getAmountOfArguments() {
 		return argumentTypes.size();

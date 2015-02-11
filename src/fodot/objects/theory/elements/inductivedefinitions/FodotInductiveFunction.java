@@ -38,7 +38,9 @@ public class FodotInductiveFunction extends FodotElement implements IFodotInduct
 		FodotType expectedType = function.getDeclaration().getType();
 		if (!functionRes.getType().isASubtypeOf(expectedType)
 				&& !functionRes.getType().isASupertypeOf(expectedType)) {
-			throw new InvalidTypeException("In the returntype of the function in the inductive definition", functionRes.getType(), expectedType);
+			throw new InvalidTypeException(
+					"The returntype of the function '"+this+"' in the inductive definition",
+					functionRes.getType(), expectedType);
 		}
 		this.functionResult = functionRes;
 	}
@@ -91,6 +93,11 @@ public class FodotInductiveFunction extends FodotElement implements IFodotInduct
 		} else if (!functionResult.equals(other.functionResult))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "[ Inductive Function: "+toCode()+"]";
 	}
 
 	@Override

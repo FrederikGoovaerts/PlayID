@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.ggp.base.util.Pair;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
+import org.ggp.base.util.gdl.grammar.GdlFunction;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 import org.ggp.base.util.gdl.grammar.GdlSentence;
@@ -27,6 +28,7 @@ import fodot.exceptions.gdl.GdlTransformationException;
 import fodot.gdl_parser.FodotGameFactory;
 import fodot.gdl_parser.GdlTransformer;
 import fodot.gdl_parser.GdlVocabulary;
+import fodot.gdl_parser.firstphase.data.declarations.GdlPredicateDeclaration;
 import fodot.gdl_parser.secondphase.data.FodotCompoundData;
 import fodot.gdl_parser.secondphase.data.FodotNextData;
 import fodot.gdl_parser.util.LTCPool;
@@ -115,6 +117,26 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 
 	/*** End of Default Types subsection ***/
+
+	/**********************************************
+	 *  get GDL vocabulary info
+	 ***********************************************/
+	
+
+	/**********************************************/
+
+	public FodotPredicateDeclaration getPredicateDeclaration(GdlRelation relation) {
+		return getPredicate(new GdlPredicateDeclaration(relation));
+	}
+	
+	public FodotPredicateDeclaration getPredicate(GdlPredicateDeclaration gdlPredicateDeclaration) {
+		return getGdlVocabulary().getPredicateDeclaration(gdlPredicateDeclaration);
+	}
+	
+	public FodotTypeFunctionDeclaration getFunctionDeclaration(GdlFunction function) {
+		return getGdlVocabulary().getFunctionDeclaration(function);
+	}
+	
 
 	/*************************************
 	 * Roles
@@ -564,11 +586,11 @@ public class GdlFodotTransformer implements GdlTransformer {
 		if (playerGdlTerm instanceof GdlConstant) {
 			player = convertRawRole((GdlConstant) playerGdlTerm);
 		} else {
-			player = sentenceTrans.generateTerm(playerGdlTerm, getPlayerType());
+			player = sentenceTrans.generateTerm(playerGdlTerm);
 		}
 
 		GdlTerm actionGdlTerm = rule.getHead().get(1);
-		IFodotTerm actionTerm = sentenceTrans.generateTerm(actionGdlTerm, getActionType());
+		IFodotTerm actionTerm = sentenceTrans.generateTerm(actionGdlTerm);
 
 		List<IFodotTerm> doArguments =
 				Arrays.asList(
@@ -608,14 +630,14 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 		IFodotTerm playerTerm;
 		if (playerGdlTerm instanceof GdlVariable) {
-			playerTerm = sentenceTrans.generateTerm(playerGdlTerm, getPlayerType());	
+			playerTerm = sentenceTrans.generateTerm(playerGdlTerm);	
 		} else if (playerGdlTerm instanceof GdlConstant) {
 			playerTerm = convertRawRole((GdlConstant) playerGdlTerm);
 		} else {
 			throw new GdlTransformationException("Playerterm should probably only be constant or a variable.");
 		}
 
-		IFodotTerm scoreTerm = sentenceTrans.generateTerm(scoreGdlTerm, getScoreType());
+		IFodotTerm scoreTerm = sentenceTrans.generateTerm(scoreGdlTerm);
 
 		Pair<IFodotTerm, IFodotTerm> score = Pair.of(playerTerm, scoreTerm);
 

@@ -24,10 +24,6 @@ import fodot.gdl_parser.firstphase.data.declarations.GdlFunctionDeclaration;
 import fodot.gdl_parser.firstphase.data.declarations.GdlPredicateDeclaration;
 import fodot.gdl_parser.firstphase.data.declarations.IGdlArgumentListDeclaration;
 
-/* =======================================
- * ====== TRANSFORMER: THE VISITOR ======
- * ======================================= */
-
 /**
  * This class will be used to visit the relations and rules.
  * It will use the GdlRuleElementsVisitor to visit the rules deeper.
@@ -124,7 +120,6 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 	//Helper
 	private void visitRule(GdlRule rule) {
 		GdlRelation relation = convertToPredicate(rule.getHead());
-
 		//If the head is dynamic, then so is the rule
 		if (getIdentifier().isDynamicPredicate(relation)) {
 			getIdentifier().registerTimeDependent(rule);
