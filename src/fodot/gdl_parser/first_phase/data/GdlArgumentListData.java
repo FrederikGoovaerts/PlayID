@@ -11,7 +11,7 @@ import java.util.Set;
 import fodot.exceptions.gdl.GdlTypeIdentificationError;
 import fodot.gdl_parser.first_phase.data.declarations.IGdlTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
-public class GdlArgumentListData implements IGdlArgumentListData {
+public class GdlArgumentListData {
 	private List<FodotType> argumentTypes;
 	private Map<Integer, Set<IGdlTermDeclaration>> argumentOccurrences = new HashMap<Integer, Set<IGdlTermDeclaration>>();
 	private boolean typeLocked;
@@ -51,11 +51,9 @@ public class GdlArgumentListData implements IGdlArgumentListData {
 	/**********************************************
 	 *  Occurrences
 	 ***********************************************/
-	@Override
 	public void addArgumentOccurrence(int i, IGdlTermDeclaration term) {
 		argumentOccurrences.get(i).add(term);		
 	}
-	@Override
 	public Collection<IGdlTermDeclaration>  getArgumentOccurrences(int index) {
 		return argumentOccurrences.get(index);
 	}
