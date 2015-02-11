@@ -30,12 +30,20 @@ public class GdlTermData {
 		}
 	}
 
+	public void removeType(FodotType argType) {
+		this.types.remove(argType);
+	}
+	
 	public boolean hasOnlyType(FodotType argType) {
 		return types.size() == 1 && hasType(argType);
 	}
 	
 	public boolean hasType(FodotType argType) {
 		return types.contains(argType);
+	}
+	
+	public boolean hasMultipleTypes() {
+		return types.size() > 1;
 	}
 
 	public boolean canHaveMultipleTypes() {
