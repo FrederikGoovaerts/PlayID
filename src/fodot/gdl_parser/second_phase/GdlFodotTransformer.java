@@ -111,10 +111,6 @@ public class GdlFodotTransformer implements GdlTransformer {
 		return getGdlVocabulary().getScoreType();
 	}
 
-	public FodotType getAllType() {
-		return getGdlVocabulary().getAllType();
-	}
-
 
 	/*** End of Default Types subsection ***/
 
@@ -680,8 +676,6 @@ public class GdlFodotTransformer implements GdlTransformer {
 				new GdlPredicateDeclaration(predSentence.getName(), predSentence.arity());
 		FodotPredicateDeclaration fodotDeclaration =
 				getGdlVocabulary().getPredicateDeclaration(gdlDeclaration);
-
-		System.out.println(predSentence + ", " + fodotDeclaration);
 
 		FodotPredicate compoundStaticPred = sentenceTrans.generateRelation(GdlPool.getRelation(predSentence.getName(), predSentence.getBody()));
 		//generate IFodotFormula from the body

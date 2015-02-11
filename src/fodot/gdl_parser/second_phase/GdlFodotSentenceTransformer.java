@@ -321,12 +321,6 @@ public class GdlFodotSentenceTransformer {
 		return timeVariable;
 	}
 
-	public FodotVariable createAllVariable() {
-		FodotVariable result = createVariable("v", trans.getAllType(), variableReg.getRegisteredVariables());
-		variableReg.registerVariable(result);
-		return result;
-	}
-
 	public FodotVariable createActionVariable() {
 		FodotVariable result = createVariable("act", trans.getActionType(), variableReg.getRegisteredVariables());
 		variableReg.registerVariable(result);

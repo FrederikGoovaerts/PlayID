@@ -82,12 +82,6 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	public Collection<FodotType> getOtherTypes() {
 		return otherTypes;
 	}
-
-	//TODO temporal solution: all type has to be removed.
-	private FodotType allType = new FodotType("All");
-	public FodotType getAllType() {
-		return allType;
-	}
 	/**********************************************/
 
 

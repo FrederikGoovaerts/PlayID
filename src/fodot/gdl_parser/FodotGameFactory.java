@@ -179,17 +179,6 @@ public class FodotGameFactory {
 
 
 		/**
-		 * nodig: alle constanten
-		 * resultaat:
-		 * type Unfilled constructed from {*alle constanten*}
-		 */
-		toReturn.addElement(
-				createTypeDeclaration(
-						source.getAllType()
-						)
-				);
-
-		/**
 		 * Add all other found types
 		 */
 		for (FodotType type : source.getGdlVocabulary().getOtherTypes()) {
@@ -253,7 +242,7 @@ public class FodotGameFactory {
 				//            toReturn.addElement(this.pool.getTimedVerionOf(declaration));
 				toReturn.addElement(this.pool.getInitialOf(declaration));
 				toReturn.addElement(this.pool.getCauseOf(declaration));
-				toReturn.addElement(this.pool.getCauseNotOf(declaration));
+//				toReturn.addElement(this.pool.getCauseNotOf(declaration));
 				toReturn.addElement(createBlankLines(1));
 			}
 		}
