@@ -480,7 +480,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		FodotPredicateDeclaration fodotPredicate = processPredicate(predicate);
 
 		List<IFodotTypeEnumerationElement> initValues =
-				extractEnumerationList(predicate, removeTimeTypes(fodotPredicate.getArgumentTypes()));
+				extractEnumerationList(predicate, FormulaUtil.removeTypes(fodotPredicate.getArgumentTypes(), getTimeType()));
 
 		this.addInitialValue(fodotPredicate, new FodotPredicateEnumerationElement(initValues));
 	}
@@ -515,7 +515,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		}
 
 
-		List<IFodotTypeEnumerationElement> staticValues = extractEnumerationList(relation, removeTimeTypes(pred.getArgumentTypes()));
+		List<IFodotTypeEnumerationElement> staticValues = extractEnumerationList(relation, FormulaUtil.removeTypes(pred.getArgumentTypes(), getTimeType()));
 
 		this.addStaticValue(pred, new FodotPredicateEnumerationElement(staticValues));
 
@@ -543,7 +543,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 						createTypeFunctionEnumerationElement(
 								(FodotTypeFunctionDeclaration) func.getDeclaration(),
 								extractEnumerationList(sentence.get(i).toSentence(), 
-										removeTimeTypes(func.getDeclaration().getArgumentTypes())) ));				
+										FormulaUtil.removeTypes(func.getDeclaration().getArgumentTypes(), getTimeType())) ));				
 			} else {
 				throw new GdlTransformationException("Not a valid argument in a predicate: " + term
 						+ " [" + term.getClass().getSimpleName() + "]");
@@ -777,14 +777,5 @@ public class GdlFodotTransformer implements GdlTransformer {
 				toReturn.add(var);
 		}
 		return toReturn;
-	}
-
-
-	public List<FodotType> removeTimeTypes(List<FodotType> list) {
-		List<FodotType> result = new ArrayList<FodotType>(list);
-		while (result.contains(getTimeType())) {
-			result.remove(getTimeType());
-		}
-		return result;
 	}
 }

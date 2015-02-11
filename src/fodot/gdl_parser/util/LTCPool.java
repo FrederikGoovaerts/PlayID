@@ -2,6 +2,7 @@ package fodot.gdl_parser.util;
 
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.util.FormulaUtil;
 import fodot.util.NameUtil;
 import static fodot.objects.FodotElementBuilder.*;
 
@@ -126,11 +127,11 @@ public class LTCPool {
     public FodotPredicateDeclaration getInitialOf(FodotPredicateDeclaration pred){
         if(pred == null)
             throw new IllegalArgumentException();
-        if(!fluentPredicates.containsKey(pred.getName()))
-            throw new IllegalArgumentException();
+//        if(!fluentPredicates.containsKey(pred.getName()))
+//            throw new IllegalArgumentException();
         if(!initials.containsKey(pred)) {
             initials.put(pred,createPredicateDeclaration("I_" + pred.getName(),
-                    pred.getArgumentTypes()));
+            		FormulaUtil.removeTypes(pred.getArgumentTypes(), timeType)));
         }
         return this.initials.get(pred);
     }
@@ -138,13 +139,13 @@ public class LTCPool {
     public FodotPredicateDeclaration getCauseOf(FodotPredicateDeclaration pred){
         if(pred == null)
             throw new IllegalArgumentException();
-        if(!fluentPredicates.containsKey(pred.getName()))
-            throw new IllegalArgumentException();
+//        if(!fluentPredicates.containsKey(pred.getName()))
+//            throw new IllegalArgumentException();
         if(!causes.containsKey(pred)) {
-            List<FodotType> timedList = pred.getArgumentTypes();
-            timedList.add(0, this.timeType);
+//            List<FodotType> timedList = pred.getArgumentTypes();
+//            timedList.add(0, this.timeType);
             causes.put(pred, createPredicateDeclaration("C_" + pred.getName(),
-                    timedList));
+            		pred.getArgumentTypes()));
         }
         return this.causes.get(pred);
     }
@@ -153,12 +154,12 @@ public class LTCPool {
         if(pred == null)
             throw new IllegalArgumentException();
         if(!fluentPredicates.containsKey(pred.getName()))
-            throw new IllegalArgumentException();
+//            throw new IllegalArgumentException();
         if(!causes.containsKey(pred)) {
-            List<FodotType> timedList = pred.getArgumentTypes();
-            timedList.add(0, this.timeType);
+//            List<FodotType> timedList = pred.getArgumentTypes();
+//            timedList.add(0, this.timeType);
             causes.put(pred, createPredicateDeclaration("Cn_" + pred.getName(),
-                    timedList));
+            		pred.getArgumentTypes()));
         }
         return this.causes.get(pred);
     }

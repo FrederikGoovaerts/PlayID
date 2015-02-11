@@ -42,4 +42,12 @@ public class FormulaUtil {
 		}
 		return result;
 	}
+	
+	public static List<FodotType> removeTypes(List<FodotType> list, FodotType type) {
+		List<FodotType> result = new ArrayList<FodotType>(list);
+		while (result.contains(type)) {
+			result.remove(type);
+		}
+		return result;
+	}
 }

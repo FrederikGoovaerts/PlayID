@@ -38,6 +38,7 @@ import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
+import fodot.util.FormulaUtil;
 
 /**
  * Make one of these for each sentence you're going to translate.
@@ -167,7 +168,7 @@ public class GdlFodotSentenceTransformer {
 //				elements.add(createTimeVariable());
 //			}
 
-			List<IFodotTerm> arguments = generateTerms(relation.getBody(), trans.removeTimeTypes(decl.getArgumentTypes()));
+			List<IFodotTerm> arguments = generateTerms(relation.getBody(), FormulaUtil.removeTypes(decl.getArgumentTypes(), trans.getTimeType()));
 			if (trans.getGdlVocabulary().isDynamic(relation)) {
 				arguments.add(0, createTimeVariable());
 			}
@@ -383,7 +384,7 @@ public class GdlFodotSentenceTransformer {
 			FodotArgumentListDeclaration declaration) {
 		List<IFodotTerm> arguments = new ArrayList<IFodotTerm>();		
 		arguments.add(createTimeVariable());
-		arguments.addAll(generateTerms(sentence.getBody(), trans.removeTimeTypes(declaration.getArgumentTypes())));
+		arguments.addAll(generateTerms(sentence.getBody(), FormulaUtil.removeTypes(declaration.getArgumentTypes(), trans.getTimeType())));
 		return arguments;
 	}
 
