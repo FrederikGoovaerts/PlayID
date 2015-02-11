@@ -6,6 +6,7 @@ import java.util.List;
 
 import fodot.objects.file.IFodotFile;
 import fodot.objects.general.IFodotElement;
+import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.typeenum.FodotNumericalTypeRangeEnumeration;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.FodotVocabulary;
@@ -37,7 +38,13 @@ public class IntegerTypeRecognizer implements IFodotOptimizer {
 						type.addSupertype(FodotType.INTEGER);
 						
 						
-						//Find all structures that contain this type, and add the 
+						//Find all structures that contain this type, and add the range
+						for (IFodotElement el3 : file.getDirectElementsOfClass(FodotStructure.class)) {
+							FodotStructure structure = (FodotStructure) el3;
+							if (structure.getVocabulary().equals(voc)) {
+								structure.addElement(range);
+							}
+						}
 					}
 						
 				}
