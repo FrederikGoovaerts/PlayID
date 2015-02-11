@@ -17,8 +17,8 @@ import org.ggp.base.util.gdl.grammar.GdlVariable;
 
 import fodot.communication.gdloutput.IFodotGdlTranslator;
 import fodot.exceptions.gdl.GdlTransformationException;
-import fodot.gdl_parser.firstphase.data.declarations.GdlFunctionDeclaration;
-import fodot.gdl_parser.firstphase.data.declarations.GdlPredicateDeclaration;
+import fodot.gdl_parser.first_phase.data.declarations.GdlFunctionDeclaration;
+import fodot.gdl_parser.first_phase.data.declarations.GdlPredicateDeclaration;
 import fodot.objects.structure.elements.typeenum.elements.FodoTypeFunctionEnumerationElement;
 import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;

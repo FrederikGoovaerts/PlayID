@@ -1,8 +1,8 @@
-package fodot.gdl_parser.firstphase.data;
+package fodot.gdl_parser.first_phase.data;
 
 import java.util.Collection;
 
-import fodot.gdl_parser.firstphase.data.occurrences.GdlTermOccurrence;
+import fodot.gdl_parser.first_phase.data.occurrences.GdlTermOccurrence;
 import fodot.objects.vocabulary.elements.FodotType;
 
 public interface IGdlTermData {

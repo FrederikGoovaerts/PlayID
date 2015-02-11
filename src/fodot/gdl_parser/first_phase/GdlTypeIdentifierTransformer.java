@@ -1,4 +1,4 @@
-package fodot.gdl_parser.firstphase;
+package fodot.gdl_parser.first_phase;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,9 +20,9 @@ import org.ggp.base.util.gdl.grammar.GdlVariable;
 
 import fodot.exceptions.gdl.GdlTypeIdentificationError;
 import fodot.gdl_parser.GdlTransformer;
-import fodot.gdl_parser.firstphase.data.declarations.GdlFunctionDeclaration;
-import fodot.gdl_parser.firstphase.data.declarations.GdlPredicateDeclaration;
-import fodot.gdl_parser.firstphase.data.declarations.IGdlArgumentListDeclaration;
+import fodot.gdl_parser.first_phase.data.declarations.GdlFunctionDeclaration;
+import fodot.gdl_parser.first_phase.data.declarations.GdlPredicateDeclaration;
+import fodot.gdl_parser.first_phase.data.declarations.IGdlArgumentListDeclaration;
 
 /**
  * This class will be used to visit the relations and rules.

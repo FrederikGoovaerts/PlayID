@@ -1,4 +1,4 @@
-package fodot.gdl_parser.firstphase.data;
+package fodot.gdl_parser.first_phase.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fodot.exceptions.gdl.GdlTypeIdentificationError;
-import fodot.gdl_parser.firstphase.data.declarations.IGdlTermDeclaration;
+import fodot.gdl_parser.first_phase.data.declarations.IGdlTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 public class GdlArgumentListData implements IGdlArgumentListData {
 	private List<FodotType> argumentTypes;

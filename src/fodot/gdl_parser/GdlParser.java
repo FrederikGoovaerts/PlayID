@@ -7,8 +7,8 @@ import org.ggp.base.util.game.Game;
 
 import fodot.communication.input.IdpFileWriter;
 import fodot.exceptions.gdl.GdlTransformationException;
-import fodot.gdl_parser.firstphase.GdlTypeIdentifier;
-import fodot.gdl_parser.secondphase.GdlFodotTransformer;
+import fodot.gdl_parser.first_phase.GdlTypeIdentifier;
+import fodot.gdl_parser.second_phase.GdlFodotTransformer;
 import fodot.gdl_parser.visitor.GdlInspector;
 import fodot.objects.file.IFodotFile;
 

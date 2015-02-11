@@ -1,4 +1,4 @@
-package fodot.gdl_parser.secondphase;
+package fodot.gdl_parser.second_phase;
 
 import static fodot.objects.FodotElementBuilder.createAnd;
 import static fodot.objects.FodotElementBuilder.createDistinct;
@@ -26,7 +26,7 @@ import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
 
 import fodot.exceptions.gdl.GdlTransformationException;
-import fodot.gdl_parser.firstphase.data.declarations.GdlPredicateDeclaration;
+import fodot.gdl_parser.first_phase.data.declarations.GdlPredicateDeclaration;
 import fodot.gdl_parser.util.VariableRegisterer;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;

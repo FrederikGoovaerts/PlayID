@@ -48,9 +48,9 @@ import java.util.Set;
 
 import org.ggp.base.util.Pair;
 
-import fodot.gdl_parser.secondphase.GdlFodotTransformer;
-import fodot.gdl_parser.secondphase.data.FodotCompoundData;
-import fodot.gdl_parser.secondphase.data.FodotNextData;
+import fodot.gdl_parser.second_phase.GdlFodotTransformer;
+import fodot.gdl_parser.second_phase.data.FodotCompoundData;
+import fodot.gdl_parser.second_phase.data.FodotNextData;
 import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.comments.FodotComment;
 import fodot.objects.file.IFodotFile;

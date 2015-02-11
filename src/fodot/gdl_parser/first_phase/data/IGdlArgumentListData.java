@@ -1,9 +1,9 @@
-package fodot.gdl_parser.firstphase.data;
+package fodot.gdl_parser.first_phase.data;
 
 import java.util.Collection;
 import java.util.List;
 
-import fodot.gdl_parser.firstphase.data.declarations.IGdlTermDeclaration;
+import fodot.gdl_parser.first_phase.data.declarations.IGdlTermDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
  
 public interface IGdlArgumentListData {

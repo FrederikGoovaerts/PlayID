@@ -1,6 +1,6 @@
-package fodot.gdl_parser.firstphase.data.occurrences;
+package fodot.gdl_parser.first_phase.data.occurrences;
 
-import fodot.gdl_parser.firstphase.data.declarations.IGdlArgumentListDeclaration;
+import fodot.gdl_parser.first_phase.data.declarations.IGdlArgumentListDeclaration;
 
 public class GdlTermOccurrence {
 	private IGdlArgumentListDeclaration directParent;

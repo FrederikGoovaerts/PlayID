@@ -1,4 +1,4 @@
-package fodot.gdl_parser.secondphase.data;
+package fodot.gdl_parser.second_phase.data;
 
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;

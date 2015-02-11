@@ -1,4 +1,4 @@
-package fodot.gdl_parser.firstphase.data.declarations;
+package fodot.gdl_parser.first_phase.data.declarations;
 
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlRelation;

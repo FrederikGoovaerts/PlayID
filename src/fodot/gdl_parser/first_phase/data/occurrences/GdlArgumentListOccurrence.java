@@ -1,4 +1,4 @@
-package fodot.gdl_parser.firstphase.data.occurrences;
+package fodot.gdl_parser.first_phase.data.occurrences;
 
 import java.util.ArrayList;
 import java.util.List;
