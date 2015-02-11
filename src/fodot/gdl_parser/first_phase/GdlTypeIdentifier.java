@@ -9,6 +9,7 @@ import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -251,9 +252,6 @@ public class GdlTypeIdentifier {
 
 	private boolean canPushUpdatesTo(IGdlTermDeclaration term, IGdlArgumentListDeclaration argumentList, int argIndex) {
 		FodotType argumentType = argumentLists.get(argumentList).getArgumentType(argIndex);
-		//		if (argumentType.equals(scoreType)) {
-		//			return false;
-		//		}
 		if (terms.get(term).getTypes().equals(argumentType)) {
 			return false;
 		}
@@ -316,9 +314,9 @@ public class GdlTypeIdentifier {
 	private void updateTermType(IGdlTermDeclaration declaration, FodotType foundType) {
 		assert !foundType.equals(unfilledType);
 
-		if (!terms.containsKey(declaration)) {
-			initTerm(declaration);
-		}
+		//		if (!terms.containsKey(declaration)) {
+		//			initTerm(declaration);
+		//		}
 
 		GdlTermData data = terms.get(declaration);
 
@@ -338,7 +336,7 @@ public class GdlTypeIdentifier {
 		for (GdlTermOccurrence occ : data.getOccurences()) {
 			IGdlArgumentListDeclaration parent = occ.getDirectParent();
 			if (canPushUpdatesTo(declaration, parent, occ.getArgumentIndex())) {
-//				System.out.println(":T) "+declaration + " ==> " + parent + (occ.getArgumentIndex()+1) + "/" + parent.getArity() + " :: " + foundType);
+				//				System.out.println(":T) "+declaration + " ==> " + parent + (occ.getArgumentIndex()+1) + "/" + parent.getArity() + " :: " + foundType);
 				updateArgumentListArgumentType( parent, occ.getArgumentIndex(), foundType);		
 			}
 		}	
@@ -356,9 +354,9 @@ public class GdlTypeIdentifier {
 		assert !foundType.equals(unfilledType);
 
 		//Check if exists
-		if (!argumentLists.containsKey(declaration)) {
-			initArgumentList(declaration);
-		}
+		//		if (!argumentLists.containsKey(declaration)) {
+		//			initArgumentList(declaration);
+		//		}
 
 		GdlArgumentListData data = argumentLists.get(declaration);
 
@@ -378,10 +376,8 @@ public class GdlTypeIdentifier {
 		//Update all occurred arguments
 		for (IGdlTermDeclaration term : data.getArgumentOccurrences(argumentNr)) {
 			if (!terms.get(term).hasType(foundType)) {
-				if (!foundType.hasDirectSupertype(FodotType.INTEGER)) {
-					//					System.out.println(":A> "+declaration + (argumentNr+1) + "/" + declaration.getArity() + " ==> " + term + " :: " + foundType);
-					updateTermType(term, foundType);
-				}
+				//System.out.println(":A> "+declaration + (argumentNr+1) + "/" + declaration.getArity() + " ==> " + term + " :: " + foundType);
+				updateTermType(term, foundType);
 			}
 		}
 
@@ -403,39 +399,25 @@ public class GdlTypeIdentifier {
 	}
 
 	private void fillMissingTypes() {
-		// SET ALL "unfilled" TO "All".
-		/* TODO: You can identify "chains" of types, so you can subdivide all
-		 * into more specific types. This will improve grounding in IDP.
-		 * We need to prove the correctness of this though. (or disprove the current correctness)
-		 */
-
-		//		//Constants to all
-		//		for (IGdlTermDeclaration term : terms.keySet()) {
-		//			GdlTermData data = terms.get(term);
-		//			if (data.getType().equals(unfilledType)) {
-		//				updateTermType(term, getNewFillType());
-		//				//				data.setType(getNewFillType());
-		//			}
-		//		}
-
 		//Argument list elements updates
 		for (IGdlArgumentListDeclaration argumentList : argumentLists.keySet()) {
-			GdlArgumentListData data = argumentLists.get(argumentList);
-			for (int i = 0; i < data.getAmountOfArguments(); i++) {
-				if (data.getArgumentType(i).equals(unfilledType)) {
-					updateArgumentListArgumentType(argumentList, i, getNewFillType());
-					//					if (!data.isTypeLocked()) {
-					//						data.setArgumentType(i, getNewFillType());
-					//					}
-				}				
+			if (!getDefaultPredicates().contains(argumentList)) {
+				GdlArgumentListData data = argumentLists.get(argumentList);
+				for (int i = 0; i < data.getAmountOfArguments(); i++) {
+					if (data.getArgumentType(i).equals(unfilledType)) {
+						updateArgumentListArgumentType(argumentList, i, getNewFillType());
+					}				
+				}
 			}
 		}
+		
+		
 	}
 
 	private static final boolean useAllType = false;
 	private static final String OTHER_TYPE_NAME = "Type";
 	private int otherTypesIndex = 1;
-	private List<FodotType> otherTypes = new ArrayList<FodotType>();
+	private Collection<FodotType> otherTypes = useAllType ? Arrays.asList(allType) :  new ArrayList<FodotType>();
 
 	private FodotType getNewFillType() {
 		if (useAllType) {

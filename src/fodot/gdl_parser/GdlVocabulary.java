@@ -36,7 +36,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 			FodotType playerType,
 			FodotType actionType,
 			FodotType scoreType,
-			List<FodotType> otherTypes,
+			Collection<FodotType> otherTypes,
 			Map<GdlConstant, Map<FodotType, FodotConstant>> constants,
 			Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule,
 			Map<GdlFunctionDeclaration, FodotTypeFunctionDeclaration> functionDeclarations,
@@ -64,7 +64,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	private FodotType playerType;
 	private FodotType actionType;
 	private FodotType scoreType;
-	private List<FodotType> otherTypes;
+	private Collection<FodotType> otherTypes;
 
 	public FodotType getTimeType() {
 		return timeType;
@@ -78,7 +78,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	public FodotType getScoreType() {
 		return scoreType;
 	}
-	public List<FodotType> getOtherType() {
+	public Collection<FodotType> getOtherType() {
 		return otherTypes;
 	}
 
