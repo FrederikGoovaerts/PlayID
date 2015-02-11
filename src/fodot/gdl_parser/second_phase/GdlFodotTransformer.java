@@ -17,6 +17,7 @@ import java.util.Set;
 import org.ggp.base.util.Pair;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlFunction;
+import org.ggp.base.util.gdl.grammar.GdlPool;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 import org.ggp.base.util.gdl.grammar.GdlSentence;
@@ -46,7 +47,6 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.util.FormulaUtil;
-import fodot.util.NameUtil;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -186,46 +186,46 @@ public class GdlFodotTransformer implements GdlTransformer {
 		return this.pool == pool;
 	}
 
-//	private FodotPredicateDeclaration getPredicate(String predName){
-//		return this.pool.getPredicate(predName);
-//	}
+	//	private FodotPredicateDeclaration getPredicate(String predName){
+	//		return this.pool.getPredicate(predName);
+	//	}
 
-//	private  boolean isPredicateRegistered(String predName){
-//		return pool.isPredicateRegistered(predName);
-//	}
-//
-//	private boolean isFluentPredicateRegistered(String predName) {
-//		return pool.isFluentPredicateRegistered(predName);
-//	}
+	//	private  boolean isPredicateRegistered(String predName){
+	//		return pool.isPredicateRegistered(predName);
+	//	}
+	//
+	//	private boolean isFluentPredicateRegistered(String predName) {
+	//		return pool.isFluentPredicateRegistered(predName);
+	//	}
 
-//	private boolean isStaticPredicateRegistered(String predName) {
-//		return pool.isStaticPredicateRegistered(predName);
-//	}
+	//	private boolean isStaticPredicateRegistered(String predName) {
+	//		return pool.isStaticPredicateRegistered(predName);
+	//	}
 
-//	private void addFluentPredicate(FodotPredicateDeclaration pred){
-//		this.pool.addFluentPredicate(pred);
-//	}
+	//	private void addFluentPredicate(FodotPredicateDeclaration pred){
+	//		this.pool.addFluentPredicate(pred);
+	//	}
 
-//	private void convertFluentPredicateToStatic(String pred) {
-//		this.pool.convertFluentPredicateToStatic(pred);
-//	}
-//
-//	private void addStaticPredicate(FodotPredicateDeclaration staticPred){
-//		this.pool.addStaticPredicate(staticPred);
-//	}
+	//	private void convertFluentPredicateToStatic(String pred) {
+	//		this.pool.convertFluentPredicateToStatic(pred);
+	//	}
+	//
+	//	private void addStaticPredicate(FodotPredicateDeclaration staticPred){
+	//		this.pool.addStaticPredicate(staticPred);
+	//	}
 
-	private FodotPredicateDeclaration getCompoundStaticPredicate(String predName) {
-		return this.pool.getCompoundStaticPredicate(predName);
-	}
-
-	private void addCompoundStaticPredicate(FodotPredicateDeclaration pred) {
-		this.pool.addCompoundStaticPredicate(pred);
-	}
-
-	private boolean isCompoundStaticPredicateRegistered(String predName) {
-		return this.pool.isCompoundStaticPredicateRegistered(predName);
-	}
-
+	//	private FodotPredicateDeclaration getCompoundStaticPredicate(String predName) {
+	//		return this.pool.getCompoundStaticPredicate(predName);
+	//	}
+	//
+	//	private void addCompoundStaticPredicate(FodotPredicateDeclaration pred) {
+	//		this.pool.addCompoundStaticPredicate(pred);
+	//	}
+	//
+	//	private boolean isCompoundStaticPredicateRegistered(String predName) {
+	//		return this.pool.isCompoundStaticPredicateRegistered(predName);
+	//	}
+	//
 
 	/*** End of Predicate Pool subsection ***/
 
@@ -492,27 +492,27 @@ public class GdlFodotTransformer implements GdlTransformer {
 					"processing relations is not allowed anymore.");
 
 		// Static: (pred x1 .. xn)
-//		String originalPredName = relation.getName().getValue();
-//		String predName = NameUtil.convertToValidPredicateName(originalPredName);
-//		int predArity = relation.arity();
+		//		String originalPredName = relation.getName().getValue();
+		//		String predName = NameUtil.convertToValidPredicateName(originalPredName);
+		//		int predArity = relation.arity();
 
 		FodotPredicateDeclaration pred = getGdlVocabulary().getPredicateDeclaration(relation);
 
 		//If necessary, register predicate as static
-//		if (!isStaticPredicateRegistered(predName)) {
-//			if (isFluentPredicateRegistered(predName)){
-//				convertFluentPredicateToStatic(predName);
-//				pred = this.getPredicate(predName);
-//			} else {
-//				pred = new FodotPredicateDeclaration(predName,
-//						FodotType.getSameTypeList(predArity, this.getAllType()));
-//				this.addStaticPredicate(pred);
-//			}
-//		} else {
-//			pred = this.getPredicate(predName);
-//			if(pred.getAmountOfArgumentTypes() != predArity)
-//				throw new IllegalStateException("Predicate differs in arity from before!");
-//		}
+		//		if (!isStaticPredicateRegistered(predName)) {
+		//			if (isFluentPredicateRegistered(predName)){
+		//				convertFluentPredicateToStatic(predName);
+		//				pred = this.getPredicate(predName);
+		//			} else {
+		//				pred = new FodotPredicateDeclaration(predName,
+		//						FodotType.getSameTypeList(predArity, this.getAllType()));
+		//				this.addStaticPredicate(pred);
+		//			}
+		//		} else {
+		//			pred = this.getPredicate(predName);
+		//			if(pred.getAmountOfArgumentTypes() != predArity)
+		//				throw new IllegalStateException("Predicate differs in arity from before!");
+		//		}
 
 
 		List<IFodotTypeEnumerationElement> staticValues = extractEnumerationList(relation, FormulaUtil.removeTypes(pred.getArgumentTypes(), getTimeType()));
@@ -533,7 +533,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		List<IFodotTypeEnumerationElement> staticValues = new ArrayList<IFodotTypeEnumerationElement>();
 
 		for (int i = 0; i < sentence.arity(); i++) {
-			
+
 			IFodotTerm term = sentenceTrans.generateTerm(sentence.get(i), types.get(i));
 			if (term instanceof FodotConstant) {
 				staticValues.add((FodotConstant) term);
@@ -675,16 +675,20 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 		//process (compound static) predicate in head
 		GdlSentence predSentence = rule.getHead();
-		FodotPredicateDeclaration originalPredicate = this.processCompoundStaticPredicate(predSentence);
-		FodotPredicateDeclaration timedDeclaration = pool.getCompoundTimedVerionOf(originalPredicate);
+		//		FodotPredicateDeclaration originalPredicate = this.processCompoundStaticPredicate(predSentence);
+		GdlPredicateDeclaration gdlDeclaration =
+				new GdlPredicateDeclaration(predSentence.getName(), predSentence.arity());
+		FodotPredicateDeclaration fodotDeclaration =
+				getGdlVocabulary().getPredicateDeclaration(gdlDeclaration);
 
-		FodotPredicate compoundStaticPred = sentenceTrans.generateTimedPredicate(predSentence, timedDeclaration);
+		System.out.println(predSentence + ", " + fodotDeclaration);
 
+		FodotPredicate compoundStaticPred = sentenceTrans.generateRelation(GdlPool.getRelation(predSentence.getName(), predSentence.getBody()));
 		//generate IFodotFormula from the body
 		IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
 
 		//add the combination as a next rule
-		this.addCompound(originalPredicate, new FodotCompoundData(compoundStaticPred, condition));
+		this.addCompound(fodotDeclaration, new FodotCompoundData(compoundStaticPred, condition));
 	}
 
 	//TODO: nakijken waar deze return niet gebruikt wordt
@@ -693,59 +697,59 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 		//Predicate: (pred x1 .. xn)
 
-		String originalPredName = predSentence.getName().getValue();
-		String predName = NameUtil.convertToValidPredicateName(originalPredName);
+		//		String originalPredName = predSentence.getName().getValue();
+		//		String predName = NameUtil.convertToValidPredicateName(originalPredName);
 
-//		int amountOfArguments = predSentence.arity();
+		//		int amountOfArguments = predSentence.arity();
 
 		//If necessary, register predicate
-//		if(!isPredicateRegistered(predName)) {
-//			pred = new FodotPredicateDeclaration(
-//					predName,
-//					FodotType.getSameTypeList(amountOfArguments, getAllType())
-//					);
-//			this.addFluentPredicate(pred);
-//		} else {
+		//		if(!isPredicateRegistered(predName)) {
+		//			pred = new FodotPredicateDeclaration(
+		//					predName,
+		//					FodotType.getSameTypeList(amountOfArguments, getAllType())
+		//					);
+		//			this.addFluentPredicate(pred);
+		//		} else {
 
 
 		FodotPredicateDeclaration pred = getGdlVocabulary().getPredicateDeclaration(
-					new GdlPredicateDeclaration(predSentence.getName(), predSentence.arity()));
-//			if(pred.getAmountOfArgumentTypes() != amountOfArguments)
-//				throw new IllegalStateException("Predicate differs in arity from before!");
-//		}
+				new GdlPredicateDeclaration(predSentence.getName(), predSentence.arity()));
+		//			if(pred.getAmountOfArgumentTypes() != amountOfArguments)
+		//				throw new IllegalStateException("Predicate differs in arity from before!");
+		//		}
 
 		//		registerConstants(predSentence);
 
 		return pred;
 	}
 
-	public FodotPredicateDeclaration processCompoundStaticPredicate(GdlSentence predSentence) {
-		//Predicate: (pred x1 .. xn)
-
-		String originalPredName = predSentence.getName().getValue();
-		String predName = NameUtil.convertToValidPredicateName(originalPredName);
-
-		int amountOfArguments = predSentence.arity();
-
-		FodotPredicateDeclaration predDecl;
-
-		//If necessary, register predicate
-		if(!isCompoundStaticPredicateRegistered(predName)) {
-			predDecl = new FodotPredicateDeclaration(
-					predName,
-					FormulaUtil.createTypeList(getAllType(), amountOfArguments)
-					);
-			this.addCompoundStaticPredicate(predDecl);
-		} else {
-			predDecl = this.getCompoundStaticPredicate(predName);
-			if(predDecl.getAmountOfArgumentTypes() != amountOfArguments)
-				throw new IllegalStateException("Predicate differs in arity from before!");
-		}
-
-		//		registerConstants(predSentence);
-
-		return predDecl;
-	}
+	//	public FodotPredicateDeclaration processCompoundStaticPredicate(GdlSentence predSentence) {
+	//		//Predicate: (pred x1 .. xn)
+	//
+	//		String originalPredName = predSentence.getName().getValue();
+	//		String predName = NameUtil.convertToValidPredicateName(originalPredName);
+	//
+	//		int amountOfArguments = predSentence.arity();
+	//
+	//		FodotPredicateDeclaration predDecl;
+	//
+	//		//If necessary, register predicate
+	//		if(!isCompoundStaticPredicateRegistered(predName)) {
+	//			predDecl = new FodotPredicateDeclaration(
+	//					predName,
+	//					FormulaUtil.createTypeList(getAllType(), amountOfArguments)
+	//					);
+	//			this.addCompoundStaticPredicate(predDecl);
+	//		} else {
+	//			predDecl = this.getCompoundStaticPredicate(predName);
+	//			if(predDecl.getAmountOfArgumentTypes() != amountOfArguments)
+	//				throw new IllegalStateException("Predicate differs in arity from before!");
+	//		}
+	//
+	//		//		registerConstants(predSentence);
+	//
+	//		return predDecl;
+	//	}
 
 	/**
 	 * Scan all body elements, if they are constants (ground in a non-built-in

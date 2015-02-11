@@ -171,7 +171,6 @@ public class FodotGameFactory {
 		 * resultaat:
 		 * type Player constructed from {*alle roles*}
 		 */
-
 		toReturn.addElement(
 				createTypeDeclaration(
 						source.getPlayerType()
@@ -190,6 +189,12 @@ public class FodotGameFactory {
 						)
 				);
 
+		/**
+		 * Add all other found types
+		 */
+		for (FodotType type : source.getGdlVocabulary().getOtherTypes()) {
+			toReturn.addElement(type.getDeclaration());
+		}
 		//        /**
 		//         * nodig: alle static predicaten
 		//         * resultaat:

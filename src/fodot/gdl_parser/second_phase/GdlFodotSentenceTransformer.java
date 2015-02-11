@@ -116,10 +116,14 @@ public class GdlFodotSentenceTransformer {
 			GdlProposition literal) {
 		// process (*compoundStatic* *vars*)
 
-		FodotPredicateDeclaration decl = trans.processCompoundStaticPredicate(literal);
-		FodotPredicateDeclaration timedDecl = trans.getPool().getCompoundTimedVerionOf(decl);
+//		FodotPredicateDeclaration decl = trans.processCompoundStaticPredicate(literal);
+//		FodotPredicateDeclaration timedDecl = trans.getPool().getCompoundTimedVerionOf(decl);
 
-		return generateTimedPredicate(literal, timedDecl);
+		FodotPredicateDeclaration declaration = 
+				trans.getGdlVocabulary().getPredicateDeclaration(
+						new GdlPredicateDeclaration(literal.getName(), literal.arity()));
+		
+		return generateTimedPredicate(literal, declaration);
 	}
 
 
@@ -138,7 +142,7 @@ public class GdlFodotSentenceTransformer {
 		return createOr(disjuncts);
 	}
 
-	public IFodotFormula generateRelation(
+	public FodotPredicate generateRelation(
 			GdlRelation relation) {
 		/*if (relation.getName().getValue().equals("does")) {
 			
@@ -384,7 +388,9 @@ public class GdlFodotSentenceTransformer {
 			FodotArgumentListDeclaration declaration) {
 		List<IFodotTerm> arguments = new ArrayList<IFodotTerm>();		
 		arguments.add(createTimeVariable());
-		arguments.addAll(generateTerms(sentence.getBody(), FormulaUtil.removeTypes(declaration.getArgumentTypes(), trans.getTimeType())));
+		arguments.addAll(generateTerms(
+				sentence.getBody(), 
+				FormulaUtil.removeTypes(declaration.getArgumentTypes(), trans.getTimeType())));
 		return arguments;
 	}
 

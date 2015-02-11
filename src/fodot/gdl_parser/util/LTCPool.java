@@ -2,11 +2,7 @@ package fodot.gdl_parser.util;
 
 import static fodot.objects.FodotElementBuilder.createPredicateDeclaration;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
@@ -30,8 +26,8 @@ public class LTCPool {
         this.initials = new HashMap<>();
         this.causes = new HashMap<>();
         this.causeNots = new HashMap<>();
-        this.compoundStatic = new HashMap<>();
-        this.compoundTimedVersions = new HashMap<>();
+//        this.compoundStatic = new HashMap<>();
+//        this.compoundTimedVersions = new HashMap<>();
     }
 
     /***************************************************************************
@@ -214,59 +210,59 @@ public class LTCPool {
      * change, depending on the state of the world.
      */
 
-    private HashMap<String,FodotPredicateDeclaration> compoundStatic;
-
-    public List<FodotPredicateDeclaration> getCompoundStaticPredicates() {
-        return new ArrayList<>(compoundStatic.values());
-    }
-
-    public FodotPredicateDeclaration getCompoundStaticPredicate(String predName) {
-        if(!isCompoundStaticPredicateRegistered(predName))
-            throw new IllegalArgumentException();
-        return compoundStatic.get(predName);
-    }
-
-    public boolean isCompoundStaticPredicateRegistered(String predName) {
-        return (compoundStatic.containsKey(predName));
-    }
-
-    public void addCompoundStaticPredicate(FodotPredicateDeclaration pred){
-        if(pred == null)
-            throw new IllegalArgumentException();
-        compoundStatic.put(pred.getName(), pred);
-    }
-
-    private void removeCompoundStaticPredicate(FodotPredicateDeclaration pred){
-        if(pred == null)
-            throw new IllegalArgumentException();
-        if(!compoundStatic.containsKey(pred.getName()))
-            throw new IllegalArgumentException();
-        this.removeCompoundTimedPredicateOf(pred);
-        compoundStatic.remove(pred.getName());
-    }
-
-    private HashMap<FodotPredicateDeclaration,FodotPredicateDeclaration> compoundTimedVersions;
-
-    public FodotPredicateDeclaration getCompoundTimedVerionOf(FodotPredicateDeclaration pred){
-        if(pred == null)
-            throw new IllegalArgumentException();
-        if(!compoundStatic.containsKey(pred.getName()))
-            throw new IllegalArgumentException();
-        if(!compoundTimedVersions.containsKey(pred)) {
-            List<FodotType> timedList = pred.getArgumentTypes();
-            timedList.add(0, this.timeType);
-            compoundTimedVersions.put(pred, createPredicateDeclaration(pred.getName(), timedList));
-        }
-        return this.compoundTimedVersions.get(pred);
-    }
-
-    private void removeCompoundTimedPredicateOf(FodotPredicateDeclaration pred) {
-        this.compoundTimedVersions.remove(pred);
-    }
-
-    public Set<FodotPredicateDeclaration> getCompoundTimedDeclarations(){
-        return new HashSet<>(compoundTimedVersions.values());
-    }
+//    private HashMap<String,FodotPredicateDeclaration> compoundStatic;
+//
+//    public List<FodotPredicateDeclaration> getCompoundStaticPredicates() {
+//        return new ArrayList<>(compoundStatic.values());
+//    }
+//
+//    public FodotPredicateDeclaration getCompoundStaticPredicate(String predName) {
+//        if(!isCompoundStaticPredicateRegistered(predName))
+//            throw new IllegalArgumentException();
+//        return compoundStatic.get(predName);
+//    }
+//
+//    public boolean isCompoundStaticPredicateRegistered(String predName) {
+//        return (compoundStatic.containsKey(predName));
+//    }
+//
+//    public void addCompoundStaticPredicate(FodotPredicateDeclaration pred){
+//        if(pred == null)
+//            throw new IllegalArgumentException();
+//        compoundStatic.put(pred.getName(), pred);
+//    }
+//
+//    private void removeCompoundStaticPredicate(FodotPredicateDeclaration pred){
+//        if(pred == null)
+//            throw new IllegalArgumentException();
+//        if(!compoundStatic.containsKey(pred.getName()))
+//            throw new IllegalArgumentException();
+//        this.removeCompoundTimedPredicateOf(pred);
+//        compoundStatic.remove(pred.getName());
+//    }
+//
+//    private HashMap<FodotPredicateDeclaration,FodotPredicateDeclaration> compoundTimedVersions;
+//
+//    public FodotPredicateDeclaration getCompoundTimedVerionOf(FodotPredicateDeclaration pred){
+//        if(pred == null)
+//            throw new IllegalArgumentException();
+//        if(!compoundStatic.containsKey(pred.getName()))
+//            throw new IllegalArgumentException();
+//        if(!compoundTimedVersions.containsKey(pred)) {
+//            List<FodotType> timedList = pred.getArgumentTypes();
+//            timedList.add(0, this.timeType);
+//            compoundTimedVersions.put(pred, createPredicateDeclaration(pred.getName(), timedList));
+//        }
+//        return this.compoundTimedVersions.get(pred);
+//    }
+//
+//    private void removeCompoundTimedPredicateOf(FodotPredicateDeclaration pred) {
+//        this.compoundTimedVersions.remove(pred);
+//    }
+//
+//    public Set<FodotPredicateDeclaration> getCompoundTimedDeclarations(){
+//        return new HashSet<>(compoundTimedVersions.values());
+//    }
 
     /*** End of Compound Static Predicates subsection ***/
 }

@@ -79,7 +79,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	public FodotType getScoreType() {
 		return scoreType;
 	}
-	public Collection<FodotType> getOtherType() {
+	public Collection<FodotType> getOtherTypes() {
 		return otherTypes;
 	}
 
