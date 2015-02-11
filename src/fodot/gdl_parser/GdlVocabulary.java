@@ -3,6 +3,7 @@ package fodot.gdl_parser;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -132,10 +133,14 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		return predicateDeclarations.get(declaration);
 	}
 
-	public Collection<GdlPredicateDeclaration> getPredicates() {
+	public Collection<GdlPredicateDeclaration> getGdlPredicates() {
 		return predicateDeclarations.keySet();
 	}
 
+	public Collection<FodotPredicateDeclaration> getFodotPredicates() {
+		return predicateDeclarations.values();
+	}
+	
 	public boolean isDynamic(GdlRelation predicate) {
 		GdlPredicateDeclaration declaration = new GdlPredicateDeclaration(predicate);
 		return isDynamic(declaration);
@@ -143,6 +148,14 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 
 	public boolean isDynamic(GdlPredicateDeclaration declaration) {
 		return dynamicPredicates.contains(declaration);
+	}
+	
+	public Set<FodotPredicateDeclaration> getDynamicPredicates() {
+		Set<FodotPredicateDeclaration> result = new LinkedHashSet<FodotPredicateDeclaration>();
+		for (GdlPredicateDeclaration gdlPred : dynamicPredicates) {
+			result.add(getPredicateDeclaration(gdlPred));
+		}
+		return result;
 	}
 
 	/**********************************************/

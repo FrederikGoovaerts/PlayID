@@ -1,12 +1,16 @@
 package fodot.gdl_parser.util;
 
+import static fodot.objects.FodotElementBuilder.createPredicateDeclaration;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.FormulaUtil;
-import fodot.util.NameUtil;
-import static fodot.objects.FodotElementBuilder.*;
-
-import java.util.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -20,9 +24,9 @@ public class LTCPool {
 
     public LTCPool(FodotType timeType) {
         this.timeType = timeType;
-        this.fluentPredicates = new HashMap<>();
-        this.staticPredicates = new HashMap<>();
-        this.timedVersions = new HashMap<>();
+//        this.fluentPredicates = new HashMap<>();
+//        this.staticPredicates = new HashMap<>();
+//        this.timedVersions = new HashMap<>();
         this.initials = new HashMap<>();
         this.causes = new HashMap<>();
         this.causeNots = new HashMap<>();
@@ -40,54 +44,54 @@ public class LTCPool {
      * Class Methods
      **************************************************************************/
 
-    public FodotPredicateDeclaration getPredicate(String predName){
-    	predName = NameUtil.convertToValidPredicateName(predName);
-        if(!isPredicateRegistered(predName))
-            throw new IllegalArgumentException("Predicate not found: " + predName);
-        if(isFluentPredicateRegistered(predName))
-            return getFluentPredicate(predName);
-        return getStaticPredicate(predName);
-    }
-
-    public  boolean isPredicateRegistered(String predName){
-        return (isFluentPredicateRegistered(predName)
-                ||isStaticPredicateRegistered(predName));
-    }
+//    public FodotPredicateDeclaration getPredicate(String predName){
+//    	predName = NameUtil.convertToValidPredicateName(predName);
+//        if(!isPredicateRegistered(predName))
+//            throw new IllegalArgumentException("Predicate not found: " + predName);
+//        if(isFluentPredicateRegistered(predName))
+//            return getFluentPredicate(predName);
+//        return getStaticPredicate(predName);
+//    }
+//
+//    public  boolean isPredicateRegistered(String predName){
+//        return (isFluentPredicateRegistered(predName)
+//                ||isStaticPredicateRegistered(predName));
+//    }
 
     /*************************************
      * Fluent Predicates
      */
 
-    private HashMap<String,FodotPredicateDeclaration> fluentPredicates;
-
-    public List<FodotPredicateDeclaration> getFluentPredicates() {
-        return new ArrayList<>(fluentPredicates.values());
-    }
-
-    private FodotPredicateDeclaration getFluentPredicate(String predName) {
-        if(!isFluentPredicateRegistered(predName))
-            throw new IllegalArgumentException();
-        return fluentPredicates.get(predName);
-    }
-
-    public boolean isFluentPredicateRegistered(String predName) {
-        return (fluentPredicates.containsKey(predName));
-    }
-
-    public void addFluentPredicate(FodotPredicateDeclaration pred){
-        if(pred == null)
-            throw new IllegalArgumentException();
-        fluentPredicates.put(pred.getName(), pred);
-    }
-
-    private void removeFluentPredicate(FodotPredicateDeclaration pred){
-        if(pred == null)
-            throw new IllegalArgumentException();
-        if(!fluentPredicates.containsKey(pred.getName()))
-            throw new IllegalArgumentException();
-        this.removeLTCPredicatesOf(pred);
-        fluentPredicates.remove(pred.getName());
-    }
+//    private HashMap<String,FodotPredicateDeclaration> fluentPredicates;
+//
+//    public List<FodotPredicateDeclaration> getFluentPredicates() {
+//        return new ArrayList<>(fluentPredicates.values());
+//    }
+//
+//    private FodotPredicateDeclaration getFluentPredicate(String predName) {
+//        if(!isFluentPredicateRegistered(predName))
+//            throw new IllegalArgumentException();
+//        return fluentPredicates.get(predName);
+//    }
+//
+//    public boolean isFluentPredicateRegistered(String predName) {
+//        return (fluentPredicates.containsKey(predName));
+//    }
+//
+//    public void addFluentPredicate(FodotPredicateDeclaration pred){
+//        if(pred == null)
+//            throw new IllegalArgumentException();
+//        fluentPredicates.put(pred.getName(), pred);
+//    }
+//
+//    private void removeFluentPredicate(FodotPredicateDeclaration pred){
+//        if(pred == null)
+//            throw new IllegalArgumentException();
+//        if(!fluentPredicates.containsKey(pred.getName()))
+//            throw new IllegalArgumentException();
+//        this.removeLTCPredicatesOf(pred);
+//        fluentPredicates.remove(pred.getName());
+//    }
 
 
     /*** End of Fluent Predicates subsection ***/
@@ -96,7 +100,7 @@ public class LTCPool {
      * LTC predicates
      */
 
-    private HashMap<FodotPredicateDeclaration,FodotPredicateDeclaration> timedVersions;
+//    private HashMap<FodotPredicateDeclaration,FodotPredicateDeclaration> timedVersions;
 
     private HashMap<FodotPredicateDeclaration,FodotPredicateDeclaration> initials;
 
@@ -104,25 +108,25 @@ public class LTCPool {
 
     private HashMap<FodotPredicateDeclaration,FodotPredicateDeclaration> causeNots;
 
-    private void removeLTCPredicatesOf(FodotPredicateDeclaration pred) {
-        this.timedVersions.remove(pred);
-        this.initials.remove(pred);
-        this.causes.remove(pred);
-        this.causeNots.remove(pred);
-    }
+//    private void removeLTCPredicatesOf(FodotPredicateDeclaration pred) {
+//        this.timedVersions.remove(pred);
+//        this.initials.remove(pred);
+//        this.causes.remove(pred);
+//        this.causeNots.remove(pred);
+//    }
 
-    public FodotPredicateDeclaration getTimedVerionOf(FodotPredicateDeclaration pred){
-        if(pred == null)
-            throw new IllegalArgumentException();
-        if(!fluentPredicates.containsKey(pred.getName()))
-            throw new IllegalArgumentException();
-        if(!timedVersions.containsKey(pred)) {
-            List<FodotType> timedList = pred.getArgumentTypes();
-            timedList.add(0, this.timeType);
-            timedVersions.put(pred, createPredicateDeclaration(pred.getName(), timedList));
-        }
-        return this.timedVersions.get(pred);
-    }
+//    public FodotPredicateDeclaration getTimedVerionOf(FodotPredicateDeclaration pred){
+//        if(pred == null)
+//            throw new IllegalArgumentException();
+////        if(!fluentPredicates.containsKey(pred.getName()))
+////            throw new IllegalArgumentException();
+//        if(!timedVersions.containsKey(pred)) {
+//            List<FodotType> timedList = pred.getArgumentTypes();
+//            timedList.add(0, this.timeType);
+//            timedVersions.put(pred, createPredicateDeclaration(pred.getName(), timedList));
+//        }
+//        return this.timedVersions.get(pred);
+//    }
 
     public FodotPredicateDeclaration getInitialOf(FodotPredicateDeclaration pred){
         if(pred == null)
@@ -153,15 +157,15 @@ public class LTCPool {
     public FodotPredicateDeclaration getCauseNotOf(FodotPredicateDeclaration pred){
         if(pred == null)
             throw new IllegalArgumentException();
-        if(!fluentPredicates.containsKey(pred.getName()))
+//        if(!fluentPredicates.containsKey(pred.getName()))
 //            throw new IllegalArgumentException();
-        if(!causes.containsKey(pred)) {
+        if(!causeNots.containsKey(pred)) {
 //            List<FodotType> timedList = pred.getArgumentTypes();
 //            timedList.add(0, this.timeType);
-            causes.put(pred, createPredicateDeclaration("Cn_" + pred.getName(),
+        	causeNots.put(pred, createPredicateDeclaration("Cn_" + pred.getName(),
             		pred.getArgumentTypes()));
         }
-        return this.causes.get(pred);
+        return this.causeNots.get(pred);
     }
 
     /*** End of LTC predicates subsection ***/
@@ -170,35 +174,35 @@ public class LTCPool {
      * Static Predicates
      */
 
-    private HashMap<String,FodotPredicateDeclaration> staticPredicates;
-
-    public List<FodotPredicateDeclaration> getStaticPredicates() {
-        return new ArrayList<>(staticPredicates.values());
-    }
-
-    private FodotPredicateDeclaration getStaticPredicate(String predName) {
-        if(!isStaticPredicateRegistered(predName))
-            throw new IllegalArgumentException();
-        return staticPredicates.get(predName);
-    }
-
-    public boolean isStaticPredicateRegistered(String predName) {
-        return (staticPredicates.containsKey(predName));
-    }
-
-    public void addStaticPredicate(FodotPredicateDeclaration staticPred){
-        if(staticPred == null || fluentPredicates.containsKey(staticPred))
-            throw new IllegalArgumentException();
-        staticPredicates.put(staticPred.getName(), staticPred);
-    }
-
-    public void convertFluentPredicateToStatic(String predName) {
-        if (!fluentPredicates.containsKey(predName))
-            throw new IllegalArgumentException();
-        FodotPredicateDeclaration pred = getFluentPredicate(predName);
-        removeFluentPredicate(pred);
-        addStaticPredicate(pred);
-    }
+//    private HashMap<String,FodotPredicateDeclaration> staticPredicates;
+//
+//    public List<FodotPredicateDeclaration> getStaticPredicates() {
+//        return new ArrayList<>(staticPredicates.values());
+//    }
+//
+//    private FodotPredicateDeclaration getStaticPredicate(String predName) {
+//        if(!isStaticPredicateRegistered(predName))
+//            throw new IllegalArgumentException();
+//        return staticPredicates.get(predName);
+//    }
+//
+//    public boolean isStaticPredicateRegistered(String predName) {
+//        return (staticPredicates.containsKey(predName));
+//    }
+//
+//    public void addStaticPredicate(FodotPredicateDeclaration staticPred){
+//        if(staticPred == null || fluentPredicates.containsKey(staticPred))
+//            throw new IllegalArgumentException();
+//        staticPredicates.put(staticPred.getName(), staticPred);
+//    }
+//
+//    public void convertFluentPredicateToStatic(String predName) {
+//        if (!fluentPredicates.containsKey(predName))
+//            throw new IllegalArgumentException();
+//        FodotPredicateDeclaration pred = getFluentPredicate(predName);
+//        removeFluentPredicate(pred);
+//        addStaticPredicate(pred);
+//    }
 
     /*** End of Static Predicates subsection ***/
 
