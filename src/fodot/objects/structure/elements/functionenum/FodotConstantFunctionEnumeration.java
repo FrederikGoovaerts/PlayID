@@ -6,7 +6,7 @@ import java.util.Collection;
 import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.elements.IFodotStructureElement;
-import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.vocabulary.elements.FodotFunctionFullDeclaration;
 
 public class FodotConstantFunctionEnumeration extends FodotElement implements IFodotStructureElement {

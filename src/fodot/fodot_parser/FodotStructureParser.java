@@ -19,9 +19,9 @@ import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnum
 import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
-import fodot.objects.structure.elements.typenum.FodotNumericalTypeRangeEnumeration;
-import fodot.objects.structure.elements.typenum.FodotTypeEnumeration;
-import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
+import fodot.objects.structure.elements.typeenum.FodotNumericalTypeRangeEnumeration;
+import fodot.objects.structure.elements.typeenum.FodotTypeEnumeration;
+import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotFunctionFullDeclaration;

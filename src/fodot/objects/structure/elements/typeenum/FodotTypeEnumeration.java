@@ -1,9 +1,9 @@
-package fodot.objects.structure.elements.typenum;
+package fodot.objects.structure.elements.typeenum;
 
 import java.util.Collection;
 
 import fodot.objects.structure.elements.FodotEnumeration;
-import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 

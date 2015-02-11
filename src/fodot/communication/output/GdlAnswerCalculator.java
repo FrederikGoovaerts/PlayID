@@ -8,7 +8,7 @@ import fodot.communication.gdloutput.IFodotGdlTranslator;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
-import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 
 public class GdlAnswerCalculator {
 

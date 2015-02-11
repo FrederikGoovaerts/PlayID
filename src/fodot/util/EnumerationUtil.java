@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fodot.exceptions.answer.StructureParsingException;
-import fodot.objects.structure.elements.typenum.elements.FodoTypeFunctionEnumerationElement;
-import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.FodoTypeFunctionEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
-import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
 
 public class EnumerationUtil {

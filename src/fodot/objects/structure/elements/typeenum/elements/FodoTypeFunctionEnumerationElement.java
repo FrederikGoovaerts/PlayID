@@ -1,4 +1,4 @@
-package fodot.objects.structure.elements.typenum.elements;
+package fodot.objects.structure.elements.typeenum.elements;
 
 import java.util.ArrayList;
 import java.util.Collection;

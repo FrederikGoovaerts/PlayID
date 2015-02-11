@@ -3,7 +3,7 @@ package fodot.objects.structure.elements.predicateenum.elements;
 import java.util.Collection;
 
 import fodot.objects.general.FodotElementList;
-import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.util.CollectionPrinter;
 
 public class FodotPredicateEnumerationElement

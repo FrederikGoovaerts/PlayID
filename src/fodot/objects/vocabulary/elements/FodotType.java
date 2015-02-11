@@ -133,7 +133,7 @@ public class FodotType extends FodotElement implements IFodotElement {
 		} else {
 			this.subtypes = subtypes;
 			for (FodotType subtype : subtypes) {
-				if(!(subtype.containsSupertype(this)))
+				if(!(subtype.hasDirectSupertype(this)))
 					subtype.addSupertype(this);
 			}
 		}
@@ -141,7 +141,7 @@ public class FodotType extends FodotElement implements IFodotElement {
 
 	public void addSubtype(FodotType type) {
 		subtypes.add(type);
-		if (!type.containsSupertype(this)) {
+		if (!type.hasDirectSupertype(this)) {
 			type.addSupertype(this);
 		}
 	}
@@ -152,7 +152,7 @@ public class FodotType extends FodotElement implements IFodotElement {
 		}
 	}
 
-	public boolean containsSubtype(FodotType type){
+	public boolean hasDirectSubtype(FodotType type){
 		return subtypes.contains(type);
 	}
 
@@ -168,7 +168,7 @@ public class FodotType extends FodotElement implements IFodotElement {
 		if (type == null) {
 			return;
 		}
-		if (type.containsSupertype(this)) {
+		if (type.hasDirectSupertype(this)) {
 			type.removeSupertype(this);
 		}
 		subtypes.remove(type);
@@ -207,7 +207,7 @@ public class FodotType extends FodotElement implements IFodotElement {
 		} else {
 			this.supertypes = supertypes;
 			for (FodotType supertype : supertypes) {
-				if(!(supertype.containsSubtype(this)))
+				if(!(supertype.hasDirectSubtype(this)))
 					supertype.addSubtype(this);
 			}
 		}
@@ -215,7 +215,7 @@ public class FodotType extends FodotElement implements IFodotElement {
 
 	public void addSupertype(FodotType type) {
 		supertypes.add(type);
-		if (!type.containsSubtype(this)) {
+		if (!type.hasDirectSubtype(this)) {
 			type.addSubtype(this);
 		}
 	}
@@ -226,7 +226,7 @@ public class FodotType extends FodotElement implements IFodotElement {
 		}
 	}
 
-	public boolean containsSupertype(FodotType type){
+	public boolean hasDirectSupertype(FodotType type){
 		return supertypes.contains(type);
 	}
 
@@ -242,7 +242,7 @@ public class FodotType extends FodotElement implements IFodotElement {
 		if (type == null) {
 			return;
 		}
-		if (type.containsSubtype(this)) {
+		if (type.hasDirectSubtype(this)) {
 			type.removeSubtype(this);
 		}
 		supertypes.remove(type);
@@ -269,6 +269,11 @@ public class FodotType extends FodotElement implements IFodotElement {
 	
 	/************************************/
 
+	public boolean isRelatedTo(FodotType type) {
+		return isASubtypeOf(type) || isASupertypeOf(type);
+	}
+	
+	
 
 	/*************************************
 	 * Domain elements in type declaration

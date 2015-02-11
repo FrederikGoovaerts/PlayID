@@ -7,7 +7,7 @@ import java.util.Set;
 import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
-import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
 

@@ -7,7 +7,7 @@ import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 
 import fodot.communication.gdloutput.IFodotGdlTranslator;
-import fodot.objects.structure.elements.typenum.elements.IFodotTypeEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 
 public class GdlAction {
 	private IFodotGdlTranslator translator;

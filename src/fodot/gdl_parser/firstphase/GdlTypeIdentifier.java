@@ -184,6 +184,11 @@ public class GdlTypeIdentifier {
 	 *  This should be done by a visitor.
 	 ***********************************************/
 	public void addConstantOccurrence(IGdlArgumentListDeclaration directParent, int argumentIndex, GdlConstant constant) {
+
+		//Don't register constants of type scoreType
+		if (argumentLists.get(directParent).getArgumentType(argumentIndex).equals(scoreType)) {
+			return;
+		}
 		GdlConstantDeclaration decl = new GdlConstantDeclaration(constant);
 		addTermOccurrence(decl, directParent, argumentIndex);
 	}
@@ -215,7 +220,7 @@ public class GdlTypeIdentifier {
 		//Add occurrences
 		terms.get(decl).addOccurence( new GdlTermOccurrence(directParent, argumentIndex) );
 		argumentLists.get(directParent).addArgumentOccurrence(argumentIndex, decl);
-		
+
 		FodotType termType = terms.get(decl).getType();
 		if (canPushUpdatesTo(decl, directParent, argumentIndex)) {
 			updateArgumentListArgumentType(directParent, argumentIndex, termType);
@@ -229,7 +234,7 @@ public class GdlTypeIdentifier {
 			updateTermType(decl, foundType);
 		}
 	}
-	
+
 	private void addArgumentListOccurrence(IGdlArgumentListDeclaration declaration) {
 		if (!argumentLists.containsKey(declaration)) {
 			initArgumentList(declaration);
@@ -247,7 +252,7 @@ public class GdlTypeIdentifier {
 		}
 		return true;
 	}
-	
+
 	private boolean canPushUpdatesTo(IGdlTermDeclaration term, IGdlArgumentListDeclaration argumentList, int argIndex) {
 		FodotType argumentType = argumentLists.get(argumentList).getArgumentType(argIndex);
 		if (argumentType.equals(scoreType)) {
@@ -258,7 +263,7 @@ public class GdlTypeIdentifier {
 		}
 		return canPushTypeUpdates(term);
 	}
-	
+
 	/**********************************************
 	 *  Time dependent rules
 	 ***********************************************/
@@ -382,8 +387,8 @@ public class GdlTypeIdentifier {
 		//Update all occurred arguments
 		for (IGdlTermDeclaration term : data.getArgumentOccurrences(argumentNr)) {
 			if (!terms.get(term).getType().equals(foundType)) {
-				if (!foundType.containsSupertype(FodotType.INTEGER)) {
-					System.out.println(":A> "+declaration + (argumentNr+1) + "/" + declaration.getArity() + " ==> " + term + " :: " + foundType);
+				if (!foundType.hasDirectSupertype(FodotType.INTEGER)) {
+					//					System.out.println(":A> "+declaration + (argumentNr+1) + "/" + declaration.getArity() + " ==> " + term + " :: " + foundType);
 					updateTermType(term, foundType);
 				}
 			}
