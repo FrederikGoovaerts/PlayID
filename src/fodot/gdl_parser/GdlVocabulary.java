@@ -37,7 +37,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 			FodotType actionType,
 			FodotType scoreType,
 			List<FodotType> otherTypes,
-			Map<GdlConstant, FodotConstant> constants,
+			Map<GdlConstant, Map<FodotType, FodotConstant>> constants,
 			Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule,
 			Map<GdlFunctionDeclaration, FodotTypeFunctionDeclaration> functionDeclarations,
 			Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations,
@@ -53,7 +53,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		this.predicateDeclarations = predicateDeclarations;
 		this.variablesPerRule = variablesPerRule;
 		this.dynamicPredicates = dynamicPredicates;
-		
+
 		initialiseInverseMaps();
 	}
 
@@ -82,7 +82,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		return otherTypes;
 	}
 
-//TODO temporal solution: all type has to be removed.
+	//TODO temporal solution: all type has to be removed.
 	private FodotType allType = new FodotType("All");
 	public FodotType getAllType() {
 		return allType;
@@ -94,7 +94,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	 *  Mappings
 	 ***********************************************/
 	//Translations
-	private Map<GdlConstant, FodotConstant> constants;
+	private Map<GdlConstant, Map<FodotType, FodotConstant>> constants;
 	private Map<GdlFunctionDeclaration, FodotTypeFunctionDeclaration> functionDeclarations;
 	private Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations;
 
@@ -102,14 +102,18 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	private Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule;
 	private Set<GdlPredicateDeclaration> dynamicPredicates;
 
-	public FodotConstant getConstant(GdlConstant constant) {
-		return constants.get(constant);
+	public FodotConstant getConstant(GdlConstant constant, FodotType type) {
+		if (type == null) {
+			//TODO doe iets
+			return constants.get(constant).values().iterator().next();
+		}
+		return constants.get(constant).get(type);
 	}
 
 	public Map<GdlVariable, FodotVariable> getVariables(GdlRule rule) {
 		return variablesPerRule.get(rule);
 	}
-	
+
 	public FodotVariable getVariable(GdlRule rule, GdlVariable variable) {
 		return getVariables(rule).get(variable);
 	}
@@ -123,11 +127,11 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		GdlPredicateDeclaration declaration = new GdlPredicateDeclaration(predicate);		
 		return getPredicateDeclaration(declaration);
 	}
-	
+
 	public FodotPredicateDeclaration getPredicateDeclaration(GdlPredicateDeclaration declaration) {
 		return predicateDeclarations.get(declaration);
 	}
-	
+
 	public Collection<GdlPredicateDeclaration> getPredicates() {
 		return predicateDeclarations.keySet();
 	}
@@ -136,7 +140,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		GdlPredicateDeclaration declaration = new GdlPredicateDeclaration(predicate);
 		return isDynamic(declaration);
 	}
-	
+
 	public boolean isDynamic(GdlPredicateDeclaration declaration) {
 		return dynamicPredicates.contains(declaration);
 	}
@@ -146,43 +150,46 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	/**********************************************
 	 *  Translations
 	 ***********************************************/
-	
+
 	private Map<FodotConstant, GdlConstant> constantsInverse = new HashMap<FodotConstant, GdlConstant>();
 	private Map<FodotFunctionDeclaration, GdlFunctionDeclaration> functionsInverse = new HashMap<FodotFunctionDeclaration, GdlFunctionDeclaration>();
 	private Map<FodotPredicateDeclaration, GdlPredicateDeclaration> predicatesInverse = new HashMap<FodotPredicateDeclaration, GdlPredicateDeclaration>();
-	
+
 	private void initialiseInverseMaps() {
-		for (GdlConstant constant : constants.keySet()) {
-			constantsInverse.put(constants.get(constant), constant);
+		for (GdlConstant gdlConstant : constants.keySet()) {
+			Map<FodotType, FodotConstant> map = constants.get(gdlConstant);
+			for (FodotConstant foConstant : map.values()) {
+				constantsInverse.put(foConstant, gdlConstant);
+			}
 		}
 
 		for (GdlFunctionDeclaration func : functionDeclarations.keySet()) {
 			functionsInverse.put(functionDeclarations.get(func), func);
 		}
-		
+
 		for (GdlPredicateDeclaration pred : predicateDeclarations.keySet()) {
 			predicatesInverse.put(predicateDeclarations.get(pred), pred);
 		}
 	}
-	
+
 	public GdlConstant getGdlConstant(FodotConstant constant) {
 		return constantsInverse.get(constant);
 	}
-	
+
 	public GdlFunctionDeclaration getGdlFunctionDeclaration(FodotFunctionDeclaration func) {
 		return functionsInverse.get(func);
 	}
-	
+
 	public GdlPredicateDeclaration getGdlPredicateDeclaration(FodotPredicateDeclaration pred) {
 		return predicatesInverse.get(pred);
 	}
-	
+
 
 	@Override
 	public GdlTerm translate(IFodotTypeEnumerationElement fodot) {
 		if (fodot instanceof FodotConstant) {
 			FodotConstant casted = (FodotConstant) fodot;
-			
+
 			assert getGdlConstant(casted) != null;			
 			return getGdlConstant(casted);
 		}
@@ -191,7 +198,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 			FodotTypeFunctionDeclaration decl = casted.getDeclaration();
 			GdlFunctionDeclaration gdlFunc = getGdlFunctionDeclaration(decl);
 			GdlConstant name = gdlFunc.getName();
-			
+
 			List<GdlTerm> body = new ArrayList<GdlTerm>();
 			for (IFodotTypeEnumerationElement el : casted.getElements()) {
 				body.add(translate(el));
@@ -209,7 +216,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		StringBuilder builder = new StringBuilder();
 		builder.append("== GDL VOCABULARY ==\n");
 		builder.append(CollectionPrinter.printStringList("", "\n\n", "\n", CollectionPrinter.toCode(predicateDeclarations.values())));		
-		
+
 		builder.append(timeType.getDeclaration().toCode()+"\n");
 		builder.append(playerType.getDeclaration().toCode()+"\n");
 		builder.append(actionType.getDeclaration().toCode()+"\n");

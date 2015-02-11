@@ -36,6 +36,7 @@ import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
+import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 
 /**
@@ -247,7 +248,7 @@ public class GdlFodotSentenceTransformer {
 	
 	public IFodotTerm generateTerm(GdlTerm term) {
 		if (term instanceof GdlConstant) {
-			return generateConstant((GdlConstant) term);
+			return generateConstant((GdlConstant) term, null); //TODO: type meegeven bij genereren van term
 		} else if (term instanceof GdlVariable) {
 			return generateVariable((GdlVariable) term);
 		} else if (term instanceof GdlFunction){
@@ -261,8 +262,8 @@ public class GdlFodotSentenceTransformer {
 //		return generateTerm(term, trans.getAllType());
 //	}
 	
-	public FodotConstant generateConstant(GdlConstant gdlConst) {
-		return trans.getGdlVocabulary().getConstant(gdlConst);
+	public FodotConstant generateConstant(GdlConstant gdlConst, FodotType type) {
+		return trans.getGdlVocabulary().getConstant(gdlConst, type);
 	}
 //	
 	public FodotVariable generateVariable(GdlVariable gdlVar) {	

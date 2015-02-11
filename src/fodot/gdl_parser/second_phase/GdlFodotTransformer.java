@@ -160,8 +160,8 @@ public class GdlFodotTransformer implements GdlTransformer {
 		}
 	}
 
-	public FodotConstant convertRawRole(GdlConstant term){
-		return getGdlVocabulary().getConstant(term);
+	public FodotConstant convertRole(GdlConstant term){
+		return getGdlVocabulary().getConstant(term, getPlayerType());
 		//		String rawName = term.getValue();
 		//		FodotConstant toReturn = createConstant(rawName, this.getPlayerType());
 		//		addTranslation(toReturn, term);
@@ -464,7 +464,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 		// Role: (role player)
 		GdlConstant player = relation.getBody().get(0).toSentence().getName();
-		this.addRole(convertRawRole(player));
+		this.addRole(convertRole(player));
 	}
 
 	@Override
@@ -581,13 +581,8 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this, getGdlVocabulary().getVariables(rule));
 
-		IFodotTerm player;
 		GdlTerm playerGdlTerm = rule.getHead().get(0);
-		if (playerGdlTerm instanceof GdlConstant) {
-			player = convertRawRole((GdlConstant) playerGdlTerm);
-		} else {
-			player = sentenceTrans.generateTerm(playerGdlTerm);
-		}
+		IFodotTerm player = sentenceTrans.generateTerm(playerGdlTerm);
 
 		GdlTerm actionGdlTerm = rule.getHead().get(1);
 		IFodotTerm actionTerm = sentenceTrans.generateTerm(actionGdlTerm);
@@ -629,13 +624,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		GdlTerm scoreGdlTerm = rule.getHead().get(1);
 
 		IFodotTerm playerTerm;
-		if (playerGdlTerm instanceof GdlVariable) {
-			playerTerm = sentenceTrans.generateTerm(playerGdlTerm);	
-		} else if (playerGdlTerm instanceof GdlConstant) {
-			playerTerm = convertRawRole((GdlConstant) playerGdlTerm);
-		} else {
-			throw new GdlTransformationException("Playerterm should probably only be constant or a variable.");
-		}
+		playerTerm = sentenceTrans.generateTerm(playerGdlTerm);	
 
 		IFodotTerm scoreTerm = sentenceTrans.generateTerm(scoreGdlTerm);
 
