@@ -217,9 +217,7 @@ public class GdlTypeIdentifier {
 		argumentLists.get(directParent).addArgumentOccurrence(argumentIndex, decl);
 		
 		FodotType termType = terms.get(decl).getType();
-		if (!termType.equals(unfilledType)
-				&& !termType.equals(scoreType)
-				&& !argumentLists.get(directParent).getArgumentType(argumentIndex).equals(termType)) {
+		if (canPushUpdatesTo(decl, directParent, argumentIndex)) {
 			updateArgumentListArgumentType(directParent, argumentIndex, termType);
 		}
 
@@ -238,6 +236,29 @@ public class GdlTypeIdentifier {
 		}		
 	}
 
+	private boolean canPushTypeUpdates(IGdlTermDeclaration term) {
+		FodotType type = terms.get(term).getType();
+		if (type.equals(unfilledType)) {
+			return false;
+		} else if (type.equals(scoreType) 
+				&& term instanceof GdlConstantDeclaration
+				) {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean canPushUpdatesTo(IGdlTermDeclaration term, IGdlArgumentListDeclaration argumentList, int argIndex) {
+		FodotType argumentType = argumentLists.get(argumentList).getArgumentType(argIndex);
+		if (argumentType.equals(scoreType)) {
+			return false;
+		}
+		if (terms.get(term).getType().equals(argumentType)) {
+			return false;
+		}
+		return canPushTypeUpdates(term);
+	}
+	
 	/**********************************************
 	 *  Time dependent rules
 	 ***********************************************/
@@ -319,7 +340,8 @@ public class GdlTypeIdentifier {
 		//Update all occurrences
 		for (GdlTermOccurrence occ : data.getOccurences()) {
 			IGdlArgumentListDeclaration parent = occ.getDirectParent();
-			if (!argumentLists.get(parent).getArgumentType(occ.getArgumentIndex()).equals(foundType)) {
+//			if (!argumentLists.get(parent).getArgumentType(occ.getArgumentIndex()).equals(foundType)) {
+			if (canPushUpdatesTo(declaration, parent, occ.getArgumentIndex())) {
 				System.out.println(":T) "+declaration + " ==> " + parent + (occ.getArgumentIndex()+1) + "/" + parent.getArity() + " :: " + foundType);
 				updateArgumentListArgumentType( parent, occ.getArgumentIndex(), foundType);		
 			}
