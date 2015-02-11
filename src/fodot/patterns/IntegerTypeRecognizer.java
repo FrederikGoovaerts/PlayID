@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import fodot.objects.file.IFodotFile;
+import fodot.objects.file.IFodotFileElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.typeenum.FodotNumericalTypeRangeEnumeration;
@@ -30,23 +31,38 @@ public class IntegerTypeRecognizer implements IFodotOptimizer {
 				if (!type.isRelatedTo(FodotType.INTEGER)
 						//It should only contain converted integers
 						&& onlyContainsConvertedIntegers(type)) {
-					
+
 					FodotNumericalTypeRangeEnumeration range = getRangeEnumeration(type);
 
 					if (range != null) {
 						//Set Integer as superclass for these types
 						type.addSupertype(FodotType.INTEGER);
-						
-						
-						//Find all structures that contain this type, and add the range
-						for (IFodotElement el3 : file.getDirectElementsOfClass(FodotStructure.class)) {
-							FodotStructure structure = (FodotStructure) el3;
-							if (structure.getVocabulary().equals(voc)) {
-								structure.addElement(range);
+
+
+						for (IFodotElement el3 : file.getDirectFodotElements()) {
+							IFodotFileElement fileElement = (IFodotFileElement) el3;
+							
+
+							//All structures of this vocabulary has to add the range
+							if (fileElement instanceof FodotStructure) {
+								FodotStructure structure = (FodotStructure) fileElement;
+								if (structure.getVocabulary().equals(voc)) {
+									structure.addElement(range);
+								}
+							}
+							
+							//Check if it requires the vocabulary and update its constants of the type
+							if (fileElement.getPrerequiredElements().contains(voc)) {
+								for (IFodotElement el4 : fileElement.getAllInnerElementsOfClass(FodotConstant.class)) {
+									FodotConstant constant = (FodotConstant) el4;
+									if (constant.getType().equals(type)) {
+										constant.setValue(Integer.toString(extractValue(constant)));
+									}
+								}
 							}
 						}
 					}
-						
+
 				}
 			}
 		}
@@ -78,28 +94,28 @@ public class IntegerTypeRecognizer implements IFodotOptimizer {
 		if (!onlyContainsConvertedIntegers(type) || type.getDomainElements().isEmpty()) {
 			return null;
 		}
-		
+
 		List<Integer> values = new ArrayList<Integer>();
 		for (IFodotDomainElement dom : type.getDomainElements()) {
 			values.add(extractValue((FodotConstant)dom));	
 		}
-		
+
 		Collections.sort(values);
-		
+
 		if (!containsOnlySequentialNumbers(values)) {
 			return null;
 		}
-		
+
 		int head = values.get(0);
 		int last = values.get(values.size()-1);
-		
+
 		return new FodotNumericalTypeRangeEnumeration(type, new FodotConstant(Integer.toString(head), type), new FodotConstant(Integer.toString(last), type));
 	}
 
 	private int extractValue(FodotConstant constant) {
 		return Integer.parseInt(constant.getValue().replaceFirst("i_", "").trim());
 	}
-	
+
 	private boolean containsOnlySequentialNumbers(List<Integer> values) {
 		for (int i = 0; i < values.size() - 1; i++) {
 			if (values.get(i) != values.get(i+1) - 1) {
