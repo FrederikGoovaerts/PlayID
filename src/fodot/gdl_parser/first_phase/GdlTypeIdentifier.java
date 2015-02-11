@@ -246,14 +246,13 @@ public class GdlTypeIdentifier {
 		}		
 	}
 
-	private static final String NUMBER_REGEX = "^[0-9]+$";
 	
 	private boolean canPushTypeUpdates(IGdlTermDeclaration term) {
 		GdlTermData data = terms.get(term);
 		return !data.hasOnlyType(unfilledType)
 				&& !data.hasMultipleTypes()
 				&& !(term instanceof GdlConstantDeclaration
-						&& ((GdlConstantDeclaration)term).getConstant().getValue().matches(NUMBER_REGEX));
+						&& ((GdlConstantDeclaration)term).getConstant().getValue().matches(NameUtil.NUMBER_REGEX));
 	}
 
 	private boolean canPushUpdatesTo(IGdlTermDeclaration term, IGdlArgumentListDeclaration argumentList, int argIndex) {

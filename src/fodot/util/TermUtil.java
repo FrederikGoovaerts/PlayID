@@ -9,6 +9,8 @@ import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;
 
 public class TermUtil {
+	
+	
 	public static List<String> getValues(List<FodotConstant> constants) {
 		List<String> result = new ArrayList<String>();
 		for (FodotConstant c : constants) {

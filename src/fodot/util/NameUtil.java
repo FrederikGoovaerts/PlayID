@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fodot.exceptions.fodot.FodotException;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotType;
 
@@ -50,34 +51,59 @@ public class NameUtil {
 
 	}
 
-	public static String convertToValidPredicateName(String name) {
-		if (name == null) {
-			throw new IllegalArgumentException("Name can't be null");
-		}
-		
+	private static String tryConvertingToValidName(String name) {
 		if (isValidName(name)) {
 			return name;
 		}
-		
+
 		String newName = name.replaceAll("-", "_");
 		if (isValidName(newName)) {
 			return newName;
 		}
 		newName = name.replaceAll(NON_ALPHA_NUMERIC_REGEX, "");
+		return newName;
+	}
+	
+	public static String convertToValidPredicateName(String name) {
+		if (name == null) {
+			throw new IllegalArgumentException("Name can't be null");
+		}
+
+		String newName = tryConvertingToValidName(name);
 		if (isValidName(newName)) {
 			return newName;
 		}
 		return "pr_" + newName;
 	}
 
+	public static final String NUMBER_REGEX = "^[-]?[0-9]+$";
+	public static final String POSITIVE_NUMBER_REGEX = "^[0-9]+$";
+	public static final String NEGATIVE_NUMBER_REGEX = "^[-][0-9]+$";
+
 	public static String convertToValidConstantName(String name, FodotType type) {
-		//TODO: optimize this
-		if (name.substring(0, 1).matches("^[0-9]+$") && !type.isASubtypeOf(FodotType.INTEGER)) {
-			return "i_" + name;
+		if (!type.isASubtypeOf(FodotType.INTEGER)) {
+			if (name.matches(POSITIVE_NUMBER_REGEX)) {
+				return "i_" + name;
+			} else if (name.matches(NEGATIVE_NUMBER_REGEX)) {
+				return "i_m" + name.replace("-", "");
+			}
 		}
-		return name;
+		
+		String newName = tryConvertingToValidName(name);
+		if (isValidName(newName)) {
+			return newName;
+		}
+		return newName;
 	}
 	
+	public static int convertConstantNameToInteger(String name) {
+		if (!name.startsWith("i_")) {
+			throw new FodotException("Given constant was never a number");
+		}
+		
+		return Integer.parseInt( name.replaceAll("i_", "").replaceAll("m", "-") );
+	}
+
 	/**
 	 * Checks if the string is a valid name for a variable name in FodotIDP
 	 * @param name
@@ -102,9 +128,9 @@ public class NameUtil {
 		}
 		return type.getName().trim().substring(0, 1).toLowerCase();
 	}
-	
+
 	public static void solveNameCollisions(Collection<? extends String> prohibitedNames, Collection<? extends FodotVariable> variables) {
-		
+
 		/* The "Claimed Names" set contains the prohibited names as well as all variablenames.
 		 * This is used for generating a new name.
 		 * DON'T USE THIS TO CHECK IF THE VARIABLE SHOULD CHANGE NAME, IT WILL ALWAYS RESULT IN "TRUE"
@@ -113,16 +139,17 @@ public class NameUtil {
 		for (FodotVariable otherVar : variables) {
 			claimedNames.add(otherVar.getName());
 		}
-		
+
 		for (FodotVariable var : variables) {
 			if (prohibitedNames.contains(var.getName())) {
 				var.setName(generateVariableName(var.getName(), var.getType(), claimedNames));
 			}
 		}
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
+
 }

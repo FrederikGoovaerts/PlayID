@@ -13,6 +13,7 @@ import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
+import fodot.util.NameUtil;
 
 public class IntegerTypeRecognizer implements IFodotOptimizer {
 
@@ -113,7 +114,7 @@ public class IntegerTypeRecognizer implements IFodotOptimizer {
 	}
 
 	private int extractValue(FodotConstant constant) {
-		return Integer.parseInt(constant.getValue().replaceFirst("i_", "").trim());
+		return NameUtil.convertConstantNameToInteger(constant.getValue());
 	}
 
 	private boolean containsOnlySequentialNumbers(List<Integer> values) {

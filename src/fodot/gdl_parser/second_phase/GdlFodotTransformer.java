@@ -438,7 +438,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		typeList.add(getTimeType());
 		typeList.add(getPlayerType());
 		typeList.add(getActionType());
-		this.doPredicateDeclaration = createPredicateDeclaration("do", typeList);
+		this.doPredicateDeclaration = createPredicateDeclaration("does", typeList);
 
 		ArrayList<FodotType> typeList2 = new ArrayList<>();
 		typeList2.add(getTimeType());
