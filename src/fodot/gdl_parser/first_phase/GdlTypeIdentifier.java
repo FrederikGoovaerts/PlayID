@@ -509,7 +509,7 @@ public class GdlTypeIdentifier {
 
 				this.dynamicPredicates);
 
-		System.out.println(vocabulary.toString());
+//		System.out.println(vocabulary.toString());
 
 		return vocabulary;
 	}

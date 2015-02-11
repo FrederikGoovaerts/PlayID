@@ -167,7 +167,7 @@ public class GdlFodotSentenceTransformer {
 //				elements.add(createTimeVariable());
 //			}
 
-			List<IFodotTerm> arguments = generateTerms(relation.getBody());
+			List<IFodotTerm> arguments = generateTerms(relation.getBody(), trans.removeTimeTypes(decl.getArgumentTypes()));
 			if (trans.getGdlVocabulary().isDynamic(relation)) {
 				arguments.add(0, createTimeVariable());
 			}
@@ -224,8 +224,8 @@ public class GdlFodotSentenceTransformer {
 		GdlTerm arg1 = distinct.getArg1();
 		GdlTerm arg2 = distinct.getArg2();
 
-		IFodotTerm arg1Fodot = generateTerm(arg1);
-		IFodotTerm arg2Fodot = generateTerm(arg2);
+		IFodotTerm arg1Fodot = generateTerm(arg1, null);
+		IFodotTerm arg2Fodot = generateTerm(arg2, null);
 
 		return createDistinct(
 				arg1Fodot,
@@ -238,17 +238,18 @@ public class GdlFodotSentenceTransformer {
 	/**********************************************
 	 *  Term processing
 	 ***********************************************/
-	public List<IFodotTerm> generateTerms(List<GdlTerm> terms) {
+	public List<IFodotTerm> generateTerms(List<GdlTerm> terms, List<FodotType> types) {
 		List<IFodotTerm> result = new ArrayList<>();
-		for (GdlTerm t : terms) {
-			result.add(generateTerm(t));
+		for (int i = 0; i < terms.size(); i++) {
+			FodotType type = types == null ? null : types.get(i);
+			result.add(generateTerm(terms.get(i), type));
 		}
 		return result;
 	}
 	
-	public IFodotTerm generateTerm(GdlTerm term) {
+	public IFodotTerm generateTerm(GdlTerm term, FodotType type) {
 		if (term instanceof GdlConstant) {
-			return generateConstant((GdlConstant) term, null); //TODO: type meegeven bij genereren van term
+			return generateConstant((GdlConstant) term, type);
 		} else if (term instanceof GdlVariable) {
 			return generateVariable((GdlVariable) term);
 		} else if (term instanceof GdlFunction){
@@ -263,7 +264,11 @@ public class GdlFodotSentenceTransformer {
 //	}
 	
 	public FodotConstant generateConstant(GdlConstant gdlConst, FodotType type) {
-		return trans.getGdlVocabulary().getConstant(gdlConst, type);
+		FodotConstant result =  trans.getGdlVocabulary().getConstant(gdlConst, type);
+		if (result == null) {
+			throw new GdlTransformationException("Not known constant and type: " + gdlConst + ", " + type);
+		}
+		return result;
 	}
 //	
 	public FodotVariable generateVariable(GdlVariable gdlVar) {	
@@ -291,7 +296,7 @@ public class GdlFodotSentenceTransformer {
 
 	public FodotFunction generateFunction(GdlFunction gdlFunc) {		
 		FodotTypeFunctionDeclaration decl = trans.getGdlVocabulary().getFunctionDeclaration(gdlFunc);
-		return createFunction( decl, generateTerms(gdlFunc.getBody()) );
+		return createFunction( decl, generateTerms(gdlFunc.getBody(), decl.getArgumentTypes()) );
 	}
 
 	/**********************************************/
@@ -378,7 +383,7 @@ public class GdlFodotSentenceTransformer {
 			FodotArgumentListDeclaration declaration) {
 		List<IFodotTerm> arguments = new ArrayList<IFodotTerm>();		
 		arguments.add(createTimeVariable());
-		arguments.addAll(generateTerms(sentence.getBody()));
+		arguments.addAll(generateTerms(sentence.getBody(), trans.removeTimeTypes(declaration.getArgumentTypes())));
 		return arguments;
 	}
 
@@ -391,7 +396,6 @@ public class GdlFodotSentenceTransformer {
 			FodotPredicateDeclaration declaration) {
 		return createPredicate(declaration, processSentenceArgumentsTimed(sentence, declaration));
 	}
-
 	/**********************************************/
 
 

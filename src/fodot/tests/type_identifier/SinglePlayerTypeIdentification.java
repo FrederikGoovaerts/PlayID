@@ -17,7 +17,7 @@ SingleplayerTransformationTest {
 		
 		GdlTypeIdentifier identifier = new GdlTypeIdentifier();
 		GdlInspector.inspect(parser.getGame(), identifier.createTransformer());
-		identifier.generateTranslationData();
+		System.out.println(identifier.generateTranslationData());
 	}
 
 }
