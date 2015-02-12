@@ -2,6 +2,7 @@ package fodot.communication;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import fodot.communication.gdloutput.GdlActionPrinter;
@@ -22,11 +23,12 @@ import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.FodotStructure;
 import fodot.patterns.ChainFodotOptimizer;
 import fodot.patterns.IFodotOptimizer;
+import fodot.patterns.IntegerTypeRecognizer;
 
 public class PlayIdProcessor {
 
 	private static final IActionOutputter DEFAULT_OUTPUTTER = new GdlActionPrinter();
-	private static final IFodotOptimizer DEFAULT_OPTIMIZER = new ChainFodotOptimizer();
+	private static final IFodotOptimizer DEFAULT_OPTIMIZER = new ChainFodotOptimizer(Arrays.asList(new IntegerTypeRecognizer()));
 	
 	private IActionOutputter outputter;
 	private IFodotOptimizer optimizer;
@@ -42,11 +44,11 @@ public class PlayIdProcessor {
 	}
 	
 	public PlayIdProcessor(IActionOutputter outputter) {
-		this(outputter, getDefaultOptimizer());
+		this(outputter, DEFAULT_OPTIMIZER);
 	}
 
 	public PlayIdProcessor() {
-		this(getDefaultOutputter());
+		this(DEFAULT_OUTPUTTER);
 	}	
 
 	/**********************************************/
@@ -62,11 +64,6 @@ public class PlayIdProcessor {
 	public void setOutputter(IActionOutputter outputter) {
 		this.outputter = outputter;
 	}	
-
-	public static IActionOutputter getDefaultOutputter() {
-		return DEFAULT_OUTPUTTER;
-	}
-
 	/**********************************************/
 
 	/**********************************************
@@ -80,10 +77,6 @@ public class PlayIdProcessor {
 	public void setOptimizer(IFodotOptimizer optimizer) {
 		this.optimizer = optimizer;
 	}
-
-	public static IFodotOptimizer getDefaultOptimizer() {
-		return DEFAULT_OPTIMIZER;
-	}	
 
 	/**********************************************/
 
@@ -102,7 +95,7 @@ public class PlayIdProcessor {
 		GdlParser parser = new GdlParser(gdlFile);
 		parser.run();
 		IFodotFile parsedFodotFile = parser.getFodotFile();
-		
+		parsedFodotFile = getOptimizer().improve(parsedFodotFile);
 		
 		//Create IDPfile in same location as GDL file
 		File idpFile = IdpFileWriter.createIDPFileBasedOn(gdlFile);
@@ -111,7 +104,7 @@ public class PlayIdProcessor {
 		//Make IDP solve it
 		IIdpCaller caller = new IdpCaller(false);
 		String idpResult = caller.callIDP(idpFile);
-
+		
 		//Process results
 		IdpResultTransformer resultTransformer = new IdpResultTransformer(parsedFodotFile, idpResult);
 		List<FodotStructure> models = resultTransformer.getModels();

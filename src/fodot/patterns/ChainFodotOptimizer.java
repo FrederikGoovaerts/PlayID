@@ -20,7 +20,7 @@ public class ChainFodotOptimizer implements IFodotOptimizer {
 	 *  Constructors
 	 ***********************************************/
 
-	public ChainFodotOptimizer(List<IFodotOptimizer> optimizers) {
+	public ChainFodotOptimizer(List<? extends IFodotOptimizer> optimizers) {
 		setOptimizers(optimizers);
 	}
 	

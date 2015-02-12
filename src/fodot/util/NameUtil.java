@@ -97,6 +97,10 @@ public class NameUtil {
 	}
 	
 	public static int convertConstantNameToInteger(String name) {
+		if (name.matches(NUMBER_REGEX)) {
+			return Integer.parseInt(name);
+		}
+		
 		if (!name.startsWith("i_")) {
 			throw new FodotException("Given constant was never a number");
 		}
