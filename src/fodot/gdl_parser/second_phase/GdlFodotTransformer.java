@@ -32,7 +32,6 @@ import fodot.gdl_parser.GdlVocabulary;
 import fodot.gdl_parser.first_phase.data.declarations.GdlPredicateDeclaration;
 import fodot.gdl_parser.second_phase.data.FodotCompoundData;
 import fodot.gdl_parser.second_phase.data.FodotNextData;
-import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
