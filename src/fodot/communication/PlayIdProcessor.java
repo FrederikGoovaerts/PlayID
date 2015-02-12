@@ -105,6 +105,16 @@ public class PlayIdProcessor {
 		IIdpCaller caller = new IdpCaller(false);
 		String idpResult = caller.callIDP(idpFile);
 		
+		
+		
+		//TEMPORAL IDP BUG FIX TODO delete me when warning is fixed
+		String stupidWarning = "Warning: XSB support is not available. Option xsb is ignored.\n\n";
+		if (idpResult.contains(stupidWarning)) {
+			idpResult = idpResult.replaceAll(stupidWarning, "");
+		}
+		
+		
+		
 		//Process results
 		IdpResultTransformer resultTransformer = new IdpResultTransformer(parsedFodotFile, idpResult);
 		List<FodotStructure> models = resultTransformer.getModels();
