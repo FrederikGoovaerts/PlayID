@@ -340,7 +340,7 @@ public class FodotStructureParser {
 	}
 
 
-	private static String RANGE_REGEX = "^[{][\\s]*[0-9]+[.][.][0-9]+[\\s]*[}]$";
+	private static String RANGE_REGEX = "^[{][\\s]*[-]?[0-9]+[.][.][-]?[0-9]+[\\s]*[}]$";
 
 	private boolean containsRange(String line) {
 		return line.trim().matches(RANGE_REGEX);
