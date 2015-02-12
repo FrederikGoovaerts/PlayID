@@ -9,6 +9,8 @@ import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.FormulaUtil;
 
 /**
+ * DEPRECATED
+ *
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
  */
 public class LTCPool {

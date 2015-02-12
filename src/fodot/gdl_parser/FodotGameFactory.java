@@ -87,15 +87,11 @@ public class FodotGameFactory {
 	 **************************************************************************/
 
 	public FodotGameFactory(GdlFodotTransformer source,
-			LTCPool pool,
 			FodotPredicateDeclaration doPred,
 			FodotPredicateDeclaration terminalPred,
 			int timeLimit) {
 
-		if(!source.isInternalPool(pool))
-			throw new IllegalArgumentException("Pool and source are not a match.");
 		this.source = source;
-		this.pool = pool;
 		this.doPredicateDeclaration = doPred;
 		this.terminalTimePredicateDeclaration = terminalPred;
 		this.turnLimit = timeLimit;
@@ -103,10 +99,9 @@ public class FodotGameFactory {
 	}
 
 	public FodotGameFactory(GdlFodotTransformer source,
-			LTCPool pool,
 			FodotPredicateDeclaration doPred,
 			FodotPredicateDeclaration terminalPred) {
-		this(source, pool, doPred, terminalPred, DEFAULT_TURN_LIMIT);
+		this(source, doPred, terminalPred, DEFAULT_TURN_LIMIT);
 	}
 
 	/***************************************************************************
@@ -114,7 +109,6 @@ public class FodotGameFactory {
 	 **************************************************************************/
 
 	private GdlFodotTransformer source;
-	private LTCPool pool;
 
 	private FodotFunctionFullDeclaration startFunctionDeclaration;
 	private FodotFunctionFullDeclaration nextFunctionDeclaration;
@@ -241,8 +235,8 @@ public class FodotGameFactory {
 			for (FodotPredicateDeclaration declaration : source.getGdlVocabulary().getDynamicPredicates()) {
 				//        	toReturn.addElement(createComment("LTC for " + declaration.getName()));
 				//            toReturn.addElement(this.pool.getTimedVerionOf(declaration));
-				toReturn.addElement(this.pool.getInitialOf(declaration));
-				toReturn.addElement(this.pool.getCauseOf(declaration));
+				toReturn.addElement(this.source.getInitialOf(declaration)); // TODO POOLWORK
+				toReturn.addElement(this.source.getCauseOf(declaration)); // TODO POOLWORK
 				//				toReturn.addElement(this.pool.getCauseNotOf(declaration));
 				toReturn.addElement(createBlankLines(1));
 			}
@@ -289,7 +283,8 @@ public class FodotGameFactory {
 					createInductiveSentence(
 							createInductiveDefinitionConnector(
 									createPredicate(declaration, argList),
-									createPredicate(pool.getInitialOf(declaration), iArgList)
+									createPredicate(this.source.getInitialOf(declaration), iArgList)//TODO POOLWORK
+									//createPredicate(null, iArgList)
 									)
 							)
 					);
@@ -310,7 +305,8 @@ public class FodotGameFactory {
 									varSet,
 									createInductiveDefinitionConnector(
 											createPredicate(declaration,argList),
-											createPredicate(pool.getCauseOf(declaration),cArgList)
+											createPredicate(this.source.getCauseOf(declaration),cArgList)// TODO POOLWORK
+											//createPredicate(null,cArgList)
 											)
 									)
 							)
@@ -504,7 +500,8 @@ public class FodotGameFactory {
 		}
 		for (FodotPredicateDeclaration declaration : initMap.keySet()) {
 			toReturn.addElement(
-					createPredicateEnumeration(this.pool.getInitialOf(declaration),
+					createPredicateEnumeration(this.source.getInitialOf(declaration), //TODO POOLWORK
+					//createPredicateEnumeration(null,
 							new ArrayList<>(initMap.get(declaration)))
 					);
 		}

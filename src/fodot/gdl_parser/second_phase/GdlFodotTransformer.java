@@ -145,7 +145,8 @@ public class GdlFodotTransformer implements GdlTransformer {
 			throw new IllegalArgumentException();
 		if(ownRole == null)
 			ownRole = role;
-		getPlayerType().addDomainElement(role);
+        // Should already be done in the first phase
+		//getPlayerType().addDomainElement(role);
 	}
 
 	public FodotConstant getOwnRole() {
@@ -158,102 +159,9 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 	public FodotConstant convertRole(GdlConstant term){
 		return getGdlVocabulary().getConstant(term, getPlayerType());
-		//		String rawName = term.getValue();
-		//		FodotConstant toReturn = createConstant(rawName, this.getPlayerType());
-		//		addTranslation(toReturn, term);
-		//		return toReturn;
 	}
 
 	/*** End of Roles subsection ***/
-
-
-	/*************************************
-	 * Predicate Pool
-	 */
-
-	private LTCPool pool;
-
-	public LTCPool getPool(){
-		return pool;
-	}
-
-	//Check wether an "external" pool is this object's pool
-	public boolean isInternalPool(LTCPool pool){
-		return this.pool == pool;
-	}
-
-	//	private FodotPredicateDeclaration getPredicate(String predName){
-	//		return this.pool.getPredicate(predName);
-	//	}
-
-	//	private  boolean isPredicateRegistered(String predName){
-	//		return pool.isPredicateRegistered(predName);
-	//	}
-	//
-	//	private boolean isFluentPredicateRegistered(String predName) {
-	//		return pool.isFluentPredicateRegistered(predName);
-	//	}
-
-	//	private boolean isStaticPredicateRegistered(String predName) {
-	//		return pool.isStaticPredicateRegistered(predName);
-	//	}
-
-	//	private void addFluentPredicate(FodotPredicateDeclaration pred){
-	//		this.pool.addFluentPredicate(pred);
-	//	}
-
-	//	private void convertFluentPredicateToStatic(String pred) {
-	//		this.pool.convertFluentPredicateToStatic(pred);
-	//	}
-	//
-	//	private void addStaticPredicate(FodotPredicateDeclaration staticPred){
-	//		this.pool.addStaticPredicate(staticPred);
-	//	}
-
-	//	private FodotPredicateDeclaration getCompoundStaticPredicate(String predName) {
-	//		return this.pool.getCompoundStaticPredicate(predName);
-	//	}
-	//
-	//	private void addCompoundStaticPredicate(FodotPredicateDeclaration pred) {
-	//		this.pool.addCompoundStaticPredicate(pred);
-	//	}
-	//
-	//	private boolean isCompoundStaticPredicateRegistered(String predName) {
-	//		return this.pool.isCompoundStaticPredicateRegistered(predName);
-	//	}
-	//
-
-	/*** End of Predicate Pool subsection ***/
-
-	/*************************************
-	 * Constants
-	 */
-
-	//	private void addConstant(FodotConstant constant) {
-	//		throw new RuntimeException();
-	//	}
-	//
-	//	private boolean isConstantRegistered(FodotConstant constant) {
-	//		return getAllType().containsDomainElement(constant);
-	//	}
-	//
-	//	public FodotConstant convertRawConstantName(GdlConstant constant) {
-	//		return convertConstantName(constant, getAllType());
-	//	}
-	//
-	//	public FodotConstant convertConstantName(GdlConstant constant, FodotType type) {
-	//
-	//		return getGdlVocabulary().getConstant(constant);
-	//
-	//		String rawName = constant.getValue();
-	//
-	//		String constantName = NameUtil.convertToValidConstantName(rawName, type);
-	//
-	//		FodotConstant toReturn = createConstant(constantName, type);
-	//		return toReturn;
-	//	}
-
-	/*** End of Constants subsection ***/
 
 	/*************************************
 	 * Initial values
@@ -426,7 +334,6 @@ public class GdlFodotTransformer implements GdlTransformer {
 		this.terminalSet = new HashSet<>();
 		this.compoundMap = new HashMap<>();
 		this.processingRules = false;
-		this.pool = new LTCPool(this.getTimeType());
 
 		List<FodotType> typeList = new ArrayList<>();
 		typeList.add(getTimeType());
@@ -442,7 +349,6 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 	public IFodotFile buildFodot() {
 		FodotGameFactory factory = new FodotGameFactory(this,
-				pool,
 				getDoPredicateDeclaration(),
 				terminalTimePredicateDeclaration);
 		return factory.createFodot();
@@ -486,26 +392,8 @@ public class GdlFodotTransformer implements GdlTransformer {
 					"processing relations is not allowed anymore.");
 
 		// Static: (pred x1 .. xn)
-		//		String originalPredName = relation.getName().getValue();
-		//		String predName = NameUtil.convertToValidPredicateName(originalPredName);
-		//		int predArity = relation.arity();
 
 		FodotPredicateDeclaration pred = getGdlVocabulary().getPredicateDeclaration(relation);
-		//If necessary, register predicate as static
-		//		if (!isStaticPredicateRegistered(predName)) {
-		//			if (isFluentPredicateRegistered(predName)){
-		//				convertFluentPredicateToStatic(predName);
-		//				pred = this.getPredicate(predName);
-		//			} else {
-		//				pred = new FodotPredicateDeclaration(predName,
-		//						FodotType.getSameTypeList(predArity, this.getAllType()));
-		//				this.addStaticPredicate(pred);
-		//			}
-		//		} else {
-		//			pred = this.getPredicate(predName);
-		//			if(pred.getAmountOfArgumentTypes() != predArity)
-		//				throw new IllegalStateException("Predicate differs in arity from before!");
-		//		}
 
 		List<IFodotTypeEnumerationElement> staticValues =
 				extractEnumerationList(relation, FormulaUtil.removeTypes(pred.getArgumentTypes(), getTimeType()));
@@ -563,7 +451,8 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 			GdlSentence predSentence = nextGdlTerm.toSentence();
 			FodotPredicateDeclaration originalPredicateDecl = this.processPredicate(predSentence);
-			FodotPredicateDeclaration causePredDecl = pool.getCauseOf(originalPredicateDecl);
+			FodotPredicateDeclaration causePredDecl = getCauseOf(originalPredicateDecl); //TODO POOLWORK (Fixed?)
+			//FodotPredicateDeclaration causePredDecl = null;
 
 			FodotPredicate causePred = sentenceTrans.generateTimedPredicate(predSentence, causePredDecl);
 
@@ -575,7 +464,9 @@ public class GdlFodotTransformer implements GdlTransformer {
 		}
 	}
 
-	@Override
+
+
+    @Override
 	public void processLegalRule(GdlRule rule) {
 		// legal(player, action) ==> do(time,player,action)
 
@@ -780,4 +671,27 @@ public class GdlFodotTransformer implements GdlTransformer {
 		}
 		return toReturn;
 	}
+
+    public FodotPredicateDeclaration getCauseOf(FodotPredicateDeclaration originalPredicateDecl) {
+        if(originalPredicateDecl.getAmountOfArgumentTypes()==0 ||
+                !originalPredicateDecl.getArgumentType(0).equals(gdlVocabulary.getTimeType()))
+            throw new IllegalArgumentException("This is not an LTC predicate");
+        return createPredicateDeclaration("C_" + originalPredicateDecl.getName(), originalPredicateDecl.getArgumentTypes());
+    }
+
+    public FodotPredicateDeclaration getCauseNotOf(FodotPredicateDeclaration originalPredicateDecl) {
+        if(originalPredicateDecl.getAmountOfArgumentTypes()==0 ||
+                !originalPredicateDecl.getArgumentType(0).equals(gdlVocabulary.getTimeType()))
+            throw new IllegalArgumentException("This is not an LTC predicate");
+        return createPredicateDeclaration("Cn_" + originalPredicateDecl.getName(), originalPredicateDecl.getArgumentTypes());
+    }
+
+    public FodotPredicateDeclaration getInitialOf(FodotPredicateDeclaration originalPredicateDecl) {
+        if(originalPredicateDecl.getAmountOfArgumentTypes()==0 ||
+                !originalPredicateDecl.getArgumentType(0).equals(gdlVocabulary.getTimeType()))
+            throw new IllegalArgumentException("This is not an LTC predicate");
+        return createPredicateDeclaration("I_" + originalPredicateDecl.getName(),
+                originalPredicateDecl.getArgumentTypes().subList(1,originalPredicateDecl.getAmountOfArgumentTypes()));
+    }
+
 }
