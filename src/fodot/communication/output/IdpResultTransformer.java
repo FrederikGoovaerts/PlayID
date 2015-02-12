@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import fodot.exceptions.idp.IdpParseException;
+import fodot.exceptions.idp.IdpSyntaxErrorException;
 import fodot.exceptions.idp.OutOfResourcesException;
 import fodot.exceptions.idp.UnsatisfiableIdpFileException;
 import fodot.fodot_parser.FodotStructureParser;
@@ -78,12 +79,14 @@ public class IdpResultTransformer {
 			
 			String line = it.next();
 			
-			if (isParseError(line)) {
-				throw new IdpParseException(line);
+			if (isSyntaxError(line)) {
+				throw new IdpSyntaxErrorException(line);
 			} else if (isUnsatisfiable(line)) {
 				throw new UnsatisfiableIdpFileException();
 			} else if (isOutOfResources(line)){
 				throw new OutOfResourcesException(line);
+			} else if (isError(line)) {
+				throw new IdpParseException(line);
 			} else if (isThrowAwayLine(line)){
 				//No-op
 			} else if (declaresNewStructure(line)) {
@@ -98,7 +101,7 @@ public class IdpResultTransformer {
 				
 				addModel(FodotStructureParser.parse(getInputFodot(), structureToParse));
 			} else {
-				throw new IllegalStateException("Can't process " + line);
+				throw new IdpParseException(line);
 			}
 		}
 
@@ -109,10 +112,14 @@ public class IdpResultTransformer {
 	/**********************************************
 	 *  Line recognizers
 	 ***********************************************/
-	private boolean isParseError(String line) {
+	private boolean isSyntaxError(String line) {
 		String trimmed = line.trim();
-		return trimmed.startsWith("Error: ")
-				|| trimmed.startsWith("This application has requested the Runtime to terminate it in an unusual way.");
+		return trimmed.startsWith("Error: ");
+	}
+	
+	private boolean isError(String line) {
+		String trimmed = line.trim();
+		return trimmed.startsWith("This application has requested the Runtime to terminate it in an unusual way.");
 	}
 
 	private boolean isOutOfResources(String line) {
