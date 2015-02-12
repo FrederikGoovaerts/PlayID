@@ -56,7 +56,7 @@ public class NameUtil {
 			return name;
 		}
 
-		String newName = name.replaceAll("-", "_");
+		String newName = name.replaceAll("-", "_").replace("+", "plus");
 		if (isValidName(newName)) {
 			return newName;
 		}

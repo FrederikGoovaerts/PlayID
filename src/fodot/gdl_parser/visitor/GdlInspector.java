@@ -6,6 +6,7 @@ import java.util.List;
 import org.ggp.base.util.game.Game;
 import org.ggp.base.util.gdl.GdlVisitor;
 import org.ggp.base.util.gdl.grammar.Gdl;
+import org.ggp.base.util.gdl.grammar.GdlPool;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
 
@@ -83,6 +84,13 @@ public class GdlInspector extends GdlVisitor{
             case "legal":
             	this.getTransformer().processLegalRelation(relation);
                 break;
+            //In case a rule is specified without body:
+            case "next":
+            case "goal":
+            case "terminal":
+            	visitRule(GdlPool.getRule(relation));            	
+            	break;
+            	//Redundant info:
             case "base":
                 //ignore this for now
                 break;

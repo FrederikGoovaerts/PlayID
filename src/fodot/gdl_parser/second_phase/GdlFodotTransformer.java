@@ -384,13 +384,11 @@ public class GdlFodotTransformer implements GdlTransformer {
 	}
 
 	private void addScore(Pair<IFodotTerm, IFodotTerm> score, IFodotFormula condition) {
-		if(scoreMap.containsKey(score)){
-			scoreMap.get(score).add(condition);
-		} else {
+		if(!scoreMap.containsKey(score)){
 			Set<IFodotFormula> newSet = new HashSet<>();
-			newSet.add(condition);
 			scoreMap.put(score,newSet);
 		}
+		scoreMap.get(score).add(condition);
 	}
 
 	/*** End of Score subsection ***/
@@ -493,7 +491,6 @@ public class GdlFodotTransformer implements GdlTransformer {
 		//		int predArity = relation.arity();
 
 		FodotPredicateDeclaration pred = getGdlVocabulary().getPredicateDeclaration(relation);
-
 		//If necessary, register predicate as static
 		//		if (!isStaticPredicateRegistered(predName)) {
 		//			if (isFluentPredicateRegistered(predName)){
@@ -510,8 +507,8 @@ public class GdlFodotTransformer implements GdlTransformer {
 		//				throw new IllegalStateException("Predicate differs in arity from before!");
 		//		}
 
-
-		List<IFodotTypeEnumerationElement> staticValues = extractEnumerationList(relation, FormulaUtil.removeTypes(pred.getArgumentTypes(), getTimeType()));
+		List<IFodotTypeEnumerationElement> staticValues =
+				extractEnumerationList(relation, FormulaUtil.removeTypes(pred.getArgumentTypes(), getTimeType()));
 
 		this.addStaticValue(pred, new FodotPredicateEnumerationElement(staticValues));
 
@@ -640,13 +637,19 @@ public class GdlFodotTransformer implements GdlTransformer {
 					condition);
 		}
 
-		IFodotFormula extendedCondition =
-				createImplies(
-						createPredicate(
-								terminalTimePredicateDeclaration,
-								sentenceTrans.createTimeVariable()
-								), condition
-						);
+		IFodotFormula extendedCondition;
+		//Empty: only contains empty formula connectors
+		if (condition.getAllInnerElementsOfClass(IFodotFormula.class).size() <= 1) {
+			extendedCondition = null;
+		} else {
+			extendedCondition =
+					createImplies(
+							createPredicate(
+									terminalTimePredicateDeclaration,
+									sentenceTrans.createTimeVariable()
+									), condition
+							);
+		}
 
 		this.addScore(score,extendedCondition);
 	}

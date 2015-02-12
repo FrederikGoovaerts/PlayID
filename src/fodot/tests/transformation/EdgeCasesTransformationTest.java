@@ -120,7 +120,7 @@ public class EdgeCasesTransformationTest {
 		testFor("test_distinct_beginning_rule");
 	}
 
-	
+	//TODO this testcase is probably invalid.
 	@Test(expected=Exception.class)
 	public void exception_invalid_function_arities_differ() {
 		testFor("test_invalid_function_arities_differ");

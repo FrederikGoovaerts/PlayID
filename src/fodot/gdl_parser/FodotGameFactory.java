@@ -65,6 +65,7 @@ import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationE
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveFunction;
 import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveSentence;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
@@ -203,7 +204,7 @@ public class FodotGameFactory {
 		//        }
 
 		Set<FodotPredicateDeclaration> dynamicPredicates = source.getGdlVocabulary().getDynamicPredicates();
-		
+
 		/**
 		 * Add all static predicates
 		 */
@@ -224,10 +225,10 @@ public class FodotGameFactory {
 			toReturn.addElement(createBlankLines(1));
 			toReturn.addElement(createComment("Dynamic predicates"));
 			toReturn.addAllElements(dynamicPredicates);
-			
-			
+
+
 			//Add causations and initials of these dynamic predicates
-			
+
 			toReturn.addElement(createBlankLines(1));
 			toReturn.addElement(createComment("LTC predicates for the fluent predicates"));
 			/**
@@ -242,7 +243,7 @@ public class FodotGameFactory {
 				//            toReturn.addElement(this.pool.getTimedVerionOf(declaration));
 				toReturn.addElement(this.pool.getInitialOf(declaration));
 				toReturn.addElement(this.pool.getCauseOf(declaration));
-//				toReturn.addElement(this.pool.getCauseNotOf(declaration));
+				//				toReturn.addElement(this.pool.getCauseNotOf(declaration));
 				toReturn.addElement(createBlankLines(1));
 			}
 		}
@@ -395,22 +396,33 @@ public class FodotGameFactory {
 			IFodotTerm playerTerm = scorePair.left;
 			IFodotTerm score = scorePair.right;
 			for (IFodotFormula formula : scoreMap.get(scorePair)) {
-				definitions.add(
-						createInductiveSentence(createInductiveDefinitionConnector(
-								createInductiveFunctionHead(
-										createFunction(
-												scoreFunctionDeclaration,
-												playerTerm
-												),
-												score
-										), FormulaUtil.makeVariableFree(formula)
-								)
-								)
-						);
+
+				FodotInductiveFunction scoreFunction = 
+						createInductiveFunctionHead(
+								createFunction(
+										scoreFunctionDeclaration,
+										playerTerm
+										),
+										score
+								);
+
+				//Check if no formula was specified: it is a general truth.
+				// (because of EDGECASE: 'distinct_beginning_rule.kif')
+				if (formula == null) {
+					toReturn.addElement(createSentence(scoreFunction));
+				} else {
+					definitions.add(
+							createInductiveSentence(createInductiveDefinitionConnector(
+									scoreFunction, FormulaUtil.makeVariableFree(formula)
+									)
+									)
+							);
+				}
 			}
 		}
-		toReturn.addElement(createInductiveDefinition(definitions));
-
+		if (!definitions.isEmpty()) {
+			toReturn.addElement(createInductiveDefinition(definitions));
+		}
 
 		/**
 		 * nodig: elke terminal *voorwaarde*
