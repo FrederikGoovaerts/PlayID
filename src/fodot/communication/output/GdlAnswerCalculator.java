@@ -78,7 +78,7 @@ public class GdlAnswerCalculator {
 	}
 	/**********************************************/
 	
-	private static final String ACTION_PREDICATE_NAME = "do";
+	private static final String ACTION_PREDICATE_NAME = "does";
 	
 	public List<GdlAction> generateActionSequence() {
 		FodotStructure bestModel = getBestModel();
