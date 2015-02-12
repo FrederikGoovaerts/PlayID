@@ -40,11 +40,16 @@ import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
+import fodot.patterns.gdl_vocabulary.GdlVocabularyChainOptimizer;
+import fodot.patterns.gdl_vocabulary.IGdlVocabularyOptimizer;
 import fodot.util.FormulaUtil;
 import fodot.util.NameUtil;
 
 public class GdlTypeIdentifier {
 
+	private static final IGdlVocabularyOptimizer DEFAULT_OPTIMIZER = new GdlVocabularyChainOptimizer();
+	private IGdlVocabularyOptimizer optimizer = DEFAULT_OPTIMIZER;
+	
 	/**********************************************
 	 *  Data maps
 	 ***********************************************/
@@ -509,12 +514,28 @@ public class GdlTypeIdentifier {
 
 				this.dynamicPredicates);
 
-//		System.out.println(vocabulary.toString());
+		vocabulary = this.getOptimizer().improve(vocabulary);
+		
+		System.out.println(vocabulary.toString());
 
 		return vocabulary;
 	}
 	/**********************************************/
 
+	/**********************************************
+	 *  Optimizer
+	 ***********************************************/
+
+	public IGdlVocabularyOptimizer getOptimizer() {
+		return optimizer;
+	}
+
+	public void setOptimizer(IGdlVocabularyOptimizer optimizer) {
+		this.optimizer = optimizer;
+	}
+	/**********************************************/
+
+	
 
 	/**********************************************
 	 *  GdlTransformer creator

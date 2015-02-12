@@ -1,4 +1,4 @@
-package fodot.patterns;
+package fodot.patterns.fodot_file;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +16,7 @@ import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
 import fodot.util.NameUtil;
 
-public class IntegerTypeRecognizer implements IFodotOptimizer {
+public class FodotIntegerTypeRecognizer implements IFodotOptimizer {
 
 	@Override
 	public IFodotFile improve(IFodotFile file) {

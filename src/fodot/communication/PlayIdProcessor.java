@@ -21,14 +21,14 @@ import fodot.exceptions.playid.PlayIdArgumentException;
 import fodot.gdl_parser.GdlParser;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.FodotStructure;
-import fodot.patterns.ChainFodotOptimizer;
-import fodot.patterns.IFodotOptimizer;
-import fodot.patterns.IntegerTypeRecognizer;
+import fodot.patterns.fodot_file.FodotChainOptimizer;
+import fodot.patterns.fodot_file.IFodotOptimizer;
+import fodot.patterns.fodot_file.FodotIntegerTypeRecognizer;
 
 public class PlayIdProcessor {
 
 	private static final IActionOutputter DEFAULT_OUTPUTTER = new GdlActionPrinter();
-	private static final IFodotOptimizer DEFAULT_OPTIMIZER = new ChainFodotOptimizer(Arrays.asList(new IntegerTypeRecognizer()));
+	private static final IFodotOptimizer DEFAULT_OPTIMIZER = new FodotChainOptimizer(Arrays.asList(new FodotIntegerTypeRecognizer()));
 	
 	private IActionOutputter outputter;
 	private IFodotOptimizer optimizer;

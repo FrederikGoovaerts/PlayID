@@ -20,6 +20,7 @@ import fodot.communication.gdloutput.IFodotGdlTranslator;
 import fodot.exceptions.gdl.GdlTransformationException;
 import fodot.gdl_parser.first_phase.data.declarations.GdlFunctionDeclaration;
 import fodot.gdl_parser.first_phase.data.declarations.GdlPredicateDeclaration;
+import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.structure.elements.typeenum.elements.FodoTypeFunctionEnumerationElement;
 import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
@@ -155,6 +156,27 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	/**********************************************/
 
 	/**********************************************
+	 *  Structure info
+	 ***********************************************/
+	Set<IFodotStructureElement> structureElements = new LinkedHashSet<IFodotStructureElement>();
+	
+	public void addStructureElement(IFodotStructureElement structureEl) {
+		this.structureElements.add(structureEl);
+	}
+	
+	public Set<IFodotStructureElement> getStructureElements() {
+		return new LinkedHashSet<IFodotStructureElement>(this.structureElements);
+	}
+	
+	public boolean containsStructureElements() {
+		return !this.structureElements.isEmpty();
+	}
+	
+
+	/**********************************************/
+
+	
+	/**********************************************
 	 *  Translations
 	 ***********************************************/
 
@@ -230,6 +252,12 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		builder.append(scoreType.getDeclaration().toCode()+"\n");
 		for (FodotType t : otherTypes) {
 			builder.append(t.getDeclaration().toCode()+"\n");			
+		}
+		if (containsStructureElements()) {
+			builder.append("\n== Structure elements ==\n");
+		}
+		for (IFodotStructureElement strucEl : getStructureElements()) {
+			builder.append(strucEl.toCode()+"\n");				
 		}
 		builder.append("====================\n");
 		return builder.toString();
