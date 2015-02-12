@@ -51,7 +51,6 @@ import org.ggp.base.util.Pair;
 import fodot.gdl_parser.second_phase.GdlFodotTransformer;
 import fodot.gdl_parser.second_phase.data.FodotCompoundData;
 import fodot.gdl_parser.second_phase.data.FodotNextData;
-import fodot.gdl_parser.util.LTCPool;
 import fodot.objects.comments.FodotComment;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.general.IFodotElement;
