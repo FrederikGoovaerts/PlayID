@@ -42,12 +42,7 @@ import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.FodotQuantifier;
 import fodot.objects.theory.elements.formulas.FodotTermComparator;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
-import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionBlock;
-import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionConnector;
-import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveFunction;
-import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveQuantifier;
-import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveSentence;
-import fodot.objects.theory.elements.inductivedefinitions.IFodotInductiveDefinitionElement;
+import fodot.objects.theory.elements.inductivedefinitions.*;
 import fodot.objects.theory.elements.terms.FodotArithmeticConnector;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotFunction;
@@ -422,8 +417,9 @@ public class FodotElementBuilder {
 	}
 
 	public static FodotFunctionEnumerationElement createFunctionEnumerationElement(
+			FodotFunctionDeclaration declaration,
 			Collection<? extends IFodotTypeEnumerationElement> elements, IFodotTypeEnumerationElement returnValue) {
-		return new FodotFunctionEnumerationElement(elements, returnValue);
+		return new FodotFunctionEnumerationElement(declaration, elements, returnValue);
 	}
 
 	public static FodotConstantFunctionEnumeration createConstantFunctionEnumeration(
@@ -442,7 +438,7 @@ public class FodotElementBuilder {
 
 	public static FodotPredicateEnumerationElement createPredicateEnumerationElement(
 			FodotPredicateDeclaration declaration, List<? extends IFodotTypeEnumerationElement> elements) {
-		return new FodotPredicateEnumerationElement(elements);
+		return new FodotPredicateEnumerationElement(declaration, elements);
 	}
 
 	public static FodotTypeEnumeration createTypeEnumeration(FodotType type, Collection<? extends IFodotTypeEnumerationElement> values) {
@@ -486,6 +482,10 @@ public class FodotElementBuilder {
 	public static FodotInductiveFunction createInductiveFunctionHead(FodotFunction function, IFodotTerm functionResult) {
 		return new FodotInductiveFunction(function, functionResult);
 	}
+
+    public static FodotInductivePredicate createInductivePredicateHead(FodotPredicate predicate) {
+        return new FodotInductivePredicate(predicate);
+    }
 
 	public static FodotInductiveSentence createInductiveSentence(IFodotInductiveDefinitionElement form) {
 		form = FormulaUtil.makeVariableFreeInductive(form);

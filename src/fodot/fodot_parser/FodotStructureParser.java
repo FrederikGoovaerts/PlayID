@@ -256,7 +256,7 @@ public class FodotStructureParser {
 		}
 
 		if (isSingleValue(line)) {
-			result.add(new FodotPredicateEnumerationElement(Arrays.asList(new FodotConstant(line.trim(), FodotType.BOOLEAN))));
+			result.add(new FodotPredicateEnumerationElement(decl, Arrays.asList(new FodotConstant(line.trim(), FodotType.BOOLEAN))));
 		} else if (containsDomain(line)) {
 			//Remove the brackets
 			String domainString = extractDomain(line);
@@ -266,7 +266,7 @@ public class FodotStructureParser {
 
 			//Parse all elements as if they were lists of type enumerations
 			for (String element : domainElements) {
-				result.add(	new FodotPredicateEnumerationElement(
+				result.add(	new FodotPredicateEnumerationElement(decl,
 						extractTypeEnumerationDomain(decl.getArgumentTypes(), element)));
 			}
 		} else {
@@ -309,7 +309,7 @@ public class FodotStructureParser {
 			IFodotTypeEnumerationElement functionReturn =
 					EnumerationUtil.toTypeEnumerationElement(resultString, decl.getReturnType());
 
-			result.add(new FodotFunctionEnumerationElement(functionValues, functionReturn));
+			result.add(new FodotFunctionEnumerationElement(decl, functionValues, functionReturn));
 		}
 		return result;
 	}

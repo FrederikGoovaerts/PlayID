@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fodot.exceptions.idp.*;
 import org.ggp.base.util.Pair;
 import org.ggp.base.util.files.FileUtils;
 import org.junit.AfterClass;
@@ -21,10 +22,6 @@ import fodot.communication.PlayIdProcessor;
 import fodot.exceptions.answer.AnswerException;
 import fodot.exceptions.fodot.FodotException;
 import fodot.exceptions.gdl.GdlTransformationException;
-import fodot.exceptions.idp.IdpParseException;
-import fodot.exceptions.idp.NoValidModelsException;
-import fodot.exceptions.idp.OutOfResourcesException;
-import fodot.exceptions.idp.UnsatisfiableIdpFileException;
 import fodot.gdl_parser.FodotGameFactory;
 import fodot.tests.transformation.SingleplayerTransformationTest;
 
@@ -90,6 +87,9 @@ public class SingleplayerIdpParseTest extends SingleplayerTransformationTest {
 		} catch (IdpParseException e) {
 			idpParseError.add(gameName);
 			throw e;
+        } catch (IdpSyntaxErrorException e) {
+            idpParseError.add(gameName);
+            throw e;
 		} catch (OutOfResourcesException e) {
 			outOfResources.add(gameName);
 			throw e;

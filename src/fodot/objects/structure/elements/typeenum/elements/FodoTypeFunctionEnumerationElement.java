@@ -9,6 +9,8 @@ import java.util.List;
 import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.FodotElementList;
 import fodot.objects.general.sorting.FodotElementComparators;
+import fodot.objects.theory.elements.terms.FodotFunction;
+import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.util.CollectionPrinter;
 
@@ -94,6 +96,13 @@ public class FodoTypeFunctionEnumerationElement extends
 	}
 	/**********************************************/
 
-	
+	@Override
+	public IFodotTerm toTerm() {
+		List<IFodotTerm> arguments = new ArrayList<IFodotTerm>();
+		for (IFodotTypeEnumerationElement element : getElements()) {
+			arguments.add(element.toTerm());
+		}
+		return new FodotFunction(getDeclaration(), arguments);
+	}
 
 }
