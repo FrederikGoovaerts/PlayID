@@ -190,20 +190,20 @@ public class GdlFodotTransformer implements GdlTransformer {
 	 * Static values
 	 */
 
-	private Map<FodotPredicateDeclaration,Set<IFodotPredicateEnumerationElement>>
+	private Map<FodotPredicateDeclaration,Set<List<IFodotTypeEnumerationElement>>>
 	staticValues;
 
-	private void addStaticValue(FodotPredicateDeclaration pred, IFodotPredicateEnumerationElement arguments){
+	private void addStaticValue(FodotPredicateDeclaration pred, List<IFodotTypeEnumerationElement> arguments){
 		if(staticValues.containsKey(pred)) {
 			staticValues.get(pred).add(arguments);
 		} else {
-			Set<IFodotPredicateEnumerationElement> newSet = new HashSet<>();
+			Set<List<IFodotTypeEnumerationElement>> newSet = new HashSet<>();
 			newSet.add(arguments);
 			staticValues.put(pred,newSet);
 		}
 	}
 
-	public Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> getStaticValues() {
+	public Map<FodotPredicateDeclaration, Set<List<IFodotTypeEnumerationElement>>> getStaticValues() {
 		return new HashMap<>(staticValues);
 	}
 
@@ -394,10 +394,14 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 		FodotPredicateDeclaration pred = getGdlVocabulary().getPredicateDeclaration(relation);
 
+
+
 		List<IFodotTypeEnumerationElement> staticValues =
 				extractEnumerationList(relation, FormulaUtil.removeTypes(pred.getArgumentTypes(), getTimeType()));
 
-		this.addStaticValue(pred, new FodotPredicateEnumerationElement(staticValues));
+
+		this.addStaticValue(pred, staticValues);
+		//this.addStaticValue(pred, new FodotPredicateEnumerationElement(staticValues));
 
 	}
 
