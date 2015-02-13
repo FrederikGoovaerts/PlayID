@@ -53,33 +53,6 @@ public class PlayIdProcessor {
 
 	/**********************************************/
 
-	/**********************************************
-	 *  Outputter
-	 ***********************************************/
-
-	public IActionOutputter getOutputter() {
-		return outputter;
-	}
-
-	public void setOutputter(IActionOutputter outputter) {
-		this.outputter = outputter;
-	}	
-	/**********************************************/
-
-	/**********************************************
-	 *  Optimizer
-	 ***********************************************/
-
-	public IFodotOptimizer getOptimizer() {
-		return optimizer;
-	}
-
-	public void setOptimizer(IFodotOptimizer optimizer) {
-		this.optimizer = optimizer;
-	}
-
-	/**********************************************/
-
 	
 	/**********************************************
 	 *  Process
@@ -134,6 +107,35 @@ public class PlayIdProcessor {
 
 	/**********************************************/
 
+
+	/**********************************************
+	 *  Outputter
+	 ***********************************************/
+
+	public IActionOutputter getOutputter() {
+		return outputter;
+	}
+
+	public void setOutputter(IActionOutputter outputter) {
+		this.outputter = outputter;
+	}	
+	/**********************************************/
+
+	/**********************************************
+	 *  Optimizer
+	 ***********************************************/
+
+	public IFodotOptimizer getOptimizer() {
+		return optimizer;
+	}
+
+	public void setOptimizer(IFodotOptimizer optimizer) {
+		this.optimizer = optimizer;
+	}
+
+	/**********************************************/
+	
+	
 	/**********************************************
 	 *  Main method
 	 ***********************************************/
