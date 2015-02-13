@@ -484,7 +484,7 @@ public class FodotGameFactory {
 		List<IFodotFunctionEnumerationElement> desiredResult = new ArrayList<IFodotFunctionEnumerationElement>();
 		List<? extends IFodotTypeEnumerationElement> ownRole = Arrays.asList(source.getOwnRole());
 		desiredResult.add(
-				createFunctionEnumerationElement(ownRole,createConstant("100", getNaturalNumberType())) );
+				createFunctionEnumerationElement(this.scoreFunctionDeclaration, ownRole,createConstant("100", getNaturalNumberType())) );
 		toReturn.addElement(
 				createFunctionEnumeration(
 						this.scoreFunctionDeclaration, desiredResult

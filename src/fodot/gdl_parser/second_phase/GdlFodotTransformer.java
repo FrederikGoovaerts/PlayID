@@ -381,7 +381,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		List<IFodotTypeEnumerationElement> initValues =
 				extractEnumerationList(predicate, FormulaUtil.removeTypes(fodotPredicate.getArgumentTypes(), getTimeType()));
 
-		this.addInitialValue(fodotPredicate, new FodotPredicateEnumerationElement(initValues));
+		this.addInitialValue(fodotPredicate, new FodotPredicateEnumerationElement(fodotPredicate, initValues));
 	}
 
 	@Override
@@ -397,7 +397,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		List<IFodotTypeEnumerationElement> staticValues =
 				extractEnumerationList(relation, FormulaUtil.removeTypes(pred.getArgumentTypes(), getTimeType()));
 
-		this.addStaticValue(pred, new FodotPredicateEnumerationElement(staticValues));
+		this.addStaticValue(pred, new FodotPredicateEnumerationElement(pred, staticValues));
 
 	}
 

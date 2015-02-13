@@ -422,8 +422,9 @@ public class FodotElementBuilder {
 	}
 
 	public static FodotFunctionEnumerationElement createFunctionEnumerationElement(
+			FodotFunctionDeclaration declaration,
 			Collection<? extends IFodotTypeEnumerationElement> elements, IFodotTypeEnumerationElement returnValue) {
-		return new FodotFunctionEnumerationElement(elements, returnValue);
+		return new FodotFunctionEnumerationElement(declaration, elements, returnValue);
 	}
 
 	public static FodotConstantFunctionEnumeration createConstantFunctionEnumeration(
@@ -442,7 +443,7 @@ public class FodotElementBuilder {
 
 	public static FodotPredicateEnumerationElement createPredicateEnumerationElement(
 			FodotPredicateDeclaration declaration, List<? extends IFodotTypeEnumerationElement> elements) {
-		return new FodotPredicateEnumerationElement(elements);
+		return new FodotPredicateEnumerationElement(declaration, elements);
 	}
 
 	public static FodotTypeEnumeration createTypeEnumeration(FodotType type, Collection<? extends IFodotTypeEnumerationElement> values) {

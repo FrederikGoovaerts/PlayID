@@ -110,5 +110,10 @@ public class FodotConstant extends FodotElement implements IFodotTerm, IFodotDom
 		return new HashSet<IFodotElement>();
 	}
 
+	@Override
+	public IFodotTerm toTerm() {
+		return this;
+	}
+
 
 }
