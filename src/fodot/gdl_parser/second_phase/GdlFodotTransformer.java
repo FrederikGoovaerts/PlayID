@@ -584,79 +584,15 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 		//Predicate: (pred x1 .. xn)
 
-		//		String originalPredName = predSentence.getName().getValue();
-		//		String predName = NameUtil.convertToValidPredicateName(originalPredName);
 
-		//		int amountOfArguments = predSentence.arity();
-
-		//If necessary, register predicate
-		//		if(!isPredicateRegistered(predName)) {
-		//			pred = new FodotPredicateDeclaration(
-		//					predName,
-		//					FodotType.getSameTypeList(amountOfArguments, getAllType())
-		//					);
-		//			this.addFluentPredicate(pred);
-		//		} else {
 
 
 		FodotPredicateDeclaration pred = getGdlVocabulary().getPredicateDeclaration(
 				new GdlPredicateDeclaration(predSentence.getName(), predSentence.arity()));
-		//			if(pred.getAmountOfArgumentTypes() != amountOfArguments)
-		//				throw new IllegalStateException("Predicate differs in arity from before!");
-		//		}
-
-		//		registerConstants(predSentence);
 
 		return pred;
 	}
 
-	//	public FodotPredicateDeclaration processCompoundStaticPredicate(GdlSentence predSentence) {
-	//		//Predicate: (pred x1 .. xn)
-	//
-	//		String originalPredName = predSentence.getName().getValue();
-	//		String predName = NameUtil.convertToValidPredicateName(originalPredName);
-	//
-	//		int amountOfArguments = predSentence.arity();
-	//
-	//		FodotPredicateDeclaration predDecl;
-	//
-	//		//If necessary, register predicate
-	//		if(!isCompoundStaticPredicateRegistered(predName)) {
-	//			predDecl = new FodotPredicateDeclaration(
-	//					predName,
-	//					FormulaUtil.createTypeList(getAllType(), amountOfArguments)
-	//					);
-	//			this.addCompoundStaticPredicate(predDecl);
-	//		} else {
-	//			predDecl = this.getCompoundStaticPredicate(predName);
-	//			if(predDecl.getAmountOfArgumentTypes() != amountOfArguments)
-	//				throw new IllegalStateException("Predicate differs in arity from before!");
-	//		}
-	//
-	//		//		registerConstants(predSentence);
-	//
-	//		return predDecl;
-	//	}
-
-	/**
-	 * Scan all body elements, if they are constants (ground in a non-built-in
-	 * predicate is equivalent with being a constant), add them as a constant
-	 * with the same type as its place in the predicate. Predicate should
-	 * be registered by now.
-	 * @param sentence
-	 */
-	//	private void registerConstants(GdlSentence sentence) {
-	//		for (int i = 0; i < sentence.arity(); i++) {
-	//			GdlTerm term = sentence.get(i);
-	//			if(term.isGround()) {
-	//				//Term is a constant, and only has a name, and arity 0
-	//				GdlConstant constant = (GdlConstant) term;
-	//				FodotConstant fodotConstant = convertRawConstantName(constant);
-	//				if(!isConstantRegistered(fodotConstant))
-	//					addConstant(fodotConstant);
-	//			}
-	//		}
-	//	}
 
 	/***************************************************************************
 	 * Helper methods
