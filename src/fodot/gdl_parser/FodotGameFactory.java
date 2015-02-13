@@ -353,6 +353,12 @@ public class FodotGameFactory {
 			for (FodotCompoundData data : compoundMap.get(predicate)) {
 				definitions.add(createInductiveSentence(createInductiveDefinitionConnector(data.getPredicate(), data.getFormula())));
 			}
+            if(this.source.getStaticValues().containsKey(predicate)) {
+                for (IFodotPredicateEnumerationElement enumerationElement : this.source.getStaticValues().get(predicate)) {
+                    //TODO Dit moet ergens kunnen maar ik snap de verschillende soorten enumeration elements niet goed.
+                    //createPredicate(predicate, enumerationElements);
+                }
+            }
 			toReturn.addElement(createInductiveDefinition(definitions));
 		}
 
@@ -517,10 +523,12 @@ public class FodotGameFactory {
 			toReturn.addElement(createComment("All values found in the static predicates"));
 		}
 		for (FodotPredicateDeclaration declaration : staticMap.keySet()) {
-			toReturn.addElement(
-					createPredicateEnumeration(declaration,
-							new ArrayList<>(staticMap.get(declaration)))
-					);
+            if(!this.source.getCompoundMap().containsKey(declaration)) {
+                toReturn.addElement(
+                        createPredicateEnumeration(declaration,
+                                new ArrayList<>(staticMap.get(declaration)))
+                );
+            }
 		}
 
 		return toReturn;
