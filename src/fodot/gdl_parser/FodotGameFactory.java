@@ -46,8 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
-import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import org.ggp.base.util.Pair;
 
 import fodot.gdl_parser.second_phase.GdlFodotTransformer;
@@ -355,14 +353,6 @@ public class FodotGameFactory {
 			for (FodotCompoundData data : compoundMap.get(predicate)) {
 				definitions.add(createInductiveSentence(createInductiveDefinitionConnector(data.getPredicate(), data.getFormula())));
 			}
-            if(this.source.getStaticValues().containsKey(predicate)) {
-
-                for (List<IFodotTypeEnumerationElement> enumerationElements :
-                        this.source.getStaticValues().get(predicate)) {
-                    //TODO Dit moet ergens kunnen maar ik snap de verschillende soorten enumeration elements niet goed.
-                    createPredicate(predicate,enumerationElements);
-                }
-            }
 			toReturn.addElement(createInductiveDefinition(definitions));
 		}
 
@@ -515,30 +505,22 @@ public class FodotGameFactory {
 					);
 		}
 
-        //TODO ONLY DO THIS WHEN NOT INDUCTIVELY DEFINED
 		/**
 		 * nodig: *waarden* voor elk statisch *predicaat*
 		 * resultaat:
 		 * *predicaat*={*waarden()*}
 		 */
-		Map<FodotPredicateDeclaration, Set<List<IFodotTypeEnumerationElement>>> staticMap
+		Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> staticMap
 		= this.source.getStaticValues();
 		if (!staticMap.isEmpty()) {
 			toReturn.addElement(createBlankLines(1));
 			toReturn.addElement(createComment("All values found in the static predicates"));
 		}
 		for (FodotPredicateDeclaration declaration : staticMap.keySet()) {
-            if(!this.source.getCompoundMap().containsKey(declaration)) {
-                List<FodotPredicateEnumerationElement> elements = new ArrayList<>();
-                for (List<IFodotTypeEnumerationElement> el : staticMap.get(declaration)) {
-                    elements.add(new FodotPredicateEnumerationElement(el));
-                }
-                toReturn.addElement(
-                        createPredicateEnumeration(declaration,
-                                elements
-                        )
-                );
-            }
+			toReturn.addElement(
+					createPredicateEnumeration(declaration,
+							new ArrayList<>(staticMap.get(declaration)))
+					);
 		}
 
 		return toReturn;
