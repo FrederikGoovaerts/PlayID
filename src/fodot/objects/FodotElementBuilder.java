@@ -42,12 +42,7 @@ import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.FodotQuantifier;
 import fodot.objects.theory.elements.formulas.FodotTermComparator;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
-import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionBlock;
-import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionConnector;
-import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveFunction;
-import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveQuantifier;
-import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveSentence;
-import fodot.objects.theory.elements.inductivedefinitions.IFodotInductiveDefinitionElement;
+import fodot.objects.theory.elements.inductivedefinitions.*;
 import fodot.objects.theory.elements.terms.FodotArithmeticConnector;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotFunction;
@@ -487,6 +482,10 @@ public class FodotElementBuilder {
 	public static FodotInductiveFunction createInductiveFunctionHead(FodotFunction function, IFodotTerm functionResult) {
 		return new FodotInductiveFunction(function, functionResult);
 	}
+
+    public static FodotInductivePredicate createInductivePredicateHead(FodotPredicate predicate) {
+        return new FodotInductivePredicate(predicate);
+    }
 
 	public static FodotInductiveSentence createInductiveSentence(IFodotInductiveDefinitionElement form) {
 		form = FormulaUtil.makeVariableFreeInductive(form);
