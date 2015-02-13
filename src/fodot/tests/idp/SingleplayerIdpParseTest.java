@@ -33,6 +33,7 @@ public class SingleplayerIdpParseTest extends SingleplayerTransformationTest {
 	private static List<String> success;
 	private static List<String> gdlTransformError;
 	private static List<String> fodotTransformError;
+	private static List<String> idpSyntaxError;
 	private static List<String> idpParseError;
 	private static List<String> outOfResources;
 	private static List<String> unsatisfiable;
@@ -46,6 +47,7 @@ public class SingleplayerIdpParseTest extends SingleplayerTransformationTest {
 		gdlTransformError = new ArrayList<String>();
 		fodotTransformError = new ArrayList<String>();
 		idpParseError = new ArrayList<String>();
+		idpSyntaxError = new ArrayList<String>();
 		outOfResources = new ArrayList<String>();
 		unsatisfiable = new ArrayList<String>();
 		noModels = new ArrayList<String>();
@@ -57,7 +59,8 @@ public class SingleplayerIdpParseTest extends SingleplayerTransformationTest {
 		lists.add(Pair.of("Successful", success));
 		lists.add(Pair.of("GDL transformation error", gdlTransformError));
 		lists.add(Pair.of("FO(.) transformation error", fodotTransformError));
-		lists.add(Pair.of("IDP syntax error", idpParseError));
+		lists.add(Pair.of("IDP syntax error", idpSyntaxError));
+		lists.add(Pair.of("IDP parser error", idpParseError));
 		lists.add(Pair.of("Out of Resources", outOfResources));
 		lists.add(Pair.of("Unsatisfiable", unsatisfiable));
 		lists.add(Pair.of("No models found", noModels));
@@ -88,7 +91,7 @@ public class SingleplayerIdpParseTest extends SingleplayerTransformationTest {
 			idpParseError.add(gameName);
 			throw e;
         } catch (IdpSyntaxErrorException e) {
-            idpParseError.add(gameName);
+            idpSyntaxError.add(gameName);
             throw e;
 		} catch (OutOfResourcesException e) {
 			outOfResources.add(gameName);
