@@ -1,44 +1,5 @@
 package fodot.gdl_parser;
 
-import static fodot.objects.FodotElementBuilder.createAddition;
-import static fodot.objects.FodotElementBuilder.createAnd;
-import static fodot.objects.FodotElementBuilder.createBlankLines;
-import static fodot.objects.FodotElementBuilder.createComment;
-import static fodot.objects.FodotElementBuilder.createCompleteFunctionDeclaration;
-import static fodot.objects.FodotElementBuilder.createConstant;
-import static fodot.objects.FodotElementBuilder.createConstantFunctionEnumeration;
-import static fodot.objects.FodotElementBuilder.createEquals;
-import static fodot.objects.FodotElementBuilder.createExists;
-import static fodot.objects.FodotElementBuilder.createExistsExactly;
-import static fodot.objects.FodotElementBuilder.createFodotFile;
-import static fodot.objects.FodotElementBuilder.createForAll;
-import static fodot.objects.FodotElementBuilder.createFunction;
-import static fodot.objects.FodotElementBuilder.createFunctionEnumeration;
-import static fodot.objects.FodotElementBuilder.createFunctionEnumerationElement;
-import static fodot.objects.FodotElementBuilder.createImplies;
-import static fodot.objects.FodotElementBuilder.createIncludeHolder;
-import static fodot.objects.FodotElementBuilder.createIncludeLTC;
-import static fodot.objects.FodotElementBuilder.createInductiveDefinition;
-import static fodot.objects.FodotElementBuilder.createInductiveDefinitionConnector;
-import static fodot.objects.FodotElementBuilder.createInductiveFunctionHead;
-import static fodot.objects.FodotElementBuilder.createInductiveQuantifier;
-import static fodot.objects.FodotElementBuilder.createInductiveSentence;
-import static fodot.objects.FodotElementBuilder.createInteger;
-import static fodot.objects.FodotElementBuilder.createLTCVocabulary;
-import static fodot.objects.FodotElementBuilder.createNot;
-import static fodot.objects.FodotElementBuilder.createNumericalTypeRangeEnumeration;
-import static fodot.objects.FodotElementBuilder.createPartialFunctionDeclaration;
-import static fodot.objects.FodotElementBuilder.createPredicate;
-import static fodot.objects.FodotElementBuilder.createPredicateEnumeration;
-import static fodot.objects.FodotElementBuilder.createProcedure;
-import static fodot.objects.FodotElementBuilder.createProcedures;
-import static fodot.objects.FodotElementBuilder.createSentence;
-import static fodot.objects.FodotElementBuilder.createStructure;
-import static fodot.objects.FodotElementBuilder.createTheory;
-import static fodot.objects.FodotElementBuilder.createTypeDeclaration;
-import static fodot.objects.FodotElementBuilder.createVariable;
-import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -75,6 +36,8 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.util.FormulaUtil;
+
+import static fodot.objects.FodotElementBuilder.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -355,8 +318,11 @@ public class FodotGameFactory {
 			}
             if(this.source.getStaticValues().containsKey(predicate)) {
                 for (IFodotPredicateEnumerationElement enumerationElement : this.source.getStaticValues().get(predicate)) {
-                    //TODO Dit moet ergens kunnen maar ik snap de verschillende soorten enumeration elements niet goed.
-                    //createPredicate(predicate, enumerationElements);
+                    definitions.add(
+                            createInductiveSentence(
+                                    createInductivePredicateHead(enumerationElement.toPredicate())
+                            )
+                    );
                 }
             }
 			toReturn.addElement(createInductiveDefinition(definitions));
