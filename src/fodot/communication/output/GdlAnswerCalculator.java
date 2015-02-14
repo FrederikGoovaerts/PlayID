@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import fodot.communication.gdloutput.IFodotGdlTranslator;
+import fodot.gdl_parser.second_phase.GdlFodotTransformer;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
@@ -78,7 +79,7 @@ public class GdlAnswerCalculator {
 	}
 	/**********************************************/
 	
-	private static final String ACTION_PREDICATE_NAME = "does";
+	private static final String ACTION_PREDICATE_NAME = GdlFodotTransformer.ACTION_PREDICATE_NAME;
 	
 	public List<GdlAction> generateActionSequence() {
 		FodotStructure bestModel = getBestModel();

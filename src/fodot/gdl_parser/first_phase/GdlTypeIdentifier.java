@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -451,6 +452,7 @@ public class GdlTypeIdentifier {
 		Map<GdlFunctionDeclaration, FodotTypeFunctionDeclaration> functionDeclarations = new HashMap<>();
 		Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations = new HashMap<>();
 		Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule = new HashMap<>();
+		Set<GdlPredicateDeclaration> nonDefaultDynamicPredicates = new LinkedHashSet<GdlPredicateDeclaration>();
 
 		//GENERATE SETS FOR GDLFODOTDATA
 		for (IGdlTermDeclaration term : terms.keySet()) {
@@ -487,14 +489,14 @@ public class GdlTypeIdentifier {
 		}
 
 		for (IGdlArgumentListDeclaration p : argumentLists.keySet()) {
-			if (!getUnfilledDefaultPredicates().contains(p)) {
+			if (!getDefaultPredicates().contains(p)) {
 				GdlArgumentListData data = argumentLists.get(p);
 				if (p instanceof GdlPredicateDeclaration) {
 					GdlPredicateDeclaration pd = (GdlPredicateDeclaration) p;
 					FodotPredicateDeclaration pf = createPredicateDeclaration(
 							NameUtil.convertToValidPredicateName(p.getName().getValue()),
 							data.getArgumentTypes());
-					predicateDeclarations.put(pd, pf);
+					predicateDeclarations.put(pd, pf);					
 				} else if (p instanceof GdlFunctionDeclaration) {
 					GdlFunctionDeclaration fd = (GdlFunctionDeclaration) p;
 					GdlTermData termData = terms.get(fd);
@@ -507,6 +509,12 @@ public class GdlTypeIdentifier {
 			}
 		}		
 
+		for (GdlPredicateDeclaration predicate : this.dynamicPredicates) {
+			if (!getDefaultPredicates().contains(predicate)) {
+				nonDefaultDynamicPredicates.add(predicate);
+			}
+		}
+		
 		GdlVocabulary vocabulary =  new GdlVocabulary(
 				this.timeType, this.playerType, this.actionType, 
 				this.scoreType, this.otherTypes,
@@ -514,11 +522,9 @@ public class GdlTypeIdentifier {
 				constantsMap, variablesPerRule,
 				functionDeclarations, predicateDeclarations,
 
-				this.dynamicPredicates, new HashSet<IFodotStructureElement>());
+				nonDefaultDynamicPredicates, new HashSet<IFodotStructureElement>());
 
 		vocabulary = this.getOptimizer().improve(vocabulary);
-		
-//		System.out.println(vocabulary.toString());
 
 		return vocabulary;
 	}

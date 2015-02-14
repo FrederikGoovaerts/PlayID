@@ -55,6 +55,8 @@ import fodot.util.FormulaUtil;
  */
 public class GdlFodotTransformer implements GdlTransformer {
 
+	public static final String ACTION_PREDICATE_NAME = "do";
+	
 	/***************************************************************************
 	 * Constructor
 	 * @param gdlVocabulary 	The data created by the first pass through the GDL file
@@ -220,7 +222,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 	}
 
 	/*** End of Actions subsection ***/
-
+	
 	/*************************************
 	 * Next rules
 	 */
@@ -338,7 +340,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		typeList.add(getTimeType());
 		typeList.add(getPlayerType());
 		typeList.add(getActionType());
-		this.doPredicateDeclaration = createPredicateDeclaration("does", typeList);
+		this.doPredicateDeclaration = createPredicateDeclaration(ACTION_PREDICATE_NAME, typeList);
 
 		ArrayList<FodotType> typeList2 = new ArrayList<>();
 		typeList2.add(getTimeType());

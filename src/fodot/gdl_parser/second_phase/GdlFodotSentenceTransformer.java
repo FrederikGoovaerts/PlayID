@@ -9,6 +9,7 @@ import static fodot.objects.FodotElementBuilder.createPredicate;
 import static fodot.objects.FodotElementBuilder.createVariable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,7 @@ public class GdlFodotSentenceTransformer {
 			Map<GdlVariable, FodotVariable> variables) {
 		this(trans, new VariableRegisterer(variables));
 	}
-	
+
 	public GdlFodotSentenceTransformer(GdlFodotTransformer trans) {
 		this(trans, new VariableRegisterer());
 	}
@@ -75,7 +76,7 @@ public class GdlFodotSentenceTransformer {
 	private void setTransformer(GdlFodotTransformer argTrans) {
 		this.trans = argTrans;
 	}
-	
+
 	private void setVariableRegisterer(VariableRegisterer argVariableReg) {
 		if (argVariableReg == null) {
 			this.variableReg = new VariableRegisterer();
@@ -92,7 +93,10 @@ public class GdlFodotSentenceTransformer {
 	public IFodotFormula generateFodotFormulaFrom(List<GdlLiteral> originalFormulas){
 		List<IFodotFormula> resultingFormulas = new ArrayList<>();
 		for (GdlLiteral literal : originalFormulas) {
-			resultingFormulas.add(generateFodotFormula(literal));
+			IFodotFormula formula = generateFodotFormula(literal);
+			if (formula != null) {
+				resultingFormulas.add(formula);
+			}
 		}
 		return createAnd(resultingFormulas);
 	}
@@ -116,27 +120,34 @@ public class GdlFodotSentenceTransformer {
 			GdlProposition literal) {
 		// process (*compoundStatic* *vars*)
 
-//		FodotPredicateDeclaration decl = trans.processCompoundStaticPredicate(literal);
-//		FodotPredicateDeclaration timedDecl = trans.getPool().getCompoundTimedVerionOf(decl);
+		//		FodotPredicateDeclaration decl = trans.processCompoundStaticPredicate(literal);
+		//		FodotPredicateDeclaration timedDecl = trans.getPool().getCompoundTimedVerionOf(decl);
 
 		FodotPredicateDeclaration declaration = 
 				trans.getGdlVocabulary().getPredicateDeclaration(
 						new GdlPredicateDeclaration(literal.getName(), literal.arity()));
-		
+
 		return generateTimedPredicate(literal, declaration);
 	}
 
 
 	private IFodotFormula generateNot(
 			GdlNot not) {
-		return createNot(generateFodotFormula(not.getBody()));
+		IFodotFormula formula = generateFodotFormula(not.getBody());
+		if (formula == null) {
+			return null;
+		}
+		return createNot(formula);
 	}
 
 	private IFodotFormula generateOr(
 			GdlOr or) {
 		List<IFodotFormula> disjuncts = new ArrayList<IFodotFormula>();
 		for (GdlLiteral disj : or.getDisjuncts()) {
-			disjuncts.add( generateFodotFormula(disj) );
+			IFodotFormula formula = generateFodotFormula(disj);
+			if (formula != null) {
+				disjuncts.add( formula );
+			}
 		}
 
 		return createOr(disjuncts);
@@ -144,35 +155,32 @@ public class GdlFodotSentenceTransformer {
 
 	public FodotPredicate generateRelation(
 			GdlRelation relation) {
-		/*if (relation.getName().getValue().equals("does")) {
-			
-			return generateDoes(relation);    
 
-		} else */
-		GdlPredicateDeclaration gdlDeclaration = new GdlPredicateDeclaration(relation);
-		
-		if(relation.getName().getValue().equals("true")) {
-			GdlSentence innerPredicate = relation.get(0).toSentence();
-			return generateRelation( GdlPool.getRelation(innerPredicate.getName(), innerPredicate.getBody()) );
-		} else {
+		String relationName = relation.getName().getValue();
+
+		switch (relationName) {
+		case "does":
+			return generateDoes(relation);
+		case "true":
+			return generateTrue(relation);
+		case "role":
+			/* Role is already translated to elements of playertype:
+			 * the inner variable will have the correct type already */
+			return null; 
+		case "legal":
+			throw new IllegalStateException("System to translate 'legal' in bodies does not yet exist");
+		default:
 			// process (*staticpred*) or (*compoundstaticpred*)
 
+			GdlPredicateDeclaration gdlDeclaration = new GdlPredicateDeclaration(relation);
 			FodotPredicateDeclaration decl = trans.getGdlVocabulary().getPredicateDeclaration(gdlDeclaration);
 
-//			String predName = relation.getName().getValue();
-//			if(trans.getPool().isStaticPredicateRegistered(predName)) {
-//				decl = trans.getPool().getPredicate(predName);
-//			} else if (trans.getPool().isCompoundStaticPredicateRegistered(predName)){
-//				decl = trans.getPool().getCompoundTimedVerionOf(
-//						trans.getPool().getCompoundStaticPredicate(predName)
-//						);
-//				elements.add(createTimeVariable()); 
-//			} else {
-//				decl = trans.getPool().getCompoundTimedVerionOf(trans.processCompoundStaticPredicate(relation));
-//				elements.add(createTimeVariable());
-//			}
+			List<IFodotTerm> arguments =
+					generateTerms(
+							relation.getBody(),
+							FormulaUtil.removeTypes(decl.getArgumentTypes(), trans.getTimeType())
+							);
 
-			List<IFodotTerm> arguments = generateTerms(relation.getBody(), FormulaUtil.removeTypes(decl.getArgumentTypes(), trans.getTimeType()));
 			if (trans.getGdlVocabulary().isDynamic(relation)) {
 				arguments.add(0, createTimeVariable());
 			}
@@ -180,49 +188,49 @@ public class GdlFodotSentenceTransformer {
 			return createPredicate(decl, arguments);
 		}
 	}
-//	private IFodotFormula generateTrue(GdlRelation relation) {
-//		// process (true (*fluentpred*))
-//		GdlSentence fluentPredSentence = relation.get(0).toSentence();
-//		trans.processPredicate(fluentPredSentence);
-//		FodotPredicateDeclaration decl = 
-//				trans.getPool().getTimedVerionOf(
-//						trans.getPool().getPredicate(fluentPredSentence.getName().getValue()));
-//
-//		return generateTimedPredicate(fluentPredSentence, decl);
-//	}
 
-//	private IFodotFormula generateDoes(GdlRelation relation) {
-//		// process (does *player* *actionpred*)
-//
-//		//ProcessPlayer
-//		GdlTerm playerGdlTerm = relation.get(0);
-//		IFodotTerm playerTerm;
-//		if (playerGdlTerm instanceof GdlVariable) {
-//			playerTerm = generateTerm(playerGdlTerm);
-//		} else if (playerGdlTerm instanceof GdlConstant) {
-//			String playerName = relation.get(0).toSentence().getName().getValue();
-//			playerTerm = trans.getGdlVocabulary().getConstant((GdlConstant) playerGdlTerm);
-//		} else {
-//			throw new GdlTransformationException("Player should be a variable or a constant");
-//		}
-//
-//
-//		//ProcessAction
-//		GdlTerm actionGdlTerm = relation.get(1);
-//		IFodotTerm actionFodotTerm = generateTerm(actionGdlTerm);
-//
-//		FodotVariable timeVariable = createTimeVariable();
-//
-//		FodotPredicate actionPredicate = createPredicate(
-//				trans.getDoPredicateDeclaration(),
-//				timeVariable,
-//				playerTerm,
-//				actionFodotTerm
-//				);
-//		return actionPredicate;
-//
-//
-//	}
+	private FodotPredicate generateTrue(GdlRelation relation) {
+
+		GdlSentence innerPredicate = relation.get(0).toSentence();
+		return generateRelation( GdlPool.getRelation(innerPredicate.getName(), innerPredicate.getBody()) );
+	}
+
+	private FodotPredicate generateDoes(GdlRelation relation) {
+		// process (does *player* *actionpred*)
+		//
+		//		//ProcessPlayer
+		//		GdlTerm playerGdlTerm = relation.get(0);
+		//		IFodotTerm playerTerm;
+		//		if (playerGdlTerm instanceof GdlVariable) {
+		//			playerTerm = generateTerm(playerGdlTerm);
+		//		} else if (playerGdlTerm instanceof GdlConstant) {
+		//			String playerName = relation.get(0).toSentence().getName().getValue();
+		//			playerTerm = trans.getGdlVocabulary().getConstant((GdlConstant) playerGdlTerm);
+		//		} else {
+		//			throw new GdlTransformationException("Player should be a variable or a constant");
+		//		}
+		//
+		//
+		//		//ProcessAction
+		//		GdlTerm actionGdlTerm = relation.get(1);
+		//		IFodotTerm actionFodotTerm = generateTerm(actionGdlTerm);
+		//
+		//		FodotVariable timeVariable = createTimeVariable();
+		//
+		//		FodotPredicate actionPredicate = createPredicate(
+		//				trans.getDoPredicateDeclaration(),
+		//				timeVariable,
+		//				playerTerm,
+		//				actionFodotTerm
+		//				);
+		List<IFodotTerm> arguments = generateTerms(relation.getBody(), Arrays.asList(trans.getPlayerType(), trans.getActionType()));
+		arguments.add(0, createTimeVariable());
+
+		FodotPredicate actionPredicate = createPredicate(
+				trans.getDoPredicateDeclaration(),
+				arguments);
+		return actionPredicate;
+	}
 
 	private IFodotFormula generateDistinct(GdlDistinct distinct) {
 		//these are either constants or variables
@@ -251,7 +259,7 @@ public class GdlFodotSentenceTransformer {
 		}
 		return result;
 	}
-	
+
 	public IFodotTerm generateTerm(GdlTerm term, FodotType type) {
 		if (term instanceof GdlConstant) {
 			return generateConstant((GdlConstant) term, type);
@@ -261,13 +269,13 @@ public class GdlFodotSentenceTransformer {
 			return generateFunction((GdlFunction) term);
 		}
 		throw new IllegalStateException("Unsupported type of term term: " + term.getClass() + "["+term+"]");			
-		
+
 	}
 
-//	public IFodotTerm generateTerm(GdlTerm term) {
-//		return generateTerm(term, trans.getAllType());
-//	}
-	
+	//	public IFodotTerm generateTerm(GdlTerm term) {
+	//		return generateTerm(term, trans.getAllType());
+	//	}
+
 	public FodotConstant generateConstant(GdlConstant gdlConst, FodotType type) {
 		FodotConstant result =  trans.getGdlVocabulary().getConstant(gdlConst, type);
 		if (result == null) {
@@ -275,29 +283,29 @@ public class GdlFodotSentenceTransformer {
 		}
 		return result;
 	}
-//	
+	//	
 	public FodotVariable generateVariable(GdlVariable gdlVar) {	
-//		FodotVariable toReturn;
+		//		FodotVariable toReturn;
 		//Check if the variable is already known in the variablemapping
 		if (variableReg.hasTranslationFor(gdlVar)) { 
 			return variableReg.translate(gdlVar);
-			
+
 			//Check if the given type matches the type of the already known variable
-//			if (toReturn.getType() != argType && argType != trans.getAllType()) {
-//				((FodotVariable) toReturn).setType(argType);
-				//TODO: Something should probably signal all other instances using this variable so they update their types!
-//			}
+			//			if (toReturn.getType() != argType && argType != trans.getAllType()) {
+			//				((FodotVariable) toReturn).setType(argType);
+			//TODO: Something should probably signal all other instances using this variable so they update their types!
+			//			}
 		}// else { //Term is an new variable
-			throw new GdlTransformationException("A new variable has occurred in the second phase. This is the job of the first phase!");
-//			FodotVariable temp = createVariable(gdlVar.getName(), argType, variableReg.getRegisteredVariables());
-//			if (variableReg != null) {
-//				variableReg.addTranslation(gdlVar, temp);
-//			}
-//			toReturn = temp;
-//		}
-//		return toReturn;
+		throw new GdlTransformationException("A new variable has occurred in the second phase. This is the job of the first phase!");
+		//			FodotVariable temp = createVariable(gdlVar.getName(), argType, variableReg.getRegisteredVariables());
+		//			if (variableReg != null) {
+		//				variableReg.addTranslation(gdlVar, temp);
+		//			}
+		//			toReturn = temp;
+		//		}
+		//		return toReturn;
 	}
-	
+
 
 	public FodotFunction generateFunction(GdlFunction gdlFunc) {		
 		FodotTypeFunctionDeclaration decl = trans.getGdlVocabulary().getFunctionDeclaration(gdlFunc);
@@ -306,11 +314,11 @@ public class GdlFodotSentenceTransformer {
 
 	/**********************************************/
 
-	
+
 	/**********************************************
 	 *  Default Variables
 	 ***********************************************/
-	
+
 	//We only allow one time variable per sentence
 	FodotVariable timeVariable;
 	public FodotVariable createTimeVariable() {
@@ -332,9 +340,9 @@ public class GdlFodotSentenceTransformer {
 		variableReg.registerVariable(result);
 		return result;
 	}
-	
+
 	/**********************************************/
-	
+
 
 	/**********************************************
 	 *  Processing of Sentence Arguments to List of Fodot Terms
@@ -349,34 +357,34 @@ public class GdlFodotSentenceTransformer {
 	 * @param declaration
 	 * @return
 	 */
-//	public List<IFodotTerm> processSentenceArguments(
-//			GdlSentence sentence, FodotArgumentListDeclaration declaration,
-//			int argumentOffset) {
-//
-//		List<IFodotTerm> elements = new ArrayList<IFodotTerm>(); 
-//		for (int i = 0; i < sentence.arity(); i++) {
-////			FodotType currentArgType = declaration.getArgumentType(i+argumentOffset);
-//
-//			GdlTerm term = sentence.get(i);
-//			IFodotTerm element = generateTerm(term);
-//			elements.add(element);
-//
-//			//Improve declaration types (if variable was already mapped)
-////			FodotType actualType = element.getType();
-////			if (currentArgType != actualType && currentArgType == trans.getAllType()) {
-////				System.out.println("fixed " + declaration.getName() + " arg("+i+") to " + actualType);
-////				declaration.setArgumentType(i+argumentOffset, actualType);
-////			}
-//
-//
-//		}
-//		return elements;
-//	}
+	//	public List<IFodotTerm> processSentenceArguments(
+	//			GdlSentence sentence, FodotArgumentListDeclaration declaration,
+	//			int argumentOffset) {
+	//
+	//		List<IFodotTerm> elements = new ArrayList<IFodotTerm>(); 
+	//		for (int i = 0; i < sentence.arity(); i++) {
+	////			FodotType currentArgType = declaration.getArgumentType(i+argumentOffset);
+	//
+	//			GdlTerm term = sentence.get(i);
+	//			IFodotTerm element = generateTerm(term);
+	//			elements.add(element);
+	//
+	//			//Improve declaration types (if variable was already mapped)
+	////			FodotType actualType = element.getType();
+	////			if (currentArgType != actualType && currentArgType == trans.getAllType()) {
+	////				System.out.println("fixed " + declaration.getName() + " arg("+i+") to " + actualType);
+	////				declaration.setArgumentType(i+argumentOffset, actualType);
+	////			}
+	//
+	//
+	//		}
+	//		return elements;
+	//	}
 
-//	private List<IFodotTerm> processSentenceArguments(
-//			GdlSentence sentence,FodotArgumentListDeclaration declaration) {
-//		return processSentenceArguments(sentence, declaration, 0);
-//	}
+	//	private List<IFodotTerm> processSentenceArguments(
+	//			GdlSentence sentence,FodotArgumentListDeclaration declaration) {
+	//		return processSentenceArguments(sentence, declaration, 0);
+	//	}
 
 	private List<IFodotTerm> processSentenceArgumentsTimed(GdlSentence sentence,
 			FodotArgumentListDeclaration declaration) {
@@ -388,10 +396,10 @@ public class GdlFodotSentenceTransformer {
 		return arguments;
 	}
 
-//	public FodotFunction generateTypeFunction(GdlFunction function, FodotTypeFunctionDeclaration declaration) {
-//		FodotFunction result = createFunction(declaration, generateTerms(function.toSentence().getBody()));
-//		return result;
-//	}
+	//	public FodotFunction generateTypeFunction(GdlFunction function, FodotTypeFunctionDeclaration declaration) {
+	//		FodotFunction result = createFunction(declaration, generateTerms(function.toSentence().getBody()));
+	//		return result;
+	//	}
 
 	public FodotPredicate generateTimedPredicate(GdlSentence sentence,
 			FodotPredicateDeclaration declaration) {
