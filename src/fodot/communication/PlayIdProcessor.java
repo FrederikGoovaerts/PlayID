@@ -13,7 +13,7 @@ import fodot.communication.output.GdlAction;
 import fodot.communication.output.GdlAnswerCalculator;
 import fodot.communication.output.IdpResultTransformer;
 import fodot.exceptions.idp.IdpConnectionException;
-import fodot.exceptions.idp.IdpParseException;
+import fodot.exceptions.idp.IdpErrorException;
 import fodot.exceptions.idp.NoValidModelsException;
 import fodot.exceptions.idp.UnsatisfiableIdpFileException;
 import fodot.exceptions.playid.PlayIdArgumentException;
@@ -58,7 +58,7 @@ public class PlayIdProcessor {
 	
 	public void process(File gdlFile)
 			throws IOException, IdpConnectionException,
-				IdpParseException, UnsatisfiableIdpFileException, IllegalStateException,
+				IdpErrorException, UnsatisfiableIdpFileException, IllegalStateException,
 				NoValidModelsException 
 		{
 		

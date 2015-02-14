@@ -15,7 +15,7 @@ FO(.) transformation error:       0
 
 IDP syntax error:                19
 
-IDP parser error:                 1
+IDP error:     		              1
 
 Out of Resources:                18
 

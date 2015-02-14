@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import fodot.exceptions.idp.IdpParseException;
+import fodot.exceptions.idp.IdpErrorException;
 import fodot.exceptions.idp.IdpSyntaxErrorException;
 import fodot.exceptions.idp.OutOfResourcesException;
 import fodot.exceptions.idp.UnsatisfiableIdpFileException;
@@ -25,7 +25,7 @@ public class IdpResultTransformer {
 	private List<FodotStructure> models = new ArrayList<FodotStructure>();
 
 	public IdpResultTransformer(IFodotFile inputFodot, String textResult)
-			throws IdpParseException, UnsatisfiableIdpFileException, IllegalStateException {
+			throws IdpErrorException, UnsatisfiableIdpFileException, IllegalStateException {
 		super();
 		setInputFodot(inputFodot);
 		setTextualResult(textResult);
@@ -71,7 +71,7 @@ public class IdpResultTransformer {
 	/**********************************************
 	 *  Processing of the given text
 	 ***********************************************/
-	public void processResult() throws IdpParseException, UnsatisfiableIdpFileException, IllegalStateException {
+	public void processResult() throws IdpErrorException, UnsatisfiableIdpFileException, IllegalStateException {
 		List<String> linesToProcess = ParserUtil.trimElements(Arrays.asList(getTextualResult().split("\n")));
 
 		Iterator<String> it = linesToProcess.iterator();
@@ -86,7 +86,7 @@ public class IdpResultTransformer {
 			} else if (isOutOfResources(line)){
 				throw new OutOfResourcesException(line);
 			} else if (isError(line)) {
-				throw new IdpParseException(line);
+				throw new IdpErrorException(line);
 			} else if (isThrowAwayLine(line)){
 				//No-op
 			} else if (declaresNewStructure(line)) {
@@ -101,7 +101,7 @@ public class IdpResultTransformer {
 				
 				addModel(FodotStructureParser.parse(getInputFodot(), structureToParse));
 			} else {
-				throw new IdpParseException(line);
+				throw new IdpErrorException(line);
 			}
 		}
 
