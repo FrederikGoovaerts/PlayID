@@ -32,4 +32,9 @@ public abstract class FodotElement implements IFodotElement{
 		}
 		return result;
 	}
+	
+	@Override
+	public boolean hasEmptyCode() {
+		return toCode().trim().equals("");
+	}
 }

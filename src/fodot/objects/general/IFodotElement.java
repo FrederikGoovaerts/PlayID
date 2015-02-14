@@ -4,6 +4,7 @@ import java.util.Collection;
 
 public interface IFodotElement {
 	String toCode();
+	boolean hasEmptyCode();
 	/**
 	 * @return	All elements that really are part of the FodotElement, will mostly contain all elements when printing this element
 	 */
