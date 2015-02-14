@@ -441,6 +441,15 @@ public class FodotGameFactory {
 		FodotStructure toReturn = getDefaultStructure(voc);
 
 		/**
+		 * Data found by GdlVocabulary
+		 */
+		if (source.getGdlVocabulary().containsStructureElements()) {
+			toReturn.addElement(createBlankLines(1));
+			toReturn.addElement(createComment("Elements found by in first phase"));
+			toReturn.addAllElements(source.getGdlVocabulary().getStructureElements());
+		}
+		
+		/**
 		 * nodig: *naam* van onze speler
 		 * resultaat:
 		 * Score={*naam*()->100}

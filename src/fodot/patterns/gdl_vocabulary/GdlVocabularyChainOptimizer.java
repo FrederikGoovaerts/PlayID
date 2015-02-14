@@ -1,6 +1,7 @@
 package fodot.patterns.gdl_vocabulary;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import fodot.gdl_parser.GdlVocabulary;
@@ -16,6 +17,10 @@ public class GdlVocabularyChainOptimizer extends ChainOptimizer<GdlVocabulary, I
 
 	public GdlVocabularyChainOptimizer(List<? extends IGdlVocabularyOptimizer> optimizers) {
 		super(optimizers);
+	}
+	
+	public GdlVocabularyChainOptimizer(IGdlVocabularyOptimizer... optimizers) {
+		this(Arrays.asList(optimizers));
 	}
 	
 	public GdlVocabularyChainOptimizer() {

@@ -35,11 +35,13 @@ import fodot.gdl_parser.first_phase.data.declarations.GdlVariableDeclaration;
 import fodot.gdl_parser.first_phase.data.declarations.IGdlArgumentListDeclaration;
 import fodot.gdl_parser.first_phase.data.declarations.IGdlTermDeclaration;
 import fodot.gdl_parser.first_phase.data.occurrences.GdlTermOccurrence;
+import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
+import fodot.patterns.gdl_vocabulary.GdlIntegerTypeRecognizer;
 import fodot.patterns.gdl_vocabulary.GdlVocabularyChainOptimizer;
 import fodot.patterns.gdl_vocabulary.IGdlVocabularyOptimizer;
 import fodot.util.FormulaUtil;
@@ -47,7 +49,7 @@ import fodot.util.NameUtil;
 
 public class GdlTypeIdentifier {
 
-	private static final IGdlVocabularyOptimizer DEFAULT_OPTIMIZER = new GdlVocabularyChainOptimizer();
+	private static final IGdlVocabularyOptimizer DEFAULT_OPTIMIZER = new GdlVocabularyChainOptimizer(new GdlIntegerTypeRecognizer());
 	private IGdlVocabularyOptimizer optimizer = DEFAULT_OPTIMIZER;
 	
 	/**********************************************
@@ -512,11 +514,11 @@ public class GdlTypeIdentifier {
 				constantsMap, variablesPerRule,
 				functionDeclarations, predicateDeclarations,
 
-				this.dynamicPredicates);
+				this.dynamicPredicates, new HashSet<IFodotStructureElement>());
 
 		vocabulary = this.getOptimizer().improve(vocabulary);
 		
-		System.out.println(vocabulary.toString());
+//		System.out.println(vocabulary.toString());
 
 		return vocabulary;
 	}

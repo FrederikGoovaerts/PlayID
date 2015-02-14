@@ -4,7 +4,10 @@ import java.util.Arrays;
 
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.FodotSentenceElementConnector;
+import fodot.objects.theory.elements.formulas.FodotTermComparator;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
+import fodot.objects.theory.elements.terms.FodotFunction;
+import fodot.objects.theory.elements.terms.IFodotTerm;
 
 public class FodotInductiveDefinitionConnector extends FodotSentenceElementConnector<IFodotFormula> implements IFodotInductiveDefinitionElement {
 
@@ -25,9 +28,13 @@ public class FodotInductiveDefinitionConnector extends FodotSentenceElementConne
 	public FodotInductiveDefinitionConnector(FodotPredicate head, IFodotFormula body) {
 		this(INDUCTIVE_ARROW, head, body);
 	}
-	
+
 	public FodotInductiveDefinitionConnector(FodotInductiveFunction head, IFodotFormula body) {
 		this(INDUCTIVE_ARROW, head, body);
+	}
+
+	public FodotInductiveDefinitionConnector(FodotFunction function, IFodotTerm value, IFodotFormula body) {
+		this(INDUCTIVE_ARROW, new FodotTermComparator(function, "=", value), body);
 	}
 	
 	@Override

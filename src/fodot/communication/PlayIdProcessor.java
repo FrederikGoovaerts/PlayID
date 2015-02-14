@@ -2,7 +2,6 @@ package fodot.communication;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import fodot.communication.gdloutput.GdlActionPrinter;
@@ -23,12 +22,11 @@ import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.FodotStructure;
 import fodot.patterns.fodot_file.FodotChainOptimizer;
 import fodot.patterns.fodot_file.IFodotOptimizer;
-import fodot.patterns.fodot_file.FodotIntegerTypeRecognizer;
 
 public class PlayIdProcessor {
 
 	private static final IActionOutputter DEFAULT_OUTPUTTER = new GdlActionPrinter();
-	private static final IFodotOptimizer DEFAULT_OPTIMIZER = new FodotChainOptimizer(Arrays.asList(new FodotIntegerTypeRecognizer()));
+	private static final IFodotOptimizer DEFAULT_OPTIMIZER = new FodotChainOptimizer();
 	
 	private IActionOutputter outputter;
 	private IFodotOptimizer optimizer;

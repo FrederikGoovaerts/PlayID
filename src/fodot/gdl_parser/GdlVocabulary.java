@@ -31,6 +31,11 @@ import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.util.CollectionPrinter;
 
+/**
+ * Class that contains info from the firstphase of the translation from GDL to FO(.)
+ * @author Thomas Winters
+ *
+ */
 public class GdlVocabulary implements IFodotGdlTranslator {
 
 	public GdlVocabulary(
@@ -43,7 +48,9 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 			Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule,
 			Map<GdlFunctionDeclaration, FodotTypeFunctionDeclaration> functionDeclarations,
 			Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations,
-			Set<GdlPredicateDeclaration> dynamicPredicates) {
+			Set<GdlPredicateDeclaration> dynamicPredicates,
+			Set<? extends IFodotStructureElement> structureElements
+			) {
 		super();
 		this.timeType = timeType;
 		this.playerType = playerType;
@@ -55,6 +62,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		this.predicateDeclarations = predicateDeclarations;
 		this.variablesPerRule = variablesPerRule;
 		this.dynamicPredicates = dynamicPredicates;
+		this.structureElements = new LinkedHashSet<IFodotStructureElement>(structureElements);
 
 		initialiseInverseMaps();
 	}
@@ -108,11 +116,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 
 	public Map<GdlVariable, FodotVariable> getVariables(GdlRule rule) {
 		return variablesPerRule.get(rule);
-	}
-
-	public FodotVariable getVariable(GdlRule rule, GdlVariable variable) {
-		return getVariables(rule).get(variable);
-	}
+	}	
 
 	public FodotTypeFunctionDeclaration getFunctionDeclaration(GdlFunction function) {
 		GdlFunctionDeclaration declaration = new GdlFunctionDeclaration(function);	
@@ -152,6 +156,28 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		}
 		return result;
 	}
+	
+	//Direct info for copying:
+
+	
+	public Map<GdlConstant, Map<FodotType, FodotConstant>> getConstants() {
+		return constants;
+	}
+	public FodotVariable getVariable(GdlRule rule, GdlVariable variable) {
+		return getVariables(rule).get(variable);
+	}	
+	public Map<GdlFunctionDeclaration, FodotTypeFunctionDeclaration> getFunctionDeclarations() {
+		return functionDeclarations;
+	}
+	public Map<GdlPredicateDeclaration, FodotPredicateDeclaration> getPredicateDeclarations() {
+		return predicateDeclarations;
+	}
+	public Map<GdlRule, Map<GdlVariable, FodotVariable>> getVariablesPerRule() {
+		return variablesPerRule;
+	}
+	public Set<GdlPredicateDeclaration> getGdlDynamicPredicates() {
+		return dynamicPredicates;
+	}
 
 	/**********************************************/
 
@@ -159,10 +185,6 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	 *  Structure info
 	 ***********************************************/
 	Set<IFodotStructureElement> structureElements = new LinkedHashSet<IFodotStructureElement>();
-	
-	public void addStructureElement(IFodotStructureElement structureEl) {
-		this.structureElements.add(structureEl);
-	}
 	
 	public Set<IFodotStructureElement> getStructureElements() {
 		return new LinkedHashSet<IFodotStructureElement>(this.structureElements);
