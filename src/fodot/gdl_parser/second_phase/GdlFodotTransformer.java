@@ -56,6 +56,7 @@ import fodot.util.FormulaUtil;
 public class GdlFodotTransformer implements GdlTransformer {
 
 	public static final String ACTION_PREDICATE_NAME = "do";
+    public static final String LEGAL_MOVE_PREDICATE_NAME = "fodot_legal_move";
 	
 	/***************************************************************************
 	 * Constructor
@@ -221,6 +222,13 @@ public class GdlFodotTransformer implements GdlTransformer {
 		return this.doPredicateDeclaration;
 	}
 
+    private FodotPredicateDeclaration legalmovePredicateDeclaration;
+
+    public FodotPredicateDeclaration getLegalmovePredicateDeclaration(){
+        return this.legalmovePredicateDeclaration;
+    }
+
+
 	/*** End of Actions subsection ***/
 	
 	/*************************************
@@ -341,6 +349,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		typeList.add(getPlayerType());
 		typeList.add(getActionType());
 		this.doPredicateDeclaration = createPredicateDeclaration(ACTION_PREDICATE_NAME, typeList);
+        this.legalmovePredicateDeclaration = createPredicateDeclaration(LEGAL_MOVE_PREDICATE_NAME,typeList);
 
 		ArrayList<FodotType> typeList2 = new ArrayList<>();
 		typeList2.add(getTimeType());
@@ -479,29 +488,30 @@ public class GdlFodotTransformer implements GdlTransformer {
 		GdlTerm actionGdlTerm = rule.getHead().get(1);
 		IFodotTerm actionTerm = sentenceTrans.generateTerm(actionGdlTerm, getActionType());
 
-		List<IFodotTerm> doArguments =
+		List<IFodotTerm> legalArguments =
 				Arrays.asList(
 						sentenceTrans.createTimeVariable(),
 						player,
 						actionTerm
 						);
-		FodotPredicate doPred = 
+		FodotPredicate legalmovePred =
 				createPredicate(
-						this.getDoPredicateDeclaration(),
-						doArguments
+						this.getLegalmovePredicateDeclaration(),
+						legalArguments
 						);
 
 		//generate IFodotFormula from the body
 		IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
 
-		if(!removeTimeVars(condition.getFreeVariables()).isEmpty()
-				&& removeTimeVars(doPred.getFreeVariables()).isEmpty()){
-			condition = createExists(removeTimeVars(condition.getFreeVariables()),
-					condition);
+        Set<FodotVariable> conditionExclusiveVariables = removeTimeVars(condition.getFreeVariables());
+        conditionExclusiveVariables.removeAll(legalmovePred.getFreeVariables());
+
+		if(!conditionExclusiveVariables.isEmpty()){
+			condition = createExists(conditionExclusiveVariables, condition);
 		}
 
 		//add the combination as a next rule
-		this.addLegal(doPred, condition);
+		this.addLegal(legalmovePred, condition);
 	}
 
 	@Override

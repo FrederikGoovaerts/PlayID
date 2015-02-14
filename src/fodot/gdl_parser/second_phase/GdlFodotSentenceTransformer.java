@@ -168,7 +168,7 @@ public class GdlFodotSentenceTransformer {
 			 * the inner variable will have the correct type already */
 			return null; 
 		case "legal":
-			throw new IllegalStateException("System to translate 'legal' in bodies does not yet exist");
+            return generateLegal(relation);
 		default:
 			// process (*staticpred*) or (*compoundstaticpred*)
 
@@ -196,33 +196,7 @@ public class GdlFodotSentenceTransformer {
 	}
 
 	private FodotPredicate generateDoes(GdlRelation relation) {
-		// process (does *player* *actionpred*)
-		//
-		//		//ProcessPlayer
-		//		GdlTerm playerGdlTerm = relation.get(0);
-		//		IFodotTerm playerTerm;
-		//		if (playerGdlTerm instanceof GdlVariable) {
-		//			playerTerm = generateTerm(playerGdlTerm);
-		//		} else if (playerGdlTerm instanceof GdlConstant) {
-		//			String playerName = relation.get(0).toSentence().getName().getValue();
-		//			playerTerm = trans.getGdlVocabulary().getConstant((GdlConstant) playerGdlTerm);
-		//		} else {
-		//			throw new GdlTransformationException("Player should be a variable or a constant");
-		//		}
-		//
-		//
-		//		//ProcessAction
-		//		GdlTerm actionGdlTerm = relation.get(1);
-		//		IFodotTerm actionFodotTerm = generateTerm(actionGdlTerm);
-		//
-		//		FodotVariable timeVariable = createTimeVariable();
-		//
-		//		FodotPredicate actionPredicate = createPredicate(
-		//				trans.getDoPredicateDeclaration(),
-		//				timeVariable,
-		//				playerTerm,
-		//				actionFodotTerm
-		//				);
+
 		List<IFodotTerm> arguments = generateTerms(relation.getBody(), Arrays.asList(trans.getPlayerType(), trans.getActionType()));
 		arguments.add(0, createTimeVariable());
 
@@ -231,6 +205,17 @@ public class GdlFodotSentenceTransformer {
 				arguments);
 		return actionPredicate;
 	}
+
+    private FodotPredicate generateLegal(GdlRelation relation) {
+
+        List<IFodotTerm> arguments = generateTerms(relation.getBody(), Arrays.asList(trans.getPlayerType(), trans.getActionType()));
+        arguments.add(0, createTimeVariable());
+
+        FodotPredicate legalPredicate = createPredicate(
+                trans.getLegalmovePredicateDeclaration(),
+                arguments);
+        return legalPredicate;
+    }
 
 	private IFodotFormula generateDistinct(GdlDistinct distinct) {
 		//these are either constants or variables

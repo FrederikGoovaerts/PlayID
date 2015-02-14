@@ -81,7 +81,7 @@ public class FodotGameFactory {
 
 	private int turnLimit = DEFAULT_TURN_LIMIT;
 
-	private final static int DEFAULT_TURN_LIMIT = 20;
+	private final static int DEFAULT_TURN_LIMIT = 40;
 
 	/***************************************************************************
 	 * Class Methods
@@ -331,19 +331,23 @@ public class FodotGameFactory {
 		/**
 		 * nodig: alle legals, als legal head en legal body
 		 * resultaat voor elk koppel:
-		 * !(var [Unfilled])*aantal argumenten keer* t [Time]: *legal head* => *legal body*
+		 * !(var [Unfilled])*aantal argumenten keer* t [Time]: *legal head* <- *legal body*
 		 */
 		if (!source.getLegalMap().isEmpty()) {
-			toReturn.addElement(createBlankLines(1));
-			toReturn.addElement(createComment("Translation of the LEGAL sentences"));
-		}
-		for (Map.Entry<FodotPredicate, Set<IFodotFormula>> entry : source.getLegalMap().entrySet()) {
-			for (IFodotFormula body : entry.getValue()) {
-				toReturn.addElement(createSentence(
-						createImplies(entry.getKey(),body)
-						));
-			}
-		}
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("Translation of the LEGAL sentences"));
+            List<FodotInductiveSentence> definitions = new ArrayList<>();
+            for (Map.Entry<FodotPredicate, Set<IFodotFormula>> entry : source.getLegalMap().entrySet()) {
+                for (IFodotFormula body : entry.getValue()) {
+                    definitions.add(
+                            createInductiveSentence(
+                                    createInductiveDefinitionConnector(entry.getKey(), body)
+                            )
+                    );
+                }
+            }
+            toReturn.addElement(createInductiveDefinition(definitions));
+        }
 
 		/**
 		 * nodig: elke goal, als *player*, *score*, *voorwaarden*
@@ -546,6 +550,9 @@ public class FodotGameFactory {
 		// do(Time, Player, Action)
 		defaultVoc.addElement(doPredicateDeclaration);
 
+        // fodot_legal_move(Time, Player, Action)
+        defaultVoc.addElement(this.source.getLegalmovePredicateDeclaration());
+
 		return defaultVoc;
 	}
 
@@ -644,6 +651,27 @@ public class FodotGameFactory {
 						)
 				);
 		defaultTheory.addElement(createInductiveDefinition(definitions));
+
+        // !t p a: does(t,p,a) => legalmove(t,p,a).
+
+        defaultTheory.addElement(
+                createSentence(
+                        createImplies(
+                                createPredicate(
+                                        this.doPredicateDeclaration,
+                                        t_Time,
+                                        p_Player,
+                                        a_Action
+                                ),
+                                createPredicate(
+                                        this.source.getLegalmovePredicateDeclaration(),
+                                        t_Time,
+                                        p_Player,
+                                        a_Action
+                                )
+                        )
+                )
+        );
 
 		return defaultTheory;
 	}
