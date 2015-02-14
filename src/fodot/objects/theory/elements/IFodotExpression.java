@@ -5,7 +5,7 @@ import java.util.Set;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 
-public interface IFodotSentenceElement extends IFodotElement {
+public interface IFodotExpression extends IFodotElement {
 	Set<FodotVariable> getFreeVariables();
 	int getBindingOrder();
 	

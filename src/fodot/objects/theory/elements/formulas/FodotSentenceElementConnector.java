@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Set;
 
 import fodot.exceptions.fodot.IllegalConnectorException;
-import fodot.objects.theory.elements.IFodotSentenceElement;
+import fodot.objects.theory.elements.IFodotExpression;
 import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.util.CollectionPrinter;
 
-public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElement> extends FodotElement implements IFodotSentenceElement {
+public abstract class FodotSentenceElementConnector<E extends IFodotExpression> extends FodotElement implements IFodotExpression {
 
 	private List<E> arguments;
 	private String connector;
@@ -83,7 +83,7 @@ public abstract class FodotSentenceElementConnector<E extends IFodotSentenceElem
 	@Override
 	public Set<FodotVariable> getFreeVariables() {
 		Set<FodotVariable> formVars = new HashSet<FodotVariable>();
-		for (IFodotSentenceElement arg : getArguments()) {
+		for (IFodotExpression arg : getArguments()) {
 			formVars.addAll(arg.getFreeVariables());
 		}
 		return formVars;

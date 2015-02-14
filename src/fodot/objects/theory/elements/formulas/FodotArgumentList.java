@@ -10,14 +10,14 @@ import fodot.exceptions.fodot.IllegalAmountOfArgumentsException;
 import fodot.exceptions.fodot.InvalidTypeException;
 import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
-import fodot.objects.theory.elements.IFodotSentenceElement;
+import fodot.objects.theory.elements.IFodotExpression;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotArgumentListDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.util.CollectionPrinter;
 
-public abstract class FodotArgumentList extends FodotElement implements IFodotSentenceElement {
+public abstract class FodotArgumentList extends FodotElement implements IFodotExpression {
 	
 	private static final int BINDING_ORDER = -1;
 	

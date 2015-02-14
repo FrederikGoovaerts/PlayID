@@ -6,7 +6,7 @@ import java.util.List;
 
 import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.IFodotElement;
-import fodot.objects.theory.elements.IFodotSentenceElement;
+import fodot.objects.theory.elements.IFodotExpression;
 
 public class CollectionPrinter {
 	public static List<String> toCode(Collection<? extends IFodotElement> list) {
@@ -26,12 +26,12 @@ public class CollectionPrinter {
 	 * @param bindingorder	The bindingorder of the caller
 	 * @return	List of codified elements
 	 */
-	public static List<String> toCode(Collection<? extends IFodotSentenceElement> list, int bindingorder) {
+	public static List<String> toCode(Collection<? extends IFodotExpression> list, int bindingorder) {
 		if (list == null) {
 			throw new FodotException("Not a valid list to convert to code: " + list);
 		}
 		List<String> toCodify = new ArrayList<String>();
-		for (IFodotSentenceElement element : list) {
+		for (IFodotExpression element : list) {
 			String stringified = element.toCode();
 			if (bindingorder >= 0
 					&& element.getBindingOrder() >= bindingorder) {

@@ -1,17 +1,13 @@
 package fodot.objects.theory.elements.inductivedefinitions;
 
-import fodot.exceptions.fodot.InvalidTypeException;
-import fodot.objects.general.FodotElement;
-import fodot.objects.general.IFodotElement;
-import fodot.objects.theory.elements.formulas.FodotPredicate;
-import fodot.objects.theory.elements.terms.FodotFunction;
-import fodot.objects.theory.elements.terms.FodotVariable;
-import fodot.objects.theory.elements.terms.IFodotTerm;
-import fodot.objects.vocabulary.elements.FodotType;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import fodot.objects.general.FodotElement;
+import fodot.objects.general.IFodotElement;
+import fodot.objects.theory.elements.formulas.FodotPredicate;
+import fodot.objects.theory.elements.terms.FodotVariable;
 
 
 public class FodotInductivePredicate extends FodotElement implements IFodotInductiveDefinitionElement {
