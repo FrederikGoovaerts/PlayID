@@ -254,6 +254,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 	 * Legal
 	 */
 
+    //Contains legal rules, actions which are only legal in certain circumstances
 	private Map<FodotPredicate,Set<IFodotFormula>> legalMap;
 
 	public Map<FodotPredicate, Set<IFodotFormula>> getLegalMap() {
@@ -269,6 +270,17 @@ public class GdlFodotTransformer implements GdlTransformer {
 			legalMap.put(predicate,newSet);
 		}
 	}
+
+    //Contains actions which are always legal
+    private Set<FodotPredicate> legalSet;
+
+    public Set<FodotPredicate> getLegalSet(){
+        return new HashSet<>(this.legalSet);
+    }
+
+    private void addLegal(FodotPredicate predicate){
+        legalSet.add(predicate);
+    }
 
 	/*** End of Legal subsection ***/
 
@@ -340,6 +352,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		this.scoreMap = new HashMap<>();
 		this.nextMap = new HashMap<>();
 		this.legalMap = new HashMap<>();
+        this.legalSet = new HashSet<>();
 		this.terminalSet = new HashSet<>();
 		this.compoundMap = new HashMap<>();
 		this.processingRules = false;
@@ -414,8 +427,23 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 	@Override
 	public void processLegalRelation(GdlRelation relation) {
-		//Do Nothing
-	}
+        GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
+
+        GdlTerm playerGdlTerm = relation.get(0);
+        IFodotTerm player = sentenceTrans.generateTerm(playerGdlTerm, getPlayerType());
+
+        GdlTerm actionGdlTerm = relation.get(1);
+        IFodotTerm actionTerm = sentenceTrans.generateTerm(actionGdlTerm, getActionType());
+
+        this.addLegal(
+                createPredicate(
+                        this.getLegalmovePredicateDeclaration(),
+                        sentenceTrans.createTimeVariable(),
+                        player,
+                        actionTerm
+                )
+        );
+    }
 
 
 	private List<IFodotTypeEnumerationElement> extractEnumerationList(GdlSentence sentence, List<FodotType> types) {

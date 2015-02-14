@@ -333,7 +333,7 @@ public class FodotGameFactory {
 		 * resultaat voor elk koppel:
 		 * !(var [Unfilled])*aantal argumenten keer* t [Time]: *legal head* <- *legal body*
 		 */
-		if (!source.getLegalMap().isEmpty()) {
+		if (! (source.getLegalMap().isEmpty() && source.getLegalSet().isEmpty()) ) {
             toReturn.addElement(createBlankLines(1));
             toReturn.addElement(createComment("Translation of the LEGAL sentences"));
             List<FodotInductiveSentence> definitions = new ArrayList<>();
@@ -345,6 +345,13 @@ public class FodotGameFactory {
                             )
                     );
                 }
+            }
+            for (FodotPredicate predicate : source.getLegalSet()) {
+                definitions.add(
+                        createInductiveSentence(
+                                createInductivePredicateHead(predicate)
+                        )
+                );
             }
             toReturn.addElement(createInductiveDefinition(definitions));
         }
@@ -717,7 +724,7 @@ public class FodotGameFactory {
 		return defaultStructure;
 	}
 
-	public static final int DEFAULT_IDP_TIME_LIMIT = 15;
+	public static final int DEFAULT_IDP_TIME_LIMIT = 30;
 	private int idpTimeLimit = DEFAULT_IDP_TIME_LIMIT;
 	private static final int DEFAULT_MODEL_LIMIT = 5;
 	private int idpModelLimit = DEFAULT_MODEL_LIMIT;

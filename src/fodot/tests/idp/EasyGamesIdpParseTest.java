@@ -25,17 +25,22 @@ public class EasyGamesIdpParseTest {
 
 	@Test
 	public void process_maze_test() {
-		process("maze");
+		process("singleplayer/maze");
 	}
 
 	@Test
 	public void process_blocks_test() {
-		process("blocks");
+		process("singleplayer/blocks");
 	}
 
 	@Test
 	public void process_choice_test() {
-		process("choice");
+		process("custom/choice");
 	}
+
+    @Test
+    public void process_buttons_test() {
+        process("singleplayer/buttons");
+    }
 
 }

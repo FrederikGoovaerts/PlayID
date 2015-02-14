@@ -1,0 +1,62 @@
+REPORT FOR PROCESSIBILITY OF SINGLEPLAYER GAMES
+
+===================================================
+Created on                      2015-02-14 23:23
+Default time limit:             30s
+===================================================
+
+
+Successful:                      15
+
+GDL transformation error:         0
+
+FO(.) transformation error:       0
+
+IDP syntax error:                19
+
+IDP error:                        2
+
+Out of Resources:                10
+
+Unsatisfiable:                   10
+
+No models found:                  4
+
+Answerer error:                   1
+
+Other error::                     1
+
+
+===================================================
+===================== Details =====================
+===================================================
+
+Successful: 
+[asteroids.kif, blocks.kif, blocksWorld.kif, brain_teaser_extended.kif, buttons.kif, circlesolitaire.kif, factoringGeorgeForman.kif, haystack.kif, incredible.kif, kitten_escapes_from_fire.kif, lightsOn.kif, lightsOnParallel.kif, lightsOnSimultaneous.kif, maze.kif, simultaneousWin2.kif]
+
+GDL transformation error: 
+[]
+
+FO(.) transformation error: 
+[]
+
+IDP syntax error: 
+[chineseCheckers1.kif, duplicateStateLarge.kif, duplicateStateMedium.kif, duplicateStateSmall.kif, knightsTour.kif, knightsTourLarge.kif, max_knights.kif, mummymaze1p.kif, queens.kif, ruleDepthExponential.kif, ruleDepthLinear.kif, snakeParallel.kif, snake_2008.kif, snake_2008_tweaked.kif, snake_2009.kif, snake_2009_big.kif, stateSpaceLarge.kif, stateSpaceMedium.kif, stateSpaceSmall.kif]
+
+IDP error: 
+[factoringMediumTurtleBrain.kif, hitori.kif]
+
+Out of Resources: 
+[asteroidsParallel.kif, eightPuzzle.kif, factoringImpossibleTurtleBrain.kif, god.kif, hanoi.kif, hanoi_6_disks.kif, lightsOut.kif, pancakes88.kif, peg.kif, pegEuro.kif]
+
+Unsatisfiable: 
+[blocksWorldSerial.kif, coins.kif, coins_atomic.kif, factoringEasyTurtleBrain.kif, factoringMutuallyAssuredDestruction.kif, firefighter.kif, hanoi7_bugfix.kif, knightmove.kif, pearls.kif, slidingpieces.kif]
+
+No models found: 
+[blocksWorldParallel.kif, lightsOnSimul4.kif, pancakes.kif, pancakes6.kif]
+
+Answerer error: 
+[asteroidsSerial.kif]
+
+Others:
+aipsrovers01.kif: IndexOutOfBoundsException
