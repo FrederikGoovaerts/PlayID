@@ -1,6 +1,7 @@
 package fodot.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,13 +19,18 @@ public class FormulaUtil {
 	 * @return
 	 */
 	public static IFodotFormula makeVariableFree(IFodotFormula formula) {
-		IFodotFormula newFormula = formula;
-		Set<FodotVariable> freeVars = formula.getFreeVariables();
-		if(!freeVars.isEmpty()) {
-			newFormula = FodotElementBuilder.createForAll(freeVars, newFormula);
-		}
-		return newFormula;
+		return makeVariableFree(formula, new HashSet<FodotVariable>());
 	}
+
+    public static IFodotFormula makeVariableFree(IFodotFormula formula, Set<FodotVariable> exceptions) {
+        IFodotFormula newFormula = formula;
+        Set<FodotVariable> freeVars = formula.getFreeVariables();
+        freeVars.removeAll(exceptions);
+        if(!freeVars.isEmpty()) {
+            newFormula = FodotElementBuilder.createForAll(freeVars, newFormula);
+        }
+        return newFormula;
+    }
 	
 	public static IFodotInductiveDefinitionElement makeVariableFreeInductive(IFodotInductiveDefinitionElement formula) {
 		IFodotInductiveDefinitionElement newFormula = formula;

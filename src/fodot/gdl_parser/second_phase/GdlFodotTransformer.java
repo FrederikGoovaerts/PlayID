@@ -562,9 +562,12 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 		IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
 
-		if(!removeTimeVars(condition.getFreeVariables()).isEmpty()){
-			condition = createExists(removeTimeVars(condition.getFreeVariables()),
-					condition);
+        Set<FodotVariable> conditionExclusiveVariables = removeTimeVars(condition.getFreeVariables());
+        conditionExclusiveVariables.remove(playerTerm);
+        conditionExclusiveVariables.remove(scoreTerm);
+
+        if(!conditionExclusiveVariables.isEmpty()){
+            condition = createExists(conditionExclusiveVariables, condition);
 		}
 
 		IFodotFormula extendedCondition;

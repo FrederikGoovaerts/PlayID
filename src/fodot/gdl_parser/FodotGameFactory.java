@@ -81,7 +81,7 @@ public class FodotGameFactory {
 
 	private int turnLimit = DEFAULT_TURN_LIMIT;
 
-	private final static int DEFAULT_TURN_LIMIT = 40;
+	private final static int DEFAULT_TURN_LIMIT = 30;
 
 	/***************************************************************************
 	 * Class Methods
@@ -391,10 +391,11 @@ public class FodotGameFactory {
 				} else {
 					definitions.add(
 							createInductiveSentence(createInductiveDefinitionConnector(
-									scoreFunction, FormulaUtil.makeVariableFree(formula)
+									scoreFunction, FormulaUtil.makeVariableFree(
+                                                    formula, scoreFunction.getFreeVariables())
 									)
-									)
-							);
+                            )
+                    );
 				}
 			}
 		}
@@ -724,7 +725,7 @@ public class FodotGameFactory {
 		return defaultStructure;
 	}
 
-	public static final int DEFAULT_IDP_TIME_LIMIT = 30;
+	public static final int DEFAULT_IDP_TIME_LIMIT = 20;
 	private int idpTimeLimit = DEFAULT_IDP_TIME_LIMIT;
 	private static final int DEFAULT_MODEL_LIMIT = 5;
 	private int idpModelLimit = DEFAULT_MODEL_LIMIT;
