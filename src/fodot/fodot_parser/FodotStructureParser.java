@@ -218,7 +218,7 @@ public class FodotStructureParser {
 	/**
 	 * Converts a comma separated string to type enumerations elements with given types
 	 */
-	private List<IFodotTypeEnumerationElement> extractTypeEnumerationDomain(List<FodotType> types, String line) {
+	private List<IFodotTypeEnumerationElement> extractTypeEnumerationDomain(List<FodotType> types, String line, String divider) {
 		//Errorchecking
 //		if (line.contains(MULTIVALUE_DIVIDER)) {
 //			throw new StructureParsingException(
@@ -229,7 +229,8 @@ public class FodotStructureParser {
 		String domainString = EnumerationUtil.extractDomain(line);
 
 		//Get all elements as string
-		List<String> elementsToConvert = ParserUtil.splitOnTrimmed(domainString, SINGLEVALUE_DIVIDER);
+		System.out.println(domainString);
+		List<String> elementsToConvert = ParserUtil.splitOnTrimmed(domainString, divider);
 
 		//Pass all the elements to the enumerationcreator
 		List<IFodotTypeEnumerationElement> domainElements = 
@@ -242,9 +243,9 @@ public class FodotStructureParser {
 	 * Converts a comma separated string to type enumerations elements with the given type
 	 */
 	private List<IFodotTypeEnumerationElement> extractTypeEnumerationDomain(FodotType type, String line) {
-		int amountOfElements = ParserUtil.getAmountOfStringInString(MULTIVALUE_DIVIDER, line);
+		int amountOfElements = ParserUtil.getAmountOfStringInString(MULTIVALUE_DIVIDER, line)+1;
 		List<FodotType> types = FormulaUtil.createTypeList(type, amountOfElements);
-		return extractTypeEnumerationDomain(types, line);
+		return extractTypeEnumerationDomain(types, line, MULTIVALUE_DIVIDER);
 
 	}
 
@@ -290,7 +291,7 @@ public class FodotStructureParser {
 			//Parse all elements as if they were lists of type enumerations
 			for (String element : domainElements) {
 				result.add(	new FodotPredicateEnumerationElement(decl,
-						extractTypeEnumerationDomain(decl.getArgumentTypes(), element)));
+						extractTypeEnumerationDomain(decl.getArgumentTypes(), element, SINGLEVALUE_DIVIDER)));
 			}
 		} else {
 			throw new StructureParsingException(line + " does not contain a 'Single Value' nor a domain.");
@@ -328,7 +329,7 @@ public class FodotStructureParser {
 			String resultString = splitted[1].trim();
 
 			List<IFodotTypeEnumerationElement> functionValues =
-					extractTypeEnumerationDomain(decl.getArgumentTypes(), elementsToProcess);
+					extractTypeEnumerationDomain(decl.getArgumentTypes(), elementsToProcess, SINGLEVALUE_DIVIDER);
 			IFodotTypeEnumerationElement functionReturn =
 					EnumerationUtil.toTypeEnumerationElement(resultString, decl.getReturnType());
 
