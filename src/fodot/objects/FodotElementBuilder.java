@@ -585,10 +585,6 @@ public class FodotElementBuilder {
 		return FodotType.INTEGER;
 	}
 
-	public static FodotType createPlaceHolderType() {
-		return FodotType.createPlaceHolderType();
-	}
-
 	// == FODOT ESSENTIALS ==
 
 	//FODOT INCLUDES

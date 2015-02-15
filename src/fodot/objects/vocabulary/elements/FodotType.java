@@ -109,19 +109,28 @@ public class FodotType extends FodotElement implements IFodotElement {
 		}
 		return toReturn;
 	}
+	/**********************************************/
 
-	/*************************************
-	 *  'placeholder' type
-	 *
-	 * This type can be used as a placeholder
-	 * for all types in predicates and
-	 * functions until they can be filled
-	 */
+	
+	
+	/**********************************************
+	 *  TypePredicate
+	 ***********************************************/
+	private FodotPredicateDeclaration typePredicateDeclaration;
 
-	public static FodotType createPlaceHolderType() {
-		return new FodotType("Unfilled", null, new HashSet<FodotType>(Arrays.asList(new FodotType[]{INTEGER})), null);
+	public FodotPredicateDeclaration getTypePredicateDeclaration() {
+		if (typePredicateDeclaration == null) {
+			this.typePredicateDeclaration = new FodotPredicateDeclaration(getName(), Arrays.asList(this));
+		}		
+		return typePredicateDeclaration;
 	}
 	
+	
+	
+	/**********************************************/
+
+	
+
 	//DOMAIN, SUBCLASS, SUPERCLASS STUFF
 	/*************************************
 	 * Subclasses
