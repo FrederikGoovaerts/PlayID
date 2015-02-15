@@ -220,9 +220,10 @@ public class FodotStructureParser {
 	 */
 	private List<IFodotTypeEnumerationElement> extractTypeEnumerationDomain(List<FodotType> types, String line) {
 		//Errorchecking
-		if (line.contains(MULTIVALUE_DIVIDER)) {
-			throw new StructureParsingException("Tried parsing a multiargumented line with the constantdomain parser");
-		}
+//		if (line.contains(MULTIVALUE_DIVIDER)) {
+//			throw new StructureParsingException(
+//					"Tried parsing a multiargumented line with the constantdomain parser. \nGiven: " + line);
+//		}
 
 		//Extract the domainstring
 		String domainString = EnumerationUtil.extractDomain(line);
@@ -241,7 +242,7 @@ public class FodotStructureParser {
 	 * Converts a comma separated string to type enumerations elements with the given type
 	 */
 	private List<IFodotTypeEnumerationElement> extractTypeEnumerationDomain(FodotType type, String line) {
-		int amountOfElements = ParserUtil.getAmountOfStringInString(SINGLEVALUE_DIVIDER, line);
+		int amountOfElements = ParserUtil.getAmountOfStringInString(MULTIVALUE_DIVIDER, line);
 		List<FodotType> types = FormulaUtil.createTypeList(type, amountOfElements);
 		return extractTypeEnumerationDomain(types, line);
 
