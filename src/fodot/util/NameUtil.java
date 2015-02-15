@@ -12,10 +12,19 @@ import fodot.objects.vocabulary.elements.FodotType;
 
 public class NameUtil {
 
-	private static final String VALID_NAME_REGEX = "^[a-zA-Z$][a-zA-Z_0-9]*$";
+	private static final String VALID_NAME_REGEX = "^[a-zA-Z][a-zA-Z_0-9]*$";
 	private static final List<String> ALLOWED_SPECIAL_NAMES = Arrays.asList("-");
 	private static final String NON_ALPHA_NUMERIC_REGEX = "[^a-zA-Z0-9]";
 	private static final String BASIC_VAR_NAME = "var";
+	
+	/**
+	 * Found at: https://bitbucket.org/krr/idp/src/9935dfa0b98923c605a4706a78e697b67d2b5ba9/src/parser/lex.ll?at=master
+	 */
+	private static final List<String> IDP_RESERVED_NAMES = Arrays.asList(
+			"type", "partial", "isa", "contains", "extern", "vocabulary", "constructed",
+			"card", "sum", "prod", "min", "max", "LFD", "GFD", "true", "false", "define",
+			"in", "sat", "procedure", "generate"
+			);
 
 	public static String generateVariableName(String nameSuggestion, FodotType type, Collection<? extends String> usedNames) {
 		//Generate a new valid name
@@ -39,6 +48,9 @@ public class NameUtil {
 	 */
 	public static String convertToValidVariableName(String name, FodotType type) {
 		if (name != null) {
+			if (isReserverByIdp(name)) {
+				name = name + "1";
+			}
 			if (isValidName(name)) {
 				return name;
 			}
@@ -87,6 +99,9 @@ public class NameUtil {
 			} else if (name.matches(NEGATIVE_NUMBER_REGEX)) {
 				return "i_m" + name.replace("-", "");
 			}
+			if (isReserverByIdp(name)) {
+				name = name + "1";
+			}
 		}
 		
 		String newName = tryConvertingToValidName(name);
@@ -119,6 +134,10 @@ public class NameUtil {
 		}
 		return (name.matches(VALID_NAME_REGEX)
 				|| ALLOWED_SPECIAL_NAMES.contains(name));
+	}
+	
+	public static boolean isReserverByIdp(String name) {
+		return IDP_RESERVED_NAMES.contains(name);
 	}
 
 	/**
