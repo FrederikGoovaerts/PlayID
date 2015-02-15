@@ -81,7 +81,7 @@ public class FodotGameFactory {
 
 	private int turnLimit = DEFAULT_TURN_LIMIT;
 
-	private final static int DEFAULT_TURN_LIMIT = 30;
+	public final static int DEFAULT_TURN_LIMIT = 30;
 
 	/***************************************************************************
 	 * Class Methods
@@ -195,12 +195,14 @@ public class FodotGameFactory {
 			 * C_pred(Time,*standaard argumenten*)
 			 */
 			for (FodotPredicateDeclaration declaration : source.getGdlVocabulary().getDynamicPredicates()) {
-				//        	toReturn.addElement(createComment("LTC for " + declaration.getName()));
-				//            toReturn.addElement(this.pool.getTimedVerionOf(declaration));
-				toReturn.addElement(this.source.getInitialOf(declaration)); // TODO POOLWORK
-				toReturn.addElement(this.source.getCauseOf(declaration)); // TODO POOLWORK
-				//				toReturn.addElement(this.pool.getCauseNotOf(declaration));
-				toReturn.addElement(createBlankLines(1));
+                if(!source.getCompoundMap().containsKey(declaration)) {
+                    //        	toReturn.addElement(createComment("LTC for " + declaration.getName()));
+                    //            toReturn.addElement(this.pool.getTimedVerionOf(declaration));
+                    toReturn.addElement(this.source.getInitialOf(declaration));
+                    toReturn.addElement(this.source.getCauseOf(declaration));
+                    //				toReturn.addElement(this.pool.getCauseNotOf(declaration));
+                    toReturn.addElement(createBlankLines(1));
+                }
 			}
 		}
 
@@ -225,56 +227,58 @@ public class FodotGameFactory {
 			toReturn.addElement(createComment("Inductive definitions for the fluent predicates"));
 		}
 		for (FodotPredicateDeclaration declaration : dynamicPredicates) {
-			List<FodotInductiveSentence> definitions = new ArrayList<>();
+            if(!source.getCompoundMap().containsKey(declaration)) {
+                List<FodotInductiveSentence> definitions = new ArrayList<>();
 
-			int originalArity = declaration.getAmountOfArgumentTypes();
+                int originalArity = declaration.getAmountOfArgumentTypes();
 
-			List<IFodotTerm> argList = new ArrayList<>();
-			List<IFodotTerm> iArgList = new ArrayList<>();
-			Set<FodotVariable> varSet = new HashSet<>();
-			argList.add(createFunction(this.startFunctionDeclaration));
+                List<IFodotTerm> argList = new ArrayList<>();
+                List<IFodotTerm> iArgList = new ArrayList<>();
+                Set<FodotVariable> varSet = new HashSet<>();
+                argList.add(createFunction(this.startFunctionDeclaration));
 
-			for (int i = 1; i < originalArity; i++) {
-				FodotVariable newVar = createVariable(declaration.getArgumentType(i), varSet);
-				argList.add(newVar);
-				iArgList.add(newVar);
-				varSet.add(newVar);
-			}
+                for (int i = 1; i < originalArity; i++) {
+                    FodotVariable newVar = createVariable(declaration.getArgumentType(i), varSet);
+                    argList.add(newVar);
+                    iArgList.add(newVar);
+                    varSet.add(newVar);
+                }
 
-			definitions.add(
-					createInductiveSentence(
-							createInductiveDefinitionConnector(
-									createPredicate(declaration, argList),
-									createPredicate(this.source.getInitialOf(declaration), iArgList)//TODO POOLWORK
-									//createPredicate(null, iArgList)
-									)
-							)
-					);
+                definitions.add(
+                        createInductiveSentence(
+                                createInductiveDefinitionConnector(
+                                        createPredicate(declaration, argList),
+                                        createPredicate(this.source.getInitialOf(declaration), iArgList)
+                                        //createPredicate(null, iArgList)
+                                )
+                        )
+                );
 
-			argList = new ArrayList<>(iArgList);
-			List<IFodotTerm> cArgList = new ArrayList<>(iArgList);
-			varSet = new HashSet<>(varSet);
+                argList = new ArrayList<>(iArgList);
+                List<IFodotTerm> cArgList = new ArrayList<>(iArgList);
+                varSet = new HashSet<>(varSet);
 
-			FodotVariable timeVar = createVariable(source.getTimeType(), varSet);
+                FodotVariable timeVar = createVariable(source.getTimeType(), varSet);
 
-			argList.add(0,createFunction(this.nextFunctionDeclaration,timeVar));
-			cArgList.add(0,timeVar);
-			varSet.add(timeVar);
+                argList.add(0, createFunction(this.nextFunctionDeclaration, timeVar));
+                cArgList.add(0, timeVar);
+                varSet.add(timeVar);
 
-			definitions.add(createInductiveSentence(
-					createInductiveQuantifier(
-							createForAll(
-									varSet,
-									createInductiveDefinitionConnector(
-											createPredicate(declaration,argList),
-											createPredicate(this.source.getCauseOf(declaration),cArgList)// TODO POOLWORK
-											//createPredicate(null,cArgList)
-											)
-									)
-							)
-					));
+                definitions.add(createInductiveSentence(
+                        createInductiveQuantifier(
+                                createForAll(
+                                        varSet,
+                                        createInductiveDefinitionConnector(
+                                                createPredicate(declaration, argList),
+                                                createPredicate(this.source.getCauseOf(declaration), cArgList)
+                                                //createPredicate(null,cArgList)
+                                        )
+                                )
+                        )
+                ));
 
-			toReturn.addElement(createInductiveDefinition(definitions));
+                toReturn.addElement(createInductiveDefinition(definitions));
+            }
 		}
 
 		/**
@@ -492,7 +496,7 @@ public class FodotGameFactory {
 		}
 		for (FodotPredicateDeclaration declaration : initMap.keySet()) {
 			toReturn.addElement(
-					createPredicateEnumeration(this.source.getInitialOf(declaration), //TODO POOLWORK
+					createPredicateEnumeration(this.source.getInitialOf(declaration),
 					//createPredicateEnumeration(null,
 							new ArrayList<>(initMap.get(declaration)))
 					);

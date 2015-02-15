@@ -489,7 +489,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 			GdlSentence predSentence = nextGdlTerm.toSentence();
 			FodotPredicateDeclaration originalPredicateDecl = this.processPredicate(predSentence);
-			FodotPredicateDeclaration causePredDecl = getCauseOf(originalPredicateDecl); //TODO POOLWORK (Fixed?)
+			FodotPredicateDeclaration causePredDecl = getCauseOf(originalPredicateDecl);
 			//FodotPredicateDeclaration causePredDecl = null;
 
 			FodotPredicate causePred = sentenceTrans.generateTimedPredicate(predSentence, causePredDecl);

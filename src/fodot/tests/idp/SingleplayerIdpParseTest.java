@@ -122,6 +122,7 @@ public class SingleplayerIdpParseTest extends SingleplayerTransformationTest {
 			b.append("\n===================================================\n");
 			b.append(pad("Created on ",dateFormat2.format(date))+"\n");
 			b.append(pad("Default time limit: ", Integer.toString(FodotGameFactory.DEFAULT_IDP_TIME_LIMIT)) + "s\n");
+            b.append(pad("Default turn limit: ", Integer.toString(FodotGameFactory.DEFAULT_TURN_LIMIT)) + "\n");
 			b.append(  "===================================================\n\n\n");
 			for (Pair<String,List<String>> p : lists) {
 				b.append(formatAmount(p.left, p.right));
