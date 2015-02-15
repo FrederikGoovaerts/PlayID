@@ -9,7 +9,7 @@ import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.FodotVocabulary;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
-import fodot.patterns.util.IntegerTypeUtil;
+import fodot.util.IntegerTypeUtil;
 
 @Deprecated
 public class FodotIntegerTypeRecognizer implements IFodotOptimizer {

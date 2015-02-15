@@ -13,7 +13,7 @@ import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.structure.elements.typeenum.FodotNumericalTypeRangeEnumeration;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
-import fodot.patterns.util.IntegerTypeUtil;
+import fodot.util.IntegerTypeUtil;
 
 public class GdlIntegerTypeRecognizer implements IGdlVocabularyOptimizer {
 

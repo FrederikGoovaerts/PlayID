@@ -1,6 +1,7 @@
-package fodot.patterns.util;
+package fodot.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,7 +9,6 @@ import fodot.objects.structure.elements.typeenum.FodotNumericalTypeRangeEnumerat
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
-import fodot.util.NameUtil;
 
 public class IntegerTypeUtil {
 	
@@ -67,5 +67,30 @@ public class IntegerTypeUtil {
 			}
 		}		
 		return true;
+	}
+	
+	public static FodotConstant getMaximum(List<FodotConstant> constants) {
+		if (constants.size() == 0) {
+			return null;
+		}
+		
+		FodotConstant max = constants.get(0);
+		for (FodotConstant c : constants) {
+			if (extractValue(c) > extractValue(max)) {
+				max = c;
+			}
+		}
+		
+		return max;
+	}
+	
+	public static List<FodotConstant> getConstants(Collection<? extends IFodotDomainElement> domainElements) {
+		List<FodotConstant> constants = new ArrayList<FodotConstant>();
+		for (IFodotDomainElement el : domainElements) {
+			if (el instanceof FodotConstant) {
+				constants.add((FodotConstant)el);
+			}
+		}
+		return constants;
 	}
 }
