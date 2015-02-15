@@ -229,7 +229,6 @@ public class FodotStructureParser {
 		String domainString = EnumerationUtil.extractDomain(line);
 
 		//Get all elements as string
-		System.out.println(domainString);
 		List<String> elementsToConvert = ParserUtil.splitOnTrimmed(domainString, divider);
 
 		//Pass all the elements to the enumerationcreator

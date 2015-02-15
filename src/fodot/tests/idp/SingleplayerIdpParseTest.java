@@ -27,7 +27,7 @@ import fodot.tests.transformation.SingleplayerTransformationTest;
 
 public class SingleplayerIdpParseTest extends SingleplayerTransformationTest {
 
-	private static final boolean generateReport = false;
+	private static final boolean generateReport = true;
 
 
 	private static List<String> success;
