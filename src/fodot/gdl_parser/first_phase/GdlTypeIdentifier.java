@@ -52,7 +52,7 @@ public class GdlTypeIdentifier {
 
 	private static final IGdlVocabularyOptimizer DEFAULT_OPTIMIZER = new GdlVocabularyChainOptimizer(new GdlIntegerTypeRecognizer());
 	private IGdlVocabularyOptimizer optimizer = DEFAULT_OPTIMIZER;
-	
+
 	/**********************************************
 	 *  Data maps
 	 ***********************************************/
@@ -244,7 +244,9 @@ public class GdlTypeIdentifier {
 		FodotType foundType = argumentLists.get(directParent).getArgumentType(argumentIndex);
 		if (!foundType.equals(unfilledType)) {
 			//Don't add constants to the score type.
-			updateTermType(decl, foundType);
+			if (canPushUpdatesTo(directParent, argumentIndex, decl)) {
+				updateTermType(decl, foundType);
+			}
 		}
 	}
 
@@ -254,7 +256,7 @@ public class GdlTypeIdentifier {
 		}		
 	}
 
-	
+
 	private boolean canPushTypeUpdates(IGdlTermDeclaration term) {
 		GdlTermData data = terms.get(term);
 		return !data.hasOnlyType(unfilledType)
@@ -263,12 +265,33 @@ public class GdlTypeIdentifier {
 						&& ((GdlConstantDeclaration)term).getConstant().getValue().matches(NameUtil.NUMBER_REGEX));
 	}
 
-	private boolean canPushUpdatesTo(IGdlTermDeclaration term, IGdlArgumentListDeclaration argumentList, int argIndex) {
-		FodotType argumentType = argumentLists.get(argumentList).getArgumentType(argIndex);
-		if (terms.get(term).getTypes().equals(argumentType)) {
+	private boolean canPushUpdatesTo(IGdlTermDeclaration from, IGdlArgumentListDeclaration to, int argIndex) {
+		FodotType currentArgumentType = argumentLists.get(to).getArgumentType(argIndex);
+		if (terms.get(from).getTypes().equals(currentArgumentType)) {
 			return false;
 		}
-		return canPushTypeUpdates(term);
+		return canPushTypeUpdates(from);
+	}
+
+	private boolean canPushUpdatesTo(IGdlArgumentListDeclaration from, int argIndex, IGdlTermDeclaration to) {
+		FodotType argumentType = argumentLists.get(from).getArgumentType(argIndex);
+
+		List<FodotType> currentTermTypes = terms.get(to).getTypes();
+		if (currentTermTypes.contains(argumentType)) {
+			return false;
+		}
+
+		/* 
+		 * TODO Enkel rollen mogen constant op playertype zetten.
+		 * In sommige singleplayer (mummymaze1p) spellen wordt er echter geimpliceerd
+		 * dat er meerdere spelers zouden zijn.
+		 */
+//		if (argumentType.equals(playerType) && !from.equals(getRole()) && to instanceof GdlConstantDeclaration) {
+//			System.out.println("Can't update constant to playertype: " + from + "::>" + to);
+//			return false;
+//		}
+
+		return true;
 	}
 
 	/**********************************************
@@ -367,11 +390,6 @@ public class GdlTypeIdentifier {
 	private void updateArgumentListArgumentType(IGdlArgumentListDeclaration declaration, int argumentNr, FodotType foundType) {
 		assert !foundType.equals(unfilledType);
 
-		//Check if exists
-		//		if (!argumentLists.containsKey(declaration)) {
-		//			initArgumentList(declaration);
-		//		}
-
 		GdlArgumentListData data = argumentLists.get(declaration);
 
 		//Don't update typelocked things
@@ -389,7 +407,7 @@ public class GdlTypeIdentifier {
 
 		//Update all occurred arguments
 		for (IGdlTermDeclaration term : data.getArgumentOccurrences(argumentNr)) {
-			if (!terms.get(term).hasType(foundType)) {
+			if (canPushUpdatesTo(declaration, argumentNr, term)) {
 				//System.out.println(":A> "+declaration + (argumentNr+1) + "/" + declaration.getArity() + " ==> " + term + " :: " + foundType);
 				updateTermType(term, foundType);
 			}
@@ -424,8 +442,8 @@ public class GdlTypeIdentifier {
 				}
 			}
 		}
-		
-		
+
+
 	}
 
 	private static final boolean useAllType = false;
@@ -514,7 +532,7 @@ public class GdlTypeIdentifier {
 				nonDefaultDynamicPredicates.add(predicate);
 			}
 		}
-		
+
 		GdlVocabulary vocabulary =  new GdlVocabulary(
 				this.timeType, this.playerType, this.actionType, 
 				this.scoreType, this.otherTypes,
@@ -543,7 +561,7 @@ public class GdlTypeIdentifier {
 	}
 	/**********************************************/
 
-	
+
 
 	/**********************************************
 	 *  GdlTransformer creator
