@@ -710,13 +710,14 @@ public class FodotGameFactory {
 				);
 
 		//ScoreType={0..100}
-		defaultStructure.addElement(
-				createNumericalTypeRangeEnumeration(
-						source.getScoreType(),
-						createInteger(0),
-						createInteger(100)
-						)
-				);
+		// Not necessary anymore: GdlTypeIdentifier now adds this with only the domainelements needed
+//		defaultStructure.addElement(
+//				createNumericalTypeRangeEnumeration(
+//						source.getScoreType(),
+//						createInteger(0),
+//						createInteger(100)
+//						)
+//				);
 
 		// This is dependent on the name of the player, cannot be instantiated here
 		//Score={p_robot(),100}

@@ -49,7 +49,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 			Map<GdlFunctionDeclaration, FodotTypeFunctionDeclaration> functionDeclarations,
 			Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations,
 			Set<GdlPredicateDeclaration> dynamicPredicates,
-			Set<? extends IFodotStructureElement> structureElements
+			Collection<? extends IFodotStructureElement> structureElements
 			) {
 		super();
 		this.timeType = timeType;

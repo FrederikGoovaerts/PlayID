@@ -1,11 +1,6 @@
 package fodot.gdl_parser.first_phase;
 
-import static fodot.objects.FodotElementBuilder.createConstant;
-import static fodot.objects.FodotElementBuilder.createPredicateDeclaration;
-import static fodot.objects.FodotElementBuilder.createType;
-import static fodot.objects.FodotElementBuilder.createTypeFunctionDeclaration;
-import static fodot.objects.FodotElementBuilder.createVariable;
-import static fodot.objects.FodotElementBuilder.getNaturalNumberType;
+import static fodot.objects.FodotElementBuilder.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,12 +31,14 @@ import fodot.gdl_parser.first_phase.data.declarations.GdlVariableDeclaration;
 import fodot.gdl_parser.first_phase.data.declarations.IGdlArgumentListDeclaration;
 import fodot.gdl_parser.first_phase.data.declarations.IGdlTermDeclaration;
 import fodot.gdl_parser.first_phase.data.occurrences.GdlTermOccurrence;
-import fodot.objects.structure.elements.IFodotStructureElement;
+import fodot.objects.structure.elements.typeenum.FodotTypeEnumeration;
+import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
+import fodot.objects.vocabulary.elements.IFodotDomainElement;
 import fodot.patterns.gdl_vocabulary.GdlIntegerTypeRecognizer;
 import fodot.patterns.gdl_vocabulary.GdlVocabularyChainOptimizer;
 import fodot.patterns.gdl_vocabulary.IGdlVocabularyOptimizer;
@@ -194,10 +191,6 @@ public class GdlTypeIdentifier {
 	 ***********************************************/
 	public void addConstantOccurrence(IGdlArgumentListDeclaration directParent, int argumentIndex, GdlConstant constant) {
 
-		//Don't register constants of type scoreType
-		//		if (argumentLists.get(directParent).getArgumentType(argumentIndex).equals(scoreType)) {
-		//			return;
-		//		}
 		GdlConstantDeclaration decl = new GdlConstantDeclaration(constant);
 		addTermOccurrence(decl, directParent, argumentIndex);
 		terms.get(decl).allowMultipleTypes();
@@ -286,10 +279,10 @@ public class GdlTypeIdentifier {
 		 * In sommige singleplayer (mummymaze1p) spellen wordt er echter geimpliceerd
 		 * dat er meerdere spelers zouden zijn.
 		 */
-//		if (argumentType.equals(playerType) && !from.equals(getRole()) && to instanceof GdlConstantDeclaration) {
-//			System.out.println("Can't update constant to playertype: " + from + "::>" + to);
-//			return false;
-//		}
+		//		if (argumentType.equals(playerType) && !from.equals(getRole()) && to instanceof GdlConstantDeclaration) {
+		//			System.out.println("Can't update constant to playertype: " + from + "::>" + to);
+		//			return false;
+		//		}
 
 		return true;
 	}
@@ -349,22 +342,14 @@ public class GdlTypeIdentifier {
 	 */
 	private void updateTermType(IGdlTermDeclaration declaration, FodotType foundType) {
 		assert !foundType.equals(unfilledType);
-
-		//		if (!terms.containsKey(declaration)) {
-		//			initTerm(declaration);
-		//		}
-
+		
 		GdlTermData data = terms.get(declaration);
 
 		//What if it already has a type?
 		if (!data.canHaveMultipleTypes() && !data.hasOnlyType(unfilledType) && !data.hasOnlyType(foundType)) {
 			throw new GdlTypeIdentificationError("Type collision in "+ declaration +" \nOld: " + data.getTypes() + "\nNew: " + foundType);
 		}
-
-		//		if (declaration instanceof GdlConstantDeclaration && foundType.equals(scoreType)) {
-		//			System.out.println("<:score constant found:>");
-		//			return;
-		//		}
+		
 		//Set the new type
 		data.removeType(unfilledType);
 		data.addType(foundType);
@@ -373,7 +358,6 @@ public class GdlTypeIdentifier {
 		for (GdlTermOccurrence occ : data.getOccurences()) {
 			IGdlArgumentListDeclaration parent = occ.getDirectParent();
 			if (canPushUpdatesTo(declaration, parent, occ.getArgumentIndex())) {
-				//				System.out.println(":T) "+declaration + " ==> " + parent + (occ.getArgumentIndex()+1) + "/" + parent.getArity() + " :: " + foundType);
 				updateArgumentListArgumentType( parent, occ.getArgumentIndex(), foundType);		
 			}
 		}	
@@ -408,7 +392,6 @@ public class GdlTypeIdentifier {
 		//Update all occurred arguments
 		for (IGdlTermDeclaration term : data.getArgumentOccurrences(argumentNr)) {
 			if (canPushUpdatesTo(declaration, argumentNr, term)) {
-				//System.out.println(":A> "+declaration + (argumentNr+1) + "/" + declaration.getArity() + " ==> " + term + " :: " + foundType);
 				updateTermType(term, foundType);
 			}
 		}
@@ -533,6 +516,20 @@ public class GdlTypeIdentifier {
 			}
 		}
 
+		//Find all elements of scoretype
+		List<IFodotTypeEnumerationElement> scoreValues = new ArrayList<>();
+		for (IFodotDomainElement el : scoreType.getDomainElements()) {
+			if (el instanceof FodotConstant) {
+				scoreValues.add((FodotConstant) el);
+			} else {
+				throw new GdlTypeIdentificationError(
+						"An illegal value in the score domain is detected."
+						+ "\nAll values must be integer constants! \nDetected score value: " + el);
+			}
+		}
+		FodotTypeEnumeration scoreEnumeration = createTypeEnumeration(scoreType, scoreValues);
+		
+		
 		GdlVocabulary vocabulary =  new GdlVocabulary(
 				this.timeType, this.playerType, this.actionType, 
 				this.scoreType, this.otherTypes,
@@ -540,7 +537,10 @@ public class GdlTypeIdentifier {
 				constantsMap, variablesPerRule,
 				functionDeclarations, predicateDeclarations,
 
-				nonDefaultDynamicPredicates, new HashSet<IFodotStructureElement>());
+				nonDefaultDynamicPredicates, 
+				Arrays.asList(scoreEnumeration)
+//				new HashSet<IFodotStructureElement>()
+				);
 
 		vocabulary = this.getOptimizer().improve(vocabulary);
 
