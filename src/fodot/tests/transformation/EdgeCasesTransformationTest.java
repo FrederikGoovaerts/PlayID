@@ -130,5 +130,10 @@ public class EdgeCasesTransformationTest {
 	public void exception_test_invalid_sentence_arities_differ() {
 		testFor("test_invalid_sentence_arities_differ");
 	}
+
+	@Test
+	public void transform_ruleDepthLinear_test() {
+		testFor("ruleDepthLinear");
+	}
 	
 }

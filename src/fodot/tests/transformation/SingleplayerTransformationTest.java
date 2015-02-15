@@ -281,11 +281,6 @@ public class SingleplayerTransformationTest {
 	}
 
 	@Test
-	public void transform_ruleDepthLinear_test() {
-		testFor("ruleDepthLinear.kif");
-	}
-
-	@Test
 	public void transform_simultaneousWin2_test() {
 		testFor("simultaneousWin2.kif");
 	}
