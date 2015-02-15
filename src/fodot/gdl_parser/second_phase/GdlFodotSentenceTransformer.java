@@ -98,6 +98,9 @@ public class GdlFodotSentenceTransformer {
 				resultingFormulas.add(formula);
 			}
 		}
+		if (resultingFormulas.isEmpty()) {
+			return null;
+		}
 		return createAnd(resultingFormulas);
 	}
 

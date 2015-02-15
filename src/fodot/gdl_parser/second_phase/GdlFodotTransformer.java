@@ -56,8 +56,8 @@ import fodot.util.FormulaUtil;
 public class GdlFodotTransformer implements GdlTransformer {
 
 	public static final String ACTION_PREDICATE_NAME = "do";
-    public static final String LEGAL_MOVE_PREDICATE_NAME = "fodot_legal_move";
-	
+	public static final String LEGAL_MOVE_PREDICATE_NAME = "fodot_legal_move";
+
 	/***************************************************************************
 	 * Constructor
 	 * @param gdlVocabulary 	The data created by the first pass through the GDL file
@@ -147,7 +147,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 			throw new IllegalArgumentException();
 		if(ownRole == null)
 			ownRole = role;
-        // Should already be done in the first phase
+		// Should already be done in the first phase
 		//getPlayerType().addDomainElement(role);
 	}
 
@@ -222,15 +222,15 @@ public class GdlFodotTransformer implements GdlTransformer {
 		return this.doPredicateDeclaration;
 	}
 
-    private FodotPredicateDeclaration legalmovePredicateDeclaration;
+	private FodotPredicateDeclaration legalmovePredicateDeclaration;
 
-    public FodotPredicateDeclaration getLegalmovePredicateDeclaration(){
-        return this.legalmovePredicateDeclaration;
-    }
+	public FodotPredicateDeclaration getLegalmovePredicateDeclaration(){
+		return this.legalmovePredicateDeclaration;
+	}
 
 
 	/*** End of Actions subsection ***/
-	
+
 	/*************************************
 	 * Next rules
 	 */
@@ -254,7 +254,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 	 * Legal
 	 */
 
-    //Contains legal rules, actions which are only legal in certain circumstances
+	//Contains legal rules, actions which are only legal in certain circumstances
 	private Map<FodotPredicate,Set<IFodotFormula>> legalMap;
 
 	public Map<FodotPredicate, Set<IFodotFormula>> getLegalMap() {
@@ -271,16 +271,16 @@ public class GdlFodotTransformer implements GdlTransformer {
 		}
 	}
 
-    //Contains actions which are always legal
-    private Set<FodotPredicate> legalSet;
+	//Contains actions which are always legal
+	private Set<FodotPredicate> legalSet;
 
-    public Set<FodotPredicate> getLegalSet(){
-        return new HashSet<>(this.legalSet);
-    }
+	public Set<FodotPredicate> getLegalSet(){
+		return new HashSet<>(this.legalSet);
+	}
 
-    private void addLegal(FodotPredicate predicate){
-        legalSet.add(predicate);
-    }
+	private void addLegal(FodotPredicate predicate){
+		legalSet.add(predicate);
+	}
 
 	/*** End of Legal subsection ***/
 
@@ -352,7 +352,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		this.scoreMap = new HashMap<>();
 		this.nextMap = new HashMap<>();
 		this.legalMap = new HashMap<>();
-        this.legalSet = new HashSet<>();
+		this.legalSet = new HashSet<>();
 		this.terminalSet = new HashSet<>();
 		this.compoundMap = new HashMap<>();
 		this.processingRules = false;
@@ -362,7 +362,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		typeList.add(getPlayerType());
 		typeList.add(getActionType());
 		this.doPredicateDeclaration = createPredicateDeclaration(ACTION_PREDICATE_NAME, typeList);
-        this.legalmovePredicateDeclaration = createPredicateDeclaration(LEGAL_MOVE_PREDICATE_NAME,typeList);
+		this.legalmovePredicateDeclaration = createPredicateDeclaration(LEGAL_MOVE_PREDICATE_NAME,typeList);
 
 		ArrayList<FodotType> typeList2 = new ArrayList<>();
 		typeList2.add(getTimeType());
@@ -427,23 +427,23 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 	@Override
 	public void processLegalRelation(GdlRelation relation) {
-        GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
+		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this);
 
-        GdlTerm playerGdlTerm = relation.get(0);
-        IFodotTerm player = sentenceTrans.generateTerm(playerGdlTerm, getPlayerType());
+		GdlTerm playerGdlTerm = relation.get(0);
+		IFodotTerm player = sentenceTrans.generateTerm(playerGdlTerm, getPlayerType());
 
-        GdlTerm actionGdlTerm = relation.get(1);
-        IFodotTerm actionTerm = sentenceTrans.generateTerm(actionGdlTerm, getActionType());
+		GdlTerm actionGdlTerm = relation.get(1);
+		IFodotTerm actionTerm = sentenceTrans.generateTerm(actionGdlTerm, getActionType());
 
-        this.addLegal(
-                createPredicate(
-                        this.getLegalmovePredicateDeclaration(),
-                        sentenceTrans.createTimeVariable(),
-                        player,
-                        actionTerm
-                )
-        );
-    }
+		this.addLegal(
+				createPredicate(
+						this.getLegalmovePredicateDeclaration(),
+						sentenceTrans.createTimeVariable(),
+						player,
+						actionTerm
+						)
+				);
+	}
 
 
 	private List<IFodotTypeEnumerationElement> extractEnumerationList(GdlSentence sentence, List<FodotType> types) {
@@ -504,7 +504,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 
 
-    @Override
+	@Override
 	public void processLegalRule(GdlRule rule) {
 		// legal(player, action) ==> do(time,player,action)
 
@@ -531,14 +531,17 @@ public class GdlFodotTransformer implements GdlTransformer {
 		//generate IFodotFormula from the body
 		IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
 
-        Set<FodotVariable> conditionExclusiveVariables = removeTimeVars(condition.getFreeVariables());
-        conditionExclusiveVariables.removeAll(legalmovePred.getFreeVariables());
+		if (condition != null) {
+			Set<FodotVariable> conditionExclusiveVariables = removeTimeVars(condition.getFreeVariables());
+			conditionExclusiveVariables.removeAll(legalmovePred.getFreeVariables());
 
-		if(!conditionExclusiveVariables.isEmpty()){
-			condition = createExists(conditionExclusiveVariables, condition);
-		}
+			if(!conditionExclusiveVariables.isEmpty()){
+				condition = createExists(conditionExclusiveVariables, condition);
+			}
 
-		//add the combination as a next rule
+			//add the combination as a next rule
+		} 
+
 		this.addLegal(legalmovePred, condition);
 	}
 
@@ -562,12 +565,12 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 		IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
 
-        Set<FodotVariable> conditionExclusiveVariables = removeTimeVars(condition.getFreeVariables());
-        conditionExclusiveVariables.remove(playerTerm);
-        conditionExclusiveVariables.remove(scoreTerm);
+		Set<FodotVariable> conditionExclusiveVariables = removeTimeVars(condition.getFreeVariables());
+		conditionExclusiveVariables.remove(playerTerm);
+		conditionExclusiveVariables.remove(scoreTerm);
 
-        if(!conditionExclusiveVariables.isEmpty()){
-            condition = createExists(conditionExclusiveVariables, condition);
+		if(!conditionExclusiveVariables.isEmpty()){
+			condition = createExists(conditionExclusiveVariables, condition);
 		}
 
 		IFodotFormula extendedCondition;
@@ -650,26 +653,26 @@ public class GdlFodotTransformer implements GdlTransformer {
 		return toReturn;
 	}
 
-    public FodotPredicateDeclaration getCauseOf(FodotPredicateDeclaration originalPredicateDecl) {
-        if(originalPredicateDecl.getAmountOfArgumentTypes()==0 ||
-                !originalPredicateDecl.getArgumentType(0).equals(gdlVocabulary.getTimeType()))
-            throw new IllegalArgumentException("This is not an LTC predicate");
-        return createPredicateDeclaration("C_" + originalPredicateDecl.getName(), originalPredicateDecl.getArgumentTypes());
-    }
+	public FodotPredicateDeclaration getCauseOf(FodotPredicateDeclaration originalPredicateDecl) {
+		if(originalPredicateDecl.getAmountOfArgumentTypes()==0 ||
+				!originalPredicateDecl.getArgumentType(0).equals(gdlVocabulary.getTimeType()))
+			throw new IllegalArgumentException("This is not an LTC predicate");
+		return createPredicateDeclaration("C_" + originalPredicateDecl.getName(), originalPredicateDecl.getArgumentTypes());
+	}
 
-    public FodotPredicateDeclaration getCauseNotOf(FodotPredicateDeclaration originalPredicateDecl) {
-        if(originalPredicateDecl.getAmountOfArgumentTypes()==0 ||
-                !originalPredicateDecl.getArgumentType(0).equals(gdlVocabulary.getTimeType()))
-            throw new IllegalArgumentException("This is not an LTC predicate");
-        return createPredicateDeclaration("Cn_" + originalPredicateDecl.getName(), originalPredicateDecl.getArgumentTypes());
-    }
+	public FodotPredicateDeclaration getCauseNotOf(FodotPredicateDeclaration originalPredicateDecl) {
+		if(originalPredicateDecl.getAmountOfArgumentTypes()==0 ||
+				!originalPredicateDecl.getArgumentType(0).equals(gdlVocabulary.getTimeType()))
+			throw new IllegalArgumentException("This is not an LTC predicate");
+		return createPredicateDeclaration("Cn_" + originalPredicateDecl.getName(), originalPredicateDecl.getArgumentTypes());
+	}
 
-    public FodotPredicateDeclaration getInitialOf(FodotPredicateDeclaration originalPredicateDecl) {
-        if(originalPredicateDecl.getAmountOfArgumentTypes()==0 ||
-                !originalPredicateDecl.getArgumentType(0).equals(gdlVocabulary.getTimeType()))
-            throw new IllegalArgumentException("This is not an LTC predicate");
-        return createPredicateDeclaration("I_" + originalPredicateDecl.getName(),
-                originalPredicateDecl.getArgumentTypes().subList(1,originalPredicateDecl.getAmountOfArgumentTypes()));
-    }
+	public FodotPredicateDeclaration getInitialOf(FodotPredicateDeclaration originalPredicateDecl) {
+		if(originalPredicateDecl.getAmountOfArgumentTypes()==0 ||
+				!originalPredicateDecl.getArgumentType(0).equals(gdlVocabulary.getTimeType()))
+			throw new IllegalArgumentException("This is not an LTC predicate");
+		return createPredicateDeclaration("I_" + originalPredicateDecl.getName(),
+				originalPredicateDecl.getArgumentTypes().subList(1,originalPredicateDecl.getAmountOfArgumentTypes()));
+	}
 
 }

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fodot.exceptions.fodot.FodotException;
 import fodot.exceptions.fodot.IllegalConnectorException;
 import fodot.objects.theory.elements.IFodotExpression;
 import fodot.objects.general.FodotElement;
@@ -28,6 +29,10 @@ public abstract class FodotSentenceElementConnector<E extends IFodotExpression> 
 					+ " has way more than two arguments, which it doesn't seem to be able to handle. "
 					+ CollectionPrinter.toCouple(CollectionPrinter.toCode(args)));
 		}
+		if (args.size() == 0) {
+			throw new FodotException("A sentenceconnector needs arguments!");
+		}
+		
 		this.connector = connector;	
 		this.arguments = new ArrayList<E>();	
 
