@@ -96,6 +96,9 @@ public class IdpResultTransformer {
 				while (it.hasNext() && !isEndOfStructure(line)) {
 					structureToParse.add(line);
 					line = it.next();
+					if (isOutOfResources(line)) {
+						throw new OutOfResourcesException(line);
+					}
 				}
 				structureToParse.add(line);
 				
@@ -122,8 +125,11 @@ public class IdpResultTransformer {
 		return trimmed.startsWith("This application has requested the Runtime to terminate it in an unusual way.");
 	}
 
+	private static final String OUT_OF_RESOURCES_MESSAGE = "Out of resources";
 	private boolean isOutOfResources(String line) {
-		return line.trim().startsWith("Out of resources");
+		String trimmed = line.trim();
+		return trimmed.startsWith(OUT_OF_RESOURCES_MESSAGE)
+				|| trimmed.endsWith(OUT_OF_RESOURCES_MESSAGE);
 	}
 
 	private boolean isUnsatisfiable(String line) {
