@@ -79,12 +79,12 @@ public class IdpResultTransformer {
 			
 			String line = it.next();
 			
-			if (isSyntaxError(line)) {
+			if (isOutOfResources(line)){
+				throw new OutOfResourcesException(line);
+			} else if (isSyntaxError(line)) {
 				throw new IdpSyntaxErrorException(line);
 			} else if (isUnsatisfiable(line)) {
 				throw new UnsatisfiableIdpFileException();
-			} else if (isOutOfResources(line)){
-				throw new OutOfResourcesException(line);
 			} else if (isError(line)) {
 				throw new IdpErrorException(line);
 			} else if (isThrowAwayLine(line)){
@@ -129,7 +129,8 @@ public class IdpResultTransformer {
 	private boolean isOutOfResources(String line) {
 		String trimmed = line.trim();
 		return trimmed.startsWith(OUT_OF_RESOURCES_MESSAGE)
-				|| trimmed.endsWith(OUT_OF_RESOURCES_MESSAGE);
+				|| trimmed.endsWith(OUT_OF_RESOURCES_MESSAGE)
+				|| trimmed.startsWith("Error: memory exhausted");
 	}
 
 	private boolean isUnsatisfiable(String line) {
