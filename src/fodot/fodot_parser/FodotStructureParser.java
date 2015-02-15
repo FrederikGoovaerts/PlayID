@@ -147,27 +147,51 @@ public class FodotStructureParser {
 		}
 		String name = splitted[0].trim();
 		String domain = splitted[1].trim();
+		
+		//IDP sometimes likes to specify types for some reason, like "thing[Time,Type3]"
+		if (name.contains("[")) {
+			name = name.substring(0, name.indexOf("["));
+		}
+		
+		List<IFodotVocabularyElement> elements = getVocabulary().getElementsWithName(name);
+		
+		IFodotVocabularyElement vocElement = null;
+		if (elements.size() == 0) {
+			throw new StructureParsingException("No element with name " + name);
+		} else if (elements.size() == 1) {
+			 vocElement = getVocabulary().getElementsWithName(name).get(0); ;
+		} else {
+			//Determine what element with this name
+			int arity = EnumerationUtil.getArity(domain);
+			vocElement = getElementWithArity(elements, arity);			
+		}
 
 		IFodotStructureElement elementToAdd = null;
-		IFodotVocabularyElement elementVocElement = getVocabulary().getElementsWithName(name).get(0); //TODO: fix this: Count the arity of the given domain!
-		switch (getDomainType(name)) {
-		case TYPE:
-			elementToAdd = createTypeEnumeration((FodotTypeDeclaration) elementVocElement, domain);
-			break;
-		case PREDICATE:
-			elementToAdd = createPredicateEnumeration((FodotPredicateDeclaration) elementVocElement, domain);
-			break;
-		case FUNCTION:
-			elementToAdd = createFunctionEnumeration((FodotFunctionFullDeclaration) elementVocElement, domain);
-			break;
-		default:
-			throw new StructureParsingException("Trying to process an assignment of an unknown type");
+		if (vocElement.getClass().equals(FodotFunctionFullDeclaration.class)) {
+			elementToAdd = createFunctionEnumeration((FodotFunctionFullDeclaration) vocElement, domain);
+		} else if (vocElement.getClass().equals(FodotPredicateDeclaration.class)) {
+			elementToAdd = createPredicateEnumeration((FodotPredicateDeclaration) vocElement, domain);
+		} else if (vocElement.getClass().equals(FodotTypeDeclaration.class)) {
+			elementToAdd = createTypeEnumeration((FodotTypeDeclaration) vocElement, domain);
+		} else {
+			throw new StructureParsingException("Not a recognized class: " + vocElement.getClass());
 		}
 
 		if (elementToAdd != null) {
 			getResultingStructure().addElement(elementToAdd);
 		}
 	}
+
+	private IFodotVocabularyElement getElementWithArity(
+			List<IFodotVocabularyElement> elements, int arity) {
+		for (IFodotVocabularyElement el : elements) {
+			if (el.getArity() == arity) {
+				return el;
+			}
+		}
+		throw new StructureParsingException("No element with name and arity: " + elements.get(0).getName() + "/" + arity);
+	}
+
 	/**********************************************/
 
 	private static final String OPENING_BRACKET = "{";
@@ -320,47 +344,27 @@ public class FodotStructureParser {
 	 *  Enumeration recognision
 	 ***********************************************/
 
-
-	private enum EnumerationType {FUNCTION, PREDICATE, TYPE};
-
-	private EnumerationType getDomainType(String name) {
-
-		IFodotVocabularyElement el = getVocabulary().getElementsWithName(name).get(0); // TODO: fix me: count the arity!
-		if (el.getClass().equals(FodotFunctionFullDeclaration.class)) {
-			return EnumerationType.FUNCTION;
-		}
-		if (el.getClass().equals(FodotPredicateDeclaration.class)) {
-			return EnumerationType.PREDICATE;
-		}
-		if (el.getClass().equals(FodotTypeDeclaration.class)) {
-			return EnumerationType.TYPE;
-		}
-
-		throw new StructureParsingException("Not a recognized class: " + el.getClass());
-	}
-
-
 	private static String RANGE_REGEX = "^[{][\\s]*[-]?[0-9]+[.][.][-]?[0-9]+[\\s]*[}]$";
 
-	private boolean containsRange(String line) {
+	private static boolean containsRange(String line) {
 		return line.trim().matches(RANGE_REGEX);
 	}
 	private static String SINGLE_VALUE_REGEX = "^[a-zA-Z0-9_()]*$";
 
-	private boolean isSingleValue(String line) {
+	private static boolean isSingleValue(String line) {
 		return line.trim().matches(SINGLE_VALUE_REGEX);
 	}
 
 	private static String DOMAIN_REGEX = "^[{][a-zA-Z0-9_();,.\\->\\s]*[}]$";
 
-	private boolean containsDomain(String line) {
+	private static boolean containsDomain(String line) {
 		return line.trim().matches(DOMAIN_REGEX);
 	}
 
 	/**
 	 * Returns whatever is between curly braces
 	 */
-	private String extractDomain(String line) {
+	private static String extractDomain(String line) {
 		int firstBracket = line.indexOf(OPENING_BRACKET)+1;
 		int lastBracket = line.lastIndexOf(CLOSING_BRACKET);
 		if (!containsDomain(line) || firstBracket < 0 || lastBracket < firstBracket) {

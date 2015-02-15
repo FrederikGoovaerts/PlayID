@@ -57,4 +57,30 @@ public class EnumerationUtil {
 		}
 		return null;
 	}
+	
+	public static int getArity(String domain) {
+		if (!domain.contains("{")) {//No brackets: single value;
+			return 1;
+		} else {
+			String oneElement = domain.split(";")[0];
+			//count amount of commas + 1
+			int result = 1;
+			while (oneElement.contains(",")) {
+				oneElement = oneElement.substring(oneElement.indexOf(",")+1);
+				result += 1;
+			}
+			if (oneElement.contains("->")) {
+				result += 1;
+			}
+			return result;
+		}
+	}
+	
+	public static boolean canBeTypeEnumeration(String domain) {
+		return !domain.contains(";") && !domain.contains("->");
+	}
+	
+	public static boolean canBeFunctionEnumeration(String domain) {
+		return !domain.contains("{") || domain.contains("->");
+	}
 }
