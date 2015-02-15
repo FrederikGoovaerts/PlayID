@@ -1,0 +1,62 @@
+REPORT FOR PROCESSIBILITY OF SINGLEPLAYER GAMES
+
+===================================================
+Created on                      2015-02-15 19:35
+Default time limit:             20s
+Default turn limit:             30
+===================================================
+
+
+Successful:                      24
+
+GDL transformation error:         0
+
+FO(.) transformation error:       0
+
+IDP syntax error:                 6
+
+IDP error:                        1
+
+Out of Resources:                22
+
+Unsatisfiable:                    8
+
+No models found:                  0
+
+Answerer error:                   0
+
+Other error::                     0
+
+
+===================================================
+===================== Details =====================
+===================================================
+
+Successful: 
+[aipsrovers01.kif, asteroids.kif, blocks.kif, blocksWorld.kif, blocksWorldSerial.kif, brain_teaser_extended.kif, buttons.kif, chineseCheckers1.kif, circlesolitaire.kif, duplicateStateMedium.kif, duplicateStateSmall.kif, factoringGeorgeForman.kif, haystack.kif, incredible.kif, kitten_escapes_from_fire.kif, lightsOn.kif, lightsOnParallel.kif, lightsOnSimultaneous.kif, maze.kif, pearls.kif, simultaneousWin2.kif, snake_2008_tweaked.kif, stateSpaceMedium.kif, stateSpaceSmall.kif]
+
+GDL transformation error: 
+[]
+
+FO(.) transformation error: 
+[]
+
+IDP syntax error: 
+[duplicateStateLarge.kif, factoringMutuallyAssuredDestruction.kif, max_knights.kif, mummymaze1p.kif, snakeParallel.kif, stateSpaceLarge.kif]
+
+IDP error: 
+[hitori.kif]
+
+Out of Resources: 
+[asteroidsParallel.kif, asteroidsSerial.kif, blocksWorldParallel.kif, eightPuzzle.kif, factoringImpossibleTurtleBrain.kif, factoringMediumTurtleBrain.kif, god.kif, hanoi_6_disks.kif, knightsTour.kif, knightsTourLarge.kif, lightsOnSimul4.kif, lightsOut.kif, pancakes.kif, pancakes6.kif, pancakes88.kif, peg.kif, pegEuro.kif, queens.kif, ruleDepthExponential.kif, snake_2008.kif, snake_2009.kif, snake_2009_big.kif]
+
+Unsatisfiable: 
+[coins.kif, coins_atomic.kif, factoringEasyTurtleBrain.kif, firefighter.kif, hanoi.kif, hanoi7_bugfix.kif, knightmove.kif, slidingpieces.kif]
+
+No models found: 
+[]
+
+Answerer error: 
+[]
+
+Others:

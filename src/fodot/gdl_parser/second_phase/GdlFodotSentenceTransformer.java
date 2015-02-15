@@ -169,7 +169,7 @@ public class GdlFodotSentenceTransformer {
 		case "role":
 			/* Role is already translated to elements of playertype:
 			 * the inner variable will have the correct type already */
-			return null; 
+			return generateRole(relation);
 		case "legal":
             return generateLegal(relation);
 		default:
@@ -190,6 +190,12 @@ public class GdlFodotSentenceTransformer {
 
 			return createPredicate(decl, arguments);
 		}
+	}
+
+	private FodotPredicate generateRole(GdlRelation relation) {
+		return createPredicate(
+				trans.getPlayerType().getTypePredicateDeclaration(),
+				generateTerm(relation.getBody().get(0), trans.getPlayerType()));
 	}
 
 	private FodotPredicate generateTrue(GdlRelation relation) {
