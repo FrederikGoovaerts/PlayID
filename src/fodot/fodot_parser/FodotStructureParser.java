@@ -194,8 +194,6 @@ public class FodotStructureParser {
 
 	/**********************************************/
 
-	private static final String OPENING_BRACKET = "{";
-	private static final String CLOSING_BRACKET = "}";	
 	private static final String MULTIVALUE_DIVIDER = ";";
 	private static final String SINGLEVALUE_DIVIDER = ",";
 	private static final String RESULT_DIVIDER = "->";
@@ -207,7 +205,7 @@ public class FodotStructureParser {
 
 	private IFodotStructureElement createTypeEnumeration(FodotTypeDeclaration decl, String domain) {
 		//Ranged type enumeration
-		if (containsRange(domain)) {
+		if (EnumerationUtil.containsRange(domain)) {
 			List<FodotConstant> range = extractTypeEnumerationRange(decl.getType(), domain);
 			return new FodotNumericalTypeRangeEnumeration(decl, range.get(0), range.get(1));
 		} 
@@ -227,7 +225,7 @@ public class FodotStructureParser {
 		}
 
 		//Extract the domainstring
-		String domainString = extractDomain(line);
+		String domainString = EnumerationUtil.extractDomain(line);
 
 		//Get all elements as string
 		List<String> elementsToConvert = ParserUtil.splitOnTrimmed(domainString, SINGLEVALUE_DIVIDER);
@@ -253,7 +251,7 @@ public class FodotStructureParser {
 	 * Extract 'a' and 'b' from {a..b} and converts them to constants of the given type
 	 */
 	private List<FodotConstant> extractTypeEnumerationRange(FodotType type, String line) {
-		List<String> range = ParserUtil.splitOnTrimmed(extractDomain(line), RANGE_DIVIDER);
+		List<String> range = ParserUtil.splitOnTrimmed(EnumerationUtil.extractDomain(line), RANGE_DIVIDER);
 		List<FodotConstant> result = new ArrayList<FodotConstant>();
 		result.add(new FodotConstant(range.get(0), type));
 		result.add(new FodotConstant(range.get(1), type));
@@ -279,11 +277,11 @@ public class FodotStructureParser {
 			throw new StructureParsingException(line + " is a function domain, don't parse it with a predicate domain extractor");
 		}
 
-		if (isSingleValue(line)) {
+		if (EnumerationUtil.isSingleValue(line)) {
 			result.add(new FodotPredicateEnumerationElement(decl, Arrays.asList(new FodotConstant(line.trim(), FodotType.BOOLEAN))));
-		} else if (containsDomain(line)) {
+		} else if (EnumerationUtil.containsDomain(line)) {
 			//Remove the brackets
-			String domainString = extractDomain(line);
+			String domainString = EnumerationUtil.extractDomain(line);
 
 			//Split all elements
 			List<String> domainElements = ParserUtil.splitOnTrimmed(domainString, MULTIVALUE_DIVIDER);
@@ -306,18 +304,18 @@ public class FodotStructureParser {
 	 ***********************************************/
 
 	private IFodotStructureElement createFunctionEnumeration(FodotFunctionFullDeclaration decl, String domain) {
-		if (isSingleValue(domain)) {
+		if (EnumerationUtil.isSingleValue(domain)) {
 			return new FodotConstantFunctionEnumeration(
 					decl, EnumerationUtil.toTypeEnumerationElement(domain.trim(), decl.getReturnType()));
 		} else {
 			return new FodotFunctionEnumeration(decl, 
-					extractFunctionEnumerationElements(decl, extractDomain(domain)));
+					extractFunctionEnumerationElements(decl, EnumerationUtil.extractDomain(domain)));
 		}
 	}
 
 	private Set<IFodotFunctionEnumerationElement> extractFunctionEnumerationElements(FodotFunctionFullDeclaration decl, String line) {
 		//Remove domain brackets
-		String domainString = extractDomain(line);
+		String domainString = EnumerationUtil.extractDomain(line);
 
 
 		List<String> domainElements = ParserUtil.splitOnTrimmed(domainString, MULTIVALUE_DIVIDER);
@@ -336,42 +334,6 @@ public class FodotStructureParser {
 			result.add(new FodotFunctionEnumerationElement(decl, functionValues, functionReturn));
 		}
 		return result;
-	}
-
-	/**********************************************/
-
-	/**********************************************
-	 *  Enumeration recognision
-	 ***********************************************/
-
-	private static String RANGE_REGEX = "^[{][\\s]*[-]?[0-9]+[.][.][-]?[0-9]+[\\s]*[}]$";
-
-	private static boolean containsRange(String line) {
-		return line.trim().matches(RANGE_REGEX);
-	}
-	private static String SINGLE_VALUE_REGEX = "^[a-zA-Z0-9_()]*$";
-
-	private static boolean isSingleValue(String line) {
-		return line.trim().matches(SINGLE_VALUE_REGEX);
-	}
-
-	private static String DOMAIN_REGEX = "^[{][a-zA-Z0-9_();,.\\->\\s]*[}]$";
-
-	private static boolean containsDomain(String line) {
-		return line.trim().matches(DOMAIN_REGEX);
-	}
-
-	/**
-	 * Returns whatever is between curly braces
-	 */
-	private static String extractDomain(String line) {
-		int firstBracket = line.indexOf(OPENING_BRACKET)+1;
-		int lastBracket = line.lastIndexOf(CLOSING_BRACKET);
-		if (!containsDomain(line) || firstBracket < 0 || lastBracket < firstBracket) {
-			return line.trim();
-		}
-		String domain = line.substring(firstBracket, lastBracket);
-		return domain.trim();
 	}
 
 	/**********************************************/

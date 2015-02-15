@@ -15,6 +15,9 @@ public class EnumerationUtil {
 	
 	private final static String VAR_NAME = "[a-zA-Z0-9_()\\s]*";
 	private final static String PREDICATE_TERM_REGEX = "^" + VAR_NAME + "[(]([\\s]*"+VAR_NAME+"[\\s]*[,])*[\\s]*"+VAR_NAME+"[\\s]*[)][\\s]*";
+
+	private static final String OPENING_BRACKET = "{";
+	private static final String CLOSING_BRACKET = "}";	
 	
 	public static List<IFodotTypeEnumerationElement> toTypeEnumerationElements(List<String> values, List<FodotType> types) {
 		if (values.size() != types.size()) {
@@ -76,11 +79,47 @@ public class EnumerationUtil {
 		}
 	}
 	
+	/**********************************************
+	 *  Enumeration recognision
+	 ***********************************************/
+
+	private static String RANGE_REGEX = "^[{][\\s]*[-]?[0-9]+[.][.][-]?[0-9]+[\\s]*[}]$";
+
+	public static boolean containsRange(String line) {
+		return line.trim().matches(RANGE_REGEX);
+	}
+	private static String SINGLE_VALUE_REGEX = "^[a-zA-Z0-9_()]*$";
+
+	public static boolean isSingleValue(String line) {
+		return line.trim().matches(SINGLE_VALUE_REGEX);
+	}
+
+	private static String DOMAIN_REGEX = "^[{][a-zA-Z0-9_();,.\\->\\s]*[}]$";
+
+	public static boolean containsDomain(String line) {
+		return line.trim().matches(DOMAIN_REGEX);
+	}
+
+	/**
+	 * Returns whatever is between curly braces
+	 */
+	public static String extractDomain(String line) {
+		int firstBracket = line.indexOf(OPENING_BRACKET)+1;
+		int lastBracket = line.lastIndexOf(CLOSING_BRACKET);
+		if (!containsDomain(line) || firstBracket < 0 || lastBracket < firstBracket) {
+			return line.trim();
+		}
+		String domain = line.substring(firstBracket, lastBracket);
+		return domain.trim();
+	}
+	
 	public static boolean canBeTypeEnumeration(String domain) {
-		return !domain.contains(";") && !domain.contains("->");
+		return containsRange(domain) || (!domain.contains(";") && !domain.contains("->")) ;
 	}
 	
 	public static boolean canBeFunctionEnumeration(String domain) {
-		return !domain.contains("{") || domain.contains("->");
+		return !domain.contains(OPENING_BRACKET) || domain.contains("->");
 	}
+
+	/**********************************************/
 }
