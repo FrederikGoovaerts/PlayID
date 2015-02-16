@@ -24,7 +24,7 @@ public class GdlIntegerTypeRecognizer implements IGdlVocabularyOptimizer {
 		// Dan moeten wel weer alle types overal geupdate worden en dat is momenteel niet interessant gezien de oude voc weggegooid wordt.
 		
 		Set<IFodotStructureElement> structureElements = new LinkedHashSet<>(voc.getStructureElements());
-		Map<GdlConstant, Map<FodotType, FodotConstant>> newConstants = new HashMap<>(voc.getConstants());
+		Map<GdlConstant, Map<FodotType, FodotConstant>> oldConstants = new HashMap<>(voc.getConstants());
 		
 		//Find all types
 		for (FodotType type : voc.getOtherTypes()) {
@@ -42,8 +42,8 @@ public class GdlIntegerTypeRecognizer implements IGdlVocabularyOptimizer {
 					structureElements.add(range);
 
 					//Replace occurrences in constants list
-					for (GdlConstant gdlConst : newConstants.keySet()) {
-						Map<FodotType, FodotConstant> map = newConstants.get(gdlConst);
+					for (GdlConstant gdlConst : oldConstants.keySet()) {
+						Map<FodotType, FodotConstant> map = oldConstants.get(gdlConst);
 						if (map.containsKey(type)) {
 							FodotConstant oldConstant  = map.get(type);
 							map.put(type, new FodotConstant(Integer.toString(IntegerTypeUtil.extractValue(oldConstant)),type));									
@@ -55,8 +55,8 @@ public class GdlIntegerTypeRecognizer implements IGdlVocabularyOptimizer {
 					for (IFodotElement el : type.getAllInnerElementsOfClass(FodotConstant.class)) {
 						FodotConstant constant = (FodotConstant) el;
 						if (constant.getType().equals(type)) {
-							type.removeDomainElement(constant);
-							type.addDomainElement(new FodotConstant(Integer.toString(IntegerTypeUtil.extractValue(constant)),type));
+							type.removeDomainElement(constant.toDomainElement());
+							type.addDomainElement(new FodotConstant(Integer.toString(IntegerTypeUtil.extractValue(constant)),type).toDomainElement());
 						}
 					}
 					

@@ -279,7 +279,7 @@ public class FodotStructureParser {
 		}
 
 		if (EnumerationUtil.isSingleValue(line)) {
-			result.add(new FodotPredicateEnumerationElement(decl, Arrays.asList(new FodotConstant(line.trim(), FodotType.BOOLEAN))));
+			result.add(new FodotPredicateEnumerationElement(decl, Arrays.asList(new FodotConstant(line.trim(), FodotType.BOOLEAN).toEnumerationElement())));
 		} else if (EnumerationUtil.containsDomain(line)) {
 			//Remove the brackets
 			String domainString = EnumerationUtil.extractDomain(line);

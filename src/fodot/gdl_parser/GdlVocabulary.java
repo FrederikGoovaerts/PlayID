@@ -21,7 +21,8 @@ import fodot.exceptions.gdl.GdlTransformationException;
 import fodot.gdl_parser.first_phase.data.declarations.GdlFunctionDeclaration;
 import fodot.gdl_parser.first_phase.data.declarations.GdlPredicateDeclaration;
 import fodot.objects.structure.elements.IFodotStructureElement;
-import fodot.objects.structure.elements.typeenum.elements.FodoTypeFunctionEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.FodotInteger;
+import fodot.objects.structure.elements.typeenum.elements.FodotTypeFunctionEnumerationElement;
 import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;
@@ -238,14 +239,19 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 
 	@Override
 	public GdlTerm translate(IFodotTypeEnumerationElement fodot) {
-		if (fodot instanceof FodotConstant) {
-			FodotConstant casted = (FodotConstant) fodot;
+		if (fodot instanceof FodotInteger) {
+			FodotInteger casted = (FodotInteger) fodot;
 
-			assert getGdlConstant(casted) != null;			
-			return getGdlConstant(casted);
+			assert getGdlConstant(casted.getConstant()) != null;			
+			return getGdlConstant(casted.getConstant());
 		}
-		if (fodot instanceof FodoTypeFunctionEnumerationElement) {
-			FodoTypeFunctionEnumerationElement casted = (FodoTypeFunctionEnumerationElement) fodot;
+		if (fodot instanceof FodotTypeFunctionEnumerationElement) {			
+			FodotTypeFunctionEnumerationElement casted = (FodotTypeFunctionEnumerationElement) fodot;
+			
+			if (casted.getElements().isEmpty()) {
+				return getGdlConstant(new FodotConstant(casted.getDeclaration().getName(), casted.getDeclaration().getType()));
+			}
+			
 			FodotTypeFunctionDeclaration decl = casted.getDeclaration();
 			GdlFunctionDeclaration gdlFunc = getGdlFunctionDeclaration(decl);
 			GdlConstant name = gdlFunc.getName();

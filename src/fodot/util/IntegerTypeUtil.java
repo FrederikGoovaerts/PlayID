@@ -6,13 +6,16 @@ import java.util.Collections;
 import java.util.List;
 
 import fodot.objects.structure.elements.typeenum.FodotNumericalTypeRangeEnumeration;
+import fodot.objects.structure.elements.typeenum.elements.FodotInteger;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
 
 public class IntegerTypeUtil {
 	
 	public static final String INTEGER_PREFIX = "i_";
+	public static final String INTEGER_REGEX = "^[0-9]+$";
 	
 	/**
 	 * Checks if all domainelements of a type only consists of FodotConstants that are converted integers
@@ -21,9 +24,9 @@ public class IntegerTypeUtil {
 	 */
 	public static boolean onlyContainsConvertedIntegers(FodotType type) {
 		for (IFodotDomainElement dom : type.getDomainElements()) {
-			if (dom instanceof FodotConstant) {
-				FodotConstant constant = (FodotConstant) dom;
-				if (!constant.getValue().startsWith(INTEGER_PREFIX)) {
+			if (dom instanceof FodotTypeFunctionDeclaration) {
+				FodotTypeFunctionDeclaration domainElement = (FodotTypeFunctionDeclaration) dom;
+				if (!domainElement.isConstant() || !domainElement.getName().startsWith(INTEGER_PREFIX)) {
 					return false;
 				}
 			} else {
@@ -41,7 +44,7 @@ public class IntegerTypeUtil {
 
 		List<Integer> values = new ArrayList<Integer>();
 		for (IFodotDomainElement dom : type.getDomainElements()) {
-			values.add(extractValue((FodotConstant)dom));	
+			values.add(extractValue((FodotTypeFunctionDeclaration)dom));	
 		}
 
 		Collections.sort(values);
@@ -53,12 +56,19 @@ public class IntegerTypeUtil {
 		int head = values.get(0);
 		int last = values.get(values.size()-1);
 
+		type.addSupertype(FodotType.INTEGER);
+		
 		return new FodotNumericalTypeRangeEnumeration(type, new FodotConstant(Integer.toString(head), type), new FodotConstant(Integer.toString(last), type));
 	}
 
 	public static int extractValue(FodotConstant constant) {
 		return NameUtil.convertConstantNameToInteger(constant.getValue());
 	}
+	
+	public static int extractValue(FodotTypeFunctionDeclaration domainElement) {
+		return NameUtil.convertConstantNameToInteger(domainElement.getName());
+	}
+	
 
 	public static boolean containsOnlySequentialNumbers(List<Integer> values) {
 		for (int i = 0; i < values.size() - 1; i++) {
@@ -69,14 +79,14 @@ public class IntegerTypeUtil {
 		return true;
 	}
 	
-	public static FodotConstant getMaximum(List<FodotConstant> constants) {
+	public static FodotInteger getMaximum(List<FodotInteger> constants) {
 		if (constants.size() == 0) {
 			return null;
 		}
 		
-		FodotConstant max = constants.get(0);
-		for (FodotConstant c : constants) {
-			if (extractValue(c) > extractValue(max)) {
+		FodotInteger max = constants.get(0);
+		for (FodotInteger c : constants) {
+			if (Integer.parseInt(c.getValue()) > Integer.parseInt(max.getValue())) {
 				max = c;
 			}
 		}
@@ -84,13 +94,17 @@ public class IntegerTypeUtil {
 		return max;
 	}
 	
-	public static List<FodotConstant> getConstants(Collection<? extends IFodotDomainElement> domainElements) {
-		List<FodotConstant> constants = new ArrayList<FodotConstant>();
+	public static List<FodotInteger> getIntegers(Collection<? extends IFodotDomainElement> domainElements) {
+		List<FodotInteger> constants = new ArrayList<>();
 		for (IFodotDomainElement el : domainElements) {
-			if (el instanceof FodotConstant) {
-				constants.add((FodotConstant)el);
+			if (el instanceof FodotInteger) {
+				constants.add((FodotInteger)el);
 			}
 		}
 		return constants;
+	}
+	
+	public static boolean isInteger(FodotConstant constant) {
+		return constant.getValue().matches(INTEGER_REGEX);
 	}
 }

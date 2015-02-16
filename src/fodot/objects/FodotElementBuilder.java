@@ -31,7 +31,7 @@ import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnu
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.typeenum.FodotNumericalTypeRangeEnumeration;
 import fodot.objects.structure.elements.typeenum.FodotTypeEnumeration;
-import fodot.objects.structure.elements.typeenum.elements.FodoTypeFunctionEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.FodotTypeFunctionEnumerationElement;
 import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.elements.FodotSentence;
@@ -449,9 +449,9 @@ public class FodotElementBuilder {
 		return new FodotTypeEnumeration(type.getType(), values);
 	}
 
-	public static FodoTypeFunctionEnumerationElement createTypeFunctionEnumerationElement(FodotTypeFunctionDeclaration declaration,
+	public static FodotTypeFunctionEnumerationElement createTypeFunctionEnumerationElement(FodotTypeFunctionDeclaration declaration,
 			List<? extends IFodotTypeEnumerationElement> elements) {
-		return new FodoTypeFunctionEnumerationElement(declaration,elements);
+		return new FodotTypeFunctionEnumerationElement(declaration,elements);
 	}
 
 	public static FodotNumericalTypeRangeEnumeration createNumericalTypeRangeEnumeration(

@@ -1,5 +1,6 @@
 package fodot.objects.theory.elements.terms;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,11 +8,14 @@ import java.util.Set;
 import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.FodotElement;
 import fodot.objects.general.IFodotElement;
+import fodot.objects.structure.elements.typeenum.elements.FodotInteger;
+import fodot.objects.structure.elements.typeenum.elements.FodotTypeFunctionEnumerationElement;
 import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.vocabulary.elements.FodotType;
+import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;
 
-public class FodotConstant extends FodotElement implements IFodotTerm, IFodotDomainElement, IFodotTypeEnumerationElement {
+public class FodotConstant extends FodotElement implements IFodotTerm {
 
 	private static final int BINDING_ORDER = -1;
 
@@ -39,8 +43,8 @@ public class FodotConstant extends FodotElement implements IFodotTerm, IFodotDom
 			throw new FodotException("Not a legal type");
 		}
 		this.type = type;
-		if (!type.containsDomainElement(this)) {
-			this.type.addDomainElement(this);
+		if (!type.containsDomainElement(this.toDomainElement())) {
+			this.type.addDomainElement(this.toDomainElement());
 		}
 	}
 
@@ -101,19 +105,38 @@ public class FodotConstant extends FodotElement implements IFodotTerm, IFodotDom
 	}
 
 	@Override
-	public Set<FodotType> getRequiredTypes() {
-		return new HashSet<FodotType>();
-	}
-
-	@Override
 	public Collection<? extends IFodotElement> getDirectFodotElements() {
 		return new HashSet<IFodotElement>();
 	}
 
-	@Override
-	public IFodotTerm toTerm() {
-		return this;
+	private FodotTypeFunctionDeclaration functionDeclaration;
+	private IFodotTypeEnumerationElement enumerationElement;
+	
+	private void initDerivedElements() {
+		if (functionDeclaration == null) {
+			functionDeclaration = new FodotTypeFunctionDeclaration(getValue(), new ArrayList<FodotType>(), getType());
+			enumerationElement =  new FodotTypeFunctionEnumerationElement(functionDeclaration, new ArrayList<IFodotTypeEnumerationElement>());
+		}		
 	}
-
+	
+	public IFodotTypeEnumerationElement toEnumerationElement() {
+		if (getType().isRelatedTo(FodotType.INTEGER)) {
+			return new FodotInteger(this);
+		} else {
+			initDerivedElements();
+			return enumerationElement;
+		}
+	}
+	
+	public IFodotDomainElement toDomainElement() {
+		if (getType().isRelatedTo(FodotType.INTEGER)) {
+			return new FodotInteger(this);
+		} else {
+			initDerivedElements();
+			return functionDeclaration;
+		}
+	}
+	
+	
 
 }

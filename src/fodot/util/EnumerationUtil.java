@@ -1,10 +1,12 @@
 package fodot.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import fodot.exceptions.answer.StructureParsingException;
-import fodot.objects.structure.elements.typeenum.elements.FodoTypeFunctionEnumerationElement;
+import fodot.objects.structure.elements.IFodotEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.FodotTypeFunctionEnumerationElement;
 import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
@@ -44,9 +46,9 @@ public class EnumerationUtil {
 			
 			String allElementsString = value.substring(firstBracketPosition+1, value.lastIndexOf(")")).trim();
 			List<IFodotTypeEnumerationElement> elements = toTypeEnumerationElements(ParserUtil.splitOnTrimmed(allElementsString, ","), termDecl.getArgumentTypes());
-			return new FodoTypeFunctionEnumerationElement(termDecl, elements);		
+			return new FodotTypeFunctionEnumerationElement(termDecl, elements);		
 		}
-		return new FodotConstant(value, type);
+		return new FodotConstant(value, type).toEnumerationElement();
 	}
 	
 	private static FodotTypeFunctionDeclaration getPredicateTermDeclaration(String name, FodotType type) {
@@ -122,4 +124,12 @@ public class EnumerationUtil {
 	}
 
 	/**********************************************/
+	
+	public static List<IFodotEnumerationElement> convertConstantsToEnumerations(Collection<? extends FodotConstant> constants) {
+		List<IFodotEnumerationElement> result = new ArrayList<>();
+		for (FodotConstant c : constants) {
+			result.add(c.toEnumerationElement());
+		}
+		return result;
+	}
 }

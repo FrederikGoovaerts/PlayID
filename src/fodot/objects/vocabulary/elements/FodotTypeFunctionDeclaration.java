@@ -11,6 +11,11 @@ public class FodotTypeFunctionDeclaration extends FodotFunctionDeclaration imple
 	}
 
 	@Override
+	public boolean isConstant() {
+		return getArgumentTypes().isEmpty();
+	}
+	
+	@Override
 	protected void setType(FodotType type) {
 		super.setType(type);
 		getType().addDomainElement(this);

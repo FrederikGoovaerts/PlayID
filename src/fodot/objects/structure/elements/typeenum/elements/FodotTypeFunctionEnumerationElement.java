@@ -9,18 +9,19 @@ import java.util.List;
 import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.FodotElementList;
 import fodot.objects.general.sorting.FodotElementComparators;
+import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotFunction;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.util.CollectionPrinter;
 
-public class FodoTypeFunctionEnumerationElement extends
+public class FodotTypeFunctionEnumerationElement extends
 		FodotElementList<IFodotTypeEnumerationElement> implements
 		IFodotTypeEnumerationElement {
 
 	private FodotTypeFunctionDeclaration declaration;
 	
-	public FodoTypeFunctionEnumerationElement(FodotTypeFunctionDeclaration decl, Collection<? extends IFodotTypeEnumerationElement> elements) {
+	public FodotTypeFunctionEnumerationElement(FodotTypeFunctionDeclaration decl, Collection<? extends IFodotTypeEnumerationElement> elements) {
 		super(elements);
 		setDeclaration(decl);
 	}
@@ -81,7 +82,7 @@ public class FodoTypeFunctionEnumerationElement extends
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		FodoTypeFunctionEnumerationElement other = (FodoTypeFunctionEnumerationElement) obj;
+		FodotTypeFunctionEnumerationElement other = (FodotTypeFunctionEnumerationElement) obj;
 		if (declaration == null) {
 			if (other.declaration != null)
 				return false;
@@ -98,6 +99,10 @@ public class FodoTypeFunctionEnumerationElement extends
 
 	@Override
 	public IFodotTerm toTerm() {
+		if (getElements() == null || getElements().isEmpty()) {
+			return new FodotConstant(getValue(), getDeclaration().getType());
+		}
+		
 		List<IFodotTerm> arguments = new ArrayList<IFodotTerm>();
 		for (IFodotTypeEnumerationElement element : getElements()) {
 			arguments.add(element.toTerm());

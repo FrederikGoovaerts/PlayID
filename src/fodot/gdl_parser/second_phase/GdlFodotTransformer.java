@@ -455,7 +455,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 			IFodotTerm term = sentenceTrans.generateTerm(sentence.get(i), types.get(i));
 			if (term instanceof FodotConstant) {
-				staticValues.add((FodotConstant) term);
+				staticValues.add(((FodotConstant) term).toEnumerationElement());
 			} else if (term instanceof FodotFunction) {
 				FodotFunction func = (FodotFunction) term;
 				staticValues.add(

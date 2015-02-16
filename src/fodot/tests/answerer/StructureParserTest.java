@@ -82,11 +82,11 @@ public class StructureParserTest {
 
 		//Enumerations
 		FodotPredicateEnumerationElement p2e1 = createPredicateEnumerationElement(
-				pred2, Arrays.asList(t1c1,t2c1));
+				pred2, Arrays.asList(t1c1.toEnumerationElement(),t2c1.toEnumerationElement()));
 		FodotPredicateEnumerationElement p2e2 = createPredicateEnumerationElement(
-				pred2, Arrays.asList(t1c1,t2c2));
+				pred2, Arrays.asList(t1c1.toEnumerationElement(),t2c2.toEnumerationElement()));
 		FodotPredicateEnumerationElement p2e3 = createPredicateEnumerationElement(
-				pred2, Arrays.asList(t1c2,t2c3));
+				pred2, Arrays.asList(t1c2.toEnumerationElement(),t2c3.toEnumerationElement()));
 
 		//simple structure
 		FodotStructure simpleStructure = createStructure("simplestruc", voc);
@@ -117,7 +117,7 @@ public class StructureParserTest {
 		//simple structure
 		FodotStructure simpleStructure = createStructure("simplestruc", voc);
 		simpleStructure.addAllElements(Arrays.asList(
-				createConstantFunctionEnumeration(f1,t2c1)			
+				createConstantFunctionEnumeration(f1,t2c1.toEnumerationElement())			
 				));
 
 		assertEqualContent(simpleStructure.getElements(), toStringAndParse(simpleStructure).getElements());

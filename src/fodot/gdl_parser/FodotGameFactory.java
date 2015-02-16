@@ -60,13 +60,13 @@ import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.FodotInteger;
 import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
 import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveFunction;
 import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveSentence;
-import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
@@ -520,10 +520,10 @@ public class FodotGameFactory {
 		toReturn.addElement(createBlankLines(1));
 		toReturn.addElement(createComment("Desired result"));
 		List<IFodotFunctionEnumerationElement> desiredResult = new ArrayList<IFodotFunctionEnumerationElement>();
-		List<? extends IFodotTypeEnumerationElement> ownRole = Arrays.asList(source.getOwnRole());
+		List<? extends IFodotTypeEnumerationElement> ownRole = Arrays.asList(source.getOwnRole().toEnumerationElement());
 
-		FodotConstant maximumPossibleScore = IntegerTypeUtil.getMaximum(
-				IntegerTypeUtil.getConstants(source.getScoreType().getDomainElements()));
+		FodotInteger maximumPossibleScore = IntegerTypeUtil.getMaximum(
+				IntegerTypeUtil.getIntegers(source.getScoreType().getDomainElements()));
 
 		desiredResult.add(
 				createFunctionEnumerationElement(this.scoreFunctionDeclaration, ownRole, maximumPossibleScore) );
@@ -747,7 +747,7 @@ public class FodotGameFactory {
 		defaultStructure.addElement(
 				createConstantFunctionEnumeration(
 						this.startFunctionDeclaration,
-						createInteger(0)
+						createInteger(0).toEnumerationElement()
 						)
 				);
 

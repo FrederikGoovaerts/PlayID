@@ -32,6 +32,7 @@ import fodot.gdl_parser.first_phase.data.declarations.IGdlArgumentListDeclaratio
 import fodot.gdl_parser.first_phase.data.declarations.IGdlTermDeclaration;
 import fodot.gdl_parser.first_phase.data.occurrences.GdlTermOccurrence;
 import fodot.objects.structure.elements.typeenum.FodotTypeEnumeration;
+import fodot.objects.structure.elements.typeenum.elements.FodotInteger;
 import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotVariable;
@@ -519,8 +520,8 @@ public class GdlTypeIdentifier {
 		//Find all elements of scoretype
 		List<IFodotTypeEnumerationElement> scoreValues = new ArrayList<>();
 		for (IFodotDomainElement el : scoreType.getDomainElements()) {
-			if (el instanceof FodotConstant) {
-				scoreValues.add((FodotConstant) el);
+			if (el instanceof FodotInteger) {
+				scoreValues.add( (FodotInteger) el);
 			} else {
 				throw new GdlTypeIdentificationError(
 						"An illegal value in the score domain is detected."
