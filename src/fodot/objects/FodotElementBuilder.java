@@ -33,6 +33,7 @@ import fodot.objects.structure.elements.typeenum.FodotNumericalTypeRangeEnumerat
 import fodot.objects.structure.elements.typeenum.FodotTypeEnumeration;
 import fodot.objects.structure.elements.typeenum.elements.FodotTypeFunctionEnumerationElement;
 import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
+import fodot.objects.termdefinition.FodotTermDefinition;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.elements.FodotSentence;
 import fodot.objects.theory.elements.IFodotTheoryElement;
@@ -42,13 +43,20 @@ import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.FodotQuantifier;
 import fodot.objects.theory.elements.formulas.FodotTermComparator;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
-import fodot.objects.theory.elements.inductivedefinitions.*;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionBlock;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveDefinitionConnector;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveFunction;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductivePredicate;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveQuantifier;
+import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveSentence;
+import fodot.objects.theory.elements.inductivedefinitions.IFodotInductiveDefinitionElement;
 import fodot.objects.theory.elements.terms.FodotArithmeticConnector;
 import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.theory.elements.terms.FodotFunction;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.theory.elements.terms.aggregates.FodotAggregate;
+import fodot.objects.theory.elements.terms.aggregates.FodotInvertFunction;
 import fodot.objects.theory.elements.terms.aggregates.FodotSet;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
 import fodot.objects.vocabulary.FodotVocabulary;
@@ -247,7 +255,7 @@ public class FodotElementBuilder {
 			createCompleteFunctionDeclaration("-", Arrays.asList(getIntegerType()), getIntegerType());
 
 	public static FodotFunction createNegateInteger(IFodotTerm term) {
-		return createFunction(NEGATE_INTEGER_DECLARATION, term);
+		return new FodotInvertFunction(NEGATE_INTEGER_DECLARATION, term);
 	}
 
 	//QUANTIFIERS
@@ -375,31 +383,31 @@ public class FodotElementBuilder {
 	
 	private static final String CARDINALITY_SYMBOL = "#";
 
-	public static FodotAggregate createCardinality(String name, FodotSet set) {
+	public static FodotAggregate createCardinality(FodotSet set) {
 		return new FodotAggregate(CARDINALITY_SYMBOL, set);
 	}
 	
 	private static final String SUM_SYMBOL = "sum";
 
-	public static FodotAggregate createSum(String name, FodotSet set) {
+	public static FodotAggregate createSum(FodotSet set) {
 		return new FodotAggregate(SUM_SYMBOL, set);
 	}
 	
 	private static final String PRODUCT_SYMBOL = "prod";
 
-	public static FodotAggregate createProduct(String name, FodotSet set) {
+	public static FodotAggregate createProduct(FodotSet set) {
 		return new FodotAggregate(PRODUCT_SYMBOL, set);
 	}
 	
 	private static final String MAXIMUM_SYMBOL = "max";
 
-	public static FodotAggregate createMaximum(String name, FodotSet set) {
+	public static FodotAggregate createMaximum(FodotSet set) {
 		return new FodotAggregate(MAXIMUM_SYMBOL, set);
 	}
 	
 	private static final String MINIMUM_SYMBOL = "min";
 
-	public static FodotAggregate createMinimum(String name, FodotSet set) {
+	public static FodotAggregate createMinimum(FodotSet set) {
 		return new FodotAggregate(MINIMUM_SYMBOL, set);
 	}
 	
@@ -704,6 +712,10 @@ public class FodotElementBuilder {
 		return createLTCVocabulary(null, null);
 	}
 
+	public static FodotTermDefinition createTermDefinition( String name, FodotVocabulary vocabulary, IFodotTerm term ) {
+		return new FodotTermDefinition(name, term, vocabulary);
+	}
+	
 	//FODOT FILES
 	public static IFodotFile createFodotFile(FodotIncludeHolder imports, Collection<? extends IFodotFileElement> elements) {
 		return new FodotFile(imports,elements);

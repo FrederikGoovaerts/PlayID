@@ -11,7 +11,6 @@ import fodot.objects.general.IFodotElement;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
-import fodot.util.CollectionPrinter;
 
 public class FodotSet extends FodotElement implements IFodotElement {
 	private List<FodotVariable> variables;
@@ -81,10 +80,11 @@ public class FodotSet extends FodotElement implements IFodotElement {
 	public String toCode() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{ ");
-		builder.append(
-				CollectionPrinter.printStringList("", "", " ",
-						CollectionPrinter.toCode(getVariables())) );
-		builder.append(" : ");
+		for (FodotVariable var : getVariables()) {
+			builder.append(	var.toCode() + " [" + var.getType().toCode() +"] ");
+			
+		}	
+		builder.append(": ");
 		builder.append(getFormula().toCode());
 		if (hasTerm()) {
 			builder.append(" : ");

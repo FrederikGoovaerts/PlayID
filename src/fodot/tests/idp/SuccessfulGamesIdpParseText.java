@@ -7,6 +7,15 @@ import org.junit.Test;
 
 import fodot.communication.PlayIdProcessor;
 
+/**
+ * This testcase does not contain successful games that might run out of resources.
+ * This test is used as a more complete check than EasyGamesIdpParseCheck, but is slower.
+ * It is the prefered to run this when completing a big feature to check if nothing broke.
+ * If you have time enough, you can also run the SingleplayerIdpParseCheck.
+ * 
+ * @author Thomas Winters
+ *
+ */
 public class SuccessfulGamesIdpParseText {
 
 	private static final String GAMES_LOCATION = "resources/games/singleplayer/";
@@ -85,11 +94,6 @@ public class SuccessfulGamesIdpParseText {
 	}
 
 	@Test
-	public void transform_incredible_test() {
-		testFor("incredible.kif");
-	}
-
-	@Test
 	public void transform_kitten_escapes_from_fire_test() {
 		testFor("kitten_escapes_from_fire.kif");
 	}
@@ -118,17 +122,7 @@ public class SuccessfulGamesIdpParseText {
 	public void transform_pearls_test() {
 		testFor("pearls.kif");
 	}
-
-	@Test
-	public void transform_simultaneousWin2_test() {
-		testFor("simultaneousWin2.kif");
-	}
-
-	@Test
-	public void transform_snake_2008_tweaked_test() {
-		testFor("snake_2008_tweaked.kif");
-	}
-
+	
 	@Test
 	public void transform_stateSpaceMedium_test() {
 		testFor("stateSpaceMedium.kif");

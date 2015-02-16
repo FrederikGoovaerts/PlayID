@@ -1,43 +1,6 @@
 package fodot.gdl_parser;
 
-import static fodot.objects.FodotElementBuilder.createAddition;
-import static fodot.objects.FodotElementBuilder.createAnd;
-import static fodot.objects.FodotElementBuilder.createBlankLines;
-import static fodot.objects.FodotElementBuilder.createComment;
-import static fodot.objects.FodotElementBuilder.createCompleteFunctionDeclaration;
-import static fodot.objects.FodotElementBuilder.createConstant;
-import static fodot.objects.FodotElementBuilder.createConstantFunctionEnumeration;
-import static fodot.objects.FodotElementBuilder.createEquals;
-import static fodot.objects.FodotElementBuilder.createExists;
-import static fodot.objects.FodotElementBuilder.createExistsExactly;
-import static fodot.objects.FodotElementBuilder.createFodotFile;
-import static fodot.objects.FodotElementBuilder.createForAll;
-import static fodot.objects.FodotElementBuilder.createFunction;
-import static fodot.objects.FodotElementBuilder.createFunctionEnumeration;
-import static fodot.objects.FodotElementBuilder.createFunctionEnumerationElement;
-import static fodot.objects.FodotElementBuilder.createImplies;
-import static fodot.objects.FodotElementBuilder.createIncludeHolder;
-import static fodot.objects.FodotElementBuilder.createIncludeLTC;
-import static fodot.objects.FodotElementBuilder.createInductiveDefinition;
-import static fodot.objects.FodotElementBuilder.createInductiveDefinitionConnector;
-import static fodot.objects.FodotElementBuilder.createInductiveFunctionHead;
-import static fodot.objects.FodotElementBuilder.createInductivePredicateHead;
-import static fodot.objects.FodotElementBuilder.createInductiveQuantifier;
-import static fodot.objects.FodotElementBuilder.createInductiveSentence;
-import static fodot.objects.FodotElementBuilder.createInteger;
-import static fodot.objects.FodotElementBuilder.createLTCVocabulary;
-import static fodot.objects.FodotElementBuilder.createNot;
-import static fodot.objects.FodotElementBuilder.createNumericalTypeRangeEnumeration;
-import static fodot.objects.FodotElementBuilder.createPartialFunctionDeclaration;
-import static fodot.objects.FodotElementBuilder.createPredicate;
-import static fodot.objects.FodotElementBuilder.createPredicateEnumeration;
-import static fodot.objects.FodotElementBuilder.createProcedure;
-import static fodot.objects.FodotElementBuilder.createProcedures;
-import static fodot.objects.FodotElementBuilder.createSentence;
-import static fodot.objects.FodotElementBuilder.createStructure;
-import static fodot.objects.FodotElementBuilder.createTheory;
-import static fodot.objects.FodotElementBuilder.createTypeDeclaration;
-import static fodot.objects.FodotElementBuilder.createVariable;
+import static fodot.objects.FodotElementBuilder.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,20 +16,20 @@ import fodot.gdl_parser.second_phase.data.FodotCompoundData;
 import fodot.gdl_parser.second_phase.data.FodotNextData;
 import fodot.objects.comments.FodotComment;
 import fodot.objects.file.IFodotFile;
+import fodot.objects.file.IFodotFileElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.includes.FodotIncludeHolder;
 import fodot.objects.procedure.FodotProcedureStatement;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.structure.FodotStructure;
-import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
-import fodot.objects.structure.elements.typeenum.elements.FodotInteger;
-import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
+import fodot.objects.termdefinition.FodotTermDefinition;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
 import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveFunction;
 import fodot.objects.theory.elements.inductivedefinitions.FodotInductiveSentence;
+import fodot.objects.theory.elements.terms.FodotFunction;
 import fodot.objects.theory.elements.terms.FodotVariable;
 import fodot.objects.theory.elements.terms.IFodotTerm;
 import fodot.objects.vocabulary.FodotLTCVocabulary;
@@ -76,7 +39,6 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.util.FormulaUtil;
-import fodot.util.IntegerTypeUtil;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -133,12 +95,16 @@ public class FodotGameFactory {
 		FodotVocabulary voc = this.buildVocabulary();
 		FodotTheory theo = this.buildTheory(voc);
 		FodotStructure struc = this.buildStructure(voc);
+		List<FodotTermDefinition> terms = this.buildTerms(voc);
 		FodotProcedures proc = this.buildProcedures();
 		FodotIncludeHolder incl = createIncludeHolder(createIncludeLTC());
 
-		return createFodotFile(incl, Arrays.asList(topComment, voc,theo,struc,proc));
-	}
+		List<IFodotFileElement> elements = new ArrayList<IFodotFileElement>(Arrays.asList(topComment, voc,theo,struc));
+		elements.addAll(terms);
+		elements.add(proc);
 
+		return createFodotFile(incl, elements);
+	}
 	private void buildDefaultVocItems() {
 
 		this.startFunctionDeclaration = createCompleteFunctionDeclaration("Start", source.getTimeType());
@@ -517,21 +483,21 @@ public class FodotGameFactory {
 		 * resultaat:
 		 * Score={*naam*()->100}
 		 */
-		toReturn.addElement(createBlankLines(1));
-		toReturn.addElement(createComment("Desired result"));
-		List<IFodotFunctionEnumerationElement> desiredResult = new ArrayList<IFodotFunctionEnumerationElement>();
-		List<? extends IFodotTypeEnumerationElement> ownRole = Arrays.asList(source.getOwnRole().toEnumerationElement());
-
-		FodotInteger maximumPossibleScore = IntegerTypeUtil.getMaximum(
-				IntegerTypeUtil.getIntegers(source.getScoreType().getDomainElements()));
-
-		desiredResult.add(
-				createFunctionEnumerationElement(this.scoreFunctionDeclaration, ownRole, maximumPossibleScore) );
-		toReturn.addElement(
-				createFunctionEnumeration(
-						this.scoreFunctionDeclaration, desiredResult
-						)
-				);
+//		toReturn.addElement(createBlankLines(1));
+//		toReturn.addElement(createComment("Desired result"));
+//		List<IFodotFunctionEnumerationElement> desiredResult = new ArrayList<IFodotFunctionEnumerationElement>();
+//		List<? extends IFodotTypeEnumerationElement> ownRole = Arrays.asList(source.getOwnRole().toEnumerationElement());
+//
+//		FodotInteger maximumPossibleScore = IntegerTypeUtil.getMaximum(
+//				IntegerTypeUtil.getIntegers(source.getScoreType().getDomainElements()));
+//
+//		desiredResult.add(
+//				createFunctionEnumerationElement(this.scoreFunctionDeclaration, ownRole, maximumPossibleScore) );
+//		toReturn.addElement(
+//				createFunctionEnumeration(
+//						this.scoreFunctionDeclaration, desiredResult
+//						)
+//				);
 
 		/**
 		 * nodig: Initiele *waarden* voor elk fluent *predicaat*
@@ -575,6 +541,30 @@ public class FodotGameFactory {
 
 		return toReturn;
 	}
+
+	private static final String SCORE_TERM_NAME = "InversePlayerScore";
+
+	private List<FodotTermDefinition> buildTerms(FodotVocabulary voc) {
+		List<FodotTermDefinition> result = new ArrayList<>();
+
+		/**
+		 *	term PlayerScore : V {
+		 * 		sum{x [ScoreType] : x = Score(robot) :-x}
+		 * 	}
+		 */
+		FodotVariable scoreVar = createVariable(source.getScoreType(), new HashSet<FodotVariable>());
+		FodotFunction playerScore = createFunction(scoreFunctionDeclaration, source.getOwnRole());
+		FodotTermDefinition scoreDefinition = createTermDefinition(SCORE_TERM_NAME, voc,
+				createSum(
+						createSet(Arrays.asList(scoreVar), createEquals(scoreVar, playerScore), createNegateInteger(scoreVar))
+						)
+				);
+		result.add(scoreDefinition);
+		
+		return result;
+
+	}
+
 
 	private FodotProcedures buildProcedures() {
 		return getDefaultProcedures();
@@ -783,7 +773,7 @@ public class FodotGameFactory {
 
 	public static final int DEFAULT_IDP_TIME_LIMIT = 20;
 	private int idpTimeLimit = DEFAULT_IDP_TIME_LIMIT;
-	private static final int DEFAULT_MODEL_LIMIT = 5;
+	private static final int DEFAULT_MODEL_LIMIT = 1;
 	private int idpModelLimit = DEFAULT_MODEL_LIMIT;
 
 	private FodotProcedures getDefaultProcedures() {
@@ -794,7 +784,7 @@ public class FodotGameFactory {
 				Arrays.asList(
 						createProcedure("stdoptions.timeout="+idpTimeLimit),
 						createProcedure("stdoptions.nbmodels="+idpModelLimit),
-						createProcedure("printmodels(modelexpand(T,S))")
+						createProcedure("printmodels(minimize(T,S,"+SCORE_TERM_NAME+"))")
 						)
 				);
 
