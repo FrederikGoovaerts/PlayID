@@ -100,7 +100,7 @@ public class FodotTypeFunctionEnumerationElement extends
 	@Override
 	public IFodotTerm toTerm() {
 		if (getElements() == null || getElements().isEmpty()) {
-			return new FodotConstant(getValue(), getDeclaration().getType());
+			return new FodotConstant(getDeclaration().getName(), getDeclaration().getType());
 		}
 		
 		List<IFodotTerm> arguments = new ArrayList<IFodotTerm>();

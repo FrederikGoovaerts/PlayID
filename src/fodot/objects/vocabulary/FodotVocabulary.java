@@ -19,7 +19,7 @@ import fodot.objects.vocabulary.elements.IFodotVocabularyElement;
 public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> implements IFodotFileElement {
 
 	private static final String DEFAULT_NAME = "V";
-	
+
 	public FodotVocabulary(String name, Collection<? extends IFodotVocabularyElement> elements) {
 		super(name, elements);
 	}
@@ -48,8 +48,8 @@ public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> i
 	public boolean containsElementWithName(String name) {
 		return !getElementsWithName(name).isEmpty();
 	}
-	
-	
+
+
 	@Override
 	public boolean isValidElement(IFodotVocabularyElement argEl) {
 		if (argEl == null) {
@@ -68,9 +68,9 @@ public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> i
 		}
 		return true;
 	}
-	
+
 	/* FODOT ELEMENT */
-	
+
 	private static final PrerequisiteExtractor<IFodotVocabularyElement> EXTRACTOR = 
 			new PrerequisiteExtractor<IFodotVocabularyElement>() {
 		@Override
@@ -86,22 +86,20 @@ public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> i
 	private static final PrerequisiteSorter<IFodotVocabularyElement> SORTER = 
 			new PrerequisiteSorter<IFodotVocabularyElement>(
 					Arrays.asList(FodotType.INTEGER.getDeclaration(), FodotType.NATURAL_NUMBER.getDeclaration()), EXTRACTOR);
-	
+
 	@Override
 	public String toCode() {
 		setElements(SORTER.sort(getElements()));
 		return super.toCode();
 	}
-	
+
 	/* HELPERS */
 	public List<String> getAllClaimedNames() {
 		List<String> result = new ArrayList<String>();
 		for (IFodotElement t : getDirectElementsOfClass(FodotTypeDeclaration.class)) {
 			FodotType type = ((FodotTypeDeclaration) t).getType();
 			for (IFodotDomainElement el : type.getDomainElements()) {
-				if (el instanceof FodotConstant) {
-					result.add(((FodotConstant) el).getValue());					
-				}
+				result.add(el.getName());	
 			}
 		}
 		return result;
@@ -118,12 +116,12 @@ public class FodotVocabulary extends FodotFileElement<IFodotVocabularyElement> i
 	public String getDefaultName() {
 		return DEFAULT_NAME;
 	}
-	
+
 
 	@Override
 	public String toString() {
 		return "[FodotVocabulary: " + toCode() + "]";
 	}
-	
-	
+
+
 }

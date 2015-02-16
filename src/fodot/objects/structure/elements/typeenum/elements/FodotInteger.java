@@ -94,6 +94,11 @@ public class FodotInteger extends FodotElement implements IFodotTypeEnumerationE
 		return true;
 	}
 
+	@Override
+	public String getName() {
+		return getValue();
+	}
+
 	/**********************************************/
 
 }

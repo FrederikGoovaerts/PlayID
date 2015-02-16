@@ -11,4 +11,5 @@ public interface IFodotDomainElement extends IFodotElement {
 	 */
 	Set<FodotType> getRequiredTypes();
 	boolean isConstant();
+	String getName();
 }
