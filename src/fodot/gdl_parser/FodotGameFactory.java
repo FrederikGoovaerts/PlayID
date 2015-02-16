@@ -549,16 +549,11 @@ public class FodotGameFactory {
 
 		/**
 		 *	term PlayerScore : V {
-		 * 		sum{x [ScoreType] : x = Score(robot) :-x}
+		 * 		-Score(robot)
 		 * 	}
 		 */
-		FodotVariable scoreVar = createVariable(source.getScoreType(), new HashSet<FodotVariable>());
 		FodotFunction playerScore = createFunction(scoreFunctionDeclaration, source.getOwnRole());
-		FodotTermDefinition scoreDefinition = createTermDefinition(SCORE_TERM_NAME, voc,
-				createSum(
-						createSet(Arrays.asList(scoreVar), createEquals(scoreVar, playerScore), createNegateInteger(scoreVar))
-						)
-				);
+		FodotTermDefinition scoreDefinition = createTermDefinition( SCORE_TERM_NAME, voc, createNegateInteger(playerScore) );
 		result.add(scoreDefinition);
 		
 		return result;
@@ -784,6 +779,7 @@ public class FodotGameFactory {
 				Arrays.asList(
 						createProcedure("stdoptions.timeout="+idpTimeLimit),
 						createProcedure("stdoptions.nbmodels="+idpModelLimit),
+						createProcedure("stdoptions.cpsupport = true"),
 						createProcedure("printmodels(minimize(T,S,"+SCORE_TERM_NAME+"))")
 						)
 				);
