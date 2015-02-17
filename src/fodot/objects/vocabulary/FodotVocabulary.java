@@ -10,7 +10,6 @@ import fodot.objects.file.IFodotFileElement;
 import fodot.objects.general.IFodotElement;
 import fodot.objects.general.sorting.PrerequisiteExtractor;
 import fodot.objects.general.sorting.PrerequisiteSorter;
-import fodot.objects.theory.elements.terms.FodotConstant;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.objects.vocabulary.elements.IFodotDomainElement;

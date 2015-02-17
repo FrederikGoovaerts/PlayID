@@ -1,0 +1,153 @@
+include <LTC>
+
+/**
+ * This FO(.) file was generated with PlayID.
+ * PlayID is a program made by Frederik Goovaerts and Thomas Winters.
+ */
+
+LTCvocabulary V {
+	// Default vocabulary elements (and types needed by the default elements)
+	type Time isa nat
+	Start : Time
+	partial Next(Time) : Time
+	type Type2 isa int
+	type Type1 isa int
+	type Action constructed from { mark(Type1, Type2), noop }
+	terminalTime(Time)
+	type ScoreType isa nat
+	type Player constructed from { oplayer, xplayer }
+	Score(Player) : ScoreType
+	do(Time, Player, Action)
+	fodot_legal_move(Time, Player, Action)
+	
+	// Vocabulary elements derived from GDL file
+	type Type3 constructed from { b, o, x }
+	type Type4 isa int
+	
+	// Static predicates
+	index(Type4)
+	
+	// Dynamic predicates
+	diagonal(Time, Type3)
+	row(Time, Type1, Type3)
+	control(Time, Player)
+	open(Time)
+	cell(Time, Type1, Type2, Type3)
+	column(Time, Type2, Type3)
+	line(Time, Type3)
+	
+	// LTC predicates for the fluent predicates
+	I_control(Player)
+	C_control(Time, Player)
+	
+	I_cell(Type1, Type2, Type3)
+	C_cell(Time, Type1, Type2, Type3)
+	
+}
+
+theory T : V {
+	// Default theory elements:
+	! a [Action] p [Player] t [Time] : do(t, p, a) => ~terminalTime(t) & (? t2 [Time] : Next(t) = t2).
+	! p [Player] t [Time] : ~terminalTime(t) & (? t2 [Time] : Next(t) = t2) => (?=1 a [Action] : do(t, p, a)).
+	{
+		! t [Time] : Next(t) = t + 1 <- ~terminalTime(t) & (? t2 [Time] : Next(t2) = t).
+		Next(0) = 1.
+	}
+	! a [Action] p [Player] t [Time] : do(t, p, a) => fodot_legal_move(t, p, a).
+	
+	// Inductive definitions for the fluent predicates
+	{
+		! p [Player] : control(Start, p) <- I_control(p).
+		! p [Player] t [Time] : control(Next(t), p) <- C_control(t, p).
+	}
+	{
+		! t [Type1] t2 [Type2] t3 [Type3] : cell(Start, t, t2, t3) <- I_cell(t, t2, t3).
+		! t [Type1] t2 [Type2] t3 [Type3] t4 [Time] : cell(Next(t4), t, t2, t3) <- C_cell(t4, t, t2, t3).
+	}
+	
+	// The fluent predicates' causations
+	{
+		! m [Type1] n [Type2] t [Time] : C_cell(t, m, n, o) <- do(t, oplayer, mark(m, n)) & cell(t, m, n, b).
+		! j [Type1] k [Type2] m [Type1] n [Type2] t [Time] w [Player] : C_cell(t, m, n, b) <- do(t, w, mark(j, k)) & cell(t, m, n, b) & (m ~= j | n ~= k).
+		! m [Type1] n [Type2] t [Time] w [Type3] : C_cell(t, m, n, w) <- cell(t, m, n, w) & w ~= b.
+		! m [Type1] n [Type2] t [Time] : C_cell(t, m, n, x) <- do(t, xplayer, mark(m, n)) & cell(t, m, n, b).
+	}
+	{
+		! t [Time] : C_control(t, oplayer) <- control(t, xplayer).
+		! t [Time] : C_control(t, xplayer) <- control(t, oplayer).
+	}
+	
+	// The static predicates' causations
+	{
+		! n [Type2] t [Time] x2 [Type3] : column(t, n, x2) <- cell(t, 1, n, x2) & cell(t, 2, n, x2) & cell(t, 3, n, x2).
+	}
+	{
+		! t [Time] x2 [Type3] : diagonal(t, x2) <- cell(t, 1, 3, x2) & cell(t, 2, 2, x2) & cell(t, 3, 1, x2).
+		! t [Time] x2 [Type3] : diagonal(t, x2) <- cell(t, 1, 1, x2) & cell(t, 2, 2, x2) & cell(t, 3, 3, x2).
+	}
+	{
+		! t [Time] x2 [Type3] : line(t, x2) <- diagonal(t, x2).
+		! m [Type1] t [Time] x2 [Type3] : line(t, x2) <- row(t, m, x2).
+		! m [Type2] t [Time] x2 [Type3] : line(t, x2) <- column(t, m, x2).
+	}
+	{
+		! m [Type1] n [Type2] t [Time] : open(t) <- cell(t, m, n, b).
+	}
+	{
+		! m [Type1] t [Time] x2 [Type3] : row(t, m, x2) <- cell(t, m, 1, x2) & cell(t, m, 2, x2) & cell(t, m, 3, x2).
+	}
+	
+	// Translation of the LEGAL sentences
+	{
+		! t [Time] : fodot_legal_move(t, xplayer, noop) <- control(t, oplayer).
+		! t [Time] : fodot_legal_move(t, oplayer, noop) <- control(t, xplayer).
+		! t [Time] w [Player] x2 [Type1] y [Type2] : fodot_legal_move(t, w, mark(x2, y)) <- cell(t, x2, y, b) & control(t, w).
+	}
+	
+	// Translation of the SCORE sentences
+	{
+		Score(xplayer) = 50 <- ! t [Time] : terminalTime(t) => ~line(t, x) & ~line(t, o) & ~open(t).
+		Score(oplayer) = 100 <- ! t [Time] : terminalTime(t) => line(t, o).
+		Score(xplayer) = 0 <- ! t [Time] : terminalTime(t) => line(t, o).
+		Score(xplayer) = 100 <- ! t [Time] : terminalTime(t) => line(t, x).
+		Score(oplayer) = 50 <- ! t [Time] : terminalTime(t) => ~line(t, x) & ~line(t, o) & ~open(t).
+		Score(oplayer) = 0 <- ! t [Time] : terminalTime(t) => line(t, x).
+	}
+	
+	// Translation of the TERMINAL sentences
+	{
+		! t [Time] : terminalTime(t) <- line(t, x).
+		! t [Time] : terminalTime(t) <- line(t, o).
+		! t [Time] : terminalTime(t) <- ~open(t).
+	}
+}
+
+structure S : V {
+	// Default structure elements:
+	Start = 0
+	Time = { 0..30 }
+	
+	// Elements found by in first phase
+	ScoreType = { 0; 100; 50 }
+	Type1 = { 1..3 }
+	Type2 = { 1..3 }
+	Type4 = { 1..3 }
+	
+	// Initial values for the fluent predicates
+	I_cell = { 1,1,b(); 1,2,b(); 1,3,b(); 2,1,b(); 2,2,b(); 2,3,b(); 3,1,b(); 3,2,b(); 3,3,b() }
+	I_control = { xplayer() }
+	
+	// All values found in the static predicates
+	index = { 1; 2; 3 }
+}
+
+term InversePlayerScore : V {
+	-Score(xplayer)
+}
+
+procedure main() {
+	stdoptions.timeout=20
+	stdoptions.nbmodels=1
+	stdoptions.cpsupport = true
+	printmodels(minimize(T,S,InversePlayerScore))
+}
