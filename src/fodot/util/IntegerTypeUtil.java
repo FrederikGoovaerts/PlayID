@@ -65,6 +65,10 @@ public class IntegerTypeUtil {
 		return NameUtil.convertConstantNameToInteger(constant.getValue());
 	}
 	
+	public static int extractValue(FodotInteger constant) {
+		return Integer.parseInt(constant.getValue());
+	}
+	
 	public static int extractValue(FodotTypeFunctionDeclaration domainElement) {
 		return NameUtil.convertConstantNameToInteger(domainElement.getName());
 	}

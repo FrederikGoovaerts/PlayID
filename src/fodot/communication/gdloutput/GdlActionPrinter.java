@@ -9,6 +9,7 @@ public class GdlActionPrinter implements IActionOutputter {
 
 	private List<GdlAction> actions;
 	private int score;
+	private int maxScore;
 	
 	public GdlActionPrinter() {
 		super();
@@ -22,9 +23,18 @@ public class GdlActionPrinter implements IActionOutputter {
 		this.score = score;
 	}
 	
+	private void setMaxScore(int maxScore) {
+		this.maxScore = maxScore;
+	}
+	
+	private int getMaxScore() {
+		return maxScore;
+	}
+	
 	private String generateTextOutput() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SCORE: " + score + "\n");
+		builder.append("SCORE/MAXSCORE " + score + "/" + getMaxScore() + "\n");
+		
 		for(GdlAction ac : actions) {
 			builder.append(ac.toString() + "\n");
 		}
@@ -35,6 +45,7 @@ public class GdlActionPrinter implements IActionOutputter {
 	public void output(GdlActions actions) {
 		setActions(actions.getActions());
 		setScore(actions.getScore());
+		setMaxScore(actions.getMaximumScore());
 		System.out.println(generateTextOutput());
 	}
 

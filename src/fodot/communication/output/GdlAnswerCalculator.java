@@ -13,6 +13,7 @@ import fodot.objects.structure.elements.functionenum.elements.FodotFunctionEnume
 import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
+import fodot.util.IntegerTypeUtil;
 
 public class GdlAnswerCalculator {
 
@@ -89,9 +90,11 @@ public class GdlAnswerCalculator {
 	private static final String SCORE_FUNCTION_NAME = FodotGameFactory.SCORE_FUNCTION_NAME;
 	
 	public GdlActions generateActionSequence() {
+		int maximumScore = IntegerTypeUtil.extractValue(transformer.getMaximumScore());
+		
 		FodotStructure bestModel = getBestModel();
 		if (bestModel == null) {
-			return new GdlActions(new ArrayList<GdlAction>(), 0);
+			return new GdlActions(new ArrayList<GdlAction>(), 0, maximumScore);
 		}
 		FodotPredicateEnumeration actionEnum = (FodotPredicateEnumeration) bestModel.getElementWithName(ACTION_PREDICATE_NAME);
 		FodotFunctionEnumeration scoreEnum = (FodotFunctionEnumeration) bestModel.getElementWithName(SCORE_FUNCTION_NAME);
@@ -112,7 +115,7 @@ public class GdlAnswerCalculator {
 			//TODO: use GdlPredicate instead of own GDL action
 			actions.add(new GdlAction(getTranslator(), time, player, action));
 		}
-		return new GdlActions(actions, score);
+		return new GdlActions(actions, score, maximumScore);
 	}
 	
 	public FodotStructure getBestModel() {

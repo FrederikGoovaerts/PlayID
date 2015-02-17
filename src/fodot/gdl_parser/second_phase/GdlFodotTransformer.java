@@ -1,5 +1,11 @@
 package fodot.gdl_parser.second_phase;
 
+import static fodot.objects.FodotElementBuilder.createAnd;
+import static fodot.objects.FodotElementBuilder.createExists;
+import static fodot.objects.FodotElementBuilder.createPredicate;
+import static fodot.objects.FodotElementBuilder.createPredicateDeclaration;
+import static fodot.objects.FodotElementBuilder.createTypeFunctionEnumerationElement;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,6 +35,7 @@ import fodot.gdl_parser.second_phase.data.FodotNextData;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.FodotInteger;
 import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
 import fodot.objects.theory.elements.formulas.IFodotFormula;
@@ -40,8 +47,7 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.util.FormulaUtil;
-
-import static fodot.objects.FodotElementBuilder.*;
+import fodot.util.IntegerTypeUtil;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -316,6 +322,16 @@ public class GdlFodotTransformer implements GdlTransformer {
 		scoreMap.get(score).add(condition);
 	}
 
+	private FodotInteger maximumPossibleScore;
+
+	public FodotInteger getMaximumScore() {
+		if (maximumPossibleScore == null) {
+			maximumPossibleScore = IntegerTypeUtil.getMaximum(
+					IntegerTypeUtil.getIntegers(getScoreType().getDomainElements()));
+		}
+		return maximumPossibleScore;
+	}
+
 	/*** End of Score subsection ***/
 
 	/*************************************
@@ -582,9 +598,9 @@ public class GdlFodotTransformer implements GdlTransformer {
 									createPredicate(
 											terminalTimePredicateDeclaration,
 											timeVar
-									), condition
-							)
-					);
+											), condition
+									)
+							);
 		}
 
 		this.addScore(score,extendedCondition);
