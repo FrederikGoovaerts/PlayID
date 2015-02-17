@@ -1,11 +1,5 @@
 package fodot.gdl_parser.second_phase;
 
-import static fodot.objects.FodotElementBuilder.createExists;
-import static fodot.objects.FodotElementBuilder.createImplies;
-import static fodot.objects.FodotElementBuilder.createPredicate;
-import static fodot.objects.FodotElementBuilder.createPredicateDeclaration;
-import static fodot.objects.FodotElementBuilder.createTypeFunctionEnumerationElement;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,6 +40,8 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeFunctionDeclaration;
 import fodot.util.FormulaUtil;
+
+import static fodot.objects.FodotElementBuilder.*;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -578,13 +574,17 @@ public class GdlFodotTransformer implements GdlTransformer {
 		if (condition.getAllInnerElementsOfClass(IFodotFormula.class).size() <= 1) {
 			extendedCondition = null;
 		} else {
+
+			FodotVariable timeVar = sentenceTrans.createTimeVariable();
 			extendedCondition =
-					createImplies(
-							createPredicate(
-									terminalTimePredicateDeclaration,
-									sentenceTrans.createTimeVariable()
+					createExists(timeVar,
+							createAnd(
+									createPredicate(
+											terminalTimePredicateDeclaration,
+											timeVar
 									), condition
-							);
+							)
+					);
 		}
 
 		this.addScore(score,extendedCondition);
