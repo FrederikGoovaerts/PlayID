@@ -5,8 +5,11 @@ import java.util.Collection;
 import java.util.List;
 
 import fodot.communication.gdloutput.IFodotGdlTranslator;
+import fodot.gdl_parser.FodotGameFactory;
 import fodot.gdl_parser.second_phase.GdlFodotTransformer;
 import fodot.objects.structure.FodotStructure;
+import fodot.objects.structure.elements.functionenum.FodotFunctionEnumeration;
+import fodot.objects.structure.elements.functionenum.elements.FodotFunctionEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
@@ -15,12 +18,15 @@ public class GdlAnswerCalculator {
 
 	private List<FodotStructure> models;
 	private IFodotGdlTranslator translator;
+	private GdlFodotTransformer transformer;
 
-	public GdlAnswerCalculator(IFodotGdlTranslator translator, Collection<? extends FodotStructure> models) {
+	public GdlAnswerCalculator(GdlFodotTransformer transformer, IFodotGdlTranslator translator, Collection<? extends FodotStructure> models) {
+		this.transformer = transformer;
 		setTranslator(translator);
 		setModels(models);
 	}
 
+	
 	/**********************************************
 	 *  Translator
 	 ***********************************************/
@@ -78,15 +84,24 @@ public class GdlAnswerCalculator {
 		return this.models.size();
 	}
 	/**********************************************/
-	
+
 	private static final String ACTION_PREDICATE_NAME = GdlFodotTransformer.ACTION_PREDICATE_NAME;
+	private static final String SCORE_FUNCTION_NAME = FodotGameFactory.SCORE_FUNCTION_NAME;
 	
-	public List<GdlAction> generateActionSequence() {
+	public GdlActions generateActionSequence() {
 		FodotStructure bestModel = getBestModel();
 		if (bestModel == null) {
-			return new ArrayList<GdlAction>();
+			return new GdlActions(new ArrayList<GdlAction>(), 0);
 		}
 		FodotPredicateEnumeration actionEnum = (FodotPredicateEnumeration) bestModel.getElementWithName(ACTION_PREDICATE_NAME);
+		FodotFunctionEnumeration scoreEnum = (FodotFunctionEnumeration) bestModel.getElementWithName(SCORE_FUNCTION_NAME);
+		
+		int score = 0;
+		for (FodotFunctionEnumerationElement el : scoreEnum.getElements()) {
+			if (el.getElement(0).equals(transformer.getOwnRole().toEnumerationElement())) {//Find player 
+				score = Integer.parseInt(el.getReturnValue().toTerm().toCode());
+			}
+		}
 		
 		List<GdlAction> actions = new ArrayList<GdlAction>();
 		for (IFodotPredicateEnumerationElement c : actionEnum.getElements()) {
@@ -97,7 +112,7 @@ public class GdlAnswerCalculator {
 			//TODO: use GdlPredicate instead of own GDL action
 			actions.add(new GdlAction(getTranslator(), time, player, action));
 		}
-		return actions;
+		return new GdlActions(actions, score);
 	}
 	
 	public FodotStructure getBestModel() {

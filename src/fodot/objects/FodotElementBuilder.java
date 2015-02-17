@@ -25,7 +25,6 @@ import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.structure.elements.functionenum.FodotConstantFunctionEnumeration;
 import fodot.objects.structure.elements.functionenum.FodotFunctionEnumeration;
 import fodot.objects.structure.elements.functionenum.elements.FodotFunctionEnumerationElement;
-import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
@@ -416,7 +415,7 @@ public class FodotElementBuilder {
 	
 	//ENUMERATIONS
 	public static FodotFunctionEnumeration createFunctionEnumeration(FodotFunctionFullDeclaration declaration, 
-			Collection<? extends IFodotFunctionEnumerationElement> elements) {
+			Collection<? extends FodotFunctionEnumerationElement> elements) {
 		return new FodotFunctionEnumeration(declaration, elements);
 	}
 

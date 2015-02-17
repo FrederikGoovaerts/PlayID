@@ -1,9 +1,7 @@
 package fodot.communication.gdloutput;
 
-import java.util.List;
-
-import fodot.communication.output.GdlAction;
+import fodot.communication.output.GdlActions;
 
 public interface IActionOutputter {
-	void output(List<GdlAction> actions);
+	void output(GdlActions actions);
 }

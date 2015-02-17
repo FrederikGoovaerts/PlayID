@@ -15,7 +15,6 @@ import fodot.objects.structure.elements.IFodotStructureElement;
 import fodot.objects.structure.elements.functionenum.FodotConstantFunctionEnumeration;
 import fodot.objects.structure.elements.functionenum.FodotFunctionEnumeration;
 import fodot.objects.structure.elements.functionenum.elements.FodotFunctionEnumerationElement;
-import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
@@ -314,13 +313,13 @@ public class FodotStructureParser {
 		}
 	}
 
-	private Set<IFodotFunctionEnumerationElement> extractFunctionEnumerationElements(FodotFunctionFullDeclaration decl, String line) {
+	private Set<FodotFunctionEnumerationElement> extractFunctionEnumerationElements(FodotFunctionFullDeclaration decl, String line) {
 		//Remove domain brackets
 		String domainString = EnumerationUtil.extractDomain(line);
 
 
 		List<String> domainElements = ParserUtil.splitOnTrimmed(domainString, MULTIVALUE_DIVIDER);
-		Set<IFodotFunctionEnumerationElement> result = new LinkedHashSet<IFodotFunctionEnumerationElement>();
+		Set<FodotFunctionEnumerationElement> result = new LinkedHashSet<>();
 
 		for (String element : domainElements) {
 			String[] splitted = element.split(RESULT_DIVIDER);

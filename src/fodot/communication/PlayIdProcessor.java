@@ -9,7 +9,7 @@ import fodot.communication.gdloutput.IActionOutputter;
 import fodot.communication.input.IIdpCaller;
 import fodot.communication.input.IdpCaller;
 import fodot.communication.input.IdpFileWriter;
-import fodot.communication.output.GdlAction;
+import fodot.communication.output.GdlActions;
 import fodot.communication.output.GdlAnswerCalculator;
 import fodot.communication.output.IdpResultTransformer;
 import fodot.exceptions.idp.IdpConnectionException;
@@ -85,10 +85,10 @@ public class PlayIdProcessor {
 		}
 		
 		//Sometimes IDP likes to say it ran out of resources while it actually has an answer
-		String outOfResourcesMessage = "Out of resources\n";
-		if (idpResult.contains(outOfResourcesMessage) && !idpResult.trim().equals(outOfResourcesMessage.trim())) {
-			idpResult = idpResult.replaceAll(outOfResourcesMessage, "");
-		}
+//		String outOfResourcesMessage = "Out of resources\n";
+//		if (idpResult.contains(outOfResourcesMessage) && !idpResult.trim().equals(outOfResourcesMessage.trim())) {
+//			idpResult = idpResult.replaceAll(outOfResourcesMessage, "");
+//		}
 		
 		
 		
@@ -102,8 +102,8 @@ public class PlayIdProcessor {
 		}
 		
 		//Transform a solution 
-		GdlAnswerCalculator answerer = new GdlAnswerCalculator(parser.getFodotTransformer().getGdlVocabulary(), models);
-		List<GdlAction> actions = answerer.generateActionSequence();
+		GdlAnswerCalculator answerer = new GdlAnswerCalculator(parser.getFodotTransformer(), parser.getFodotTransformer().getGdlVocabulary(), models);
+		GdlActions actions = answerer.generateActionSequence();
 		
 		//Output it
 		outputter.output(actions);
