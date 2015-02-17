@@ -33,7 +33,7 @@ public class GdlActionPrinter implements IActionOutputter {
 	
 	private String generateTextOutput() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SCORE/MAXSCORE " + score + "/" + getMaxScore() + "\n");
+		builder.append("SCORE/MAXSCORE: " + score + "/" + getMaxScore() + "\n");
 		
 		for(GdlAction ac : actions) {
 			builder.append(ac.toString() + "\n");
