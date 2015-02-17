@@ -105,20 +105,26 @@ public class FodotGameFactory {
 
 		return createFodotFile(incl, elements);
 	}
+	
+
+	public static final String SCORE_FUNCTION_NAME = "Score";
+	public static final String NEXT_FUNCTION_NAME = "Next";
+	public static final String START_CONSTANT_NAME = "Start";
+	
 	private void buildDefaultVocItems() {
 
-		this.startFunctionDeclaration = createCompleteFunctionDeclaration("Start", source.getTimeType());
+		this.startFunctionDeclaration = createCompleteFunctionDeclaration(START_CONSTANT_NAME, source.getTimeType());
 
 		List<FodotType> timeList = new ArrayList<>();
 		timeList.add(source.getTimeType());
-		this.nextFunctionDeclaration = createPartialFunctionDeclaration("Next", timeList,
+		this.nextFunctionDeclaration = createPartialFunctionDeclaration(NEXT_FUNCTION_NAME, timeList,
 				source.getTimeType());
 
 		this.scoreTypeDeclaration = createTypeDeclaration(source.getScoreType());
 
 		List<FodotType> playerList = new ArrayList<>();
 		playerList.add(source.getPlayerType());
-		scoreFunctionDeclaration = createCompleteFunctionDeclaration("Score", playerList,
+		scoreFunctionDeclaration = createCompleteFunctionDeclaration(SCORE_FUNCTION_NAME, playerList,
 				source.getScoreType());
 	}
 

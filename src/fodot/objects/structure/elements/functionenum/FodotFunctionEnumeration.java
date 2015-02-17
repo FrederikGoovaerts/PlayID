@@ -7,13 +7,14 @@ import java.util.List;
 
 import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.structure.elements.FodotEnumeration;
+import fodot.objects.structure.elements.functionenum.elements.FodotFunctionEnumerationElement;
 import fodot.objects.structure.elements.functionenum.elements.IFodotFunctionEnumerationElement;
 import fodot.objects.vocabulary.elements.FodotFunctionFullDeclaration;
 import fodot.util.CollectionPrinter;
 
-public class FodotFunctionEnumeration extends FodotEnumeration<IFodotFunctionEnumerationElement> {
+public class FodotFunctionEnumeration extends FodotEnumeration<FodotFunctionEnumerationElement> {
 	
-	public FodotFunctionEnumeration(FodotFunctionFullDeclaration declaration, Collection<? extends IFodotFunctionEnumerationElement> elements) {
+	public FodotFunctionEnumeration(FodotFunctionFullDeclaration declaration, Collection<? extends FodotFunctionEnumerationElement> elements) {
 		super(declaration, elements);
 	}
 
