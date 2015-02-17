@@ -84,6 +84,12 @@ public class PlayIdProcessor {
 			idpResult = idpResult.replaceAll(stupidWarning, "");
 		}
 		
+		//Sometimes IDP likes to say it ran out of resources while it actually has an answer
+		String outOfResourcesMessage = "Out of resources\n";
+		if (idpResult.contains(outOfResourcesMessage) && !idpResult.trim().equals(outOfResourcesMessage.trim())) {
+			idpResult = idpResult.replaceAll(outOfResourcesMessage, "");
+		}
+		
 		
 		
 		//Process results
