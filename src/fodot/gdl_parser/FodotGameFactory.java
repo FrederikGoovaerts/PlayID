@@ -454,7 +454,7 @@ public class FodotGameFactory {
 				timeVar = createVariable("t", source.getTimeType(), formulaVariables);
 			}
 
-
+			FodotVariable earlierTime = createVariable("t2", source.getTimeType(),formulaVariables);
 			definitions.add(
 					createInductiveSentence(
 							createInductiveDefinitionConnector(
@@ -462,7 +462,24 @@ public class FodotGameFactory {
 											this.terminalTimePredicateDeclaration,
 											timeVar
 											),
-											formula
+											createAnd(
+													formula,
+													createNot(
+															createExists(
+																	earlierTime,
+																	createAnd(
+																			createLessThan(
+																					earlierTime,
+																					timeVar
+																			),
+																			createPredicate(
+																					this.terminalTimePredicateDeclaration,
+																					earlierTime
+																			)
+																	)
+															)
+													)
+											)
 									)
 							)
 					);
