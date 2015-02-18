@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import fodot.exceptions.idp.IdpErrorException;
+import fodot.exceptions.idp.IdpNonOptimalSolutionException;
 import fodot.exceptions.idp.IdpSyntaxErrorException;
 import fodot.exceptions.idp.OutOfResourcesException;
 import fodot.exceptions.idp.UnsatisfiableIdpFileException;
@@ -79,7 +80,9 @@ public class IdpResultTransformer {
 			
 			String line = it.next();
 			
-			if (isOutOfResources(line)){
+			if (isNotOptimalSolution(line)) {
+				throw new IdpNonOptimalSolutionException(line);
+			} else if (isOutOfResources(line)){
 				throw new OutOfResourcesException(line);
 			} else if (isSyntaxError(line)) {
 				throw new IdpSyntaxErrorException(line);
@@ -112,6 +115,12 @@ public class IdpResultTransformer {
 	}
 	/**********************************************/
 
+	private static final String NON_OPTIMAL_SOLUTION_REGEX = 
+			"Warning: Verifying and/or autocompleting structure [0-9]+";
+	private static boolean isNotOptimalSolution(String line) {
+		return line.trim().matches(NON_OPTIMAL_SOLUTION_REGEX);
+	}
+	
 	/**********************************************
 	 *  Line recognizers
 	 ***********************************************/
