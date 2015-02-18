@@ -329,6 +329,52 @@ public class SingleplayerTransformationTest {
 	public void transform_stateSpaceSmall_test() {
 		testFor("stateSpaceSmall.kif");
 	}
+	
+	@Test
+	public void transform_sudoku_test() {
+		testFor("sudoku.kif");
+	}
+	
+	@Test
+	public void transform_survival_test() {
+		testFor("survival.kif");
+	}
+	
+	@Test
+	public void transform_tpeg_test() {
+		testFor("tpeg.kif");
+	}
+	
+	@Test
+	public void transform_troublemaker01_test() {
+		testFor("troublemaker01.kif");
+	}
+	
+	@Test
+	public void transform_troublemaker02_test() {
+		testFor("troublemaker02.kif");
+	}
+	
+	@Test
+	public void transform_untwistycomplex2_test() {
+		testFor("untwistycomplex2.kif");
+	}	
+	
+	@Test
+	public void transform_wargame01_test() {
+		testFor("wargame01.kif");
+	}		
+	
+	@Test
+	public void transform_wargame02_test() {
+		testFor("wargame02.kif");
+	}		
+	
+	@Test
+	public void transform_wargame03_test() {
+		testFor("wargame03.kif");
+	}	
+	
 
 
 }
