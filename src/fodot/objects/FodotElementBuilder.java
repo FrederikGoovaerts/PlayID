@@ -251,7 +251,7 @@ public class FodotElementBuilder {
 	}
 
 	private static final FodotFunctionFullDeclaration NEGATE_INTEGER_DECLARATION =
-			createCompleteFunctionDeclaration("-", Arrays.asList(getIntegerType()), getIntegerType());
+			createCompleteFunctionDeclaration("invert", Arrays.asList(getIntegerType()), getIntegerType());
 
 	public static FodotFunction createNegateInteger(IFodotTerm term) {
 		return new FodotInvertFunction(NEGATE_INTEGER_DECLARATION, term);

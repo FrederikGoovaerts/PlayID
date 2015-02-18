@@ -16,6 +16,7 @@ import fodot.objects.structure.elements.functionenum.FodotConstantFunctionEnumer
 import fodot.objects.structure.elements.functionenum.FodotFunctionEnumeration;
 import fodot.objects.structure.elements.functionenum.elements.FodotFunctionEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
+import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateBooleanEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
 import fodot.objects.structure.elements.typeenum.FodotNumericalTypeRangeEnumeration;
@@ -278,7 +279,8 @@ public class FodotStructureParser {
 		}
 
 		if (EnumerationUtil.isSingleValue(line)) {
-			result.add(new FodotPredicateEnumerationElement(decl, Arrays.asList(new FodotConstant(line.trim(), FodotType.BOOLEAN).toEnumerationElement())));
+			//TODO does this even ever get used?
+			result.add(new FodotPredicateBooleanEnumerationElement(decl, line.trim().equals("false") ? false : true));
 		} else if (EnumerationUtil.containsDomain(line)) {
 			//Remove the brackets
 			String domainString = EnumerationUtil.extractDomain(line);

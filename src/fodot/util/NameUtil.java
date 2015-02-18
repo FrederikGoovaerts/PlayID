@@ -13,7 +13,7 @@ import fodot.objects.vocabulary.elements.FodotType;
 public class NameUtil {
 
 	private static final String VALID_NAME_REGEX = "^[a-zA-Z][a-zA-Z_0-9]*$";
-	private static final List<String> ALLOWED_SPECIAL_NAMES = Arrays.asList("-");
+	//private static final List<String> ALLOWED_SPECIAL_NAMES = Arrays.asList("-");
 	private static final String NON_ALPHA_NUMERIC_REGEX = "[^a-zA-Z0-9]";
 	private static final String BASIC_VAR_NAME = "var";
 	
@@ -48,13 +48,13 @@ public class NameUtil {
 	 */
 	public static String convertToValidVariableName(String name, FodotType type) {
 		if (name != null) {
-			if (isReserverByIdp(name)) {
-				name = name + "1";
-			}
 			if (isValidName(name)) {
 				return name;
 			}
 			String newName = name.replaceAll(NON_ALPHA_NUMERIC_REGEX, "");
+			if (isReservedByIdp(name)) {
+				name = name + "1";
+			}
 			if (isValidName(newName)) {
 				return newName;
 			}
@@ -68,13 +68,18 @@ public class NameUtil {
 			return name;
 		}
 
-		String newName = name.replaceAll("-", "_").replace("+", "plus");
+		String newName = name.replaceAll("-", "_")
+				.replace("+", "plus")
+				.replace(">", "bigger")
+				.replace("<", "smaller");
 		if (isValidName(newName)) {
 			return newName;
 		}
 		newName = name.replaceAll(NON_ALPHA_NUMERIC_REGEX, "");
 		return newName;
 	}
+	
+	private static int counter = 0;
 	
 	public static String convertToValidPredicateName(String name) {
 		if (name == null) {
@@ -85,7 +90,10 @@ public class NameUtil {
 		if (isValidName(newName)) {
 			return newName;
 		}
-		return "pr_" + newName;
+		if (newName.equals("")) {
+			return "empty" + counter++;
+		}
+		return "pr_" + newName + counter++;
 	}
 
 	public static final String NUMBER_REGEX = "^[-]?[0-9]+$";
@@ -99,7 +107,7 @@ public class NameUtil {
 			} else if (name.matches(NEGATIVE_NUMBER_REGEX)) {
 				return "i_m" + name.replace("-", "");
 			}
-			if (isReserverByIdp(name)) {
+			if (isReservedByIdp(name)) {
 				name = name + "1";
 			}
 		}
@@ -129,14 +137,16 @@ public class NameUtil {
 	 * @return
 	 */
 	public static boolean isValidName(String name) {
+		if (isReservedByIdp(name)) {
+			return false;
+		}
 		if (name == null || name.length() == 0) {
 			return false;
 		}
-		return (name.matches(VALID_NAME_REGEX)
-				|| ALLOWED_SPECIAL_NAMES.contains(name));
+		return (name.matches(VALID_NAME_REGEX));
 	}
 	
-	public static boolean isReserverByIdp(String name) {
+	public static boolean isReservedByIdp(String name) {
 		return IDP_RESERVED_NAMES.contains(name);
 	}
 
