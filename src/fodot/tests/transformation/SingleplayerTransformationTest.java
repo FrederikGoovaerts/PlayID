@@ -115,6 +115,11 @@ public class SingleplayerTransformationTest {
 		testFor("eightPuzzle.kif");
 	}
 
+    @Test
+    public void transform_factoringApertureScience_test() {
+        testFor("factoringApertureScience.kif");
+    }
+
 	@Test
 	public void transform_factoringEasyTurtleBrain_test() {
 		testFor("factoringEasyTurtleBrain.kif");
