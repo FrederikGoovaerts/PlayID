@@ -356,6 +356,11 @@ public class SingleplayerTransformationTest {
 	}
 	
 	@Test
+	public void transform_twisty_passages_test() {
+		testFor("twisty-passages.kif");
+	}
+	
+	@Test
 	public void transform_untwistycomplex2_test() {
 		testFor("untwistycomplex2.kif");
 	}	
