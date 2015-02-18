@@ -58,7 +58,7 @@ import fodot.util.IntegerTypeUtil;
 public class GdlFodotTransformer implements GdlTransformer {
 
 	public static final String ACTION_PREDICATE_NAME = "do";
-	public static final String LEGAL_MOVE_PREDICATE_NAME = "fodot_legal_move";
+	public static final String LEGAL_MOVE_PREDICATE_NAME = "legal";
 
 	/***************************************************************************
 	 * Constructor
@@ -489,6 +489,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		if(!rule.getHead().getName().getValue().equals("next"))
 			throw new IllegalArgumentException("Given rule is not a 'next' rule!");
 		this.processingRules = true;
+
 
 		GdlFodotSentenceTransformer sentenceTrans = new GdlFodotSentenceTransformer(this, getGdlVocabulary().getVariables(rule));
 

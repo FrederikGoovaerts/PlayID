@@ -20,6 +20,9 @@ public class VariableRegisterer {
 	public VariableRegisterer(Map<GdlVariable, FodotVariable> variables) {
 		this.variableMap = variables;
 		this.usedVariables = new HashSet<FodotVariable>();
+		if (variables != null && variables.values() != null) {
+			usedVariables.addAll(variables.values());
+		}
 	}
 
 	/**********************************************
