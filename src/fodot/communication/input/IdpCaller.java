@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import fodot.exceptions.idp.IdpConnectionException;
+import fodot.util.OSUtil;
 
 public class IdpCaller implements IIdpCaller {
 
@@ -20,7 +21,7 @@ public class IdpCaller implements IIdpCaller {
 		String fileDirectory = file.getParent();
 		String fileName = file.getName();
 
-		String command = "idp " + fileName;		
+		String command = "idp";
 
 		if (!displayWarnings) {
 			command = command + " --nowarnings";
@@ -29,8 +30,16 @@ public class IdpCaller implements IIdpCaller {
 		
 		StringBuilder result = new StringBuilder();
 
-		ProcessBuilder builder = new ProcessBuilder(
-				"cmd.exe", "/c", "cd \"" + fileDirectory + "\" && " + command);
+		ProcessBuilder builder ;
+        if( OSUtil.isWindows()){
+            builder = new ProcessBuilder(
+				"cmd.exe", "/c", "cd \"" + fileDirectory + "\" && " + command + " " + fileName);
+        } else {
+            builder = new ProcessBuilder(
+                    "idp", fileDirectory + "/" + fileName);
+        }
+
+
 		builder.redirectErrorStream(true);
 
 		Process p = null;

@@ -9,7 +9,7 @@ import java.io.IOException;
 public class ParticularGameIdpParseTest {
 
 
-	private static final String GAME_PATH = "resources/games/singleplayer/ruleDepthLinear.kif";
+	private static final String GAME_PATH = "resources/games/singleplayer/coins.kif";
 
     @Test
 	public void game_test() {
