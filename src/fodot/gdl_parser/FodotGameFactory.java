@@ -642,86 +642,99 @@ public class FodotGameFactory {
 		FodotVariable t2_Time = createVariable("t2",source.getTimeType(), variables);
 		variables.add(t2_Time);
 
-		//!a [Action] p [Player] t [Time]: do(t,p,a) => ~terminalTime(t) & (?t2 [Time]: Next(t) = t2).
+        /**
+         * Old: !a [Action] p [Player] t [Time]: do(t,p,a) => ~terminalTime(t) & (?t2 [Time]: Next(t) = t2).
+         *
+         * New: ! a [Action] p [Player] t [Time] : do(t,p,a) => (! t2: terminalTime(t2) => t < t2).
+         */
 		variables = new HashSet<>(Arrays.asList(a_Action,p_Player,t_Time));
 		defaultTheory.addElement(createSentence(createForAll(variables,
 				createImplies(
 						createPredicate(this.doPredicateDeclaration
 								, new ArrayList<IFodotTerm>(Arrays.asList(t_Time,
-										p_Player,
-										a_Action)))
-										, createAnd(
-												createNot(createPredicate(
-														this.terminalTimePredicateDeclaration,
-														t_Time)),
-														createExists(t2_Time,
-																createEquals(createFunction(
-																		this.nextFunctionDeclaration, t_Time),
-																		t2_Time)
-																)
-												)
+                                        p_Player,
+                                        a_Action))
+                        ),
+                        createForAll(t2_Time,
+                                createImplies(
+                                        createPredicate(this.terminalTimePredicateDeclaration,
+                                                t2_Time),
+                                        createLessThan(t_Time,t2_Time)
+                                ))
 						)
 				)));
 
-		//! t [Time] p [Player]: ~terminalTime(t) & (?t2 [Time]: Next(t) = t2) => ?1 a [Action]: do(t,p,a).
-		variables = new HashSet<>(Arrays.asList(t_Time,p_Player));
+        /**
+         * OLD: ! t [Time] p [Player]: ~terminalTime(t) & (?t2 [Time]: Next(t) = t2) => ?1 a [Action]: do(t,p,a).
+         *
+         * New: ! p [Player] t [Time] t2 [Time]: (terminalTime(t2) & t < t2) => (?=1 a [Action] : do(t,p,a)).
+         *      ! p [Player] t [Time] t2 [Time]: (terminalTime(t2) & t >= t2) => (~? a [Action] : do(t,p,a)).
+         */
+        variables = new HashSet<>(Arrays.asList(t_Time,p_Player,t2_Time));
 		defaultTheory.addElement(createSentence(createForAll(variables,
 				createImplies(
 						createAnd(
-								createNot(createPredicate(
-										this.terminalTimePredicateDeclaration,
-										t_Time)),
-										createExists(t2_Time,
-												createEquals(createFunction(
-														this.nextFunctionDeclaration, t_Time),
-														t2_Time)
-												)
+                                createPredicate(
+                                        this.terminalTimePredicateDeclaration,
+                                        t2_Time),
+                                createLessThan(t_Time,
+                                        t2_Time)
 								), createExistsExactly(1, a_Action,
 										createPredicate(this.doPredicateDeclaration,
 												t_Time, p_Player, a_Action)
 										)
 						)
 				)));
+        defaultTheory.addElement(createSentence(createForAll(variables,
+                createImplies(
+                        createAnd(
+                                createPredicate(
+                                        this.terminalTimePredicateDeclaration,
+                                        t2_Time),
+                                createGreaterThanOrEqualTo(t_Time,
+                                        t2_Time)
+                        ), createNot(createExists(a_Action,
+                                        createPredicate(this.doPredicateDeclaration,
+                                                t_Time, p_Player, a_Action)
+                                )
+                        )
+                )
+        )));
 
-
-		/**
-		 * {
-		 *    !t: Next(t) = t+1 <- ~terminalTime(t) & (?t2 [Time]: Next(t2)=t).
-		 *    Next(0) = 1.
-		 * }
-		 */
-		List<FodotInductiveSentence> definitions = new ArrayList<>();
-		definitions.add(
-				createInductiveSentence(
-						createInductiveQuantifier(
-								createForAll(t_Time,
-										createInductiveDefinitionConnector(
-												createInductiveFunctionHead(
-														createFunction(this.nextFunctionDeclaration, t_Time),
-														createAddition(t_Time, createInteger(1))
-														), createAnd(
-																createNot(createPredicate(
-																		this.terminalTimePredicateDeclaration,
-																		t_Time)),
-																		createExists(t2_Time,
-																				createEquals(createFunction(
-																						this.nextFunctionDeclaration, t2_Time),
-																						t_Time)
-																				)
-																)
-												)
-										)
-								)
-						)
-				);
-		definitions.add(
-				createInductiveSentence(
-						createInductiveFunctionHead(createFunction(this.nextFunctionDeclaration,createConstant("0",source.getTimeType())),
-								createConstant("1", source.getTimeType())
-								)
-						)
-				);
-		defaultTheory.addElement(createInductiveDefinition(definitions));
+        /**
+         * OLD:
+         * {
+         *    !t: Next(t) = t+1 <- ~terminalTime(t) & (?t2 [Time]: Next(t2)=t).
+         *    Next(0) = 1.
+         * }
+         *
+         * New:
+         * {
+         *    ! t [Time] : Next(t) = t + 1 <- Time(t+1).
+         * }
+         */
+        List<FodotInductiveSentence> definitions = new ArrayList<>();
+        definitions.add(
+                createInductiveSentence(
+                        createInductiveQuantifier(
+                                createForAll(t_Time,
+                                        createInductiveDefinitionConnector(
+                                                createInductiveFunctionHead(
+                                                        createFunction(this.nextFunctionDeclaration, t_Time),
+                                                        createAddition(t_Time, createInteger(1))
+                                                ), createPredicate(
+                                                        this.source.getTimeType().getTypePredicateDeclaration(),
+                                                        createAddition(
+                                                                t_Time,
+                                                                createInteger(1)
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+        defaultTheory.addElement(createInductiveDefinition(definitions));
 
 		// !t p a: does(t,p,a) => legalmove(t,p,a).
 
