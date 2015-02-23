@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import fodot.util.GdlClassCorrectionUtil;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlDistinct;
 import org.ggp.base.util.gdl.grammar.GdlFunction;
@@ -55,15 +56,25 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 	@Override
 	public void processInitRelation(GdlRelation relation) {
 
-		GdlRelation argumentRelation = convertToPredicate(relation.get(0));
+        GdlTerm argument = relation.get(0);
 
-		//Visit argument
-		getIdentifier().addPredicateOccurrence(null, argumentRelation);
-		visitPredicateArguments(null, argumentRelation);
+        if (argument instanceof GdlConstant) {
+            GdlProposition argumentProposition = GdlClassCorrectionUtil.convertToProposition((GdlConstant) argument);
 
-		//Make argument dynamic
-		getIdentifier().registerDynamicPredicate(argumentRelation);
-	}
+            identifier.registerProposition(argumentProposition);
+        } else if (argument instanceof GdlFunction) {
+            GdlRelation argumentRelation = GdlClassCorrectionUtil.convertToPredicate(argument);
+
+            //Visit argument
+            getIdentifier().addPredicateOccurrence(null, argumentRelation);
+            visitPredicateArguments(null, argumentRelation);
+
+            //Make argument dynamic
+            getIdentifier().registerDynamicPredicate(argumentRelation);
+        } else {
+            throw new GdlTypeIdentificationError("Argument was neither Constant nor Function!");
+        }
+    }
 
 	@Override
 	public void processStaticPredicateRelation(GdlRelation relation) {
@@ -83,7 +94,7 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 	 ***********************************************/
 	@Override
 	public void processNextRule(GdlRule rule) {
-		GdlRelation argumentRelation = convertToPredicate(rule.getHead().get(0));
+		GdlRelation argumentRelation = GdlClassCorrectionUtil.convertToPredicate(rule.getHead().get(0));
 
 		//Visit argument
 		getIdentifier().addPredicateOccurrence(rule, argumentRelation);
@@ -119,7 +130,7 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 
 	//Helper
 	private void visitRule(GdlRule rule) {
-		GdlRelation relation = convertToPredicate(rule.getHead());
+		GdlRelation relation = GdlClassCorrectionUtil.convertToPredicate(rule.getHead());
 		//If the head is dynamic, then so is the rule
 		if (getIdentifier().isDynamicPredicate(relation)) {
 			getIdentifier().registerTimeDependent(rule);
@@ -208,23 +219,25 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 			}
 		}
 		private void visitTrue(GdlRelation predicate) {
-			GdlRelation innerPredicate = convertToPredicate(predicate.get(0));
-			visitRelation(innerPredicate);
-			
-			getIdentifier().registerDynamicPredicate(innerPredicate);
-			getIdentifier().registerTimeDependent(rule);
-			
+
+            if (predicate.arity() == 0) {
+                GdlProposition argumentProposition = GdlClassCorrectionUtil.convertToProposition(predicate);
+
+                identifier.registerProposition(argumentProposition);
+            } else {
+                GdlRelation innerPredicate = GdlClassCorrectionUtil.convertToPredicate(predicate.get(0));
+                visitRelation(innerPredicate);
+                //TODO FIX PROPOSITION
+
+                getIdentifier().registerDynamicPredicate(innerPredicate);
+                getIdentifier().registerTimeDependent(rule);
+            }
 		}
+
 		private void visitProposition(GdlProposition proposition) {
 			//Propositions are predicates without arguments.
 			//Hypothese: These are always dynamic, as they don't serve a better purpose
-			GdlRelation relation = convertToPredicate(proposition);
-			
-			visitRelation(relation);
-			
-			//Make dynamic
-			getIdentifier().registerDynamicPredicate(relation);
-			getIdentifier().registerTimeDependent(rule);
+            identifier.registerProposition(proposition);
 		}
 
 	}
@@ -258,14 +271,5 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 		this.visitArguments(rule, function.getBody(), new GdlFunctionDeclaration(function) );
 	}
 
-	//Cast helper
-	private GdlRelation convertToPredicate(GdlTerm term) {
-		GdlSentence sentence = term.toSentence();
-		return convertToPredicate(sentence);
-	}
-	
-	private GdlRelation convertToPredicate(GdlSentence sentence) {
-		GdlRelation relation = GdlPool.getRelation(sentence.getName(), sentence.getBody());
-		return relation;
-	}
+
 }

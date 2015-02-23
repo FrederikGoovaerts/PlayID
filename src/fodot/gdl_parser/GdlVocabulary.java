@@ -1,20 +1,8 @@
 package fodot.gdl_parser;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import org.ggp.base.util.gdl.grammar.GdlConstant;
-import org.ggp.base.util.gdl.grammar.GdlFunction;
-import org.ggp.base.util.gdl.grammar.GdlPool;
-import org.ggp.base.util.gdl.grammar.GdlRelation;
-import org.ggp.base.util.gdl.grammar.GdlRule;
-import org.ggp.base.util.gdl.grammar.GdlTerm;
-import org.ggp.base.util.gdl.grammar.GdlVariable;
+import org.ggp.base.util.gdl.grammar.*;
 
 import fodot.communication.gdloutput.IFodotGdlTranslator;
 import fodot.exceptions.gdl.GdlTransformationException;
@@ -49,6 +37,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 			Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule,
 			Map<GdlFunctionDeclaration, FodotTypeFunctionDeclaration> functionDeclarations,
 			Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations,
+            Map<GdlProposition,FodotPredicateDeclaration> propositions,
 			Set<GdlPredicateDeclaration> dynamicPredicates,
 			Collection<? extends IFodotStructureElement> structureElements
 			) {
@@ -63,6 +52,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		this.predicateDeclarations = predicateDeclarations;
 		this.variablesPerRule = variablesPerRule;
 		this.dynamicPredicates = dynamicPredicates;
+        this.propositions = propositions;
 		this.structureElements = new LinkedHashSet<IFodotStructureElement>(structureElements);
 
 		initialiseInverseMaps();
@@ -157,6 +147,14 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		}
 		return result;
 	}
+
+    private Map<GdlProposition,FodotPredicateDeclaration> propositions;
+
+    public FodotPredicateDeclaration getProposition(GdlProposition proposition){
+        return propositions.get(proposition);
+    }
+
+
 	
 	//Direct info for copying:
 
@@ -176,6 +174,9 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	public Map<GdlRule, Map<GdlVariable, FodotVariable>> getVariablesPerRule() {
 		return variablesPerRule;
 	}
+    public Map<GdlProposition,FodotPredicateDeclaration> getPropositions() {
+        return propositions;
+    }
 	public Set<GdlPredicateDeclaration> getGdlDynamicPredicates() {
 		return dynamicPredicates;
 	}

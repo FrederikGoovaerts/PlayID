@@ -802,7 +802,7 @@ public class FodotGameFactory {
 		return defaultStructure;
 	}
 
-	public static final int DEFAULT_IDP_TIME_LIMIT = 20;
+	public static final int DEFAULT_IDP_TIME_LIMIT = 100;
 	private int idpTimeLimit = DEFAULT_IDP_TIME_LIMIT;
 	private static final int DEFAULT_MODEL_LIMIT = 1;
 	private int idpModelLimit = DEFAULT_MODEL_LIMIT;
