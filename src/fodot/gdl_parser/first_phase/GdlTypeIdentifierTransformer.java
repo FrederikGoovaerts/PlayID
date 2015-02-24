@@ -220,14 +220,15 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 		}
 		private void visitTrue(GdlRelation predicate) {
 
-            if (predicate.arity() == 0) {
+            GdlTerm argument = predicate.get(0);
+
+            if (argument instanceof GdlConstant) {
                 GdlProposition argumentProposition = GdlClassCorrectionUtil.convertToProposition(predicate);
 
                 identifier.registerProposition(argumentProposition);
             } else {
-                GdlRelation innerPredicate = GdlClassCorrectionUtil.convertToPredicate(predicate.get(0));
+                GdlRelation innerPredicate = GdlClassCorrectionUtil.convertToPredicate(argument);
                 visitRelation(innerPredicate);
-                //TODO FIX PROPOSITION
 
                 getIdentifier().registerDynamicPredicate(innerPredicate);
                 getIdentifier().registerTimeDependent(rule);

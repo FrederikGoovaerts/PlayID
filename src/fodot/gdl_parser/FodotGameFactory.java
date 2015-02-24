@@ -501,26 +501,6 @@ public class FodotGameFactory {
 			toReturn.addAllElements(source.getGdlVocabulary().getStructureElements());
 		}
 
-		/**
-		 * nodig: *naam* van onze speler
-		 * resultaat:
-		 * Score={*naam*()->100}
-		 */
-//		toReturn.addElement(createBlankLines(1));
-//		toReturn.addElement(createComment("Desired result"));
-//		List<IFodotFunctionEnumerationElement> desiredResult = new ArrayList<IFodotFunctionEnumerationElement>();
-//		List<? extends IFodotTypeEnumerationElement> ownRole = Arrays.asList(source.getOwnRole().toEnumerationElement());
-//
-//		FodotInteger maximumPossibleScore = IntegerTypeUtil.getMaximum(
-//				IntegerTypeUtil.getIntegers(source.getScoreType().getDomainElements()));
-//
-//		desiredResult.add(
-//				createFunctionEnumerationElement(this.scoreFunctionDeclaration, ownRole, maximumPossibleScore) );
-//		toReturn.addElement(
-//				createFunctionEnumeration(
-//						this.scoreFunctionDeclaration, desiredResult
-//						)
-//				);
 
 		/**
 		 * nodig: Initiele *waarden* voor elk fluent *predicaat*
@@ -561,6 +541,10 @@ public class FodotGameFactory {
 						);
 			}
 		}
+
+        //Initiele waarde voor elke propositie
+        //TODO
+
 
 		return toReturn;
 	}
@@ -780,24 +764,6 @@ public class FodotGameFactory {
 						createInteger(this.turnLimit)
 						)
 				);
-
-		//ScoreType={0..100}
-		// Not necessary anymore: GdlTypeIdentifier now adds this with only the domainelements needed
-		//		defaultStructure.addElement(
-		//				createNumericalTypeRangeEnumeration(
-		//						source.getScoreType(),
-		//						createInteger(0),
-		//						createInteger(100)
-		//						)
-		//				);
-
-		// This is dependent on the name of the player, cannot be instantiated here
-		//Score={p_robot(),100}
-		//defaultStructure.addEnumeration(
-		//        createPredicateEnumeration()
-		//);
-
-
 
 		return defaultStructure;
 	}

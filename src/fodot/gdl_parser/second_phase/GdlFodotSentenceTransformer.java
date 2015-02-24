@@ -159,6 +159,11 @@ public class GdlFodotSentenceTransformer {
 	public FodotPredicate generateRelation(
 			GdlRelation relation) {
 
+        if(relation.arity() == 0){
+            //TODO Handle Proposition
+
+        }
+
 		String relationName = relation.getName().getValue();
 
 		switch (relationName) {

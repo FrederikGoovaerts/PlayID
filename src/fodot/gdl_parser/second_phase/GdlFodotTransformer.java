@@ -14,15 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fodot.exceptions.gdl.GdlTypeIdentificationError;
+import fodot.util.GdlClassCorrectionUtil;
 import org.ggp.base.util.Pair;
-import org.ggp.base.util.gdl.grammar.GdlConstant;
-import org.ggp.base.util.gdl.grammar.GdlFunction;
-import org.ggp.base.util.gdl.grammar.GdlPool;
-import org.ggp.base.util.gdl.grammar.GdlRelation;
-import org.ggp.base.util.gdl.grammar.GdlRule;
-import org.ggp.base.util.gdl.grammar.GdlSentence;
-import org.ggp.base.util.gdl.grammar.GdlTerm;
-import org.ggp.base.util.gdl.grammar.GdlVariable;
+import org.ggp.base.util.gdl.grammar.*;
 
 import fodot.exceptions.gdl.GdlParsingOrderException;
 import fodot.exceptions.gdl.GdlTransformationException;
@@ -188,6 +183,16 @@ public class GdlFodotTransformer implements GdlTransformer {
 	public Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> getInitialValues() {
 		return new HashMap<>(initialValues);
 	}
+
+    private Set<GdlProposition> initialPropositions;
+
+    private void addInitialProposition(GdlProposition proposition){
+        this.initialPropositions.add(proposition);
+    }
+
+    public Set<GdlProposition> getInitialPropositions(){
+        return new HashSet<>(this.initialPropositions);
+    }
 
 	/*** End of Initial values subsection ***/
 
@@ -360,6 +365,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 	public void cleanAndInitializeBuilder(){
 		this.initialValues = new HashMap<>();
+        this.initialPropositions = new HashSet<>();
 		this.staticValues = new HashMap<>();
 		this.scoreMap = new HashMap<>();
 		this.nextMap = new HashMap<>();
@@ -409,15 +415,24 @@ public class GdlFodotTransformer implements GdlTransformer {
 					"processing relations is not allowed anymore.");
 
 		// Init: (init (pred x1 .. xn))
+        GdlTerm argument = relation.get(0);
 
-		GdlSentence predicate = relation.getBody().get(0).toSentence();
+        if (argument instanceof GdlConstant) {
+            this.addInitialProposition(GdlClassCorrectionUtil.convertToProposition((GdlConstant) argument));
 
-		FodotPredicateDeclaration fodotPredicate = processPredicate(predicate);
 
-		List<IFodotTypeEnumerationElement> initValues =
-				extractEnumerationList(predicate, FormulaUtil.removeTypes(fodotPredicate.getArgumentTypes(), getTimeType()));
+        } else if (argument instanceof GdlFunction) {
+            GdlSentence predicate = relation.getBody().get(0).toSentence();
 
-		this.addInitialValue(fodotPredicate, new FodotPredicateEnumerationElement(fodotPredicate, initValues));
+            FodotPredicateDeclaration fodotPredicate = processPredicate(predicate);
+
+            List<IFodotTypeEnumerationElement> initValues =
+                    extractEnumerationList(predicate, FormulaUtil.removeTypes(fodotPredicate.getArgumentTypes(), getTimeType()));
+
+            this.addInitialValue(fodotPredicate, new FodotPredicateEnumerationElement(fodotPredicate, initValues));
+        } else {
+            throw new GdlTypeIdentificationError("Argument was neither Constant nor Function!");
+        }
 	}
 
 	@Override

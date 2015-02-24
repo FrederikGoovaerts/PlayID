@@ -520,7 +520,7 @@ public class GdlTypeIdentifier {
             propositionDeclarations.put(
                     prop,
                     createPredicateDeclaration(
-                            prop.getName().getValue(),
+                            NameUtil.convertToValidPredicateName(prop.getName().getValue()),
                             new ArrayList<FodotType>()
                     )
             );
