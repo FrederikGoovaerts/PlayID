@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import fodot.exceptions.fodot.FodotException;
 import fodot.objects.general.sorting.FodotElementComparators;
 import fodot.objects.structure.elements.FodotEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
@@ -27,10 +28,42 @@ public class FodotPredicateEnumeration extends FodotEnumeration<IFodotPredicateE
 
 	@Override
 	public String toCode() {
-		List<IFodotPredicateEnumerationElement> domainElements = new ArrayList<IFodotPredicateEnumerationElement>(getElements());
-		Collections.sort(domainElements, FodotElementComparators.ENUMERATION_ELEMENT_COMPARATOR);
-		return getDeclaration().getName() + " = "+ CollectionPrinter.toDomain(CollectionPrinter.toCode(domainElements));
+        StringBuilder builder = new StringBuilder();
+
+        List<IFodotPredicateEnumerationElement> domainElements = new ArrayList<IFodotPredicateEnumerationElement>(getElements());
+        Collections.sort(domainElements, FodotElementComparators.ENUMERATION_ELEMENT_COMPARATOR);
+
+        builder.append(getDeclaration().getName());
+        if(certFalse){
+            builder.append("<cf>");
+        } else if(certTrue){
+            builder.append("<ct>");
+        }
+        builder.append(" = " + CollectionPrinter.toDomain(CollectionPrinter.toCode(domainElements)));
+        return builder.toString();
 	}
+
+    /**********************************************
+     *  Certainly true of certainly false
+     ***********************************************/
+
+    private boolean certTrue = false;
+
+    public void setCT(){
+        if(certFalse) {
+            throw new FodotException("Cannot be <ct> and <cf> at the same time!");
+        }
+        certTrue = true;
+    }
+
+    private boolean certFalse = false;
+
+    public void setCF(){
+        if(certTrue) {
+            throw new FodotException("Cannot be <ct> and <cf> at the same time!");
+        }
+        certFalse = true;
+    }
 
 	@Override
 	public String toString() {

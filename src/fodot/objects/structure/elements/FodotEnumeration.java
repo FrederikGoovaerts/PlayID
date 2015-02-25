@@ -40,40 +40,11 @@ public abstract class FodotEnumeration<E extends IFodotEnumerationElement> exten
 
 	@Override
 	public String toCode() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(getName());
-        if(certFalse){
-            builder.append("<cf>");
-        } else if(certTrue){
-            builder.append("<ct>");
-        }
-        builder.append(" = " + CollectionPrinter.toDomain(CollectionPrinter.toCode(getElements())));
-		return builder.toString();
+        return getName() + " = " + CollectionPrinter.toDomain(CollectionPrinter.toCode(getElements()));
 	}
 	
 	/**********************************************/
 
-    /**********************************************
-     *  Certainly true of certainly false
-     ***********************************************/
-
-    private boolean certTrue = false;
-
-    public void setCT(){
-        if(certFalse) {
-            throw new FodotException("Cannot be <ct> and <cf> at the same time!");
-        }
-        certTrue = true;
-    }
-
-    private boolean certFalse = false;
-
-    public void setCF(){
-        if(certTrue) {
-            throw new FodotException("Cannot be <ct> and <cf> at the same time!");
-        }
-        certFalse = true;
-    }
 
     /**********************************************/
 	
