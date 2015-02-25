@@ -176,10 +176,9 @@ public class GdlFodotSentenceTransformer {
 			// process (*staticpred*) or (*compoundstaticpred*) or (*proposition*)
 
             if(relation.arity() == 0){
-                GdlProposition prop = null;
-                // TODO FIX: Get proposition from constant from voc
+                GdlProposition prop = this.trans.getGdlVocabulary().getProposition(relation.getName());
                 return createPredicate(
-                        this.trans.getGdlVocabulary().getProposition(prop),
+                        this.trans.getGdlVocabulary().getPropositionDeclaration(prop),
                         createTimeVariable()
                 );
             } else {

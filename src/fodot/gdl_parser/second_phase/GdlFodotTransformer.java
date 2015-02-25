@@ -520,8 +520,16 @@ public class GdlFodotTransformer implements GdlTransformer {
 		} else {
 
 			GdlSentence predSentence = nextGdlTerm.toSentence();
-			FodotPredicateDeclaration originalPredicateDecl = this.processPredicate(predSentence);
-			FodotPredicateDeclaration causePredDecl = getCauseOf(originalPredicateDecl);
+
+            FodotPredicateDeclaration originalPredicateDecl;
+
+            if(predSentence instanceof GdlProposition){
+                originalPredicateDecl = this.processProposition((GdlProposition) predSentence);
+            } else {
+                originalPredicateDecl = this.processPredicate(predSentence);
+            }
+
+            FodotPredicateDeclaration causePredDecl = getCauseOf(originalPredicateDecl);
 			//FodotPredicateDeclaration causePredDecl = null;
 
 			FodotPredicate causePred = sentenceTrans.generateTimedPredicate(predSentence, causePredDecl);
@@ -536,7 +544,8 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 
 
-	@Override
+
+    @Override
 	public void processLegalRule(GdlRule rule) {
 		// legal(player, action) ==> do(time,player,action)
 
@@ -660,21 +669,17 @@ public class GdlFodotTransformer implements GdlTransformer {
 		this.addCompound(fodotDeclaration, new FodotCompoundData(compoundStaticPred, condition));
 	}
 
-	//TODO: nakijken waar deze return niet gebruikt wordt
 	public FodotPredicateDeclaration processPredicate(GdlSentence predSentence) {
 		//This can still be used when rules are processed, but should not be used.
 
 		//Predicate: (pred x1 .. xn)
-
-
-
-
-		FodotPredicateDeclaration pred = getGdlVocabulary().getPredicateDeclaration(
+		return getGdlVocabulary().getPredicateDeclaration(
 				new GdlPredicateDeclaration(predSentence.getName(), predSentence.arity()));
-
-		return pred;
 	}
 
+    private FodotPredicateDeclaration processProposition(GdlProposition predSentence) {
+        return getGdlVocabulary().getPropositionDeclaration(predSentence);
+    }
 
 	/***************************************************************************
 	 * Helper methods

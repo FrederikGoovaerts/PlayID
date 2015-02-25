@@ -150,8 +150,18 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 
     private Map<GdlProposition,FodotPredicateDeclaration> propositions;
 
-    public FodotPredicateDeclaration getProposition(GdlProposition proposition){
+    public FodotPredicateDeclaration getPropositionDeclaration(GdlProposition proposition){
         return propositions.get(proposition);
+    }
+
+
+    public GdlProposition getProposition(GdlConstant name) {
+        for (GdlProposition proposition : propositions.keySet()) {
+            if (proposition.getName().equals(name)){
+                return proposition;
+            }
+        }
+        throw new GdlTransformationException("Given constant has no matching proposition!");
     }
 
 
