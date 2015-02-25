@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
 import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateBooleanEnumerationElement;
 import org.ggp.base.util.Pair;
 
@@ -218,6 +219,17 @@ public class FodotGameFactory {
 				}
 			}
 		}
+
+        Map<GdlProposition, FodotPredicateDeclaration> propositions =
+                this.source.getGdlVocabulary().getPropositions();
+        if (propositions.size() > 0) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("Propositions & causes-predicate"));
+            for (FodotPredicateDeclaration declaration : propositions.values()) {
+                toReturn.addElement(declaration);
+                toReturn.addElement(this.source.getCauseOf(declaration));
+            }
+        }
 
 
 		return toReturn;
@@ -545,7 +557,6 @@ public class FodotGameFactory {
 		}
 
         //Initiele waarde voor elke propositie
-        //TODO
         Map<GdlProposition,FodotPredicateDeclaration> propMap =
                 this.source.getGdlVocabulary().getPropositions();
         if(!propMap.isEmpty()) {
@@ -553,22 +564,17 @@ public class FodotGameFactory {
             toReturn.addElement(createComment("All values found in the static predicates"));
         }
         for (GdlProposition proposition : propMap.keySet()) {
+            FodotPredicateDeclaration decl = propMap.get(proposition);
+            FodotPredicateEnumeration enumeration = createPredicateEnumeration(
+                    decl,
+                    Arrays.asList(createInteger(0))
+            );
             if(this.source.hasInitialProposition(proposition)){
-                FodotPredicateDeclaration initDecl = this.source.getInitialOf(propMap.get(proposition));
-                toReturn.addElement(
-                        createPredicateEnumeration(
-                                initDecl,
-                                Arrays.asList(
-                                        new FodotPredicateBooleanEnumerationElement(
-                                                initDecl,
-                                                true
-                                        )
-                                )
-                        )
-                );
+                enumeration.setCT();
             } else {
-
+                enumeration.setCF();
             }
+            toReturn.addElement(enumeration);
         }
 
 
