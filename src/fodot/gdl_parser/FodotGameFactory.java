@@ -567,7 +567,7 @@ public class FodotGameFactory {
             FodotPredicateDeclaration decl = propMap.get(proposition);
             FodotPredicateEnumeration enumeration = createPredicateEnumeration(
                     decl,
-                    Arrays.asList(createInteger(0))
+                    Arrays.asList(createPredicateEnumerationElement(decl, Arrays.asList(createInteger(0).toEnumerationElement())))
             );
             if(this.source.hasInitialProposition(proposition)){
                 enumeration.setCT();
