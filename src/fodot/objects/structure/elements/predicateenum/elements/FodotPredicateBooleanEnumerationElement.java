@@ -23,6 +23,10 @@ public class FodotPredicateBooleanEnumerationElement extends FodotElement implem
 	public String getValue() {
 		return value + "";
 	}
+	
+	public FodotPredicateDeclaration getDeclaration() {
+		return declaration;
+	}
 
 	@Override
 	public String toCode() {

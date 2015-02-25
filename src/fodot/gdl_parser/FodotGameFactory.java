@@ -23,6 +23,7 @@ import fodot.objects.procedure.FodotProcedureStatement;
 import fodot.objects.procedure.FodotProcedures;
 import fodot.objects.structure.FodotStructure;
 import fodot.objects.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
+import fodot.objects.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import fodot.objects.termdefinition.FodotTermDefinition;
 import fodot.objects.theory.FodotTheory;
 import fodot.objects.theory.elements.formulas.FodotPredicate;
@@ -534,13 +535,32 @@ public class FodotGameFactory {
 			toReturn.addElement(createBlankLines(1));
 			toReturn.addElement(createComment("Initial values for the fluent predicates"));
 		}
-		for (FodotPredicateDeclaration declaration : initMap.keySet()) {
-			toReturn.addElement(
-					createPredicateEnumeration(this.source.getInitialOf(declaration),
-							//createPredicateEnumeration(null,
-							new ArrayList<>(initMap.get(declaration)))
-					);
+		
+		for (FodotPredicateDeclaration declaration : source.getGdlVocabulary().getDynamicPredicates()) {
+			
+			if (initMap.containsKey(declaration)) {
+				toReturn.addElement(
+						createPredicateEnumeration(this.source.getInitialOf(declaration),
+								//createPredicateEnumeration(null,
+								new ArrayList<>(initMap.get(declaration)))
+						);
+			} else {
+				toReturn.addElement(
+						createPredicateEnumeration(this.source.getInitialOf(declaration),
+								new ArrayList<IFodotPredicateEnumerationElement>())
+						);
+
+			}
 		}
+		
+		
+//		for (FodotPredicateDeclaration declaration : initMap.keySet()) {
+//			toReturn.addElement(
+//					createPredicateEnumeration(this.source.getInitialOf(declaration),
+//							//createPredicateEnumeration(null,
+//							new ArrayList<>(initMap.get(declaration)))
+//					);
+//		}
 
 		/**
 		 * nodig: *waarden* voor elk statisch *predicaat*
@@ -565,20 +585,53 @@ public class FodotGameFactory {
 		return toReturn;
 	}
 
-	private static final String SCORE_TERM_NAME = "InversePlayerScore";
+	private static final String TERM_TO_MINIMIZE_NAME = "InversePlayerScore";
 
 	private List<FodotTermDefinition> buildTerms(FodotVocabulary voc) {
 		List<FodotTermDefinition> result = new ArrayList<>();
 
+		FodotFunction playerScore = createFunction(scoreFunctionDeclaration, source.getOwnRole());
+		
+		//OLD!
+//		/**
+//		 *	term PlayerScore : V {
+//		 * 		-Score(robot)
+//		 * 	}
+//		 */
+//		FodotTermDefinition scoreDefinition = createTermDefinition( TERM_TO_MINIMIZE_NAME, voc, createNegateInteger(playerScore) );
+		
+		
 		/**
 		 *	term PlayerScore : V {
-		 * 		-Score(robot)
+		 * 		-Score(robot)*100 + sum{x [Time] : terminalTime(x) : x}
 		 * 	}
 		 */
-		FodotFunction playerScore = createFunction(scoreFunctionDeclaration, source.getOwnRole());
-		FodotTermDefinition scoreDefinition = createTermDefinition( SCORE_TERM_NAME, voc, createNegateInteger(playerScore) );
-		result.add(scoreDefinition);
+		FodotVariable timeVar =
+				createVariable(
+						"amountOfSteps",
+						source.getTimeType(),
+						new HashSet<FodotVariable>()
+						);
 		
+		IFodotTerm timeMinimizing =
+				createSum(
+						createSet(
+								Arrays.asList(timeVar),
+								createPredicate(terminalTimePredicateDeclaration, timeVar),
+								timeVar)
+						);
+		
+		IFodotTerm addition = createAddition(createNegateInteger(playerScore) , timeMinimizing);
+		
+		
+		FodotTermDefinition scoreDefinition =
+				createTermDefinition(
+						TERM_TO_MINIMIZE_NAME,
+						voc,
+						addition);
+		
+		
+		result.add(scoreDefinition);
 		return result;
 
 	}
@@ -816,7 +869,7 @@ public class FodotGameFactory {
 						createProcedure("stdoptions.timeout="+idpTimeLimit),
 						createProcedure("stdoptions.nbmodels="+idpModelLimit),
 						createProcedure("stdoptions.cpsupport = true"),
-						createProcedure("printmodels(minimize(T,S,"+SCORE_TERM_NAME+"))")
+						createProcedure("printmodels(minimize(T,S,"+TERM_TO_MINIMIZE_NAME+"))")
 						)
 				);
 
