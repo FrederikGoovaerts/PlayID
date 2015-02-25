@@ -173,26 +173,38 @@ public class GdlFodotSentenceTransformer {
 		case "legal":
             return generateLegal(relation);
 		default:
-			// process (*staticpred*) or (*compoundstaticpred*)
+			// process (*staticpred*) or (*compoundstaticpred*) or (*proposition*)
 
-			GdlPredicateDeclaration gdlDeclaration = new GdlPredicateDeclaration(relation);
-			FodotPredicateDeclaration decl = trans.getGdlVocabulary().getPredicateDeclaration(gdlDeclaration);
-
-			List<IFodotTerm> arguments;
-
-            if(relation.arity() == 0) {
-                arguments = new ArrayList<>();
-            } else {
-                arguments = generateTerms(
-                        relation.getBody(),
-                        FormulaUtil.removeTypes(decl.getArgumentTypes(), trans.getTimeType())
+            if(relation.arity() == 0){
+                GdlProposition prop = null;
+                // TODO FIX: Get proposition from constant from voc
+                return createPredicate(
+                        this.trans.getGdlVocabulary().getProposition(prop),
+                        createTimeVariable()
                 );
-            }
-			if (trans.getGdlVocabulary().isDynamic(relation)) {
-				arguments.add(0, createTimeVariable());
-			}
+            } else {
 
-			return createPredicate(decl, arguments);
+                GdlPredicateDeclaration gdlDeclaration = new GdlPredicateDeclaration(relation);
+
+
+                FodotPredicateDeclaration decl = trans.getGdlVocabulary().getPredicateDeclaration(gdlDeclaration);
+
+                List<IFodotTerm> arguments;
+
+                if (relation.arity() == 0) {
+                    arguments = new ArrayList<>();
+                } else {
+                    arguments = generateTerms(
+                            relation.getBody(),
+                            FormulaUtil.removeTypes(decl.getArgumentTypes(), trans.getTimeType())
+                    );
+                }
+                if (trans.getGdlVocabulary().isDynamic(relation)) {
+                    arguments.add(0, createTimeVariable());
+                }
+
+                return createPredicate(decl, arguments);
+            }
 		}
 	}
 

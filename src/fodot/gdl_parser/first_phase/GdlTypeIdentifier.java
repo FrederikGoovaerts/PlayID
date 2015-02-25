@@ -521,7 +521,7 @@ public class GdlTypeIdentifier {
                     prop,
                     createPredicateDeclaration(
                             NameUtil.convertToValidPredicateName(prop.getName().getValue()),
-                            new ArrayList<FodotType>()
+                            Arrays.asList(timeType)
                     )
             );
         }

@@ -137,7 +137,7 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 	}
 
 	public boolean isDynamic(GdlPredicateDeclaration declaration) {
-		return dynamicPredicates.contains(declaration);
+		return dynamicPredicates.contains(declaration) || propositions.containsValue(declaration);
 	}
 	
 	public Set<FodotPredicateDeclaration> getDynamicPredicates() {

@@ -18,8 +18,8 @@ public class GdlClassCorrectionUtil {
         return relation;
     }
 
-    public static GdlProposition convertToProposition(GdlConstant term) {
-        return GdlPool.getProposition(term);
+    public static GdlProposition convertToProposition(GdlConstant constant) {
+        return GdlPool.getProposition(constant);
     }
 
     public static GdlProposition convertToProposition(GdlRelation relation) {

@@ -94,14 +94,25 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 	 ***********************************************/
 	@Override
 	public void processNextRule(GdlRule rule) {
-		GdlRelation argumentRelation = GdlClassCorrectionUtil.convertToPredicate(rule.getHead().get(0));
+        GdlTerm argument = rule.getHead().get(0);
+        if (argument instanceof GdlConstant) {
+            GdlProposition argumentProposition =
+                    GdlClassCorrectionUtil.convertToProposition((GdlConstant)argument);
 
-		//Visit argument
-		getIdentifier().addPredicateOccurrence(rule, argumentRelation);
-		visitPredicateArguments(rule, argumentRelation);
+            getIdentifier().registerProposition(argumentProposition);
+        } else {
+            //Visit argument
 
-		//Make argument dynamic
-		getIdentifier().registerDynamicPredicate(argumentRelation);
+            GdlRelation argumentRelation = GdlClassCorrectionUtil.convertToPredicate(argument);
+
+            //Visit argument
+            getIdentifier().addPredicateOccurrence(rule, argumentRelation);
+            visitPredicateArguments(rule, argumentRelation);
+
+            //Make argument dynamic
+            getIdentifier().registerDynamicPredicate(argumentRelation);
+        }
+
 
 		visitRuleBody(rule);
 	}
@@ -223,11 +234,10 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
             GdlTerm argument = predicate.get(0);
 
             if (argument instanceof GdlConstant) {
-                GdlProposition argumentProposition = GdlClassCorrectionUtil.convertToProposition(predicate);
+                GdlProposition argumentProposition =
+                        GdlClassCorrectionUtil.convertToProposition((GdlConstant)argument);
 
                 getIdentifier().registerProposition(argumentProposition);
-                GdlRelation innerPredicate = GdlClassCorrectionUtil.convertToPredicate(argument);
-                getIdentifier().registerDynamicPredicate(innerPredicate);
             } else {
                 GdlRelation innerPredicate = GdlClassCorrectionUtil.convertToPredicate(argument);
                 visitRelation(innerPredicate);
