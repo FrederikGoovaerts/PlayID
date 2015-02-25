@@ -194,6 +194,10 @@ public class GdlFodotTransformer implements GdlTransformer {
         return new HashSet<>(this.initialPropositions);
     }
 
+    public boolean hasInitialProposition(GdlProposition prop){
+        return this.initialPropositions.contains(prop);
+    }
+
 	/*** End of Initial values subsection ***/
 
 	/*************************************

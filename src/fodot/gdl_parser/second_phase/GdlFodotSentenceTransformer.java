@@ -159,11 +159,6 @@ public class GdlFodotSentenceTransformer {
 	public FodotPredicate generateRelation(
 			GdlRelation relation) {
 
-        if(relation.arity() == 0){
-            //TODO Handle Proposition
-
-        }
-
 		String relationName = relation.getName().getValue();
 
 		switch (relationName) {
@@ -183,12 +178,16 @@ public class GdlFodotSentenceTransformer {
 			GdlPredicateDeclaration gdlDeclaration = new GdlPredicateDeclaration(relation);
 			FodotPredicateDeclaration decl = trans.getGdlVocabulary().getPredicateDeclaration(gdlDeclaration);
 
-			List<IFodotTerm> arguments =
-					generateTerms(
-							relation.getBody(),
-							FormulaUtil.removeTypes(decl.getArgumentTypes(), trans.getTimeType())
-							);
+			List<IFodotTerm> arguments;
 
+            if(relation.arity() == 0) {
+                arguments = new ArrayList<>();
+            } else {
+                arguments = generateTerms(
+                        relation.getBody(),
+                        FormulaUtil.removeTypes(decl.getArgumentTypes(), trans.getTimeType())
+                );
+            }
 			if (trans.getGdlVocabulary().isDynamic(relation)) {
 				arguments.add(0, createTimeVariable());
 			}

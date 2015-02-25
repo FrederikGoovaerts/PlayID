@@ -225,7 +225,9 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
             if (argument instanceof GdlConstant) {
                 GdlProposition argumentProposition = GdlClassCorrectionUtil.convertToProposition(predicate);
 
-                identifier.registerProposition(argumentProposition);
+                getIdentifier().registerProposition(argumentProposition);
+                GdlRelation innerPredicate = GdlClassCorrectionUtil.convertToPredicate(argument);
+                getIdentifier().registerDynamicPredicate(innerPredicate);
             } else {
                 GdlRelation innerPredicate = GdlClassCorrectionUtil.convertToPredicate(argument);
                 visitRelation(innerPredicate);

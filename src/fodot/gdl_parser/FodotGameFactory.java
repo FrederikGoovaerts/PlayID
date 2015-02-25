@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateBooleanEnumerationElement;
 import org.ggp.base.util.Pair;
 
 import fodot.gdl_parser.second_phase.GdlFodotTransformer;
@@ -39,6 +40,7 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.util.FormulaUtil;
+import org.ggp.base.util.gdl.grammar.GdlProposition;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -544,6 +546,30 @@ public class FodotGameFactory {
 
         //Initiele waarde voor elke propositie
         //TODO
+        Map<GdlProposition,FodotPredicateDeclaration> propMap =
+                this.source.getGdlVocabulary().getPropositions();
+        if(!propMap.isEmpty()) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("All values found in the static predicates"));
+        }
+        for (GdlProposition proposition : propMap.keySet()) {
+            if(this.source.hasInitialProposition(proposition)){
+                FodotPredicateDeclaration initDecl = this.source.getInitialOf(propMap.get(proposition));
+                toReturn.addElement(
+                        createPredicateEnumeration(
+                                initDecl,
+                                Arrays.asList(
+                                        new FodotPredicateBooleanEnumerationElement(
+                                                initDecl,
+                                                true
+                                        )
+                                )
+                        )
+                );
+            } else {
+
+            }
+        }
 
 
 		return toReturn;
