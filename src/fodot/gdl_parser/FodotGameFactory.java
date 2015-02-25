@@ -544,7 +544,7 @@ public class FodotGameFactory {
 								//createPredicateEnumeration(null,
 								new ArrayList<>(initMap.get(declaration)))
 						);
-			} else {
+			} else if (!source.getCompoundMap().containsKey(declaration)) {
 				toReturn.addElement(
 						createPredicateEnumeration(this.source.getInitialOf(declaration),
 								new ArrayList<IFodotPredicateEnumerationElement>())
