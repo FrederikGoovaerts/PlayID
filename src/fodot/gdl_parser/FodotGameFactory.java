@@ -306,6 +306,63 @@ public class FodotGameFactory {
 			}
 		}
 
+        /**
+         * nodig: alle fluent propositions
+         * resultaat voor elke proposition:
+         * {
+         *     ! t [Time]: *proppred*(Next(t)) <- C_*proppred*(t,).
+         * }
+         */
+        Map<GdlProposition,FodotPredicateDeclaration> propMap =
+                this.source.getGdlVocabulary().getPropositions();
+        if (!propMap.isEmpty()) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("Inductive definitions for the fluent propositions"));
+        }
+        for (GdlProposition prop : propMap.keySet()) {
+
+                List<FodotInductiveSentence> definitions = new ArrayList<>();
+
+                List<IFodotTerm> argList = new ArrayList<>();
+                Set<FodotVariable> varSet = new HashSet<>();
+
+                FodotVariable timeVar = createVariable(source.getTimeType(), varSet);
+
+                argList.add(createFunction(this.nextFunctionDeclaration, timeVar));
+
+                definitions.add(createInductiveSentence(
+                        createInductiveQuantifier(
+                                createForAll(
+                                        timeVar,
+                                        createInductiveDefinitionConnector(
+                                                createPredicate(propMap.get(prop), argList),
+                                                createPredicate(
+                                                        this.source.getCauseOf(
+                                                                propMap.get(prop)
+                                                        ), timeVar
+                                                )
+                                        )
+                                )
+                        )
+                ));
+
+                if(this.source.hasInitialProposition(prop)){
+                    definitions.add(
+                            createInductiveSentence(
+                                    createInductivePredicateHead(
+                                            createPredicate(
+                                                    propMap.get(prop),
+                                                    createInteger(0)
+                                            )
+                                    )
+                            )
+                    );
+                }
+
+                toReturn.addElement(createInductiveDefinition(definitions));
+        }
+
+
 		/**
 		 * nodig: alle causations van elk fluent predicaat
 		 * resultaat voor elk predicaat:
@@ -556,27 +613,8 @@ public class FodotGameFactory {
 			}
 		}
 
-        //Initiele waarde voor elke propositie
-        Map<GdlProposition,FodotPredicateDeclaration> propMap =
-                this.source.getGdlVocabulary().getPropositions();
-        if(!propMap.isEmpty()) {
-            toReturn.addElement(createBlankLines(1));
-            toReturn.addElement(createComment("All values found in the static predicates"));
-        }
-        for (GdlProposition proposition : propMap.keySet()) {
-            FodotPredicateDeclaration decl = propMap.get(proposition);
-            FodotPredicateEnumeration enumeration = createPredicateEnumeration(
-                    decl,
-                    Arrays.asList(createPredicateEnumerationElement(decl, Arrays.asList(createInteger(0).toEnumerationElement())))
-            );
-            if(this.source.hasInitialProposition(proposition)){
-                enumeration.setCT();
-            } else {
-                enumeration.setCF();
-            }
-            toReturn.addElement(enumeration);
-        }
-
+        //TODO voor elk dynamisch predicaat en proposition zonder causation in de map
+        // moet zijn causation leeg zijn. Anders random gedrag.
 
 		return toReturn;
 	}
