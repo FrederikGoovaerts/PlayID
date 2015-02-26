@@ -613,8 +613,32 @@ public class FodotGameFactory {
 			}
 		}
 
-        //TODO voor elk dynamisch predicaat en proposition zonder causation in de map
+        // Voor elk dynamisch predicaat en proposition zonder causation in de map
         // moet zijn causation leeg zijn. Anders random gedrag.
+
+        for (FodotPredicateDeclaration declaration :
+                this.source.getGdlVocabulary().getDynamicPredicates()) {
+            if(!this.source.getNextMap().containsKey(declaration)){
+                toReturn.addElement(
+                        createPredicateEnumeration(
+                                this.source.getCauseOf(declaration),
+                                new ArrayList<IFodotPredicateEnumerationElement>()
+                        )
+                );
+            }
+        }
+
+        for (FodotPredicateDeclaration declaration :
+                this.source.getGdlVocabulary().getPropositions().values()) {
+            if(!this.source.getNextMap().containsKey(declaration)){
+                toReturn.addElement(
+                        createPredicateEnumeration(
+                                this.source.getCauseOf(declaration),
+                                new ArrayList<IFodotPredicateEnumerationElement>()
+                        )
+                );
+            }
+        }
 
 		return toReturn;
 	}
