@@ -319,7 +319,9 @@ public class FodotGameFactory {
             toReturn.addElement(createBlankLines(1));
             toReturn.addElement(createComment("Inductive definitions for the fluent propositions"));
         }
+
         for (GdlProposition prop : propMap.keySet()) {
+            if(this.source.getNextMap().containsKey(propMap.get(prop))) {
 
                 List<FodotInductiveSentence> definitions = new ArrayList<>();
 
@@ -346,7 +348,7 @@ public class FodotGameFactory {
                         )
                 ));
 
-                if(this.source.hasInitialProposition(prop)){
+                if (this.source.hasInitialProposition(prop)) {
                     definitions.add(
                             createInductiveSentence(
                                     createInductivePredicateHead(
@@ -360,6 +362,7 @@ public class FodotGameFactory {
                 }
 
                 toReturn.addElement(createInductiveDefinition(definitions));
+            }
         }
 
 
@@ -639,6 +642,7 @@ public class FodotGameFactory {
                 );
             }
         }
+
 
 		return toReturn;
 	}
