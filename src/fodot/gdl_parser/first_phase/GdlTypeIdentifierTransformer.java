@@ -250,7 +250,8 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 		private void visitProposition(GdlProposition proposition) {
 			//Propositions are predicates without arguments.
 			//Hypothese: These are always dynamic, as they don't serve a better purpose
-            identifier.registerProposition(proposition);
+            getIdentifier().registerProposition(proposition);
+            getIdentifier().registerDynamicPredicate(GdlClassCorrectionUtil.convertToPredicate(proposition));
 		}
 
 	}

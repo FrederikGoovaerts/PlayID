@@ -618,7 +618,7 @@ public class FodotGameFactory {
 
         for (FodotPredicateDeclaration declaration :
                 this.source.getGdlVocabulary().getDynamicPredicates()) {
-            if(!this.source.getNextMap().containsKey(declaration)){
+            if(!this.source.getNextMap().containsKey(declaration) && !this.source.getCompoundMap().containsKey(declaration)){
                 toReturn.addElement(
                         createPredicateEnumeration(
                                 this.source.getCauseOf(declaration),
