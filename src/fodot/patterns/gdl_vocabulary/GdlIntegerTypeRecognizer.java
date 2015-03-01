@@ -73,7 +73,7 @@ public class GdlIntegerTypeRecognizer implements IGdlVocabularyOptimizer {
 						voc.getTimeType(), voc.getPlayerType(), voc.getActionType(), voc.getScoreType(),
 						voc.getOtherTypes(),
 						voc.getConstants(), voc.getVariablesPerRule(),
-						voc.getFunctionDeclarations(), voc.getPredicateDeclarations(),
+						voc.getFunctionDeclarations(), voc.getPredicateDeclarations(), voc.getPropositions(),
 						voc.getGdlDynamicPredicates(), structureElements);
 		
 		

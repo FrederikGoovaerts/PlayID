@@ -14,15 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fodot.exceptions.gdl.GdlTypeIdentificationError;
+import fodot.util.GdlClassCorrectionUtil;
 import org.ggp.base.util.Pair;
-import org.ggp.base.util.gdl.grammar.GdlConstant;
-import org.ggp.base.util.gdl.grammar.GdlFunction;
-import org.ggp.base.util.gdl.grammar.GdlPool;
-import org.ggp.base.util.gdl.grammar.GdlRelation;
-import org.ggp.base.util.gdl.grammar.GdlRule;
-import org.ggp.base.util.gdl.grammar.GdlSentence;
-import org.ggp.base.util.gdl.grammar.GdlTerm;
-import org.ggp.base.util.gdl.grammar.GdlVariable;
+import org.ggp.base.util.gdl.grammar.*;
 
 import fodot.exceptions.gdl.GdlParsingOrderException;
 import fodot.exceptions.gdl.GdlTransformationException;
@@ -188,6 +183,20 @@ public class GdlFodotTransformer implements GdlTransformer {
 	public Map<FodotPredicateDeclaration, Set<IFodotPredicateEnumerationElement>> getInitialValues() {
 		return new HashMap<>(initialValues);
 	}
+
+    private Set<GdlProposition> initialPropositions;
+
+    private void addInitialProposition(GdlProposition proposition){
+        this.initialPropositions.add(proposition);
+    }
+
+    public Set<GdlProposition> getInitialPropositions(){
+        return new HashSet<>(this.initialPropositions);
+    }
+
+    public boolean hasInitialProposition(GdlProposition prop){
+        return this.initialPropositions.contains(prop);
+    }
 
 	/*** End of Initial values subsection ***/
 
@@ -360,6 +369,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 	public void cleanAndInitializeBuilder(){
 		this.initialValues = new HashMap<>();
+        this.initialPropositions = new HashSet<>();
 		this.staticValues = new HashMap<>();
 		this.scoreMap = new HashMap<>();
 		this.nextMap = new HashMap<>();
@@ -409,15 +419,24 @@ public class GdlFodotTransformer implements GdlTransformer {
 					"processing relations is not allowed anymore.");
 
 		// Init: (init (pred x1 .. xn))
+        GdlTerm argument = relation.get(0);
 
-		GdlSentence predicate = relation.getBody().get(0).toSentence();
+        if (argument instanceof GdlConstant) {
+            this.addInitialProposition(GdlClassCorrectionUtil.convertToProposition((GdlConstant) argument));
 
-		FodotPredicateDeclaration fodotPredicate = processPredicate(predicate);
 
-		List<IFodotTypeEnumerationElement> initValues =
-				extractEnumerationList(predicate, FormulaUtil.removeTypes(fodotPredicate.getArgumentTypes(), getTimeType()));
+        } else if (argument instanceof GdlFunction) {
+            GdlSentence predicate = relation.getBody().get(0).toSentence();
 
-		this.addInitialValue(fodotPredicate, new FodotPredicateEnumerationElement(fodotPredicate, initValues));
+            FodotPredicateDeclaration fodotPredicate = processPredicate(predicate);
+
+            List<IFodotTypeEnumerationElement> initValues =
+                    extractEnumerationList(predicate, FormulaUtil.removeTypes(fodotPredicate.getArgumentTypes(), getTimeType()));
+
+            this.addInitialValue(fodotPredicate, new FodotPredicateEnumerationElement(fodotPredicate, initValues));
+        } else {
+            throw new GdlTypeIdentificationError("Argument was neither Constant nor Function!");
+        }
 	}
 
 	@Override
@@ -501,8 +520,16 @@ public class GdlFodotTransformer implements GdlTransformer {
 		} else {
 
 			GdlSentence predSentence = nextGdlTerm.toSentence();
-			FodotPredicateDeclaration originalPredicateDecl = this.processPredicate(predSentence);
-			FodotPredicateDeclaration causePredDecl = getCauseOf(originalPredicateDecl);
+
+            FodotPredicateDeclaration originalPredicateDecl;
+
+            if(predSentence instanceof GdlProposition){
+                originalPredicateDecl = this.processProposition((GdlProposition) predSentence);
+            } else {
+                originalPredicateDecl = this.processPredicate(predSentence);
+            }
+
+            FodotPredicateDeclaration causePredDecl = getCauseOf(originalPredicateDecl);
 			//FodotPredicateDeclaration causePredDecl = null;
 
 			FodotPredicate causePred = sentenceTrans.generateTimedPredicate(predSentence, causePredDecl);
@@ -517,7 +544,8 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 
 
-	@Override
+
+    @Override
 	public void processLegalRule(GdlRule rule) {
 		// legal(player, action) ==> do(time,player,action)
 
@@ -641,21 +669,17 @@ public class GdlFodotTransformer implements GdlTransformer {
 		this.addCompound(fodotDeclaration, new FodotCompoundData(compoundStaticPred, condition));
 	}
 
-	//TODO: nakijken waar deze return niet gebruikt wordt
 	public FodotPredicateDeclaration processPredicate(GdlSentence predSentence) {
 		//This can still be used when rules are processed, but should not be used.
 
 		//Predicate: (pred x1 .. xn)
-
-
-
-
-		FodotPredicateDeclaration pred = getGdlVocabulary().getPredicateDeclaration(
+		return getGdlVocabulary().getPredicateDeclaration(
 				new GdlPredicateDeclaration(predSentence.getName(), predSentence.arity()));
-
-		return pred;
 	}
 
+    private FodotPredicateDeclaration processProposition(GdlProposition predSentence) {
+        return getGdlVocabulary().getPropositionDeclaration(predSentence);
+    }
 
 	/***************************************************************************
 	 * Helper methods

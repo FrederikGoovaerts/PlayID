@@ -132,6 +132,6 @@ public class GdlInspector extends GdlVisitor{
     }
 
 	public static void inspect(Game argGame, GdlTransformer argTransformer) {
-		new GdlInspector(argGame, argTransformer).getTransformer();
+		new GdlInspector(argGame, argTransformer);
 	}
 }

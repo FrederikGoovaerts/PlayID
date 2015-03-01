@@ -12,12 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.ggp.base.util.gdl.grammar.GdlConstant;
-import org.ggp.base.util.gdl.grammar.GdlFunction;
-import org.ggp.base.util.gdl.grammar.GdlPool;
-import org.ggp.base.util.gdl.grammar.GdlRelation;
-import org.ggp.base.util.gdl.grammar.GdlRule;
-import org.ggp.base.util.gdl.grammar.GdlVariable;
+import org.ggp.base.util.gdl.grammar.*;
 
 import fodot.exceptions.gdl.GdlTypeIdentificationError;
 import fodot.gdl_parser.GdlTransformer;
@@ -58,7 +53,8 @@ public class GdlTypeIdentifier {
 	private Map<IGdlArgumentListDeclaration, GdlArgumentListData> argumentLists = new HashMap<>();
 
 	private Set<GdlPredicateDeclaration> dynamicPredicates = new HashSet<>();
-	private Set<GdlRule> timeDependentRules = new HashSet<>();
+	private Set<GdlProposition> propositions = new HashSet<>();
+    private Set<GdlRule> timeDependentRules = new HashSet<>();
 	/**********************************************/
 
 
@@ -324,6 +320,14 @@ public class GdlTypeIdentifier {
 	}
 	/**********************************************/
 
+    /***********************************************
+     * Propositions
+     **********************************************/
+
+    public void registerProposition(GdlProposition prop){
+        this.propositions.add(prop);
+    }
+
 	/**********************************************/
 
 
@@ -454,6 +458,7 @@ public class GdlTypeIdentifier {
 		Map<GdlFunctionDeclaration, FodotTypeFunctionDeclaration> functionDeclarations = new HashMap<>();
 		Map<GdlPredicateDeclaration, FodotPredicateDeclaration> predicateDeclarations = new HashMap<>();
 		Map<GdlRule, Map<GdlVariable, FodotVariable>> variablesPerRule = new HashMap<>();
+        Map<GdlProposition, FodotPredicateDeclaration> propositionDeclarations = new HashMap<>();
 		Set<GdlPredicateDeclaration> nonDefaultDynamicPredicates = new LinkedHashSet<GdlPredicateDeclaration>();
 
 		//GENERATE SETS FOR GDLFODOTDATA
@@ -509,7 +514,17 @@ public class GdlTypeIdentifier {
 					functionDeclarations.put(fd, ff);
 				}
 			}
-		}		
+		}
+
+        for(GdlProposition prop : this.propositions) {
+            propositionDeclarations.put(
+                    prop,
+                    createPredicateDeclaration(
+                            NameUtil.convertToValidPredicateName(prop.getName().getValue()),
+                            Arrays.asList(timeType)
+                    )
+            );
+        }
 
 		for (GdlPredicateDeclaration predicate : this.dynamicPredicates) {
 			if (!getDefaultPredicates().contains(predicate)) {
@@ -529,7 +544,7 @@ public class GdlTypeIdentifier {
 			}
 		}
 		FodotTypeEnumeration scoreEnumeration = createTypeEnumeration(scoreType, scoreValues);
-		
+
 		
 		GdlVocabulary vocabulary =  new GdlVocabulary(
 				this.timeType, this.playerType, this.actionType, 
@@ -537,8 +552,9 @@ public class GdlTypeIdentifier {
 
 				constantsMap, variablesPerRule,
 				functionDeclarations, predicateDeclarations,
+                propositionDeclarations,
 
-				nonDefaultDynamicPredicates, 
+				nonDefaultDynamicPredicates,
 				Arrays.asList(scoreEnumeration)
 //				new HashSet<IFodotStructureElement>()
 				);

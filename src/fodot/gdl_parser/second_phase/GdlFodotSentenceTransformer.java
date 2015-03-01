@@ -173,22 +173,37 @@ public class GdlFodotSentenceTransformer {
 		case "legal":
             return generateLegal(relation);
 		default:
-			// process (*staticpred*) or (*compoundstaticpred*)
+			// process (*staticpred*) or (*compoundstaticpred*) or (*proposition*)
 
-			GdlPredicateDeclaration gdlDeclaration = new GdlPredicateDeclaration(relation);
-			FodotPredicateDeclaration decl = trans.getGdlVocabulary().getPredicateDeclaration(gdlDeclaration);
+            if(relation.arity() == 0){
+                GdlProposition prop = this.trans.getGdlVocabulary().getProposition(relation.getName());
+                return createPredicate(
+                        this.trans.getGdlVocabulary().getPropositionDeclaration(prop),
+                        createTimeVariable()
+                );
+            } else {
 
-			List<IFodotTerm> arguments =
-					generateTerms(
-							relation.getBody(),
-							FormulaUtil.removeTypes(decl.getArgumentTypes(), trans.getTimeType())
-							);
+                GdlPredicateDeclaration gdlDeclaration = new GdlPredicateDeclaration(relation);
 
-			if (trans.getGdlVocabulary().isDynamic(relation)) {
-				arguments.add(0, createTimeVariable());
-			}
 
-			return createPredicate(decl, arguments);
+                FodotPredicateDeclaration decl = trans.getGdlVocabulary().getPredicateDeclaration(gdlDeclaration);
+
+                List<IFodotTerm> arguments;
+
+                if (relation.arity() == 0) {
+                    arguments = new ArrayList<>();
+                } else {
+                    arguments = generateTerms(
+                            relation.getBody(),
+                            FormulaUtil.removeTypes(decl.getArgumentTypes(), trans.getTimeType())
+                    );
+                }
+                if (trans.getGdlVocabulary().isDynamic(relation)) {
+                    arguments.add(0, createTimeVariable());
+                }
+
+                return createPredicate(decl, arguments);
+            }
 		}
 	}
 

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fodot.objects.structure.elements.predicateenum.FodotPredicateEnumeration;
+import fodot.objects.structure.elements.predicateenum.elements.FodotPredicateBooleanEnumerationElement;
 import org.ggp.base.util.Pair;
 
 import fodot.gdl_parser.second_phase.GdlFodotTransformer;
@@ -40,6 +42,7 @@ import fodot.objects.vocabulary.elements.FodotPredicateDeclaration;
 import fodot.objects.vocabulary.elements.FodotType;
 import fodot.objects.vocabulary.elements.FodotTypeDeclaration;
 import fodot.util.FormulaUtil;
+import org.ggp.base.util.gdl.grammar.GdlProposition;
 
 /**
  * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
@@ -218,6 +221,17 @@ public class FodotGameFactory {
 			}
 		}
 
+        Map<GdlProposition, FodotPredicateDeclaration> propositions =
+                this.source.getGdlVocabulary().getPropositions();
+        if (propositions.size() > 0) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("Propositions & causes-predicate"));
+            for (FodotPredicateDeclaration declaration : propositions.values()) {
+                toReturn.addElement(declaration);
+                toReturn.addElement(this.source.getCauseOf(declaration));
+            }
+        }
+
 
 		return toReturn;
 	}
@@ -292,6 +306,66 @@ public class FodotGameFactory {
 				toReturn.addElement(createInductiveDefinition(definitions));
 			}
 		}
+
+        /**
+         * nodig: alle fluent propositions
+         * resultaat voor elke proposition:
+         * {
+         *     ! t [Time]: *proppred*(Next(t)) <- C_*proppred*(t,).
+         * }
+         */
+        Map<GdlProposition,FodotPredicateDeclaration> propMap =
+                this.source.getGdlVocabulary().getPropositions();
+        if (!propMap.isEmpty()) {
+            toReturn.addElement(createBlankLines(1));
+            toReturn.addElement(createComment("Inductive definitions for the fluent propositions"));
+        }
+
+        for (GdlProposition prop : propMap.keySet()) {
+            if(this.source.getNextMap().containsKey(propMap.get(prop))) {
+
+                List<FodotInductiveSentence> definitions = new ArrayList<>();
+
+                List<IFodotTerm> argList = new ArrayList<>();
+                Set<FodotVariable> varSet = new HashSet<>();
+
+                FodotVariable timeVar = createVariable(source.getTimeType(), varSet);
+
+                argList.add(createFunction(this.nextFunctionDeclaration, timeVar));
+
+                definitions.add(createInductiveSentence(
+                        createInductiveQuantifier(
+                                createForAll(
+                                        timeVar,
+                                        createInductiveDefinitionConnector(
+                                                createPredicate(propMap.get(prop), argList),
+                                                createPredicate(
+                                                        this.source.getCauseOf(
+                                                                propMap.get(prop)
+                                                        ), timeVar
+                                                )
+                                        )
+                                )
+                        )
+                ));
+
+                if (this.source.hasInitialProposition(prop)) {
+                    definitions.add(
+                            createInductiveSentence(
+                                    createInductivePredicateHead(
+                                            createPredicate(
+                                                    propMap.get(prop),
+                                                    createInteger(0)
+                                            )
+                                    )
+                            )
+                    );
+                }
+
+                toReturn.addElement(createInductiveDefinition(definitions));
+            }
+        }
+
 
 		/**
 		 * nodig: alle causations van elk fluent predicaat
@@ -502,26 +576,6 @@ public class FodotGameFactory {
 			toReturn.addAllElements(source.getGdlVocabulary().getStructureElements());
 		}
 
-		/**
-		 * nodig: *naam* van onze speler
-		 * resultaat:
-		 * Score={*naam*()->100}
-		 */
-//		toReturn.addElement(createBlankLines(1));
-//		toReturn.addElement(createComment("Desired result"));
-//		List<IFodotFunctionEnumerationElement> desiredResult = new ArrayList<IFodotFunctionEnumerationElement>();
-//		List<? extends IFodotTypeEnumerationElement> ownRole = Arrays.asList(source.getOwnRole().toEnumerationElement());
-//
-//		FodotInteger maximumPossibleScore = IntegerTypeUtil.getMaximum(
-//				IntegerTypeUtil.getIntegers(source.getScoreType().getDomainElements()));
-//
-//		desiredResult.add(
-//				createFunctionEnumerationElement(this.scoreFunctionDeclaration, ownRole, maximumPossibleScore) );
-//		toReturn.addElement(
-//				createFunctionEnumeration(
-//						this.scoreFunctionDeclaration, desiredResult
-//						)
-//				);
 
 		/**
 		 * nodig: Initiele *waarden* voor elk fluent *predicaat*
@@ -581,6 +635,34 @@ public class FodotGameFactory {
 						);
 			}
 		}
+
+        // Voor elk dynamisch predicaat en proposition zonder causation in de map
+        // moet zijn causation leeg zijn. Anders random gedrag.
+
+        for (FodotPredicateDeclaration declaration :
+                this.source.getGdlVocabulary().getDynamicPredicates()) {
+            if(!this.source.getNextMap().containsKey(declaration) && !this.source.getCompoundMap().containsKey(declaration)){
+                toReturn.addElement(
+                        createPredicateEnumeration(
+                                this.source.getCauseOf(declaration),
+                                new ArrayList<IFodotPredicateEnumerationElement>()
+                        )
+                );
+            }
+        }
+
+        for (FodotPredicateDeclaration declaration :
+                this.source.getGdlVocabulary().getPropositions().values()) {
+            if(!this.source.getNextMap().containsKey(declaration)){
+                toReturn.addElement(
+                        createPredicateEnumeration(
+                                this.source.getCauseOf(declaration),
+                                new ArrayList<IFodotPredicateEnumerationElement>()
+                        )
+                );
+            }
+        }
+
 
 		return toReturn;
 	}
@@ -834,28 +916,10 @@ public class FodotGameFactory {
 						)
 				);
 
-		//ScoreType={0..100}
-		// Not necessary anymore: GdlTypeIdentifier now adds this with only the domainelements needed
-		//		defaultStructure.addElement(
-		//				createNumericalTypeRangeEnumeration(
-		//						source.getScoreType(),
-		//						createInteger(0),
-		//						createInteger(100)
-		//						)
-		//				);
-
-		// This is dependent on the name of the player, cannot be instantiated here
-		//Score={p_robot(),100}
-		//defaultStructure.addEnumeration(
-		//        createPredicateEnumeration()
-		//);
-
-
-
 		return defaultStructure;
 	}
 
-	public static final int DEFAULT_IDP_TIME_LIMIT = 20;
+	public static final int DEFAULT_IDP_TIME_LIMIT = 100;
 	private int idpTimeLimit = DEFAULT_IDP_TIME_LIMIT;
 	private static final int DEFAULT_MODEL_LIMIT = 1;
 	private int idpModelLimit = DEFAULT_MODEL_LIMIT;

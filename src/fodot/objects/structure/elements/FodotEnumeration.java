@@ -40,11 +40,13 @@ public abstract class FodotEnumeration<E extends IFodotEnumerationElement> exten
 
 	@Override
 	public String toCode() {
-		return getName() + " = " + CollectionPrinter.toDomain(CollectionPrinter.toCode(getElements()));
+        return getName() + " = " + CollectionPrinter.toDomain(CollectionPrinter.toCode(getElements()));
 	}
 	
 	/**********************************************/
 
+
+    /**********************************************/
 	
 	/**********************************************
 	 *  Obligatory

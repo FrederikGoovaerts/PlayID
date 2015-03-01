@@ -1,0 +1,62 @@
+REPORT FOR PROCESSIBILITY OF SINGLEPLAYER GAMES
+
+===================================================
+Created on                      2015-02-27 18:29
+Default time limit:             100s
+Default turn limit:             65
+===================================================
+
+
+Successful:                      30
+
+GDL transformation error:         0
+
+FO(.) transformation error:       0
+
+IDP syntax error:                 1
+
+IDP error:                       10
+
+Out of Resources:                20
+
+Unsatisfiable:                    4
+
+No models found:                  7
+
+Answerer error:                   0
+
+Other error::                     0
+
+
+===================================================
+===================== Details =====================
+===================================================
+
+Successful: 
+[aipsrovers01.kif, asteroids.kif, asteroidsParallel.kif, asteroidsSerial.kif, blocks.kif, blocksWorld.kif, blocksWorldSerial.kif, brain_teaser_extended.kif, buttons.kif, chineseCheckers1.kif, duplicateStateMedium.kif, duplicateStateSmall.kif, factoringEasyTurtleBrain.kif, factoringGeorgeForman.kif, firefighter.kif, haystack.kif, kitten_escapes_from_fire.kif, lightsOn.kif, lightsOnParallel.kif, lightsOnSimultaneous.kif, maze.kif, pearls.kif, snake_2008.kif, snake_2008_tweaked.kif, stateSpaceMedium.kif, stateSpaceSmall.kif, survival.kif, troublemaker01.kif, troublemaker02.kif, untwistycomplex2.kif]
+
+GDL transformation error: 
+[]
+
+FO(.) transformation error: 
+[]
+
+IDP syntax error: 
+[factoringMutuallyAssuredDestruction.kif]
+
+IDP error: 
+[factoringApertureScience.kif, factoringImpossibleTurtleBrain.kif, factoringMediumTurtleBrain.kif, god.kif, hitori.kif, max_knights.kif, peg.kif, queens.kif, ruleDepthExponential.kif, tpeg.kif]
+
+Out of Resources: 
+[blocksWorldParallel.kif, circlesolitaire.kif, coins.kif, coins_atomic.kif, duplicateStateLarge.kif, eightPuzzle.kif, hanoi.kif, hanoi_6_disks.kif, incredible.kif, knightmove.kif, knightsTourLarge.kif, lightsOnSimul4.kif, lightsOut.kif, pancakes88.kif, pegEuro.kif, simultaneousWin2.kif, snake_2009.kif, snake_2009_big.kif, stateSpaceLarge.kif, sudoku.kif]
+
+Unsatisfiable: 
+[hanoi7_bugfix.kif, slidingpieces.kif, snakeParallel.kif, twisty-passages.kif]
+
+No models found: 
+[knightsTour.kif, mummymaze1p.kif, pancakes.kif, pancakes6.kif, wargame01.kif, wargame02.kif, wargame03.kif]
+
+Answerer error: 
+[]
+
+Others:
