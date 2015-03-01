@@ -5,11 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import fodot.exceptions.idp.IdpErrorException;
-import fodot.exceptions.idp.IdpNonOptimalSolutionException;
-import fodot.exceptions.idp.IdpSyntaxErrorException;
-import fodot.exceptions.idp.OutOfResourcesException;
-import fodot.exceptions.idp.UnsatisfiableIdpFileException;
+import fodot.exceptions.idp.*;
 import fodot.fodot_parser.FodotStructureParser;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.FodotStructure;
@@ -76,10 +72,12 @@ public class IdpResultTransformer {
 		List<String> linesToProcess = ParserUtil.trimElements(Arrays.asList(getTextualResult().split("\n")));
 
 		Iterator<String> it = linesToProcess.iterator();
+        String fullAnswer = "";
 		while(it.hasNext()) {
 			
 			String line = it.next();
-			
+			fullAnswer += line;
+
 			if (isNotOptimalSolution(line)) {
 				throw new IdpNonOptimalSolutionException(line);
 			} else if (isOutOfResources(line)){
@@ -110,6 +108,9 @@ public class IdpResultTransformer {
 				throw new IdpErrorException(line);
 			}
 		}
+        if(fullAnswer == ""){
+            throw new NoRealResultException();
+        }
 
 
 	}

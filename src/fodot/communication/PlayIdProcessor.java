@@ -12,10 +12,7 @@ import fodot.communication.input.IdpFileWriter;
 import fodot.communication.output.GdlActions;
 import fodot.communication.output.GdlAnswerCalculator;
 import fodot.communication.output.IdpResultTransformer;
-import fodot.exceptions.idp.IdpConnectionException;
-import fodot.exceptions.idp.IdpErrorException;
-import fodot.exceptions.idp.NoValidModelsException;
-import fodot.exceptions.idp.UnsatisfiableIdpFileException;
+import fodot.exceptions.idp.*;
 import fodot.exceptions.playid.PlayIdArgumentException;
 import fodot.gdl_parser.GdlParser;
 import fodot.objects.file.IFodotFile;
@@ -63,6 +60,7 @@ public class PlayIdProcessor {
 	{
         List<FodotStructure> models = null;
         GdlParser parser = null;
+        GdlActions actions = null;
         int amountOfTurns = 1;
         int incrementValue = 1;
         boolean foundAnswer = false;
@@ -93,9 +91,23 @@ public class PlayIdProcessor {
             try {
                 IdpResultTransformer resultTransformer = new IdpResultTransformer(parsedFodotFile, idpResult);
                 models = resultTransformer.getModels();
-                foundAnswer = true;
+                if(models.size()>0){
+                    //Transform a solution
+                    GdlAnswerCalculator answerer = new GdlAnswerCalculator(parser.getFodotTransformer(), parser.getFodotTransformer().getGdlVocabulary(), models);
+                    actions = answerer.generateActionSequence();
+                    if(actions.getScore() == actions.getMaximumScore()){
+                        foundAnswer = true;
+                    }
+                }
+                amountOfTurns += incrementValue++;
             } catch (UnsatisfiableIdpFileException e) {
                 amountOfTurns += incrementValue++;
+            } catch (OutOfResourcesException e) {
+                if(actions == null){
+                    throw e;
+                } else {
+                    throw new IdpNonOptimalSolutionException(actions.getScore() + "/" + actions.getMaximumScore());
+                }
             }
         }
 		
@@ -104,9 +116,7 @@ public class PlayIdProcessor {
 			throw new NoValidModelsException();
 		}
 		
-		//Transform a solution 
-		GdlAnswerCalculator answerer = new GdlAnswerCalculator(parser.getFodotTransformer(), parser.getFodotTransformer().getGdlVocabulary(), models);
-		GdlActions actions = answerer.generateActionSequence();
+
 		
 		//Output it
 		outputter.output(actions);
