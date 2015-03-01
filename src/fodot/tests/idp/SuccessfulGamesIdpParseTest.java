@@ -16,7 +16,7 @@ import fodot.communication.PlayIdProcessor;
  * @author Thomas Winters
  *
  */
-public class SuccessfulGamesIdpParseText {
+public class SuccessfulGamesIdpParseTest {
 
 	private static final String GAMES_LOCATION = "resources/games/singleplayer/";
 	

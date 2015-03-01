@@ -45,6 +45,7 @@ public class GdlParser {
 	private GdlTypeIdentifier identifier = new GdlTypeIdentifier();
 	private GdlVocabulary gdlVocabulary;
 	private GdlFodotTransformer fodotTransformer;
+    private int turnLimit = -1;
 	
 	//Output
 	private IFodotFile parsedFodot;
@@ -60,6 +61,11 @@ public class GdlParser {
 		this.game = Game.createEphemeralGame(Game.preprocessRulesheet(fileContents));
 		
 	}
+
+    public GdlParser(File inputFile, int turnLimit) {
+        this(inputFile);
+        this.turnLimit = turnLimit;
+    }
 
 	/***************************************************************************
 	 * Class Methods
@@ -82,7 +88,11 @@ public class GdlParser {
 		 */
 		setFodotTransformer( new GdlFodotTransformer(this.gdlVocabulary) );
 		GdlInspector.inspect( game, getFodotTransformer() );
-		setFodot( getFodotTransformer().buildFodot() );
+        if(this.turnLimit >0) {
+            setFodot( getFodotTransformer().buildFodot(turnLimit) );
+        } else {
+            setFodot(getFodotTransformer().buildFodot());
+        }
 
 		
 		//Do some extra debugging stuff if necessary

@@ -60,41 +60,44 @@ public class PlayIdProcessor {
 			throws IOException, IdpConnectionException,
 				IdpErrorException, UnsatisfiableIdpFileException, IllegalStateException,
 				NoValidModelsException 
-		{
-		
-		//Convert GDL to IDP
-		GdlParser parser = new GdlParser(gdlFile);
-		parser.run();
-		IFodotFile parsedFodotFile = parser.getFodotFile();
-		parsedFodotFile = getOptimizer().improve(parsedFodotFile);
-		
-		//Create IDPfile in same location as GDL file
-		File idpFile = IdpFileWriter.createIDPFileBasedOn(gdlFile);
-		IdpFileWriter.writeToIDPFile(parsedFodotFile, idpFile);
+	{
+        List<FodotStructure> models = null;
+        GdlParser parser = null;
+        int amountOfTurns = 1;
+        int incrementValue = 1;
+        boolean foundAnswer = false;
 
-		//Make IDP solve it
-		IIdpCaller caller = new IdpCaller(false);
-		String idpResult = caller.callIDP(idpFile);
-		
-		
-		
-		//TEMPORAL IDP BUG FIX TODO delete me when warning is fixed
-		String stupidWarning = "Warning: XSB support is not available. Option xsb is ignored.\n\n";
-		if (idpResult.contains(stupidWarning)) {
-			idpResult = idpResult.replaceAll(stupidWarning, "");
-		}
-		
-		//Sometimes IDP likes to say it ran out of resources while it actually has an answer
-//		String outOfResourcesMessage = "Out of resources\n";
-//		if (idpResult.contains(outOfResourcesMessage) && !idpResult.trim().equals(outOfResourcesMessage.trim())) {
-//			idpResult = idpResult.replaceAll(outOfResourcesMessage, "");
-//		}
-		
-		
-		
-		//Process results
-		IdpResultTransformer resultTransformer = new IdpResultTransformer(parsedFodotFile, idpResult);
-		List<FodotStructure> models = resultTransformer.getModels();
+        while(!foundAnswer) {
+            //Convert GDL to IDP
+            parser = new GdlParser(gdlFile, amountOfTurns);
+            parser.run();
+            IFodotFile parsedFodotFile = parser.getFodotFile();
+            parsedFodotFile = getOptimizer().improve(parsedFodotFile);
+
+            //Create IDPfile in same location as GDL file
+            File idpFile = IdpFileWriter.createIDPFileBasedOn(gdlFile);
+            IdpFileWriter.writeToIDPFile(parsedFodotFile, idpFile);
+
+            //Make IDP solve it
+            IIdpCaller caller = new IdpCaller(false);
+            String idpResult = caller.callIDP(idpFile);
+
+
+            //TEMPORAL IDP BUG FIX TODO delete me when warning is fixed
+            String stupidWarning = "Warning: XSB support is not available. Option xsb is ignored.\n\n";
+            if (idpResult.contains(stupidWarning)) {
+                idpResult = idpResult.replaceAll(stupidWarning, "");
+            }
+
+            //Process results
+            try {
+                IdpResultTransformer resultTransformer = new IdpResultTransformer(parsedFodotFile, idpResult);
+                models = resultTransformer.getModels();
+                foundAnswer = true;
+            } catch (UnsatisfiableIdpFileException e) {
+                amountOfTurns += incrementValue++;
+            }
+        }
 		
 		//Check if we found a model
 		if (models.size() == 0) {

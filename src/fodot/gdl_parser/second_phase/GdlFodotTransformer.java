@@ -399,6 +399,14 @@ public class GdlFodotTransformer implements GdlTransformer {
 		return factory.createFodot();
 	}
 
+    public IFodotFile buildFodot(int turnLimit) {
+        FodotGameFactory factory = new FodotGameFactory(this,
+                getDoPredicateDeclaration(),
+                terminalTimePredicateDeclaration,
+                turnLimit);
+        return factory.createFodot();
+    }
+
 	/**********************************************/
 
 	@Override
