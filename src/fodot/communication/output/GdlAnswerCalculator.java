@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.ggp.base.util.gdl.grammar.GdlTerm;
+
 import fodot.communication.gdloutput.IFodotGdlTranslator;
+import fodot.communication.output.MoveSequence.MoveSequenceBuilder;
 import fodot.gdl_parser.FodotGameFactory;
 import fodot.gdl_parser.second_phase.GdlFodotTransformer;
 import fodot.objects.structure.FodotStructure;
@@ -107,16 +110,23 @@ public class GdlAnswerCalculator {
 		}
 		
 		List<GdlAction> actions = new ArrayList<GdlAction>();
+		MoveSequenceBuilder moveSeqBuilder = MoveSequence.createBuilder();
 		for (IFodotPredicateEnumerationElement c : actionEnum.getElements()) {
 			int time = Integer.valueOf(c.getElement(0).getValue());
 			IFodotTypeEnumerationElement player = c.getElement(1);
 			IFodotTypeEnumerationElement action = c.getElement(2);
+					
+
+			GdlTerm gdlPlayer = getTranslator().translate(player);
+			GdlTerm gdlAction = getTranslator().translate(action);
 			
-			//TODO: use GdlPredicate instead of own GDL action
+			moveSeqBuilder.addMove(time, gdlPlayer, gdlAction);
 			actions.add(new GdlAction(getTranslator(), time, player, action));
 		}
+//		return moveSeqBuilder.buildMoveSequence();
 		return new GdlActions(actions, score, maximumScore);
 	}
+	
 	
 	public FodotStructure getBestModel() {
 		if (getModels().isEmpty()) {

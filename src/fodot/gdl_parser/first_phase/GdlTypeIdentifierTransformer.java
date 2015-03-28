@@ -4,14 +4,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import fodot.util.GdlClassCorrectionUtil;
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlDistinct;
 import org.ggp.base.util.gdl.grammar.GdlFunction;
 import org.ggp.base.util.gdl.grammar.GdlLiteral;
 import org.ggp.base.util.gdl.grammar.GdlNot;
 import org.ggp.base.util.gdl.grammar.GdlOr;
-import org.ggp.base.util.gdl.grammar.GdlPool;
 import org.ggp.base.util.gdl.grammar.GdlProposition;
 import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlRule;
@@ -24,6 +22,7 @@ import fodot.gdl_parser.GdlTransformer;
 import fodot.gdl_parser.first_phase.data.declarations.GdlFunctionDeclaration;
 import fodot.gdl_parser.first_phase.data.declarations.GdlPredicateDeclaration;
 import fodot.gdl_parser.first_phase.data.declarations.IGdlArgumentListDeclaration;
+import fodot.util.GdlClassCorrectionUtil;
 
 /**
  * This class will be used to visit the relations and rules.

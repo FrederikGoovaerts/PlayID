@@ -20,8 +20,6 @@ import fodot.exceptions.playid.PlayIdArgumentException;
 import fodot.gdl_parser.GdlParser;
 import fodot.objects.file.IFodotFile;
 import fodot.objects.structure.FodotStructure;
-import fodot.patterns.fodot_file.FodotChainOptimizer;
-import fodot.patterns.fodot_file.IFodotOptimizer;
 
 public class PlayIdProcessor {
 	/**********************************************
@@ -56,7 +54,6 @@ public class PlayIdProcessor {
             parser = new GdlParser(gdlFile, amountOfTurns);
             parser.run();
             IFodotFile parsedFodotFile = parser.getFodotFile();
-            parsedFodotFile = getOptimizer().improve(parsedFodotFile);
 
             //Create IDPfile in same location as GDL file
             File idpFile = IdpFileWriter.createIDPFileBasedOn(gdlFile);
