@@ -20,8 +20,8 @@ import fodot.objects.file.IFodotFile;
  */
 public class GdlParser {
 
-	private static boolean outputToFile = true;
-	private static boolean printBuiltFodot = false;
+//	private static boolean outputToFile = true;
+//	private static boolean printBuiltFodot = false;
 
 	/***************************************************************************
 	 * Main Method
@@ -38,7 +38,7 @@ public class GdlParser {
 	 **************************************************************************/
 
 	//Input
-	private final File input;
+//	private final File input;
 	private final Game game;
 	
 	//Processing
@@ -50,22 +50,32 @@ public class GdlParser {
 	//Output
 	private IFodotFile parsedFodot;
 
+	public GdlParser(Game game) {
+		this.game = game;
+	}
+	
 	public GdlParser(File inputFile) {
-		if(inputFile == null || !inputFile.exists()) {
-			throw new GdlTransformationException("The given GDL file does not exist: " + inputFile);
-		}
-		
-		//Initialize final variables
-		this.input = inputFile;
-		String fileContents = FileUtils.readFileAsString(inputFile);
-		this.game = Game.createEphemeralGame(Game.preprocessRulesheet(fileContents));
-		
+		this(parseGame(inputFile));		
 	}
 
     public GdlParser(File inputFile, int turnLimit) {
         this(inputFile);
         this.turnLimit = turnLimit;
     }
+    
+    private static Game parseGame(File inputFile) {
+    	if(inputFile == null || !inputFile.exists()) {
+			throw new GdlTransformationException("The given GDL file does not exist: " + inputFile);
+		}
+		
+		//Initialize final variables
+//		this.input = inputFile;
+		String fileContents = FileUtils.readFileAsString(inputFile);
+		Game parsedFame = Game.createEphemeralGame(Game.preprocessRulesheet(fileContents));
+		
+		return parsedFame;
+    }
+    
 
 	/***************************************************************************
 	 * Class Methods
@@ -96,13 +106,13 @@ public class GdlParser {
 
 		
 		//Do some extra debugging stuff if necessary
-		if ( printBuiltFodot ) {
-			System.out.println(getFodotFile().toCode());
-		}
-		if ( outputToFile ) {
-			File outputFile = IdpFileWriter.createIDPFileBasedOn(input);
-			IdpFileWriter.writeToIDPFile(getFodotFile(), outputFile);
-		}
+//		if ( printBuiltFodot ) {
+//			System.out.println(getFodotFile().toCode());
+//		}
+//		if ( outputToFile ) {
+//			File outputFile = IdpFileWriter.createIDPFileBasedOn(input);
+//			IdpFileWriter.writeToIDPFile(getFodotFile(), outputFile);
+//		}
 	}
 
 	/***************************************************************************
