@@ -26,6 +26,19 @@ public class MoveSequence {
 		return new MoveSequenceBuilder();
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < moves.size(); i++) {
+			for (Move move : moves.get(i).values()) {
+				builder.append(i + ": " + move.getContents() + "\n");
+			}
+		}
+		return builder.toString();
+	}
+	
+	
+	//BUILDER
 	public static class MoveSequenceBuilder {
 		private List<Map<GdlTerm, Move>> moves = new ArrayList<>();
 
