@@ -28,18 +28,21 @@ import fodot.objects.structure.FodotStructure;
 
 public class PlayIdProcessor {
 	/**********************************************
-	 *  Constructors
+	 * Constructors
 	 ***********************************************/
 
 	private Game game;
 	private Role role;
-	private MoveSequence movesSoFar = new MoveSequenceBuilder().buildMoveSequence();
-	//TODO een lijst dat de gespeelde moves bijhoudt
+	private MoveSequence movesSoFar = new MoveSequenceBuilder()
+			.buildMoveSequence();
+
+	// TODO een lijst dat de gespeelde moves bijhoudt
 
 	public PlayIdProcessor(Game argGame, Role argRole) {
 		this.game = argGame;
-		this.role = argRole != null ? argRole : GdlParser.findFirstRole(argGame);
-	}	
+		this.role = argRole != null ? argRole : GdlParser
+				.findFirstRole(argGame);
+	}
 
 	public PlayIdProcessor(File gdlFile) {
 		this(GdlParser.parseGame(gdlFile), null);
@@ -47,18 +50,14 @@ public class PlayIdProcessor {
 
 	/**********************************************/
 
-
-
-
 	/**********************************************
-	 *  Process
+	 * Process
 	 ***********************************************/
 
-	public GdlActions process(File gdlFile)
-			throws IOException, IdpConnectionException,
-			IdpErrorException, UnsatisfiableIdpFileException, IllegalStateException,
-			NoValidModelsException 
-	{
+	public GdlActions process(File gdlFile) throws IOException,
+			IdpConnectionException, IdpErrorException,
+			UnsatisfiableIdpFileException, IllegalStateException,
+			NoValidModelsException {
 		List<FodotStructure> models = null;
 		GdlParser parser = null;
 		GdlActions actions = null;
@@ -66,31 +65,35 @@ public class PlayIdProcessor {
 		int incrementValue = 1;
 		boolean foundAnswer = false;
 
-		while(!foundAnswer) {
-			//Convert GDL to IDP
-			parser = new GdlParser(game, amountOfTurns);
+		while (!foundAnswer) {
+			// Convert GDL to IDP
+			parser = new GdlParser(game, amountOfTurns); //TODO: Rename parser to translator. Give role and moves so far along!
 			parser.run();
 			IFodotFile parsedFodotFile = parser.getFodotFile();
 
-			//Create IDPfile in same location as GDL file
+			// Create IDPfile in same location as GDL file
 			File idpFile = IdpFileWriter.createIDPFileBasedOn(gdlFile);
 			IdpFileWriter.writeToIDPFile(parsedFodotFile, idpFile);
 
-			//Make IDP solve it
-			String idpResult = callIdp(idpFile);;
+			// Make IDP solve it
+			String idpResult = callIdp(idpFile);
 
-			//TEMPORAL IDP BUG FIX TODO delete me when warning is fixed
+			// TEMPORAL IDP BUG FIX TODO delete me when warning is fixed
 			idpResult = fixResult(idpResult);
 
-			//Process results
+			// Process results
 			try {
-				IdpResultTransformer resultTransformer = new IdpResultTransformer(parsedFodotFile, idpResult);
+				IdpResultTransformer resultTransformer = new IdpResultTransformer(
+						parsedFodotFile, idpResult);
 				models = resultTransformer.getModels();
-				if(models.size()>0){
-					//Transform a solution
-					GdlAnswerCalculator answerer = new GdlAnswerCalculator(parser.getFodotTransformer(), parser.getFodotTransformer().getGdlVocabulary(), models);
+				if (models.size() > 0) {
+					// Transform a solution
+					GdlAnswerCalculator answerer = new GdlAnswerCalculator(
+							parser.getFodotTransformer(), parser
+									.getFodotTransformer().getGdlVocabulary(),
+							models);
 					actions = answerer.generateActionSequence();
-					if(actions.getScore() == actions.getMaximumScore()){
+					if (actions.getScore() == actions.getMaximumScore()) {
 						foundAnswer = true;
 					}
 				}
@@ -98,15 +101,16 @@ public class PlayIdProcessor {
 			} catch (UnsatisfiableIdpFileException e) {
 				amountOfTurns += incrementValue++;
 			} catch (OutOfResourcesException e) {
-				if(actions == null){
+				if (actions == null) {
 					throw e;
 				} else {
-					throw new IdpNonOptimalSolutionException(actions.getScore() + "/" + actions.getMaximumScore());
+					throw new IdpNonOptimalSolutionException(
+							actions.getScore(), actions.getMaximumScore());
 				}
 			}
 		}
 
-		//Check if we found a model
+		// Check if we found a model
 		if (models.size() == 0) {
 			throw new NoValidModelsException();
 		}
@@ -114,7 +118,8 @@ public class PlayIdProcessor {
 		return actions;
 	}
 
-	private String callIdp(File idpFile) throws IdpConnectionException, IOException {
+	private String callIdp(File idpFile) throws IdpConnectionException,
+			IOException {
 		IIdpCaller caller = new IdpCaller(false);
 		String idpResult = caller.callIDP(idpFile);
 		return idpResult;
@@ -129,13 +134,14 @@ public class PlayIdProcessor {
 	}
 
 	/**********************************************
-	 *  Main method
+	 * Main method
 	 ***********************************************/
 
 	public static void main(String[] args) throws IOException {
 		if (args.length <= 0) {
 			throw new PlayIdArgumentException(
-					"Please give the uri of a valid GDL file to the PlayID processor.", 0, 1);
+					"Please give the uri of a valid GDL file to the PlayID processor.",
+					0, 1);
 		}
 		if (!args[0].contains(".kif")) {
 			throw new PlayIdArgumentException(
@@ -151,8 +157,6 @@ public class PlayIdProcessor {
 		System.out.println(processor.process(gdlFile));
 	}
 
-
 	/**********************************************/
-
 
 }
