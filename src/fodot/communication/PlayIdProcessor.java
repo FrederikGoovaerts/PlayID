@@ -60,15 +60,10 @@ public class PlayIdProcessor {
             IdpFileWriter.writeToIDPFile(parsedFodotFile, idpFile);
 
             //Make IDP solve it
-            IIdpCaller caller = new IdpCaller(false);
-            String idpResult = caller.callIDP(idpFile);
-
+            String idpResult = callIdp(idpFile);;
 
             //TEMPORAL IDP BUG FIX TODO delete me when warning is fixed
-            String stupidWarning = "Warning: XSB support is not available. Option xsb is ignored.\n\n";
-            if (idpResult.contains(stupidWarning)) {
-                idpResult = idpResult.replaceAll(stupidWarning, "");
-            }
+            idpResult = fixResult(idpResult);
 
             //Process results
             try {
@@ -102,12 +97,19 @@ public class PlayIdProcessor {
 		return actions;
 	}
 
-	/**********************************************/
+	private String callIdp(File idpFile) throws IdpConnectionException, IOException {
+        IIdpCaller caller = new IdpCaller(false);
+        String idpResult = caller.callIDP(idpFile);
+        return idpResult;
+	}
 
-
-	/**********************************************/
-
-	
+	private String fixResult(String idpResult) {
+        String stupidWarning = "Warning: XSB support is not available. Option xsb is ignored.\n\n";
+        if (idpResult.contains(stupidWarning)) {
+            idpResult = idpResult.replaceAll(stupidWarning, "");
+        }
+        return idpResult;
+	}
 	
 	/**********************************************
 	 *  Main method
