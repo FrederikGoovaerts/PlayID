@@ -24,20 +24,12 @@ import fodot.patterns.fodot_file.FodotChainOptimizer;
 import fodot.patterns.fodot_file.IFodotOptimizer;
 
 public class PlayIdProcessor {
-
-	private static final IFodotOptimizer DEFAULT_OPTIMIZER = new FodotChainOptimizer();
-	
-	private IFodotOptimizer optimizer;
-	
 	/**********************************************
 	 *  Constructors
 	 ***********************************************/
 
-	public PlayIdProcessor(IFodotOptimizer optimizer) {
-		this.optimizer = optimizer;
-	}
 	public PlayIdProcessor() {
-		this(DEFAULT_OPTIMIZER);
+		
 	}	
 
 	/**********************************************/
@@ -118,19 +110,6 @@ public class PlayIdProcessor {
 
 	/**********************************************/
 
-	/**********************************************
-	 *  Optimizer
-	 ***********************************************/
-
-	public IFodotOptimizer getOptimizer() {
-		return optimizer;
-	}
-
-	public void setOptimizer(IFodotOptimizer optimizer) {
-		this.optimizer = optimizer;
-	}
-
-	/**********************************************/
 	
 	
 	/**********************************************
