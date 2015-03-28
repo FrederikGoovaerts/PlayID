@@ -3,6 +3,8 @@ package fodot.communication.output;
 import java.util.ArrayList;
 import java.util.List;
 
+import fodot.util.CollectionPrinter;
+
 public class GdlActions {
 	private final List<GdlAction> actions;
 	private final int score;
@@ -24,6 +26,12 @@ public class GdlActions {
 	
 	public int getMaximumScore() {
 		return maximumScore;
+	}
+	
+	@Override
+	public String toString() {
+		return "SCORE/MAXSCORE: " + score + "/" + getMaximumScore()
+				+ "\n"+CollectionPrinter.printStringList("", "", "\n", getActions());
 	}
 	
 }

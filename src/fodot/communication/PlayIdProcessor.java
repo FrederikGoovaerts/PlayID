@@ -4,15 +4,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import fodot.communication.gdloutput.GdlActionPrinter;
-import fodot.communication.gdloutput.IActionOutputter;
 import fodot.communication.input.IIdpCaller;
 import fodot.communication.input.IdpCaller;
 import fodot.communication.input.IdpFileWriter;
 import fodot.communication.output.GdlActions;
 import fodot.communication.output.GdlAnswerCalculator;
 import fodot.communication.output.IdpResultTransformer;
-import fodot.exceptions.idp.*;
+import fodot.exceptions.idp.IdpConnectionException;
+import fodot.exceptions.idp.IdpErrorException;
+import fodot.exceptions.idp.IdpNonOptimalSolutionException;
+import fodot.exceptions.idp.NoValidModelsException;
+import fodot.exceptions.idp.OutOfResourcesException;
+import fodot.exceptions.idp.UnsatisfiableIdpFileException;
 import fodot.exceptions.playid.PlayIdArgumentException;
 import fodot.gdl_parser.GdlParser;
 import fodot.objects.file.IFodotFile;
@@ -22,28 +25,19 @@ import fodot.patterns.fodot_file.IFodotOptimizer;
 
 public class PlayIdProcessor {
 
-	private static final IActionOutputter DEFAULT_OUTPUTTER = new GdlActionPrinter();
 	private static final IFodotOptimizer DEFAULT_OPTIMIZER = new FodotChainOptimizer();
 	
-	private IActionOutputter outputter;
 	private IFodotOptimizer optimizer;
 	
 	/**********************************************
 	 *  Constructors
 	 ***********************************************/
 
-	public PlayIdProcessor(IActionOutputter outputter, IFodotOptimizer optimizer) {
-		super();
-		this.outputter = outputter;
+	public PlayIdProcessor(IFodotOptimizer optimizer) {
 		this.optimizer = optimizer;
 	}
-	
-	public PlayIdProcessor(IActionOutputter outputter) {
-		this(outputter, DEFAULT_OPTIMIZER);
-	}
-
 	public PlayIdProcessor() {
-		this(DEFAULT_OUTPUTTER);
+		this(DEFAULT_OPTIMIZER);
 	}	
 
 	/**********************************************/
@@ -53,7 +47,7 @@ public class PlayIdProcessor {
 	 *  Process
 	 ***********************************************/
 	
-	public void process(File gdlFile)
+	public GdlActions process(File gdlFile)
 			throws IOException, IdpConnectionException,
 				IdpErrorException, UnsatisfiableIdpFileException, IllegalStateException,
 				NoValidModelsException 
@@ -116,26 +110,12 @@ public class PlayIdProcessor {
 			throw new NoValidModelsException();
 		}
 		
-
-		
-		//Output it
-		outputter.output(actions);
+		return actions;
 	}
 
 	/**********************************************/
 
 
-	/**********************************************
-	 *  Outputter
-	 ***********************************************/
-
-	public IActionOutputter getOutputter() {
-		return outputter;
-	}
-
-	public void setOutputter(IActionOutputter outputter) {
-		this.outputter = outputter;
-	}	
 	/**********************************************/
 
 	/**********************************************
@@ -173,7 +153,7 @@ public class PlayIdProcessor {
 		}
 		
 		PlayIdProcessor processor = new PlayIdProcessor();
-		processor.process(gdlFile);
+		System.out.println(processor.process(gdlFile));
 	}
 	
 
