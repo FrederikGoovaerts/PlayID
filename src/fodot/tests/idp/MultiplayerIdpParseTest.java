@@ -63,7 +63,7 @@ public class MultiplayerIdpParseTest extends MultiplayerTransformationTest {
 	@Override
 	protected void testFor(String gameName) {
 		File toParse = toFile(gameName);
-		PlayIdProcessor processor = new PlayIdProcessor();
+		PlayIdProcessor processor = new PlayIdProcessor(toParse);
 		try {
 			processor.process(toParse);
 		} catch (IOException e) {

@@ -4,8 +4,11 @@ import java.io.File;
 
 import org.ggp.base.util.files.FileUtils;
 import org.ggp.base.util.game.Game;
+import org.ggp.base.util.gdl.grammar.Gdl;
+import org.ggp.base.util.gdl.grammar.GdlConstant;
+import org.ggp.base.util.gdl.grammar.GdlRelation;
+import org.ggp.base.util.statemachine.Role;
 
-import fodot.communication.input.IdpFileWriter;
 import fodot.exceptions.gdl.GdlTransformationException;
 import fodot.gdl_parser.first_phase.GdlTypeIdentifier;
 import fodot.gdl_parser.second_phase.GdlFodotTransformer;
@@ -50,8 +53,13 @@ public class GdlParser {
 	//Output
 	private IFodotFile parsedFodot;
 
-	public GdlParser(Game game) {
+	public GdlParser(Game game, int turnLimit) {
 		this.game = game;
+        this.turnLimit = turnLimit;
+	}
+	
+	public GdlParser(Game game) {
+		this(game, -1);
 	}
 	
 	public GdlParser(File inputFile) {
@@ -59,11 +67,10 @@ public class GdlParser {
 	}
 
     public GdlParser(File inputFile, int turnLimit) {
-        this(inputFile);
-        this.turnLimit = turnLimit;
+        this(parseGame(inputFile), turnLimit);
     }
     
-    private static Game parseGame(File inputFile) {
+    public static Game parseGame(File inputFile) {
     	if(inputFile == null || !inputFile.exists()) {
 			throw new GdlTransformationException("The given GDL file does not exist: " + inputFile);
 		}
@@ -76,6 +83,14 @@ public class GdlParser {
 		return parsedFame;
     }
     
+    public static Role findFirstRole(Game game) {
+    	for (Gdl rule : game.getRules()) {
+    		if (rule instanceof GdlRelation && ((GdlRelation) rule).getName().getValue().equals("role")) {
+    			return new Role( (GdlConstant) ((GdlRelation) rule).get(0));
+    		}
+    	}
+    	return null;
+    }
 
 	/***************************************************************************
 	 * Class Methods

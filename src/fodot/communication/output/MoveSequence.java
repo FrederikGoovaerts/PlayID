@@ -19,11 +19,35 @@ public class MoveSequence {
 	}
 	
 	public Move getMove(int time, GdlConstant player) {
+		if (this.moves.size() < time) {
+			throw new IllegalStateException("No moves recorded for time " + time + " yet.");
+		}
+		if (!this.moves.get(time).containsKey(player)) {
+			throw new IllegalStateException("No moves recorded for " + player + " at time " + time + " yet.");
+		}
+		
 		return this.moves.get(time).get(player);
+	}
+	
+	public MoveSequence plus(int time, GdlTerm player, GdlTerm action) {
+		MoveSequenceBuilder builder = createBuilder(this);
+		builder.addMove(time, player, action);
+		return builder.buildMoveSequence();
 	}
 	
 	public static MoveSequenceBuilder createBuilder() {
 		return new MoveSequenceBuilder();
+	}
+	
+	public static MoveSequenceBuilder createBuilder(MoveSequence seq) {
+		List<Map<GdlTerm, Move>> copyMoves = new ArrayList<>();
+		for (int i = 0; i < seq.moves.size(); i++) {
+			copyMoves.set(i, new HashMap<GdlTerm,Move>());
+			for (Map.Entry<GdlTerm, Move> entry : seq.moves.get(i).entrySet()) {
+				copyMoves.get(i).put(entry.getKey(), entry.getValue());
+			}
+		}
+		return new MoveSequenceBuilder(copyMoves);
 	}
 	
 	@Override
@@ -40,7 +64,15 @@ public class MoveSequence {
 	
 	//BUILDER
 	public static class MoveSequenceBuilder {
-		private List<Map<GdlTerm, Move>> moves = new ArrayList<>();
+		private List<Map<GdlTerm, Move>> moves;
+		
+		public MoveSequenceBuilder(List<Map<GdlTerm, Move>> moves) {
+			this.moves = moves;
+		}
+		
+		public MoveSequenceBuilder() {
+			this(new ArrayList<>());
+		}
 
 		public void addMove(int time, GdlTerm player, GdlTerm action) {
 			//CREATE IF NOT EXIST

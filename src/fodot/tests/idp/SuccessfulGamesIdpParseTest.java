@@ -22,7 +22,7 @@ public class SuccessfulGamesIdpParseTest {
 	
 	protected void testFor(String gameName) {
 		File toParse = new File(GAMES_LOCATION + gameName);
-		PlayIdProcessor processor = new PlayIdProcessor();
+		PlayIdProcessor processor = new PlayIdProcessor(toParse);
 		try {
 			processor.process(toParse);
 		} catch (IOException e) {

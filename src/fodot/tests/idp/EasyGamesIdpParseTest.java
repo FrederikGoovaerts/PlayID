@@ -15,7 +15,7 @@ public class EasyGamesIdpParseTest {
 	
 	protected void process(String gameName) {
 		File toParse = new File(GAMES_LOCATION + gameName + DEFAULT_EXTENSION);
-		PlayIdProcessor processor = new PlayIdProcessor();
+		PlayIdProcessor processor = new PlayIdProcessor(toParse);
 		try {
 			processor.process(toParse);
 		} catch (IOException e) {

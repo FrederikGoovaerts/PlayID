@@ -14,7 +14,7 @@ public class ParticularGameIdpParseTest {
     @Test
 	public void game_test() {
 		File toParse = new File(GAME_PATH);
-		PlayIdProcessor processor = new PlayIdProcessor();
+		PlayIdProcessor processor = new PlayIdProcessor(toParse);
 		try {
 			processor.process(toParse);
 		} catch (IOException e) {
