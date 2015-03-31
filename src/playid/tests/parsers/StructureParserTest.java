@@ -1,4 +1,4 @@
-package playid.tests.answerer;
+package playid.tests.parsers;
 
 import static org.junit.Assert.assertEquals;
 import static playid.domain.fodot.FodotElementBuilder.createConstant;
