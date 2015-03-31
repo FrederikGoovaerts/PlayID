@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import playid.domain.communication.PlayIdProcessor;
+import playid.domain.communication.input.IdpFileWriter;
 import playid.tests.transformation.EdgeCasesTransformationTest;
 
 public class EdgeCasesIdpTest extends EdgeCasesTransformationTest {
@@ -13,7 +14,7 @@ public class EdgeCasesIdpTest extends EdgeCasesTransformationTest {
 		File toParse = toFile(gameName);
 		PlayIdProcessor processor = new PlayIdProcessor(toParse);
 		try {
-			processor.processSingleplayerGame(toParse);
+			processor.processSingleplayerGame(IdpFileWriter.createIDPFileBasedOn(toParse));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import playid.domain.communication.PlayIdProcessor;
+import playid.domain.communication.input.IdpFileWriter;
 
 public class EasyGamesIdpParseTest {
 
@@ -17,7 +18,7 @@ public class EasyGamesIdpParseTest {
 		File toParse = new File(GAMES_LOCATION + gameName + DEFAULT_EXTENSION);
 		PlayIdProcessor processor = new PlayIdProcessor(toParse);
 		try {
-			processor.processSingleplayerGame(toParse);
+			processor.processSingleplayerGame(IdpFileWriter.createIDPFileBasedOn(toParse));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

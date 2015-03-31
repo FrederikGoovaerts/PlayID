@@ -18,6 +18,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import playid.domain.communication.PlayIdProcessor;
+import playid.domain.communication.input.IdpFileWriter;
 import playid.domain.exceptions.answer.AnswerException;
 import playid.domain.exceptions.fodot.FodotException;
 import playid.domain.exceptions.gdl.GdlTransformationException;
@@ -72,7 +73,7 @@ public class SingleplayerIdpParseTest extends SingleplayerTransformationTest {
 		File toParse = toFile(gameName);
 		PlayIdProcessor processor = new PlayIdProcessor(toParse);
 		try {
-			processor.processSingleplayerGame(toParse);
+			processor.processSingleplayerGame(IdpFileWriter.createIDPFileBasedOn(toParse));
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (GdlTransformationException e) {

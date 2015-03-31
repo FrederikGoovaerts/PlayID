@@ -25,6 +25,8 @@ public class SinglePlayerStrategy extends AbstractGameStrategy {
 
 	@Override
 	public MoveSequence calculateNextMove(MoveSequence movesSoFar) {
+		
+		//TODO manier om de movessofar mee te geven aan de fodottransformer.
 		return null;
 	}
 

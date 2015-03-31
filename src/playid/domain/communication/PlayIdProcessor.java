@@ -49,11 +49,10 @@ public class PlayIdProcessor {
 	}
 	
 	//TODO: Remove file argument. Find way to store temporal files.
-	public MoveSequence processSingleplayerGame(File gdlFile) throws IOException,
+	public MoveSequence processSingleplayerGame(File outputFile) throws IOException,
 			IdpConnectionException, IdpErrorException,
 			UnsatisfiableIdpFileException, IllegalStateException,
 			NoValidModelsException {
-		File outputFile = IdpFileWriter.createIDPFileBasedOn(gdlFile);
 		return new SinglePlayerStrategy(game, role).calculateBestSolution(outputFile);
 	}
 	
@@ -65,7 +64,9 @@ public class PlayIdProcessor {
 		validateArguments(args);
 		File gdlFile = new File(args[0]);
 		PlayIdProcessor processor = new PlayIdProcessor(gdlFile);
-		System.out.println(processor.processSingleplayerGame(gdlFile));
+		
+		File outputFile = IdpFileWriter.createIDPFileBasedOn(gdlFile);
+		System.out.println(processor.processSingleplayerGame(outputFile));
 	}
 	
 	public static void validateArguments(String[] args) {

@@ -3,6 +3,7 @@ package playid.tests.idp;
 import org.junit.Test;
 
 import playid.domain.communication.PlayIdProcessor;
+import playid.domain.communication.input.IdpFileWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class ParticularGameIdpParseTest {
 		File toParse = new File(GAME_PATH);
 		PlayIdProcessor processor = new PlayIdProcessor(toParse);
 		try {
-			processor.processSingleplayerGame(toParse);
+			processor.processSingleplayerGame(IdpFileWriter.createIDPFileBasedOn(toParse));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
