@@ -13,6 +13,7 @@ import org.ggp.base.util.gdl.grammar.GdlRelation;
 import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.statemachine.Move;
+import org.ggp.base.util.statemachine.Role;
 
 public class MoveSequence {
 	private static final MoveSequence EMPTY_MOVESEQUENCE = MoveSequence
@@ -36,7 +37,7 @@ public class MoveSequence {
 
 		return this.moves.get(time).get(player);
 	}
-	
+
 	public Collection<Move> getMoves(int time) {
 		if (this.moves.size() < time) {
 			throw new IllegalStateException("No moves recorded for time "
@@ -77,11 +78,13 @@ public class MoveSequence {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
+		builder.append("Moves:\n");
 		for (int i = 0; i < moves.size(); i++) {
 			for (Move move : moves.get(i).values()) {
 				builder.append(i + ": " + move.getContents() + "\n");
 			}
 		}
+		builder.append("\n");
 		return builder.toString();
 	}
 
@@ -114,33 +117,24 @@ public class MoveSequence {
 
 	// BUILDER
 	public static class MoveSequenceBuilder {
-		private List<Map<GdlTerm, Move>> moves;
+		private List<Map<GdlTerm, Move>> tempMoves;
 
 		public MoveSequenceBuilder(List<Map<GdlTerm, Move>> moves) {
-			this.moves = moves;
+			this.tempMoves = moves;
 		}
 
 		public MoveSequenceBuilder() {
 			this(new ArrayList<>());
 		}
 
-		public static MoveSequence fromTermListList(List<List<GdlTerm>> moves) {
+		public static MoveSequence fromTermListList(List<List<GdlTerm>> moves, List<Role> roles) {
 			MoveSequenceBuilder builder = new MoveSequenceBuilder();
 			for (int i = 0; i < moves.size(); i++) {
 				List<GdlTerm> actionsAtMoment = moves.get(i);
 				for (int j = 0; j < moves.get(i).size(); j++) {
-					GdlSentence actionPred = actionsAtMoment.get(j)
-							.toSentence();
-					if (!(actionPred instanceof GdlRelation)
-							|| ((GdlRelation) actionPred).getName()
-									.equals("do") || actionPred.arity() < 2) {
-						throw new IllegalArgumentException(
-								"Given actions are not valid: " + actionPred);
-					}
+					GdlConstant player = roles.get(j).getName();
+					GdlTerm action = actionsAtMoment.get(j);
 
-					GdlTerm player = actionPred.getBody().get(0);
-					GdlTerm action = actionPred.getBody().get(1);
-					
 					builder.addMove(i, player, action);
 				}
 			}
@@ -156,14 +150,17 @@ public class MoveSequence {
 			Move move = createMove(player, action);
 
 			// CHECK IF PLAYER DIDN'T DO A MOVE YET
-			if (moves.size() > time && moves.get(time).containsKey(player)
-					&& !moves.get(time).get(player).equals(move))
+			if (tempMoves.size() > time && tempMoves.get(time).containsKey(player)
+					&& !tempMoves.get(time).get(player).equals(move)) {
+				throw new IllegalStateException("Player already has a move");
+			}
 
-				moves.get(time).put(player, move);
+			tempMoves.get(time).put(player, move);
 		}
 
 		public MoveSequence buildMoveSequence() {
-			return new MoveSequence(moves);
+			MoveSequence result = new MoveSequence(tempMoves);
+			return result;
 		}
 
 		private Move createMove(GdlTerm player, GdlTerm action) {
@@ -172,19 +169,19 @@ public class MoveSequence {
 		}
 
 		private void initiateMovesUntil(int time) {
-			for (int i = 0; i < time; i++) {
-				if (moves.size() <= i || moves.get(i) == null) {
-					if (moves.size() == i) {
-						moves.add(new HashMap<GdlTerm, Move>());
+			for (int i = 0; i <= time; i++) {
+				if (tempMoves.size() <= i || tempMoves.get(i) == null) {
+					if (tempMoves.size() == i) {
+						tempMoves.add(new HashMap<GdlTerm, Move>());
 					} else {
-						moves.set(i, new HashMap<GdlTerm, Move>());
+						tempMoves.set(i, new HashMap<GdlTerm, Move>());
 					}
 				}
 			}
 		}
 
 		private boolean hasInitiatedMovesOn(int time) {
-			return moves.size() > time && moves.get(time) != null;
+			return tempMoves.size() > time && tempMoves.get(time) != null;
 		}
 
 	}

@@ -1,12 +1,15 @@
 package playid;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.ggp.base.player.gamer.exception.GamePreviewException;
 import org.ggp.base.player.gamer.statemachine.StateMachineGamer;
 import org.ggp.base.util.game.Game;
+import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.match.Match;
 import org.ggp.base.util.statemachine.Move;
+import org.ggp.base.util.statemachine.Role;
 import org.ggp.base.util.statemachine.StateMachine;
 import org.ggp.base.util.statemachine.exceptions.GoalDefinitionException;
 import org.ggp.base.util.statemachine.exceptions.MoveDefinitionException;
@@ -37,18 +40,25 @@ public class PlayIdPlayer extends StateMachineGamer {
 		Match match = getMatch();
 		processor = new PlayIdProcessor(match.getGame(), getRole());
 	}
-
+	
 	@Override
 	public Move stateMachineSelectMove(long arg0)
 			throws TransitionDefinitionException, MoveDefinitionException,
 			GoalDefinitionException {
-		MoveSequence moveSequence;
 		try {
-			moveSequence = processor.calculateNextMove(MoveSequence.MoveSequenceBuilder.fromTermListList(getMatch().getMoveHistory()));
+			List<List<GdlTerm>> matchHistory = getMatch().getMoveHistory();
+			List<Role> roles = getStateMachine().getRoles();
+			
+			MoveSequence moveHistory = MoveSequence.MoveSequenceBuilder.fromTermListList(matchHistory, roles);
+			MoveSequence plannedMoveSequence = processor.calculateNextMove(moveHistory);
+			
+			log(plannedMoveSequence);
+			
+			Move moveToPlay = plannedMoveSequence.getMove(matchHistory.size(), getRoleName());
+			return new Move(moveToPlay.getContents().toSentence().get(1));
 		} catch (IOException e) {
 			throw new RuntimeException("PLAYID HAD AN EXCEPTION!", e);
 		}
-		return moveSequence.getMove(moveSequence.getAmountOfMoves()-1, getRoleName());
 	}
 
 	@Override
@@ -58,12 +68,17 @@ public class PlayIdPlayer extends StateMachineGamer {
 
 	@Override
 	public String getName() {
-		return "PlayId v0.1";
+		return "PlayID v0.1";
 	}
 
 	@Override
 	public void preview(Game arg0, long arg1) throws GamePreviewException {
 		//EMPTY
 	}
+	
+	
+	private void log(Object msg) {
+		System.out.println("PLAYID: " + msg.toString());
+	} 
 
 }
