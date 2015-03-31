@@ -25,25 +25,36 @@ public class IdpCaller {
 	public String callIdp(File file) throws IOException, IdpConnectionException {
 
 		List<String> commandChain = new ArrayList<String>();
+        ProcessBuilder builder;
+        StringBuilder idpCommand = new StringBuilder();
 
-		// Start commandline in windows
 		if (OSUtil.isWindows()) {
+            // Start commandline in windows
 			commandChain.addAll(Arrays.asList("cmd.exe", "/c"));
-		}
+            // Form idp command prefix
+            idpCommand.append("idp ");
+            if (!displayWarnings) {
+                idpCommand.append("--nowarnings ");
+            }
+		} else {
+            // Add idp command and parameters to the commandchain
+            commandChain.add("idp");
+            if (!displayWarnings) {
+                commandChain.add("--nowarnings");
+            }
+        }
 
-		// Build idp command
-		StringBuilder idpCommand = new StringBuilder();
-		idpCommand.append("idp");
-		if (!displayWarnings) {
-			idpCommand.append(" --nowarnings");
-		}
-		idpCommand.append(" " + file.getAbsolutePath());
+		idpCommand.append(file.getAbsolutePath());
 		
-		//Add idp command to commandchain
+		//Add idp command/filename to commandchain
 		commandChain.add(idpCommand.toString());
 
 		// Create process builder
-		ProcessBuilder builder = new ProcessBuilder(commandChain);
+        if (OSUtil.isWindows()) {
+            builder = new ProcessBuilder(commandChain);
+        } else {
+            builder = new ProcessBuilder(commandChain);
+        }
 		builder.redirectErrorStream(true); // TODO dit op false?
 
 		//Start process
