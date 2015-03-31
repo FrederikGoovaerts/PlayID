@@ -8,12 +8,15 @@ import java.util.Map;
 
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlPool;
+import org.ggp.base.util.gdl.grammar.GdlRelation;
+import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.statemachine.Move;
 
 public class MoveSequence {
-	private static final MoveSequence EMPTY_MOVESEQUENCE = MoveSequence.createBuilder().buildMoveSequence();
-	
+	private static final MoveSequence EMPTY_MOVESEQUENCE = MoveSequence
+			.createBuilder().buildMoveSequence();
+
 	private List<Map<GdlTerm, Move>> moves = new ArrayList<>();
 
 	private MoveSequence(List<Map<GdlTerm, Move>> moves) {
@@ -42,11 +45,11 @@ public class MoveSequence {
 	public int getLastTurnNumber() {
 		return moves.size();
 	}
-	
+
 	public static MoveSequence empty() {
 		return EMPTY_MOVESEQUENCE;
 	}
-	
+
 	public static MoveSequenceBuilder createBuilder() {
 		return new MoveSequenceBuilder();
 	}
@@ -83,6 +86,29 @@ public class MoveSequence {
 
 		public MoveSequenceBuilder() {
 			this(new ArrayList<>());
+		}
+
+		public static MoveSequence fromTermListList(List<List<GdlTerm>> moves) {
+			MoveSequenceBuilder builder = new MoveSequenceBuilder();
+			for (int i = 0; i < moves.size(); i++) {
+				List<GdlTerm> actionsAtMoment = moves.get(i);
+				for (int j = 0; j < moves.get(i).size(); j++) {
+					GdlSentence actionPred = actionsAtMoment.get(j)
+							.toSentence();
+					if (!(actionPred instanceof GdlRelation)
+							|| ((GdlRelation) actionPred).getName()
+									.equals("do") || actionPred.arity() < 2) {
+						throw new IllegalArgumentException(
+								"Given actions are not valid: " + actionPred);
+					}
+
+					GdlTerm player = actionPred.getBody().get(0);
+					GdlTerm action = actionPred.getBody().get(1);
+					
+					builder.addMove(i, player, action);
+				}
+			}
+			return builder.buildMoveSequence();
 		}
 
 		public void addMove(int time, GdlTerm player, GdlTerm action) {
