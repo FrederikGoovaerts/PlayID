@@ -7,7 +7,6 @@ import java.util.List;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.statemachine.Role;
 
-import playid.domain.communication.output.MoveSequence.MoveSequenceBuilder;
 import playid.domain.fodot.structure.FodotStructure;
 import playid.domain.fodot.structure.elements.functionenum.FodotFunctionEnumeration;
 import playid.domain.fodot.structure.elements.functionenum.elements.FodotFunctionEnumerationElement;
@@ -16,6 +15,8 @@ import playid.domain.fodot.structure.elements.predicateenum.elements.IFodotPredi
 import playid.domain.fodot.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import playid.domain.gdl_transformers.FodotGameFactory;
 import playid.domain.gdl_transformers.GdlVocabulary;
+import playid.domain.gdl_transformers.movesequence.MoveSequence;
+import playid.domain.gdl_transformers.movesequence.MoveSequence.MoveSequenceBuilder;
 import playid.domain.gdl_transformers.second_phase.GdlFodotTransformer;
 
 public class GdlAnswerCalculator {

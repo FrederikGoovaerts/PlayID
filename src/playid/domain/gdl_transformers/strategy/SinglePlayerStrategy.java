@@ -7,7 +7,6 @@ import java.util.List;
 import org.ggp.base.util.game.Game;
 import org.ggp.base.util.statemachine.Role;
 
-import playid.domain.communication.output.MoveSequence;
 import playid.domain.exceptions.idp.IdpConnectionException;
 import playid.domain.exceptions.idp.IdpNonOptimalSolutionException;
 import playid.domain.exceptions.idp.NoValidModelsException;
@@ -15,6 +14,7 @@ import playid.domain.exceptions.idp.OutOfResourcesException;
 import playid.domain.exceptions.idp.UnsatisfiableIdpFileException;
 import playid.domain.fodot.file.IFodotFile;
 import playid.domain.fodot.structure.FodotStructure;
+import playid.domain.gdl_transformers.movesequence.MoveSequence;
 import playid.util.IntegerTypeUtil;
 
 public class SinglePlayerStrategy extends AbstractGameStrategy {

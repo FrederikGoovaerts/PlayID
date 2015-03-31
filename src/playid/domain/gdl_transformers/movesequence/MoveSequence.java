@@ -1,7 +1,8 @@
-package playid.domain.communication.output;
+package playid.domain.gdl_transformers.movesequence;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,14 @@ public class MoveSequence {
 
 		return this.moves.get(time).get(player);
 	}
+	
+	public Collection<Move> getMoves(int time) {
+		if (this.moves.size() < time) {
+			throw new IllegalStateException("No moves recorded for time "
+					+ time + " yet.");
+		}
+		return this.moves.get(time).values();
+	}
 
 	public MoveSequence plus(int time, GdlTerm player, GdlTerm action) {
 		MoveSequenceBuilder builder = createBuilder(this);
@@ -42,7 +51,7 @@ public class MoveSequence {
 		return builder.buildMoveSequence();
 	}
 
-	public int getLastTurnNumber() {
+	public int getAmountOfMoves() {
 		return moves.size();
 	}
 

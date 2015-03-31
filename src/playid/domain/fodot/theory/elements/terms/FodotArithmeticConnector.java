@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import playid.domain.exceptions.fodot.FodotException;
+import playid.domain.fodot.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import playid.domain.fodot.theory.elements.formulas.FodotSentenceElementConnector;
 import playid.domain.fodot.vocabulary.elements.FodotType;
 
@@ -59,6 +60,11 @@ public class FodotArithmeticConnector extends FodotSentenceElementConnector<IFod
 	@Override
 	public int getBindingOrder() {
 		return BINDING_ORDERS.get(getConnector());
+	}
+	
+	@Override @Deprecated
+	public IFodotTypeEnumerationElement toEnumerationElement() {
+		throw new RuntimeException("Can't convert an aggregate to enumeration element");
 	}
 	
 }

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import playid.domain.fodot.general.FodotElement;
 import playid.domain.fodot.general.IFodotElement;
+import playid.domain.fodot.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import playid.domain.fodot.theory.elements.terms.FodotVariable;
 import playid.domain.fodot.theory.elements.terms.IFodotTerm;
 import playid.domain.fodot.vocabulary.elements.FodotType;
@@ -57,6 +58,11 @@ public class FodotAggregate extends FodotElement implements IFodotTerm {
 	@Override
 	public FodotType getType() {
 		return FodotType.INTEGER;
+	}
+
+	@Override @Deprecated
+	public IFodotTypeEnumerationElement toEnumerationElement() {
+		throw new RuntimeException("Can't convert an aggregate to enumeration element");
 	}
 
 

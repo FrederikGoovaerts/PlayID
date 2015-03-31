@@ -7,6 +7,7 @@ import java.util.Set;
 import playid.domain.exceptions.fodot.InvalidTermNameException;
 import playid.domain.fodot.general.FodotElement;
 import playid.domain.fodot.general.IFodotElement;
+import playid.domain.fodot.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import playid.domain.fodot.vocabulary.elements.FodotType;
 import playid.util.NameUtil;
 
@@ -98,6 +99,11 @@ public class FodotVariable extends FodotElement implements IFodotTerm {
 	@Override
 	public Collection<? extends IFodotElement> getDirectFodotElements() {
 		return new HashSet<IFodotElement>();
+	}
+
+	@Override @Deprecated
+	public IFodotTypeEnumerationElement toEnumerationElement() {
+		throw new RuntimeException("Can't convert an aggregate to enumeration element");
 	}
 	
 }

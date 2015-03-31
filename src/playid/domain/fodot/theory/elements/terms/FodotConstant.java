@@ -119,6 +119,7 @@ public class FodotConstant extends FodotElement implements IFodotTerm {
 		}		
 	}
 	
+	@Override
 	public IFodotTypeEnumerationElement toEnumerationElement() {
 		if (getType().isRelatedTo(FodotType.INTEGER)) {
 			return new FodotInteger(this);

@@ -7,13 +7,13 @@ import org.ggp.base.util.game.Game;
 import org.ggp.base.util.statemachine.Role;
 
 import playid.domain.communication.input.IdpFileWriter;
-import playid.domain.communication.output.MoveSequence;
 import playid.domain.exceptions.idp.IdpConnectionException;
 import playid.domain.exceptions.idp.IdpErrorException;
 import playid.domain.exceptions.idp.NoValidModelsException;
 import playid.domain.exceptions.idp.UnsatisfiableIdpFileException;
 import playid.domain.exceptions.playid.PlayIdArgumentException;
 import playid.domain.gdl_transformers.GdlParser;
+import playid.domain.gdl_transformers.movesequence.MoveSequence;
 import playid.domain.gdl_transformers.strategy.GameStrategySelector;
 import playid.domain.gdl_transformers.strategy.IGameStrategy;
 import playid.domain.gdl_transformers.strategy.SinglePlayerStrategy;
