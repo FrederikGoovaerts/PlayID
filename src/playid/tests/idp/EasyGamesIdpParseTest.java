@@ -2,18 +2,22 @@ package playid.tests.idp;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
+import org.ggp.base.util.gdl.grammar.GdlPool;
 import org.junit.Test;
 
 import playid.domain.PlayIdProcessor;
 import playid.domain.communication.input.IdpFileWriter;
+import playid.domain.gdl_transformers.movesequence.MoveSequence;
+import playid.domain.gdl_transformers.movesequence.MoveSequence.MoveSequenceBuilder;
 
 public class EasyGamesIdpParseTest {
 
 
-	private static final String GAMES_LOCATION = "resources/games/";
+	public static final String GAMES_LOCATION = "resources/games/";
 	private static final String DEFAULT_EXTENSION = ".kif";
-	
+
 	protected void process(String gameName) {
 		File toParse = new File(GAMES_LOCATION + gameName + DEFAULT_EXTENSION);
 		PlayIdProcessor processor = new PlayIdProcessor(toParse);
@@ -39,9 +43,9 @@ public class EasyGamesIdpParseTest {
 		process("custom/choice");
 	}
 
-    @Test
-    public void process_buttons_test() {
-        process("singleplayer/buttons");
-    }
+	@Test
+	public void process_buttons_test() {
+		process("singleplayer/buttons");
+	}
 
 }
