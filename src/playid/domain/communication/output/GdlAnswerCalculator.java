@@ -66,10 +66,6 @@ public class GdlAnswerCalculator {
 			IFodotTypeEnumerationElement player = c.getElement(1);
 			IFodotTypeEnumerationElement action = c.getElement(2);
 
-
-			GdlTerm gdlPlayer = getVocabulary().translate(player);
-			GdlTerm gdlAction = getVocabulary().translate(action);
-
 			actions.add(new GdlAction(getVocabulary(), time, player, action));
 		}
 		return new GdlActions(actions, score);

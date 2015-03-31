@@ -11,36 +11,34 @@ import playid.util.OSUtil;
 public class IdpCaller implements IIdpCaller {
 
 	private boolean displayWarnings;
-	
+
 	public IdpCaller(boolean displayWarnings) {
 		this.displayWarnings = displayWarnings;
 	}
-	
+
 	@Override
 	public String callIDP(File file) throws IOException, IdpConnectionException {
 		String fileDirectory = file.getParent();
 		String fileName = file.getName();
 
-		String command = "idp";
+		String idpCommand = "idp";
 
 		if (!displayWarnings) {
-			command = command + " --nowarnings";
+			idpCommand = idpCommand + " --nowarnings";
 		}
-		
-		
+
 		StringBuilder result = new StringBuilder();
 
-		ProcessBuilder builder ;
-        if( OSUtil.isWindows()){
-            builder = new ProcessBuilder(
-				"cmd.exe", "/c", "cd \"" + fileDirectory + "\" && " + command + " " + fileName);
-        } else {
-            builder = new ProcessBuilder(
-                    "idp", fileDirectory + "/" + fileName);
-        }
+		ProcessBuilder builder;
+		if (OSUtil.isWindows()) {
+			String totalCommand = "cd \""
+					+ fileDirectory + "\" && " + idpCommand + " " + fileName;
+			builder = new ProcessBuilder("cmd.exe", "/c", totalCommand);
+		} else {
+			builder = new ProcessBuilder("idp", fileDirectory + "/" + fileName);
+		}
 
-
-		builder.redirectErrorStream(true);
+		builder.redirectErrorStream(true); // TODO dit op false?
 
 		Process p = null;
 		try {
@@ -48,11 +46,14 @@ public class IdpCaller implements IIdpCaller {
 		} catch (IOException e) {
 			throw new IdpConnectionException(e.getMessage());
 		}
-		BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		BufferedReader r = new BufferedReader(new InputStreamReader(
+				p.getInputStream()));
 		String line;
 		while (true) {
 			line = r.readLine();
-			if (line == null) { break; }
+			if (line == null) {
+				break;
+			}
 			result.append(line + "\n");
 		}
 

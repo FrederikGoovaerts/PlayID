@@ -341,6 +341,10 @@ public class GdlFodotTransformer implements GdlTransformer {
 		return maximumPossibleScore;
 	}
 
+	public int getMaximumScoreInteger() {
+		return IntegerTypeUtil.extractValue(getMaximumScore());
+	}
+
 	/*** End of Score subsection ***/
 
 	/*************************************
