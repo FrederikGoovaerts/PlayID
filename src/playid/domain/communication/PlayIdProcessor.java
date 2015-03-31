@@ -32,8 +32,12 @@ public class PlayIdProcessor {
 	 * Constructors
 	 ***********************************************/
 
-	private Game game;
-	private Role role;
+	//ARGUMENTS
+	private final Game game;
+	private final Role role;
+//	private final IGame
+	
+	//VARIABLE MOVES THAT HAPPENED
 	private MoveSequence movesSoFar = new MoveSequenceBuilder()
 			.buildMoveSequence();
 
@@ -52,11 +56,14 @@ public class PlayIdProcessor {
 	/**********************************************
 	 * Process
 	 ***********************************************/
-
+//	public MoveSequence play
+	
+	
 	public GdlActions process(File gdlFile) throws IOException,
 			IdpConnectionException, IdpErrorException,
 			UnsatisfiableIdpFileException, IllegalStateException,
 			NoValidModelsException {
+		
 		GdlParser parser = null;
 		GdlActions actions = null;
 		int amountOfTurns = 1;
