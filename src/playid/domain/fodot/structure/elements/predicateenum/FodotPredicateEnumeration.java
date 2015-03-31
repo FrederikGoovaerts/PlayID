@@ -49,7 +49,7 @@ public class FodotPredicateEnumeration extends FodotEnumeration<IFodotPredicateE
 
     private boolean certTrue = false;
 
-    public void setCT(){
+    public void setCertainlyTrueFlag(){
         if(certFalse) {
             throw new FodotException("Cannot be <ct> and <cf> at the same time!");
         }
@@ -58,11 +58,16 @@ public class FodotPredicateEnumeration extends FodotEnumeration<IFodotPredicateE
 
     private boolean certFalse = false;
 
-    public void setCF(){
+    public void setCertainlyFalseFlag(){
         if(certTrue) {
             throw new FodotException("Cannot be <ct> and <cf> at the same time!");
         }
         certFalse = true;
+    }
+    
+    public void removeCertainlyFlags() {
+    	certFalse = false;
+    	certTrue = false;
     }
 
 	@Override

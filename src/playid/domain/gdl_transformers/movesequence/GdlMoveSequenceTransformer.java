@@ -65,7 +65,10 @@ public class GdlMoveSequenceTransformer {
 			}
 		}
 
-		return new FodotPredicateEnumeration(
+		FodotPredicateEnumeration result =  new FodotPredicateEnumeration(
 				transformer.getDoPredicateDeclaration(), fodotMoves);
+		result.setCertainlyTrueFlag();
+		
+		return result;
 	}
 }
