@@ -8,15 +8,14 @@ import java.io.InputStreamReader;
 import playid.domain.exceptions.idp.IdpConnectionException;
 import playid.util.OSUtil;
 
-public class IdpCaller implements IIdpCaller {
+public class IdpCaller {
 
 	private boolean displayWarnings;
 
 	public IdpCaller(boolean displayWarnings) {
 		this.displayWarnings = displayWarnings;
 	}
-
-	@Override
+	
 	public String callIDP(File file) throws IOException, IdpConnectionException {
 		String fileDirectory = file.getParent();
 		String fileName = file.getName();

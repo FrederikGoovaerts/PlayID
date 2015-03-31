@@ -8,7 +8,6 @@ import java.util.List;
 import org.ggp.base.util.game.Game;
 import org.ggp.base.util.statemachine.Role;
 
-import playid.domain.communication.input.IIdpCaller;
 import playid.domain.communication.input.IdpCaller;
 import playid.domain.communication.input.IdpFileWriter;
 import playid.domain.communication.output.GdlAnswerCalculator;
@@ -116,7 +115,7 @@ public abstract class AbstractGameStrategy implements IGameStrategy{
 
 	protected String callIdp(File idpFile) throws IdpConnectionException,
 	IOException {
-		IIdpCaller caller = new IdpCaller(false);
+		IdpCaller caller = new IdpCaller(false);
 		String idpResult = caller.callIDP(idpFile);
 		return idpResult;
 	}

@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import playid.domain.communication.PlayIdProcessor;
+import playid.domain.PlayIdProcessor;
 import playid.domain.communication.input.IdpFileWriter;
 
 /**

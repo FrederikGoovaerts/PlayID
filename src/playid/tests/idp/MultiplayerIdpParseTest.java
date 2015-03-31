@@ -5,7 +5,7 @@ import org.ggp.base.util.files.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import playid.domain.communication.PlayIdProcessor;
+import playid.domain.PlayIdProcessor;
 import playid.domain.communication.input.IdpFileWriter;
 import playid.domain.exceptions.answer.AnswerException;
 import playid.domain.exceptions.fodot.FodotException;

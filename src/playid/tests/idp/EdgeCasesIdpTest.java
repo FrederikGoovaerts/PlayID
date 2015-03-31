@@ -3,7 +3,7 @@ package playid.tests.idp;
 import java.io.File;
 import java.io.IOException;
 
-import playid.domain.communication.PlayIdProcessor;
+import playid.domain.PlayIdProcessor;
 import playid.domain.communication.input.IdpFileWriter;
 import playid.tests.transformation.EdgeCasesTransformationTest;
 
