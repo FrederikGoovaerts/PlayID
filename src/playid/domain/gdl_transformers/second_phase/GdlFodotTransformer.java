@@ -46,6 +46,7 @@ import playid.domain.gdl_transformers.FodotGameFactory;
 import playid.domain.gdl_transformers.GdlTransformer;
 import playid.domain.gdl_transformers.GdlVocabulary;
 import playid.domain.gdl_transformers.first_phase.data.declarations.GdlPredicateDeclaration;
+import playid.domain.gdl_transformers.movesequence.MoveSequence;
 import playid.domain.gdl_transformers.second_phase.data.FodotCompoundData;
 import playid.domain.gdl_transformers.second_phase.data.FodotNextData;
 import playid.util.FormulaUtil;
@@ -419,6 +420,11 @@ public class GdlFodotTransformer implements GdlTransformer {
 
     public IFodotFile buildFodot(int turnLimit) {
         FodotGameFactory factory = new FodotGameFactory(this,turnLimit);
+        return factory.createFodot();
+    }
+    
+    public IFodotFile buildFodot(int turnLimit, MoveSequence movesSoFar) {
+        FodotGameFactory factory = new FodotGameFactory(this,turnLimit, movesSoFar);
         return factory.createFodot();
     }
 

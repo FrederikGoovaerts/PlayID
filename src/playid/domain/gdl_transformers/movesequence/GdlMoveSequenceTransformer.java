@@ -20,8 +20,8 @@ import playid.domain.gdl_transformers.second_phase.GdlFodotTransformer;
 public class GdlMoveSequenceTransformer {
 	private final GdlFodotTransformer transformer;
 
-	public GdlMoveSequenceTransformer(GdlFodotTransformer vocabulary) {
-		this.transformer = vocabulary;
+	public GdlMoveSequenceTransformer(GdlFodotTransformer transformer) {
+		this.transformer = transformer;
 	}
 
 	public FodotPredicateEnumeration translateMoveSequenceToFodotActions(

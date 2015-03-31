@@ -36,6 +36,8 @@ import playid.domain.fodot.vocabulary.elements.FodotFunctionFullDeclaration;
 import playid.domain.fodot.vocabulary.elements.FodotPredicateDeclaration;
 import playid.domain.fodot.vocabulary.elements.FodotType;
 import playid.domain.fodot.vocabulary.elements.FodotTypeDeclaration;
+import playid.domain.gdl_transformers.movesequence.GdlMoveSequenceTransformer;
+import playid.domain.gdl_transformers.movesequence.MoveSequence;
 import playid.domain.gdl_transformers.second_phase.GdlFodotTransformer;
 import playid.domain.gdl_transformers.second_phase.data.FodotCompoundData;
 import playid.domain.gdl_transformers.second_phase.data.FodotNextData;
@@ -50,15 +52,21 @@ public class FodotGameFactory {
      */
 
     public FodotGameFactory(GdlFodotTransformer source,
-                            int timeLimit) {
+                            int timeLimit, MoveSequence movesSoFar) {
 
         this.source = source;
+        this.movesSoFar = movesSoFar;
         this.doPredicateDeclaration = source.getDoPredicateDeclaration();
         this.terminalTimePredicateDeclaration = source.getTerminalTimePredicateDeclaration();
-        this.turnLimit = timeLimit>=0? timeLimit : DEFAULT_TURN_LIMIT;
+        this.turnLimit = timeLimit>=0 ? timeLimit : DEFAULT_TURN_LIMIT;
         buildDefaultVocItems();
     }
 
+    public FodotGameFactory(GdlFodotTransformer source,
+            int timeLimit) {
+    	this(source, timeLimit, MoveSequence.empty());
+    }
+    
     public FodotGameFactory(GdlFodotTransformer source) {
         this(source, DEFAULT_TURN_LIMIT);
     }
@@ -70,6 +78,7 @@ public class FodotGameFactory {
      */
 
     private GdlFodotTransformer source;
+    private MoveSequence movesSoFar;
 
     private FodotFunctionFullDeclaration startFunctionDeclaration;
     private FodotFunctionFullDeclaration nextFunctionDeclaration;
@@ -621,6 +630,12 @@ public class FodotGameFactory {
                         )
                 );
             }
+        }
+        
+        //IF MOVES HAPPENED, ADD THEM!
+        if (movesSoFar.getAmountOfMoves() > 0) {
+        	GdlMoveSequenceTransformer moveTrans = new GdlMoveSequenceTransformer(source);
+        	toReturn.addElement(moveTrans.translateMoveSequenceToFodotActions(movesSoFar));
         }
 
 

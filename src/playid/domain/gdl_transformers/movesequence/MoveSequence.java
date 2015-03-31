@@ -85,6 +85,33 @@ public class MoveSequence {
 		return builder.toString();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((moves == null) ? 0 : moves.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MoveSequence other = (MoveSequence) obj;
+		if (moves == null) {
+			if (other.moves != null)
+				return false;
+		} else if (!moves.equals(other.moves))
+			return false;
+		return true;
+	}
+
+
+
 	// BUILDER
 	public static class MoveSequenceBuilder {
 		private List<Map<GdlTerm, Move>> moves;
