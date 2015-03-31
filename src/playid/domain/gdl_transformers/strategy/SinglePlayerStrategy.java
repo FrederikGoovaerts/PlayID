@@ -43,7 +43,7 @@ public class SinglePlayerStrategy extends AbstractGameStrategy {
 			// Process results
 			try {
 
-				List<FodotStructure> models = generateModels(parsedFodotFile, fodotFileOutput);	
+				List<FodotStructure> models = getIdpCaller().generateModels(parsedFodotFile);	
 				
 				// Check if we found a model
 				if (models.size() > 0) {
