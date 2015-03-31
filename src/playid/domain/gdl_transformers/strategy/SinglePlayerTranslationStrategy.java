@@ -4,14 +4,16 @@ import org.ggp.base.util.game.Game;
 import org.ggp.base.util.statemachine.Role;
 
 import playid.domain.communication.output.MoveSequence;
-import playid.domain.fodot.file.IFodotFile;
 import playid.domain.gdl_transformers.second_phase.GdlFodotTransformer;
 
-public class SinglePlayerTranslationStrategy implements IGameTranslationStrategy {
+public class SinglePlayerTranslationStrategy extends AbstractTranslationStrategy {
+	
+	public SinglePlayerTranslationStrategy(Game game, Role role) {
+		super(game, role);
+	}
 
 	@Override
-	public IFodotFile translateGame(Game game, Role ownRole,
-			MoveSequence movesSoFar, GdlFodotTransformer transformer) {
+	public MoveSequence playGame(MoveSequence movesSoFar, GdlFodotTransformer transformer) {
 		return null;
 	}
 

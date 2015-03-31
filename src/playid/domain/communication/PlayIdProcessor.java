@@ -117,8 +117,6 @@ public class PlayIdProcessor {
 		return actions;
 	}
 	
-	
-	
 
 	private String callIdp(File idpFile) throws IdpConnectionException,
 			IOException {

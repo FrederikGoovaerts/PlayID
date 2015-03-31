@@ -37,6 +37,10 @@ public class MoveSequence {
 		return builder.buildMoveSequence();
 	}
 
+	public int getLastTurnNumber() {
+		return moves.size();
+	}
+	
 	public static MoveSequenceBuilder createBuilder() {
 		return new MoveSequenceBuilder();
 	}
