@@ -57,7 +57,6 @@ public class PlayIdProcessor {
 			IdpConnectionException, IdpErrorException,
 			UnsatisfiableIdpFileException, IllegalStateException,
 			NoValidModelsException {
-		List<FodotStructure> models = null;
 		GdlParser parser = null;
 		GdlActions actions = null;
 		int amountOfTurns = 1;
@@ -88,17 +87,19 @@ public class PlayIdProcessor {
 			try {
 				IdpResultTransformer resultTransformer = new IdpResultTransformer(
 						parsedFodotFile, idpResult);
-				models = resultTransformer.getModels();
+				List<FodotStructure> models = resultTransformer.getModels();
+
+				// Check if we found a model
 				if (models.size() > 0) {
 					// Transform a solution
 					GdlAnswerCalculator answerer = new GdlAnswerCalculator(
-							role, parser
-									.getFodotTransformer().getGdlVocabulary(),
-							models);
-					actions = answerer.generateActionSequence();
+							role, parser.getFodotTransformer().getGdlVocabulary());
+					actions = answerer.generateActionSequence(models);
 					if (actions.getScore() == IntegerTypeUtil.extractValue(parser.getFodotTransformer().getMaximumScore())) {
 						foundAnswer = true;
 					}
+				} else {
+					throw new NoValidModelsException();					
 				}
 				amountOfTurns += incrementValue++;
 			} catch (UnsatisfiableIdpFileException e) {
@@ -111,11 +112,6 @@ public class PlayIdProcessor {
 							actions.getScore(), IntegerTypeUtil.extractValue(parser.getFodotTransformer().getMaximumScore()));
 				}
 			}
-		}
-
-		// Check if we found a model
-		if (models.size() == 0) {
-			throw new NoValidModelsException();
 		}
 
 		return actions;

@@ -17,18 +17,15 @@ import playid.domain.fodot.structure.elements.typeenum.elements.IFodotTypeEnumer
 import playid.domain.gdl_transformers.FodotGameFactory;
 import playid.domain.gdl_transformers.GdlVocabulary;
 import playid.domain.gdl_transformers.second_phase.GdlFodotTransformer;
-import playid.util.IntegerTypeUtil;
 
 public class GdlAnswerCalculator {
 
-	private List<FodotStructure> models;
-	private GdlVocabulary vocabulary;
-	private Role role;
+	private final GdlVocabulary vocabulary;
+	private final Role role;
 
-	public GdlAnswerCalculator(Role role, GdlVocabulary vocabulary, Collection<? extends FodotStructure> models) {
+	public GdlAnswerCalculator(Role role, GdlVocabulary vocabulary) {
 		this.role = role;
-		setVocabulary(vocabulary);
-		setModels(models);
+		this.vocabulary = vocabulary;
 	}
 
 	
@@ -40,61 +37,15 @@ public class GdlAnswerCalculator {
 		return vocabulary;
 	}
 
-	public void setVocabulary(GdlVocabulary vocabulary) {
-		this.vocabulary = vocabulary;
-	}	
-
 	/**********************************************/
 	
-	
-	/**********************************************
-	 *  Models methods
-	 ***********************************************/
-	private void setModels(Collection<? extends FodotStructure> argModels) {
-		this.models = (isValidModels(argModels) ? new ArrayList<FodotStructure>(argModels)
-				: new ArrayList<FodotStructure>());
-	}
-
-	private boolean isValidModels(Collection<? extends FodotStructure> argModels) {
-		return argModels != null;
-	}
-
-	public List<FodotStructure> getModels() {
-		return new ArrayList<FodotStructure>(models);
-	}
-
-	public void addModel(FodotStructure argModel) {
-		this.models.add(argModel);
-	}
-
-	public void addAllModels(Collection<? extends FodotStructure> argModels) {
-		if (argModels != null) {
-			this.models.addAll(argModels);
-		}
-	}
-
-	public boolean containsModel(FodotStructure model) {
-		return this.models.contains(model);
-	}
-
-	public boolean hasModels() {
-		return !models.isEmpty();
-	}
-
-	public void removeModel(FodotStructure argModel) {
-		this.models.remove(argModel);
-	}
-
-	public int getAmountOfModels() {
-		return this.models.size();
-	}
 	/**********************************************/
 
 	private static final String ACTION_PREDICATE_NAME = GdlFodotTransformer.ACTION_PREDICATE_NAME;
 	private static final String SCORE_FUNCTION_NAME = FodotGameFactory.SCORE_FUNCTION_NAME;
 	
-	public GdlActions generateActionSequence() {		
-		FodotStructure bestModel = getBestModel();
+	public GdlActions generateActionSequence(Collection<? extends FodotStructure> models) {		
+		FodotStructure bestModel = getBestModel(models);
 		if (bestModel == null) {
 			return new GdlActions(new ArrayList<GdlAction>(), 0);
 		}
@@ -127,11 +78,11 @@ public class GdlAnswerCalculator {
 	}
 	
 	
-	public FodotStructure getBestModel() {
-		if (getModels().isEmpty()) {
+	public FodotStructure getBestModel(Collection<? extends FodotStructure> models) {
+		if (models.isEmpty()) {
 			return null;
 		}
-		return getModels().get(0);
+		return models.iterator().next();
 	}
 
 }
