@@ -611,7 +611,7 @@ public class GdlFodotTransformer implements GdlTransformer {
 		IFodotTerm scoreTerm = sentenceTrans.generateTerm(scoreGdlTerm, getScoreType());
 
 		Pair<IFodotTerm, IFodotTerm> score = Pair.of(playerTerm, scoreTerm);
-
+		
 		IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
 
 		Set<FodotVariable> conditionExclusiveVariables = removeTimeVars(condition.getFreeVariables());

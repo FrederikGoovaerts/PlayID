@@ -25,6 +25,7 @@ import playid.domain.exceptions.playid.PlayIdArgumentException;
 import playid.domain.fodot.file.IFodotFile;
 import playid.domain.fodot.structure.FodotStructure;
 import playid.domain.gdl_transformers.GdlParser;
+import playid.util.IntegerTypeUtil;
 
 public class PlayIdProcessor {
 	/**********************************************
@@ -35,8 +36,6 @@ public class PlayIdProcessor {
 	private Role role;
 	private MoveSequence movesSoFar = new MoveSequenceBuilder()
 			.buildMoveSequence();
-
-	// TODO een lijst dat de gespeelde moves bijhoudt
 
 	public PlayIdProcessor(Game argGame, Role argRole) {
 		this.game = argGame;
@@ -67,11 +66,11 @@ public class PlayIdProcessor {
 
 		while (!foundAnswer) {
 			// Convert GDL to IDP
-			parser = new GdlParser(game, amountOfTurns); // TODO: Rename parser
-															// to translator.
-															// Give role and
-															// moves so far
-															// along!
+			parser = new GdlParser(game, amountOfTurns);
+
+			// TODO: Rename parser to translator.
+			// Give role and moves so far along!
+
 			parser.run();
 			IFodotFile parsedFodotFile = parser.getFodotFile();
 
@@ -93,11 +92,11 @@ public class PlayIdProcessor {
 				if (models.size() > 0) {
 					// Transform a solution
 					GdlAnswerCalculator answerer = new GdlAnswerCalculator(
-							parser.getFodotTransformer(), parser
+							role, parser
 									.getFodotTransformer().getGdlVocabulary(),
 							models);
 					actions = answerer.generateActionSequence();
-					if (actions.getScore() == actions.getMaximumScore()) {
+					if (actions.getScore() == IntegerTypeUtil.extractValue(parser.getFodotTransformer().getMaximumScore())) {
 						foundAnswer = true;
 					}
 				}
@@ -109,7 +108,7 @@ public class PlayIdProcessor {
 					throw e;
 				} else {
 					throw new IdpNonOptimalSolutionException(
-							actions.getScore(), actions.getMaximumScore());
+							actions.getScore(), IntegerTypeUtil.extractValue(parser.getFodotTransformer().getMaximumScore()));
 				}
 			}
 		}
@@ -121,6 +120,9 @@ public class PlayIdProcessor {
 
 		return actions;
 	}
+	
+	
+	
 
 	private String callIdp(File idpFile) throws IdpConnectionException,
 			IOException {
@@ -142,6 +144,13 @@ public class PlayIdProcessor {
 	 ***********************************************/
 
 	public static void main(String[] args) throws IOException {
+		validateArguments(args);
+		File gdlFile = new File(args[0]);
+		PlayIdProcessor processor = new PlayIdProcessor(gdlFile);
+		System.out.println(processor.process(gdlFile));
+	}
+	
+	public static void validateArguments(String[] args) {
 		if (args.length <= 0) {
 			throw new PlayIdArgumentException(
 					"Please give the uri of a valid GDL file to the PlayID processor.",
@@ -156,9 +165,6 @@ public class PlayIdProcessor {
 			throw new PlayIdArgumentException(
 					"The given uri must lead to a existing file.");
 		}
-
-		PlayIdProcessor processor = new PlayIdProcessor(gdlFile);
-		System.out.println(processor.process(gdlFile));
 	}
 
 	/**********************************************/

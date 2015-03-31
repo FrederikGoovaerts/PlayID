@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.ggp.base.util.gdl.grammar.GdlTerm;
+import org.ggp.base.util.statemachine.Role;
 
-import playid.domain.communication.gdloutput.IFodotGdlTranslator;
 import playid.domain.communication.output.MoveSequence.MoveSequenceBuilder;
 import playid.domain.fodot.structure.FodotStructure;
 import playid.domain.fodot.structure.elements.functionenum.FodotFunctionEnumeration;
@@ -15,18 +15,19 @@ import playid.domain.fodot.structure.elements.predicateenum.FodotPredicateEnumer
 import playid.domain.fodot.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
 import playid.domain.fodot.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 import playid.domain.gdl_transformers.FodotGameFactory;
+import playid.domain.gdl_transformers.GdlVocabulary;
 import playid.domain.gdl_transformers.second_phase.GdlFodotTransformer;
 import playid.util.IntegerTypeUtil;
 
 public class GdlAnswerCalculator {
 
 	private List<FodotStructure> models;
-	private IFodotGdlTranslator translator;
-	private GdlFodotTransformer transformer;
+	private GdlVocabulary vocabulary;
+	private Role role;
 
-	public GdlAnswerCalculator(GdlFodotTransformer transformer, IFodotGdlTranslator translator, Collection<? extends FodotStructure> models) {
-		this.transformer = transformer;
-		setTranslator(translator);
+	public GdlAnswerCalculator(Role role, GdlVocabulary vocabulary, Collection<? extends FodotStructure> models) {
+		this.role = role;
+		setVocabulary(vocabulary);
 		setModels(models);
 	}
 
@@ -35,12 +36,12 @@ public class GdlAnswerCalculator {
 	 *  Translator
 	 ***********************************************/
 
-	public IFodotGdlTranslator getTranslator() {
-		return translator;
+	public GdlVocabulary getVocabulary() {
+		return vocabulary;
 	}
 
-	public void setTranslator(IFodotGdlTranslator translator) {
-		this.translator = translator;
+	public void setVocabulary(GdlVocabulary vocabulary) {
+		this.vocabulary = vocabulary;
 	}	
 
 	/**********************************************/
@@ -92,19 +93,17 @@ public class GdlAnswerCalculator {
 	private static final String ACTION_PREDICATE_NAME = GdlFodotTransformer.ACTION_PREDICATE_NAME;
 	private static final String SCORE_FUNCTION_NAME = FodotGameFactory.SCORE_FUNCTION_NAME;
 	
-	public GdlActions generateActionSequence() {
-		int maximumScore = IntegerTypeUtil.extractValue(transformer.getMaximumScore());
-		
+	public GdlActions generateActionSequence() {		
 		FodotStructure bestModel = getBestModel();
 		if (bestModel == null) {
-			return new GdlActions(new ArrayList<GdlAction>(), 0, maximumScore);
+			return new GdlActions(new ArrayList<GdlAction>(), 0);
 		}
 		FodotPredicateEnumeration actionEnum = (FodotPredicateEnumeration) bestModel.getElementWithName(ACTION_PREDICATE_NAME);
 		FodotFunctionEnumeration scoreEnum = (FodotFunctionEnumeration) bestModel.getElementWithName(SCORE_FUNCTION_NAME);
 		
 		int score = 0;
 		for (FodotFunctionEnumerationElement el : scoreEnum.getElements()) {
-			if (el.getElement(0).equals(transformer.getOwnRole().toEnumerationElement())) {//Find player 
+			if (el.getElement(0).equals(vocabulary.getConstant(role.getName(), vocabulary.getPlayerType()).toEnumerationElement())) {//Find player 
 				score = Integer.parseInt(el.getReturnValue().toTerm().toCode());
 			}
 		}
@@ -117,14 +116,14 @@ public class GdlAnswerCalculator {
 			IFodotTypeEnumerationElement action = c.getElement(2);
 					
 
-			GdlTerm gdlPlayer = getTranslator().translate(player);
-			GdlTerm gdlAction = getTranslator().translate(action);
+			GdlTerm gdlPlayer = getVocabulary().translate(player);
+			GdlTerm gdlAction = getVocabulary().translate(action);
 			
 			moveSeqBuilder.addMove(time, gdlPlayer, gdlAction);
-			actions.add(new GdlAction(getTranslator(), time, player, action));
+			actions.add(new GdlAction(getVocabulary(), time, player, action));
 		}
 //		return moveSeqBuilder.buildMoveSequence();
-		return new GdlActions(actions, score, maximumScore);
+		return new GdlActions(actions, score);
 	}
 	
 	

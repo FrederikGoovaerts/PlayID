@@ -8,12 +8,10 @@ import playid.util.CollectionPrinter;
 public class GdlActions {
 	private final List<GdlAction> actions;
 	private final int score;
-	private final int maximumScore;
 	
-	public GdlActions(List<GdlAction> actions, int score, int maximumScore) {
+	public GdlActions(List<GdlAction> actions, int score) {
 		this.actions = new ArrayList<>(actions);
 		this.score = score;
-		this.maximumScore = maximumScore;
 	}
 	
 	public List<GdlAction> getActions() {
@@ -24,13 +22,10 @@ public class GdlActions {
 		return score;
 	}
 	
-	public int getMaximumScore() {
-		return maximumScore;
-	}
 	
 	@Override
 	public String toString() {
-		return "SCORE/MAXSCORE: " + score + "/" + getMaximumScore()
+		return "SCORE: " + score 
 				+ "\n"+CollectionPrinter.printStringList("", "", "\n", getActions());
 	}
 	
