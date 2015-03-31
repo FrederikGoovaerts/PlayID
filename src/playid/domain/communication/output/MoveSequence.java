@@ -12,6 +12,8 @@ import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.statemachine.Move;
 
 public class MoveSequence {
+	private static final MoveSequence EMPTY_MOVESEQUENCE = MoveSequence.createBuilder().buildMoveSequence();
+	
 	private List<Map<GdlTerm, Move>> moves = new ArrayList<>();
 
 	private MoveSequence(List<Map<GdlTerm, Move>> moves) {
@@ -39,6 +41,10 @@ public class MoveSequence {
 
 	public int getLastTurnNumber() {
 		return moves.size();
+	}
+	
+	public static MoveSequence empty() {
+		return EMPTY_MOVESEQUENCE;
 	}
 	
 	public static MoveSequenceBuilder createBuilder() {

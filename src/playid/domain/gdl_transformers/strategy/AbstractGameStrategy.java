@@ -78,9 +78,13 @@ public abstract class AbstractGameStrategy implements IGameStrategy{
 		return fodotTransformer;
 	}
 
+	public GdlAnswerCalculator getAnswerCalculator() {
+		return answerCalculator;
+	}
+
+
 
 	//IDP CALLS
-
 	protected String callIdp(File idpFile) throws IdpConnectionException,
 			IOException {
 		IIdpCaller caller = new IdpCaller(false);

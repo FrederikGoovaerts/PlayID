@@ -72,7 +72,7 @@ public class SingleplayerIdpParseTest extends SingleplayerTransformationTest {
 		File toParse = toFile(gameName);
 		PlayIdProcessor processor = new PlayIdProcessor(toParse);
 		try {
-			processor.process(toParse);
+			processor.processSingleplayerGame(toParse);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (GdlTransformationException e) {

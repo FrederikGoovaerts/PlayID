@@ -17,7 +17,7 @@ public class ParticularGameIdpParseTest {
 		File toParse = new File(GAME_PATH);
 		PlayIdProcessor processor = new PlayIdProcessor(toParse);
 		try {
-			processor.process(toParse);
+			processor.processSingleplayerGame(toParse);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

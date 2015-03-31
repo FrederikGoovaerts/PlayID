@@ -24,7 +24,7 @@ public class SuccessfulGamesIdpParseTest {
 		File toParse = new File(GAMES_LOCATION + gameName);
 		PlayIdProcessor processor = new PlayIdProcessor(toParse);
 		try {
-			processor.process(toParse);
+			processor.processSingleplayerGame(toParse);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

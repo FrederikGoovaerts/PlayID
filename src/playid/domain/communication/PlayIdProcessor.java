@@ -2,31 +2,21 @@ package playid.domain.communication;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.ggp.base.util.game.Game;
 import org.ggp.base.util.statemachine.Role;
 
-import playid.domain.communication.input.IIdpCaller;
-import playid.domain.communication.input.IdpCaller;
 import playid.domain.communication.input.IdpFileWriter;
-import playid.domain.communication.output.GdlActions;
-import playid.domain.communication.output.GdlAnswerCalculator;
-import playid.domain.communication.output.IdpResultTransformer;
 import playid.domain.communication.output.MoveSequence;
 import playid.domain.exceptions.idp.IdpConnectionException;
 import playid.domain.exceptions.idp.IdpErrorException;
-import playid.domain.exceptions.idp.IdpNonOptimalSolutionException;
 import playid.domain.exceptions.idp.NoValidModelsException;
-import playid.domain.exceptions.idp.OutOfResourcesException;
 import playid.domain.exceptions.idp.UnsatisfiableIdpFileException;
 import playid.domain.exceptions.playid.PlayIdArgumentException;
-import playid.domain.fodot.file.IFodotFile;
-import playid.domain.fodot.structure.FodotStructure;
 import playid.domain.gdl_transformers.GdlParser;
 import playid.domain.gdl_transformers.strategy.GameStrategySelector;
 import playid.domain.gdl_transformers.strategy.IGameStrategy;
-import playid.util.IntegerTypeUtil;
+import playid.domain.gdl_transformers.strategy.SinglePlayerStrategy;
 
 public class PlayIdProcessor {
 	/**********************************************
@@ -58,88 +48,15 @@ public class PlayIdProcessor {
 		return strategy.calculateNextMove(movesSoFar);
 	}
 	
-	
-	public GdlActions process(File gdlFile) throws IOException,
+	//TODO: Remove file argument. Find way to store temporal files.
+	public MoveSequence processSingleplayerGame(File gdlFile) throws IOException,
 			IdpConnectionException, IdpErrorException,
 			UnsatisfiableIdpFileException, IllegalStateException,
 			NoValidModelsException {
-		
-		GdlParser parser = null;
-		GdlActions actions = null;
-		int amountOfTurns = 1;
-		int incrementValue = 1;
-		boolean foundAnswer = false;
-
-		while (!foundAnswer) {
-			// Convert GDL to IDP
-			parser = new GdlParser(game, amountOfTurns);
-
-			// TODO: Rename parser to translator.
-			// Give role and moves so far along!
-
-			parser.run();
-			IFodotFile parsedFodotFile = parser.getFodotFile();
-
-			// Create IDPfile in same location as GDL file
-			File idpFile = IdpFileWriter.createIDPFileBasedOn(gdlFile);
-			IdpFileWriter.writeToIDPFile(parsedFodotFile, idpFile);
-
-			// Make IDP solve it
-			String idpResult = callIdp(idpFile);
-
-			// TEMPORAL IDP BUG FIX TODO delete me when warning is fixed
-			idpResult = fixResult(idpResult);
-
-			// Process results
-			try {
-				IdpResultTransformer resultTransformer = new IdpResultTransformer(
-						parsedFodotFile, idpResult);
-				List<FodotStructure> models = resultTransformer.getModels();
-
-				// Check if we found a model
-				if (models.size() > 0) {
-					// Transform a solution
-					GdlAnswerCalculator answerer = new GdlAnswerCalculator(
-							role, parser.getFodotTransformer().getGdlVocabulary());
-					actions = answerer.generateActionSequence(models);
-					if (actions.getScore() == IntegerTypeUtil.extractValue(parser.getFodotTransformer().getMaximumScore())) {
-						foundAnswer = true;
-					}
-				} else {
-					throw new NoValidModelsException();					
-				}
-				amountOfTurns += incrementValue++;
-			} catch (UnsatisfiableIdpFileException e) {
-				amountOfTurns += incrementValue++;
-			} catch (OutOfResourcesException e) {
-				if (actions == null) {
-					throw e;
-				} else {
-					throw new IdpNonOptimalSolutionException(
-							actions.getScore(), IntegerTypeUtil.extractValue(parser.getFodotTransformer().getMaximumScore()));
-				}
-			}
-		}
-
-		return actions;
+		File outputFile = IdpFileWriter.createIDPFileBasedOn(gdlFile);
+		return new SinglePlayerStrategy(game, role).calculateBestSolution(outputFile);
 	}
 	
-
-	private String callIdp(File idpFile) throws IdpConnectionException,
-			IOException {
-		IIdpCaller caller = new IdpCaller(false);
-		String idpResult = caller.callIDP(idpFile);
-		return idpResult;
-	}
-
-	private String fixResult(String idpResult) {
-		String stupidWarning = "Warning: XSB support is not available. Option xsb is ignored.\n\n";
-		if (idpResult.contains(stupidWarning)) {
-			idpResult = idpResult.replaceAll(stupidWarning, "");
-		}
-		return idpResult;
-	}
-
 	/**********************************************
 	 * Main method
 	 ***********************************************/
@@ -148,7 +65,7 @@ public class PlayIdProcessor {
 		validateArguments(args);
 		File gdlFile = new File(args[0]);
 		PlayIdProcessor processor = new PlayIdProcessor(gdlFile);
-		System.out.println(processor.process(gdlFile));
+		System.out.println(processor.processSingleplayerGame(gdlFile));
 	}
 	
 	public static void validateArguments(String[] args) {
