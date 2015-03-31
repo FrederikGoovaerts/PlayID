@@ -18,8 +18,6 @@ import playid.util.ParserUtil;
 
 /**
  * This class will read the results of IDP and puts it in useful maps
- * @author Thomas
- *
  */
 public class IdpResultTransformer {
 	private String textualResult;

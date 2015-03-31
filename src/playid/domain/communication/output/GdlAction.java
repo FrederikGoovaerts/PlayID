@@ -9,6 +9,7 @@ import org.ggp.base.util.gdl.grammar.GdlTerm;
 import playid.domain.communication.gdloutput.IFodotGdlTranslator;
 import playid.domain.fodot.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
 
+@Deprecated
 public class GdlAction {
 	private IFodotGdlTranslator translator;
 	private int time;

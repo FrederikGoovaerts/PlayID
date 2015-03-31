@@ -5,6 +5,7 @@ import java.util.List;
 
 import playid.util.CollectionPrinter;
 
+@Deprecated
 public class GdlActions {
 	private final List<GdlAction> actions;
 	private final int score;
