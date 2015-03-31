@@ -15,7 +15,7 @@ import playid.domain.gdl_transformers.first_phase.GdlTypeIdentifier;
 import playid.domain.gdl_transformers.second_phase.GdlFodotTransformer;
 import playid.domain.gdl_transformers.visitor.GdlInspector;
 
-public abstract class AbstractTGameStrategy implements IGameStrategy{
+public abstract class AbstractGameStrategy implements IGameStrategy{
 
 	//ARGUMENTS
 	private final Game game;
@@ -27,7 +27,7 @@ public abstract class AbstractTGameStrategy implements IGameStrategy{
 	private final GdlFodotTransformer fodotTransformer;
 	private final GdlAnswerCalculator answerCalculator;
 	
-	public AbstractTGameStrategy(Game game, Role role) {
+	public AbstractGameStrategy(Game game, Role role) {
 		super();
 		this.game = game;
 		this.role = role;

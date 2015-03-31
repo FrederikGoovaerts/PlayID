@@ -14,7 +14,6 @@ import playid.domain.communication.output.GdlActions;
 import playid.domain.communication.output.GdlAnswerCalculator;
 import playid.domain.communication.output.IdpResultTransformer;
 import playid.domain.communication.output.MoveSequence;
-import playid.domain.communication.output.MoveSequence.MoveSequenceBuilder;
 import playid.domain.exceptions.idp.IdpConnectionException;
 import playid.domain.exceptions.idp.IdpErrorException;
 import playid.domain.exceptions.idp.IdpNonOptimalSolutionException;
@@ -25,6 +24,8 @@ import playid.domain.exceptions.playid.PlayIdArgumentException;
 import playid.domain.fodot.file.IFodotFile;
 import playid.domain.fodot.structure.FodotStructure;
 import playid.domain.gdl_transformers.GdlParser;
+import playid.domain.gdl_transformers.strategy.GameStrategySelector;
+import playid.domain.gdl_transformers.strategy.IGameStrategy;
 import playid.util.IntegerTypeUtil;
 
 public class PlayIdProcessor {
@@ -35,16 +36,13 @@ public class PlayIdProcessor {
 	//ARGUMENTS
 	private final Game game;
 	private final Role role;
-//	private final IGame
-	
-	//VARIABLE MOVES THAT HAPPENED
-	private MoveSequence movesSoFar = new MoveSequenceBuilder()
-			.buildMoveSequence();
+	private final IGameStrategy strategy;
 
 	public PlayIdProcessor(Game argGame, Role argRole) {
 		this.game = argGame;
 		this.role = argRole != null ? argRole : GdlParser
 				.findFirstRole(argGame);
+		this.strategy = GameStrategySelector.selectStrategy(game, role);
 	}
 
 	public PlayIdProcessor(File gdlFile) {
@@ -56,7 +54,9 @@ public class PlayIdProcessor {
 	/**********************************************
 	 * Process
 	 ***********************************************/
-//	public MoveSequence play
+	public MoveSequence calculateNextMove(MoveSequence movesSoFar) {
+		return strategy.calculateNextMove(movesSoFar);
+	}
 	
 	
 	public GdlActions process(File gdlFile) throws IOException,
