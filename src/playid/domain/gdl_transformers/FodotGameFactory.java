@@ -41,9 +41,6 @@ import playid.domain.gdl_transformers.second_phase.data.FodotCompoundData;
 import playid.domain.gdl_transformers.second_phase.data.FodotNextData;
 import playid.util.FormulaUtil;
 
-/**
- * @author Frederik Goovaerts <frederik.goovaerts@student.kuleuven.be>
- */
 public class FodotGameFactory {
 
     /**
@@ -53,21 +50,17 @@ public class FodotGameFactory {
      */
 
     public FodotGameFactory(GdlFodotTransformer source,
-                            FodotPredicateDeclaration doPred,
-                            FodotPredicateDeclaration terminalPred,
                             int timeLimit) {
 
         this.source = source;
-        this.doPredicateDeclaration = doPred;
-        this.terminalTimePredicateDeclaration = terminalPred;
-        this.turnLimit = timeLimit;
+        this.doPredicateDeclaration = source.getDoPredicateDeclaration();
+        this.terminalTimePredicateDeclaration = source.getTerminalTimePredicateDeclaration();
+        this.turnLimit = timeLimit>=0? timeLimit : DEFAULT_TURN_LIMIT;
         buildDefaultVocItems();
     }
 
-    public FodotGameFactory(GdlFodotTransformer source,
-                            FodotPredicateDeclaration doPred,
-                            FodotPredicateDeclaration terminalPred) {
-        this(source, doPred, terminalPred, DEFAULT_TURN_LIMIT);
+    public FodotGameFactory(GdlFodotTransformer source) {
+        this(source, DEFAULT_TURN_LIMIT);
     }
 
     /**

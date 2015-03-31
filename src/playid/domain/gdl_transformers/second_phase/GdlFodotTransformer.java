@@ -15,7 +15,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ggp.base.util.Pair;
-import org.ggp.base.util.gdl.grammar.*;
+import org.ggp.base.util.gdl.grammar.GdlConstant;
+import org.ggp.base.util.gdl.grammar.GdlFunction;
+import org.ggp.base.util.gdl.grammar.GdlPool;
+import org.ggp.base.util.gdl.grammar.GdlProposition;
+import org.ggp.base.util.gdl.grammar.GdlRelation;
+import org.ggp.base.util.gdl.grammar.GdlRule;
+import org.ggp.base.util.gdl.grammar.GdlSentence;
+import org.ggp.base.util.gdl.grammar.GdlTerm;
+import org.ggp.base.util.gdl.grammar.GdlVariable;
 
 import playid.domain.exceptions.gdl.GdlParsingOrderException;
 import playid.domain.exceptions.gdl.GdlTransformationException;
@@ -300,6 +308,15 @@ public class GdlFodotTransformer implements GdlTransformer {
 	 */
 
 	private FodotPredicateDeclaration terminalTimePredicateDeclaration;
+	
+	public FodotPredicateDeclaration getTerminalTimePredicateDeclaration() {
+		return terminalTimePredicateDeclaration;
+	}
+
+	public void setTerminalTimePredicateDeclaration(
+			FodotPredicateDeclaration terminalTimePredicateDeclaration) {
+		this.terminalTimePredicateDeclaration = terminalTimePredicateDeclaration;
+	}
 
 	Set<IFodotFormula> terminalSet;
 
@@ -397,17 +414,11 @@ public class GdlFodotTransformer implements GdlTransformer {
 	}
 
 	public IFodotFile buildFodot() {
-		FodotGameFactory factory = new FodotGameFactory(this,
-				getDoPredicateDeclaration(),
-				terminalTimePredicateDeclaration);
-		return factory.createFodot();
+		return buildFodot(-1);
 	}
 
     public IFodotFile buildFodot(int turnLimit) {
-        FodotGameFactory factory = new FodotGameFactory(this,
-                getDoPredicateDeclaration(),
-                terminalTimePredicateDeclaration,
-                turnLimit);
+        FodotGameFactory factory = new FodotGameFactory(this,turnLimit);
         return factory.createFodot();
     }
 
