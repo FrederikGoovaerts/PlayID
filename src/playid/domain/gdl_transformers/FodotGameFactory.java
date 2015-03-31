@@ -638,7 +638,6 @@ public class FodotGameFactory {
         	toReturn.addElement(moveTrans.translateMoveSequenceToFodotActions(movesSoFar));
         }
 
-
         return toReturn;
     }
 

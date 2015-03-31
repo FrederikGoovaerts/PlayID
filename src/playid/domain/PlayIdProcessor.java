@@ -43,8 +43,9 @@ public class PlayIdProcessor {
 
 	/**********************************************
 	 * Process
+	 * @throws IOException 
 	 ***********************************************/
-	public MoveSequence calculateNextMove(MoveSequence movesSoFar) {
+	public MoveSequence calculateNextMove(MoveSequence movesSoFar) throws IOException {
 		return strategy.calculateNextMove(movesSoFar);
 	}
 	

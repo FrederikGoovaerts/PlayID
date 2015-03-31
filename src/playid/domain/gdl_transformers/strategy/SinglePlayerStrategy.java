@@ -23,14 +23,8 @@ public class SinglePlayerStrategy extends AbstractGameStrategy {
 		super(game, role);
 	}
 
-	@Override
-	public MoveSequence calculateNextMove(MoveSequence movesSoFar) {
-		
-		//TODO manier om de movessofar mee te geven aan de fodottransformer.
-		return null;
-	}
-
-	public MoveSequence calculateBestSolution(File fodotFileOutput) throws IdpConnectionException, IOException {
+	
+	private MoveSequence calculateMove(MoveSequence movesSoFar, boolean requiresMaximumScore) throws IOException {
 		MoveSequence moves = null;
 		int ownScore = -1;
 		int amountOfTurns = 1;
@@ -38,7 +32,7 @@ public class SinglePlayerStrategy extends AbstractGameStrategy {
 		boolean foundAnswer = false;
 
 		while (!foundAnswer) {
-			IFodotFile parsedFodotFile = getFodotTransformer().buildFodot(amountOfTurns); 
+			IFodotFile parsedFodotFile = getFodotTransformer().buildFodot(amountOfTurns, movesSoFar); 
 
 			// Process results
 			try {
@@ -54,7 +48,7 @@ public class SinglePlayerStrategy extends AbstractGameStrategy {
 					
 					moves = getAnswerCalculator().extractMoveSequence(firstModel);
 					ownScore = getAnswerCalculator().getScoreOf(getRole(), firstModel);
-					if (ownScore == getFodotTransformer().getMaximumScoreInteger()) {
+					if (!requiresMaximumScore || ownScore == getFodotTransformer().getMaximumScoreInteger()) {
 						foundAnswer = true;
 					} else {
 						//Increment maximum amount of turns
@@ -76,5 +70,14 @@ public class SinglePlayerStrategy extends AbstractGameStrategy {
 		}
 
 		return moves;
+	}
+	
+	@Override
+	public MoveSequence calculateNextMove(MoveSequence movesSoFar) throws IOException {
+		return calculateMove(movesSoFar, false);
+	}
+
+	public MoveSequence calculateBestSolution(File fodotFileOutput) throws IdpConnectionException, IOException {
+		return calculateMove(MoveSequence.empty(), true);
 	}
 }
