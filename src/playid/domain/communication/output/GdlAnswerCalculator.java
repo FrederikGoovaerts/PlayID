@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.statemachine.Role;
 
@@ -83,7 +84,7 @@ public class GdlAnswerCalculator {
 			IFodotTypeEnumerationElement action = c.getElement(2);
 
 
-			GdlTerm gdlPlayer = getVocabulary().translate(player);
+			GdlConstant gdlPlayer = (GdlConstant) getVocabulary().translate(player);
 			GdlTerm gdlAction = getVocabulary().translate(action);
 
 			moveSeqBuilder.addMove(time, gdlPlayer, gdlAction);

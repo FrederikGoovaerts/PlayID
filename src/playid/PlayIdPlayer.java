@@ -54,8 +54,8 @@ public class PlayIdPlayer extends StateMachineGamer {
 			
 			log(plannedMoveSequence);
 			
-			Move moveToPlay = plannedMoveSequence.getMove(matchHistory.size(), getRoleName());
-			return new Move(moveToPlay.getContents().toSentence().get(1));
+			Move moveToPlay = plannedMoveSequence.getMove(matchHistory.size(), getRole());
+			return new Move(moveToPlay.getContents());
 		} catch (IOException e) {
 			throw new RuntimeException("PLAYID HAD AN EXCEPTION!", e);
 		}

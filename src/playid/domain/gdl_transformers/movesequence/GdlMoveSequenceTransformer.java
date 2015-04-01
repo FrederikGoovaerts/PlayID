@@ -2,12 +2,13 @@ package playid.domain.gdl_transformers.movesequence;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.ggp.base.util.gdl.grammar.GdlConstant;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.statemachine.Move;
+import org.ggp.base.util.statemachine.Role;
 
 import playid.domain.fodot.FodotElementBuilder;
 import playid.domain.fodot.structure.elements.predicateenum.FodotPredicateEnumeration;
@@ -35,17 +36,13 @@ public class GdlMoveSequenceTransformer {
 			
 			//Save the current time in a variable
 			IFodotTypeEnumerationElement time = FodotElementBuilder
-					.createInteger(i).toEnumerationElement();
-			Collection<Move> movesAtMoment = moves.getMoves(i);
+					.createInteger(i).toEnumerationElement();			
 			
-			
-			for (Move move : movesAtMoment) {
+			for (Map.Entry<Role, Move> entry : moves.getMoves(i)) {
 				
 				//Extract GDL contents: player&action
-				GdlTerm doPred = move.getContents();
-				GdlConstant gdlPlayer = (GdlConstant) doPred.toSentence()
-						.get(0);
-				GdlTerm gdlAction = doPred.toSentence().get(1);
+				GdlConstant gdlPlayer = entry.getKey().getName();
+				GdlTerm gdlAction = entry.getValue().getContents();
 
 				//Translate gdl player&action to fodot player&action
 				IFodotTypeEnumerationElement fodotPlayer = actionTranslator

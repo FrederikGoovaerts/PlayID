@@ -28,7 +28,7 @@ public class SinglePlayerStrategy extends AbstractGameStrategy {
 		MoveSequence moves = null;
 		int ownScore = -1;
 		int amountOfTurns = movesSoFar.getAmountOfMoves() + 1;
-		int incrementValue = 1;
+		int incrementValue = requiresMaximumScore ? 1 : 8;
 		boolean foundAnswer = false;
 
 		while (!foundAnswer) {
