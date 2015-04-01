@@ -114,9 +114,9 @@ public class GdlParser {
 		setFodotTransformer( new GdlFodotTransformer(this.gdlVocabulary) );
 		GdlInspector.inspect( game, getFodotTransformer() );
         if(this.turnLimit >0) {
-            setFodot( getFodotTransformer().buildFodot(turnLimit) );
+            setFodot( getFodotTransformer().buildFodot(findFirstRole(game), turnLimit) );
         } else {
-            setFodot(getFodotTransformer().buildFodot());
+            setFodot(getFodotTransformer().buildFodot(findFirstRole(game)));
         }
 
 		

@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.ggp.base.util.Pair;
 import org.ggp.base.util.gdl.grammar.GdlProposition;
+import org.ggp.base.util.statemachine.Role;
 
 import playid.domain.fodot.comments.FodotComment;
 import playid.domain.fodot.file.IFodotFile;
@@ -38,6 +39,7 @@ import playid.domain.fodot.vocabulary.elements.FodotType;
 import playid.domain.fodot.vocabulary.elements.FodotTypeDeclaration;
 import playid.domain.gdl_transformers.movesequence.GdlMoveSequenceTransformer;
 import playid.domain.gdl_transformers.movesequence.MoveSequence;
+import playid.domain.gdl_transformers.second_phase.GdlFodotSentenceTransformer;
 import playid.domain.gdl_transformers.second_phase.GdlFodotTransformer;
 import playid.domain.gdl_transformers.second_phase.data.FodotCompoundData;
 import playid.domain.gdl_transformers.second_phase.data.FodotNextData;
@@ -51,24 +53,26 @@ public class FodotGameFactory {
      * ************************************************************************
      */
 
-    public FodotGameFactory(GdlFodotTransformer source,
+    public FodotGameFactory(GdlFodotTransformer source, Role role,
                             int timeLimit, MoveSequence movesSoFar) {
 
         this.source = source;
         this.movesSoFar = movesSoFar;
+        this.role = role;
+        
         this.doPredicateDeclaration = source.getDoPredicateDeclaration();
         this.terminalTimePredicateDeclaration = source.getTerminalTimePredicateDeclaration();
         this.turnLimit = timeLimit>=0 ? timeLimit : DEFAULT_TURN_LIMIT;
         buildDefaultVocItems();
     }
 
-    public FodotGameFactory(GdlFodotTransformer source,
+    public FodotGameFactory(GdlFodotTransformer source, Role role,
             int timeLimit) {
-    	this(source, timeLimit, MoveSequence.empty());
+    	this(source, role, timeLimit, MoveSequence.empty());
     }
     
-    public FodotGameFactory(GdlFodotTransformer source) {
-        this(source, DEFAULT_TURN_LIMIT);
+    public FodotGameFactory(GdlFodotTransformer source, Role role) {
+        this(source, role, DEFAULT_TURN_LIMIT);
     }
 
     /**
@@ -79,6 +83,7 @@ public class FodotGameFactory {
 
     private GdlFodotTransformer source;
     private MoveSequence movesSoFar;
+    private Role role;
 
     private FodotFunctionFullDeclaration startFunctionDeclaration;
     private FodotFunctionFullDeclaration nextFunctionDeclaration;
@@ -646,7 +651,10 @@ public class FodotGameFactory {
     private List<FodotTermDefinition> buildTerms(FodotVocabulary voc) {
         List<FodotTermDefinition> result = new ArrayList<>();
 
-        FodotFunction playerScore = createFunction(scoreFunctionDeclaration, source.getOwnRole());
+        GdlFodotSentenceTransformer sentenceTransformer = new GdlFodotSentenceTransformer(source);
+        
+        FodotFunction playerScore = createFunction(scoreFunctionDeclaration,
+        		sentenceTransformer.generateConstant(role.getName(), source.getPlayerType()));
 
         //OLD!
 //		/**

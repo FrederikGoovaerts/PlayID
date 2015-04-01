@@ -32,7 +32,7 @@ public class SinglePlayerStrategy extends AbstractGameStrategy {
 		boolean foundAnswer = false;
 
 		while (!foundAnswer) {
-			IFodotFile parsedFodotFile = getFodotTransformer().buildFodot(amountOfTurns, movesSoFar); 
+			IFodotFile parsedFodotFile = getFodotTransformer().buildFodot(getRole(), amountOfTurns, movesSoFar); 
 
 			// Process results
 			try {

@@ -24,6 +24,7 @@ import org.ggp.base.util.gdl.grammar.GdlRule;
 import org.ggp.base.util.gdl.grammar.GdlSentence;
 import org.ggp.base.util.gdl.grammar.GdlTerm;
 import org.ggp.base.util.gdl.grammar.GdlVariable;
+import org.ggp.base.util.statemachine.Role;
 
 import playid.domain.exceptions.gdl.GdlParsingOrderException;
 import playid.domain.exceptions.gdl.GdlTransformationException;
@@ -157,13 +158,13 @@ public class GdlFodotTransformer implements GdlTransformer {
 		//getPlayerType().addDomainElement(role);
 	}
 
-	public FodotConstant getOwnRole() {
-		if (ownRole == null) {
-			throw new GdlTransformationException("No roles present in this class!");
-		} else {
-			return ownRole;
-		}
-	}
+//	public FodotConstant getOwnRole() {
+//		if (ownRole == null) {
+//			throw new GdlTransformationException("No roles present in this class!");
+//		} else {
+//			return ownRole;
+//		}
+//	}
 
 	public FodotConstant convertRole(GdlConstant term){
 		return getGdlVocabulary().getConstant(term, getPlayerType());
@@ -414,17 +415,16 @@ public class GdlFodotTransformer implements GdlTransformer {
 
 	}
 
-	public IFodotFile buildFodot() {
-		return buildFodot(-1);
+	public IFodotFile buildFodot(Role role) {
+		return buildFodot(role, -1);
 	}
 
-    public IFodotFile buildFodot(int turnLimit) {
-        FodotGameFactory factory = new FodotGameFactory(this,turnLimit);
-        return factory.createFodot();
+    public IFodotFile buildFodot(Role role, int turnLimit) {
+        return buildFodot(role, turnLimit, MoveSequence.empty());
     }
     
-    public IFodotFile buildFodot(int turnLimit, MoveSequence movesSoFar) {
-        FodotGameFactory factory = new FodotGameFactory(this,turnLimit, movesSoFar);
+    public IFodotFile buildFodot(Role role, int turnLimit, MoveSequence movesSoFar) {
+        FodotGameFactory factory = new FodotGameFactory(this,role, turnLimit, movesSoFar);
         return factory.createFodot();
     }
 

@@ -2,15 +2,11 @@ package playid.tests.idp;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
-import org.ggp.base.util.gdl.grammar.GdlPool;
 import org.junit.Test;
 
 import playid.domain.PlayIdProcessor;
 import playid.domain.communication.input.IdpFileWriter;
-import playid.domain.gdl_transformers.movesequence.MoveSequence;
-import playid.domain.gdl_transformers.movesequence.MoveSequence.MoveSequenceBuilder;
 
 public class EasyGamesIdpParseTest {
 
