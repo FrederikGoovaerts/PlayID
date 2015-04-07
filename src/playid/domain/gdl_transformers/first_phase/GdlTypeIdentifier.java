@@ -97,10 +97,10 @@ public class GdlTypeIdentifier {
 		initDefaultPredicate(terminalPred,	new ArrayList<FodotType>(),					true);
 		initDefaultPredicate(truePred,		Arrays.asList(unfilledType),				true);
 
-		registerDynamicPredicate(doesPred);
-		registerDynamicPredicate(legalPred);
-		registerDynamicPredicate(terminalPred);
-		registerDynamicPredicate(goalPred);
+		registerDynamicRelation(doesPred);
+		registerDynamicRelation(legalPred);
+		registerDynamicRelation(terminalPred);
+		registerDynamicRelation(goalPred);
 
 		defaultPredicates = Arrays.asList(distinctPred, doesPred, goalPred, initPred, legalPred, nextPred, rolePred, terminalPred, truePred);
 		unfilledDefaultPredicates = Arrays.asList(distinctPred, initPred, nextPred, truePred);
@@ -211,6 +211,12 @@ public class GdlTypeIdentifier {
 		GdlPredicateDeclaration declaration = new GdlPredicateDeclaration( predicate );
 		addArgumentListOccurrence(declaration);
 	}
+	
+	public void addPropositionOccurrence(GdlRule rule,
+			GdlProposition proposition) {
+		// TODO : Implement this?
+		propositions.add(proposition);
+	}
 
 	private void addTermOccurrence(IGdlTermDeclaration decl, IGdlArgumentListDeclaration directParent, int argumentIndex) {		
 		//Initialize list if first occurrence of constant
@@ -300,22 +306,22 @@ public class GdlTypeIdentifier {
 	/**********************************************
 	 *  Dynamic predicates
 	 ***********************************************/
-	public void registerDynamicPredicate(GdlRelation predicate) {
-		registerDynamicPredicate(new GdlPredicateDeclaration(predicate));
+	public void registerDynamicRelation(GdlSentence predicate) {
+		registerDynamicRelation(new GdlPredicateDeclaration(predicate));
 	}
 
-	public void registerDynamicPredicate(GdlPredicateDeclaration predicate) {
+	public void registerDynamicRelation(GdlPredicateDeclaration predicate) {
 		if (!argumentLists.containsKey(predicate)) {
 			initArgumentList(predicate);
 		}
 		dynamicPredicates.add(predicate);		
 	}
 
-	public boolean isDynamicPredicate(GdlRelation predicate) {
-		return isDynamicPredicate(new GdlPredicateDeclaration(predicate));
+	public boolean isDynamicSentence(GdlSentence predicate) {
+		return isDynamicSentence(new GdlPredicateDeclaration(predicate));
 	}
 
-	public boolean isDynamicPredicate(GdlPredicateDeclaration predicate) {
+	public boolean isDynamicSentence(GdlPredicateDeclaration predicate) {
 		return dynamicPredicates.contains(predicate);
 	}
 	/**********************************************/
@@ -587,5 +593,6 @@ public class GdlTypeIdentifier {
 		return new GdlTypeIdentifierTransformer(this);
 	}
 	/**********************************************/
+
 
 }

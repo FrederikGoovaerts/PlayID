@@ -54,7 +54,6 @@ public class GdlVocabulary implements IFodotGdlTranslator {
 		this.dynamicPredicates = dynamicPredicates;
         this.propositions = propositions;
 		this.structureElements = new LinkedHashSet<IFodotStructureElement>(structureElements);
-
 		initialiseInverseMaps();
 	}
 

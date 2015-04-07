@@ -23,6 +23,7 @@ import playid.domain.gdl_transformers.first_phase.data.declarations.GdlFunctionD
 import playid.domain.gdl_transformers.first_phase.data.declarations.GdlPredicateDeclaration;
 import playid.domain.gdl_transformers.first_phase.data.declarations.IGdlArgumentListDeclaration;
 import playid.util.GdlClassCorrectionUtil;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * This class will be used to visit the relations and rules.
@@ -55,25 +56,25 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 	@Override
 	public void processInitRelation(GdlRelation relation) {
 
-        GdlTerm argument = relation.get(0);
+		GdlTerm argument = relation.get(0);
 
-        if (argument instanceof GdlConstant) {
-            GdlProposition argumentProposition = GdlClassCorrectionUtil.convertToProposition((GdlConstant) argument);
+		if (argument instanceof GdlConstant) {
+			GdlProposition argumentProposition = GdlClassCorrectionUtil.convertToProposition((GdlConstant) argument);
 
-            identifier.registerProposition(argumentProposition);
-        } else if (argument instanceof GdlFunction) {
-            GdlRelation argumentRelation = GdlClassCorrectionUtil.convertToPredicate(argument);
+			identifier.registerProposition(argumentProposition);
+		} else if (argument instanceof GdlFunction) {
+			GdlRelation argumentRelation = GdlClassCorrectionUtil.convertToPredicate(argument);
 
-            //Visit argument
-            getIdentifier().addPredicateOccurrence(null, argumentRelation);
-            visitPredicateArguments(null, argumentRelation);
+			//Visit argument
+			getIdentifier().addPredicateOccurrence(null, argumentRelation);
+			visitPredicateArguments(null, argumentRelation);
 
-            //Make argument dynamic
-            getIdentifier().registerDynamicPredicate(argumentRelation);
-        } else {
-            throw new GdlTypeIdentificationError("Argument was neither Constant nor Function!");
-        }
-    }
+			//Make argument dynamic
+			getIdentifier().registerDynamicRelation(argumentRelation);
+		} else {
+			throw new GdlTypeIdentificationError("Argument was neither Constant nor Function!");
+		}
+	}
 
 	@Override
 	public void processStaticPredicateRelation(GdlRelation relation) {
@@ -93,8 +94,8 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 	 ***********************************************/
 	@Override
 	public void processNextRule(GdlRule rule) {
-        GdlTerm argument = rule.getHead().get(0);
-        visitDynamicHead(rule, argument);
+		GdlTerm argument = rule.getHead().get(0);
+		visitDynamicHead(rule, argument);
 
 
 		visitRuleBody(rule);
@@ -102,11 +103,11 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 
 	@Override
 	public void processInitRule(GdlRule rule) {
-        GdlTerm argument = rule.getHead().get(0);
-        visitDynamicHead(rule, argument);
+		GdlTerm argument = rule.getHead().get(0);
+		visitDynamicHead(rule, argument);
 		visitRuleBody(rule);
 	}
-	
+
 	@Override
 	public void processLegalRule(GdlRule rule) {
 		visitRule(rule);
@@ -131,23 +132,32 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 
 	//Helper
 	private void visitRule(GdlRule rule) {
-		GdlRelation relation = GdlClassCorrectionUtil.convertToPredicate(rule.getHead());
+		GdlSentence head = rule.getHead();
+
 		//If the head is dynamic, then so is the rule
-		if (getIdentifier().isDynamicPredicate(relation)) {
+		if (getIdentifier().isDynamicSentence(head)) {
 			getIdentifier().registerTimeDependent(rule);
 		}
 		
-		getIdentifier().addPredicateOccurrence(rule, relation);
-		visitPredicateArguments(rule, relation);
+		
+		if (head.arity() == 0) {
+			GdlProposition proposition = (GdlProposition) head;
+			getIdentifier().addPropositionOccurrence(rule, proposition);
+		} else {
+			GdlRelation relation = GdlClassCorrectionUtil.convertToPredicate(head);
+
+			getIdentifier().addPredicateOccurrence(rule, relation);
+			visitPredicateArguments(rule, relation);
+		}
 		visitRuleBody(rule);
-	
+
 		//If the body turned out to be dynamic, then so is the head
 		if (getIdentifier().isTimeDependentRule(rule)) {
-			getIdentifier().registerDynamicPredicate(relation);
+			getIdentifier().registerDynamicRelation(head);
 		}
-		
+
 	}
-	
+
 	private void visitRuleBody(GdlRule rule) {
 		GdlRuleBodyVisitor bodyVisitor = new GdlRuleBodyVisitor(rule);
 		bodyVisitor.visitBodyElements();
@@ -155,22 +165,25 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 
 	private void visitDynamicHead(GdlRule rule, GdlTerm argument) {
 		if (argument instanceof GdlConstant) {
-            GdlProposition argumentProposition =
-                    GdlClassCorrectionUtil.convertToProposition((GdlConstant)argument);
+			GdlProposition argumentProposition =
+					GdlClassCorrectionUtil.convertToProposition((GdlConstant)argument);
 
-            getIdentifier().registerProposition(argumentProposition);
-        } else {
-            //Visit argument
+			getIdentifier().registerProposition(argumentProposition);
+		} else if (argument instanceof GdlVariable) {
+			//TODO implement this. Crissrace_test gives a nice example. Variables for predicates are being used.
+			throw new NotImplementedException();
+		} else {
 
-            GdlRelation argumentRelation = GdlClassCorrectionUtil.convertToPredicate(argument);
+			//Visit argument
+			GdlRelation argumentRelation = GdlClassCorrectionUtil.convertToPredicate(argument);
 
-            //Visit argument
-            getIdentifier().addPredicateOccurrence(rule, argumentRelation);
-            visitPredicateArguments(rule, argumentRelation);
+			//Visit argument
+			getIdentifier().addPredicateOccurrence(rule, argumentRelation);
+			visitPredicateArguments(rule, argumentRelation);
 
-            //Make argument dynamic
-            getIdentifier().registerDynamicPredicate(argumentRelation);
-        }
+			//Make argument dynamic
+			getIdentifier().registerDynamicRelation(argumentRelation);
+		}
 	}
 	/**********************************************/
 
@@ -234,34 +247,34 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 			} else {
 				getIdentifier().addPredicateOccurrence(rule, predicate);
 				visitPredicateArguments(rule, predicate);
-				if (getIdentifier().isDynamicPredicate(predicate)) {
+				if (getIdentifier().isDynamicSentence(predicate)) {
 					getIdentifier().registerTimeDependent(rule);
 				}
 			}
 		}
 		private void visitTrue(GdlRelation predicate) {
 
-            GdlTerm argument = predicate.get(0);
+			GdlTerm argument = predicate.get(0);
 
-            if (argument instanceof GdlConstant) {
-                GdlProposition argumentProposition =
-                        GdlClassCorrectionUtil.convertToProposition((GdlConstant)argument);
+			if (argument instanceof GdlConstant) {
+				GdlProposition argumentProposition =
+						GdlClassCorrectionUtil.convertToProposition((GdlConstant)argument);
 
-                getIdentifier().registerProposition(argumentProposition);
-            } else {
-                GdlRelation innerPredicate = GdlClassCorrectionUtil.convertToPredicate(argument);
-                visitRelation(innerPredicate);
+				getIdentifier().registerProposition(argumentProposition);
+			} else {
+				GdlRelation innerPredicate = GdlClassCorrectionUtil.convertToPredicate(argument);
+				visitRelation(innerPredicate);
 
-                getIdentifier().registerDynamicPredicate(innerPredicate);
-                getIdentifier().registerTimeDependent(rule);
-            }
+				getIdentifier().registerDynamicRelation(innerPredicate);
+				getIdentifier().registerTimeDependent(rule);
+			}
 		}
 
 		private void visitProposition(GdlProposition proposition) {
 			//Propositions are predicates without arguments.
 			//Hypothese: These are always dynamic, as they don't serve a better purpose
-            getIdentifier().registerProposition(proposition);
-            getIdentifier().registerDynamicPredicate(GdlClassCorrectionUtil.convertToPredicate(proposition));
+			getIdentifier().registerProposition(proposition);
+			getIdentifier().registerDynamicRelation(GdlClassCorrectionUtil.convertToPredicate(proposition));
 		}
 
 	}
