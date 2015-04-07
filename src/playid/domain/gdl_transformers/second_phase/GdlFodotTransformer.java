@@ -634,7 +634,8 @@ public class GdlFodotTransformer implements GdlTransformer {
 		Pair<IFodotTerm, IFodotTerm> score = Pair.of(playerTerm, scoreTerm);
 		
 		IFodotFormula condition = sentenceTrans.generateFodotFormulaFrom(rule.getBody());
-
+		//TODO: Als geen conditie bij goal, da's okay!
+		
 		Set<FodotVariable> conditionExclusiveVariables = removeTimeVars(condition.getFreeVariables());
 		conditionExclusiveVariables.remove(playerTerm);
 		conditionExclusiveVariables.remove(scoreTerm);
