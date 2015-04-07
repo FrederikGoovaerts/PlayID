@@ -40,6 +40,7 @@ import playid.domain.fodot.vocabulary.elements.FodotTypeFunctionDeclaration;
 import playid.domain.gdl_transformers.first_phase.data.declarations.GdlPredicateDeclaration;
 import playid.domain.gdl_transformers.util.VariableRegisterer;
 import playid.util.FormulaUtil;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Make one of these for each sentence you're going to translate.
@@ -172,6 +173,8 @@ public class GdlFodotSentenceTransformer {
 			return generateRole(relation);
 		case "legal":
             return generateLegal(relation);
+		case "goal":
+			return generateGoal(relation);
 		default:
 			// process (*staticpred*) or (*compoundstaticpred*) or (*proposition*)
 
@@ -184,7 +187,6 @@ public class GdlFodotSentenceTransformer {
             } else {
 
                 GdlPredicateDeclaration gdlDeclaration = new GdlPredicateDeclaration(relation);
-
 
                 FodotPredicateDeclaration decl = trans.getGdlVocabulary().getPredicateDeclaration(gdlDeclaration);
 
@@ -228,6 +230,11 @@ public class GdlFodotSentenceTransformer {
 				trans.getDoPredicateDeclaration(),
 				arguments);
 		return actionPredicate;
+	}
+
+	private FodotPredicate generateGoal(GdlRelation relation) {
+		//TODO: implement this.
+		throw new NotImplementedException();
 	}
 
     private FodotPredicate generateLegal(GdlRelation relation) {

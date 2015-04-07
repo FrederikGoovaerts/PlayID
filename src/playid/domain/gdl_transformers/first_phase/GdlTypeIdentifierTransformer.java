@@ -94,28 +94,19 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 	@Override
 	public void processNextRule(GdlRule rule) {
         GdlTerm argument = rule.getHead().get(0);
-        if (argument instanceof GdlConstant) {
-            GdlProposition argumentProposition =
-                    GdlClassCorrectionUtil.convertToProposition((GdlConstant)argument);
-
-            getIdentifier().registerProposition(argumentProposition);
-        } else {
-            //Visit argument
-
-            GdlRelation argumentRelation = GdlClassCorrectionUtil.convertToPredicate(argument);
-
-            //Visit argument
-            getIdentifier().addPredicateOccurrence(rule, argumentRelation);
-            visitPredicateArguments(rule, argumentRelation);
-
-            //Make argument dynamic
-            getIdentifier().registerDynamicPredicate(argumentRelation);
-        }
+        visitDynamicHead(rule, argument);
 
 
 		visitRuleBody(rule);
 	}
 
+	@Override
+	public void processInitRule(GdlRule rule) {
+        GdlTerm argument = rule.getHead().get(0);
+        visitDynamicHead(rule, argument);
+		visitRuleBody(rule);
+	}
+	
 	@Override
 	public void processLegalRule(GdlRule rule) {
 		visitRule(rule);
@@ -160,6 +151,26 @@ class GdlTypeIdentifierTransformer implements GdlTransformer {
 	private void visitRuleBody(GdlRule rule) {
 		GdlRuleBodyVisitor bodyVisitor = new GdlRuleBodyVisitor(rule);
 		bodyVisitor.visitBodyElements();
+	}
+
+	private void visitDynamicHead(GdlRule rule, GdlTerm argument) {
+		if (argument instanceof GdlConstant) {
+            GdlProposition argumentProposition =
+                    GdlClassCorrectionUtil.convertToProposition((GdlConstant)argument);
+
+            getIdentifier().registerProposition(argumentProposition);
+        } else {
+            //Visit argument
+
+            GdlRelation argumentRelation = GdlClassCorrectionUtil.convertToPredicate(argument);
+
+            //Visit argument
+            getIdentifier().addPredicateOccurrence(rule, argumentRelation);
+            visitPredicateArguments(rule, argumentRelation);
+
+            //Make argument dynamic
+            getIdentifier().registerDynamicPredicate(argumentRelation);
+        }
 	}
 	/**********************************************/
 

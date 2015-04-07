@@ -665,6 +665,12 @@ public class GdlFodotTransformer implements GdlTransformer {
 	}
 
 	@Override
+	public void processInitRule(GdlRule rule) {
+		//TODO: Init map maken zoals next map
+		
+	}
+
+	@Override
 	public void processTerminalRule(GdlRule rule) {
 		if(!rule.getHead().getName().getValue().equals("terminal"))
 			throw new IllegalArgumentException("Rule is not a terminal rule!");

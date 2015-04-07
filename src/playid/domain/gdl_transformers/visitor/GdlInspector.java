@@ -125,6 +125,9 @@ public class GdlInspector extends GdlVisitor{
             case "input":
                 //ignore this for now
                 break;
+            case "init":
+            	this.getTransformer().processInitRule(rule);
+            	break;
             default:
                 this.getTransformer().processDefinitionRule(rule);
                 break;

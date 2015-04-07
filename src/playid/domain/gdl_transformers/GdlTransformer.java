@@ -37,7 +37,9 @@ public interface GdlTransformer {
 
     void processTerminalRule(GdlRule rule);
 
-    void processDefinitionRule(GdlRule rule); 	
+    void processDefinitionRule(GdlRule rule);
+
+	void processInitRule(GdlRule rule); 	
 
 	/**********************************************/
 
