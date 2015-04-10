@@ -72,8 +72,10 @@ public class PlayIdPlayer extends StateMachineGamer {
 	}
 
 	@Override
-	public void preview(Game arg0, long arg1) throws GamePreviewException {
-		//EMPTY
+	public void preview(Game game, long time) throws GamePreviewException {
+//		if (processor == null || !processor.getGame().equals(game)){
+//			proces
+//		}
 	}
 	
 	

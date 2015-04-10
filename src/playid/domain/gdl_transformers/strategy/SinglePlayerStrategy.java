@@ -19,6 +19,8 @@ import playid.util.IntegerTypeUtil;
 
 public class SinglePlayerStrategy extends AbstractGameStrategy {
 
+	private static final int DEFAULT_EXTRA_TURNS = 15;
+	
 	public SinglePlayerStrategy(Game game, Role role) {
 		super(game, role);
 	}
@@ -27,8 +29,8 @@ public class SinglePlayerStrategy extends AbstractGameStrategy {
 	private MoveSequence calculateMove(MoveSequence movesSoFar, boolean requiresMaximumScore) throws IOException {
 		MoveSequence moves = null;
 		int ownScore = -1;
-		int amountOfTurns = movesSoFar.getAmountOfMoves() + 1;
-		int incrementValue = requiresMaximumScore ? 1 : 8;
+		int amountOfTurns = movesSoFar.getAmountOfMoves() + 1 + (requiresMaximumScore ? 0 : DEFAULT_EXTRA_TURNS);
+		int incrementValue = 1;
 		boolean foundAnswer = false;
 
 		while (!foundAnswer) {

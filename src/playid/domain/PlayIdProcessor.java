@@ -41,6 +41,22 @@ public class PlayIdProcessor {
 
 	/**********************************************/
 
+	/*-********************************************-*
+	 *  Getters
+	 *-********************************************-*/
+	public Game getGame() {
+		return game;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public IGameStrategy getStrategy() {
+		return strategy;
+	}
+	/*-********************************************-*/
+
 	/**********************************************
 	 * Process
 	 * @throws IOException 
@@ -48,15 +64,15 @@ public class PlayIdProcessor {
 	public MoveSequence calculateNextMove(MoveSequence movesSoFar) throws IOException {
 		return strategy.calculateNextMove(movesSoFar);
 	}
-	
+
 	//TODO: Remove file argument. Find way to store temporal files.
 	public MoveSequence processSingleplayerGame(File outputFile) throws IOException,
-			IdpConnectionException, IdpErrorException,
-			UnsatisfiableIdpFileException, IllegalStateException,
-			NoValidModelsException {
+	IdpConnectionException, IdpErrorException,
+	UnsatisfiableIdpFileException, IllegalStateException,
+	NoValidModelsException {
 		return new SinglePlayerStrategy(game, role).calculateBestSolution(outputFile);
 	}
-	
+
 	/**********************************************
 	 * Main method
 	 ***********************************************/
@@ -65,11 +81,11 @@ public class PlayIdProcessor {
 		validateArguments(args);
 		File gdlFile = new File(args[0]);
 		PlayIdProcessor processor = new PlayIdProcessor(gdlFile);
-		
+
 		File outputFile = IdpFileWriter.createIDPFileBasedOn(gdlFile);
 		System.out.println(processor.processSingleplayerGame(outputFile));
 	}
-	
+
 	public static void validateArguments(String[] args) {
 		if (args.length <= 0) {
 			throw new PlayIdArgumentException(
