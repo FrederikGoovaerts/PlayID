@@ -23,6 +23,10 @@ public class PlayIdPlayer extends StateMachineGamer {
 
 	private PlayIdProcessor processor;
 	
+	public PlayIdPlayer() {
+		importantLog("A NEW PLAYER WAS CREATED");
+	}
+	
 	@Override
 	public StateMachine getInitialStateMachine() {
 		 return new ProverStateMachine();
@@ -38,23 +42,27 @@ public class PlayIdPlayer extends StateMachineGamer {
 			throws TransitionDefinitionException, MoveDefinitionException,
 			GoalDefinitionException {
 		Match match = getMatch();
-		processor = new PlayIdProcessor(match.getGame(), getRole());
+		createProcessor(match.getGame());
 	}
 	
 	@Override
 	public Move stateMachineSelectMove(long arg0)
 			throws TransitionDefinitionException, MoveDefinitionException,
 			GoalDefinitionException {
+		log("A new move is requested");
 		try {
 			List<List<GdlTerm>> matchHistory = getMatch().getMoveHistory();
 			List<Role> roles = getStateMachine().getRoles();
 			
 			MoveSequence moveHistory = MoveSequence.MoveSequenceBuilder.fromTermListList(matchHistory, roles);
+			log("HISTORY:", moveHistory.toString().trim());
 			MoveSequence plannedMoveSequence = processor.calculateNextMove(moveHistory);
 			
-			log(plannedMoveSequence);
+			log("PLANNED:", plannedMoveSequence.toString().trim());
 			
 			Move moveToPlay = plannedMoveSequence.getMove(matchHistory.size(), getRole());
+			
+			log("SUBMIT MOVE", moveToPlay.getContents());
 			return new Move(moveToPlay.getContents());
 		} catch (IOException e) {
 			throw new RuntimeException("PLAYID HAD AN EXCEPTION!", e);
@@ -73,14 +81,27 @@ public class PlayIdPlayer extends StateMachineGamer {
 
 	@Override
 	public void preview(Game game, long time) throws GamePreviewException {
-//		if (processor == null || !processor.getGame().equals(game)){
-//			proces
-//		}
+		
+		createProcessor(game);
 	}
 	
+	public void createProcessor(Game game) {
+		if (processor == null || !processor.getGame().equals(game)) {
+			importantLog(" A NEW PROCESSOR HAS BEEN SET");
+			processor = new PlayIdProcessor(game, getRole());
+		}
+	}
 	
-	private void log(Object msg) {
-		System.out.println("PLAYID: " + msg.toString());
+	private void importantLog(String message) {
+		System.err.println("PLAYID: " + message);
+	}
+	
+	private void log(Object... messages) {
+		System.out.println("______________PLAYID______________");
+		for (Object msg : messages) {
+			System.out.println( msg.toString());
+		}
+		System.out.println("같같같같같같같ENDMSG같같같같같같같\n\n");
 	} 
 
 }

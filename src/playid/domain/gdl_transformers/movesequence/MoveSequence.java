@@ -74,13 +74,11 @@ public class MoveSequence {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Moves:\n");
 		for (int i = 0; i < moves.size(); i++) {
 			for (Map.Entry<Role,Move> entry : moves.get(i).entrySet()) {
 				builder.append(i + ": " + entry.getKey() + ": " + entry.getValue() + "\n");
 			}
 		}
-		builder.append("\n");
 		return builder.toString();
 	}
 
