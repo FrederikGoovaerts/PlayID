@@ -21,20 +21,23 @@ import playid.domain.gdl_transformers.movesequence.MoveSequence;
 
 public class PlayIdPlayer extends StateMachineGamer {
 
+	private boolean logNormalMessages = true;
+	private boolean logImportantMessages = true;
+
 	private PlayIdProcessor processor;
-	
+
 	public PlayIdPlayer() {
-		importantLog("A NEW PLAYER WAS CREATED");
+		log("A NEW PLAYER WAS CREATED");
 	}
-	
+
 	@Override
 	public StateMachine getInitialStateMachine() {
-		 return new ProverStateMachine();
+		return new ProverStateMachine();
 	}
 
 	@Override
 	public void stateMachineAbort() {
-		//EMPTY
+		// EMPTY
 	}
 
 	@Override
@@ -44,24 +47,27 @@ public class PlayIdPlayer extends StateMachineGamer {
 		Match match = getMatch();
 		createProcessor(match.getGame());
 	}
-	
+
 	@Override
 	public Move stateMachineSelectMove(long arg0)
 			throws TransitionDefinitionException, MoveDefinitionException,
 			GoalDefinitionException {
-		log("A new move is requested");
+		log("NEXT MOVE IS REQUESTED");
 		try {
 			List<List<GdlTerm>> matchHistory = getMatch().getMoveHistory();
 			List<Role> roles = getStateMachine().getRoles();
-			
-			MoveSequence moveHistory = MoveSequence.MoveSequenceBuilder.fromTermListList(matchHistory, roles);
+
+			MoveSequence moveHistory = MoveSequence.MoveSequenceBuilder
+					.fromTermListList(matchHistory, roles);
 			log("HISTORY:", moveHistory.toString().trim());
-			MoveSequence plannedMoveSequence = processor.calculateNextMove(moveHistory);
-			
+			MoveSequence plannedMoveSequence = processor
+					.calculateNextMove(moveHistory);
+
 			log("PLANNED:", plannedMoveSequence.toString().trim());
-			
-			Move moveToPlay = plannedMoveSequence.getMove(matchHistory.size(), getRole());
-			
+
+			Move moveToPlay = plannedMoveSequence.getMove(matchHistory.size(),
+					getRole());
+
 			log("SUBMIT MOVE", moveToPlay.getContents());
 			return new Move(moveToPlay.getContents());
 		} catch (IOException e) {
@@ -71,7 +77,7 @@ public class PlayIdPlayer extends StateMachineGamer {
 
 	@Override
 	public void stateMachineStop() {
-		//EMPTY
+		// EMPTY
 	}
 
 	@Override
@@ -81,27 +87,31 @@ public class PlayIdPlayer extends StateMachineGamer {
 
 	@Override
 	public void preview(Game game, long time) throws GamePreviewException {
-		
+
 		createProcessor(game);
 	}
-	
+
 	public void createProcessor(Game game) {
 		if (processor == null || !processor.getGame().equals(game)) {
-			importantLog(" A NEW PROCESSOR HAS BEEN SET");
+			log("A NEW PROCESSOR HAS BEEN INITIALISED");
 			processor = new PlayIdProcessor(game, getRole());
 		}
 	}
-	
-	private void importantLog(String message) {
-		System.err.println("PLAYID: " + message);
-	}
-	
-	private void log(Object... messages) {
-		System.out.println("______________PLAYID______________");
-		for (Object msg : messages) {
-			System.out.println( msg.toString());
+
+	private void logImportant(String message) {
+		if (logImportantMessages) {
+			System.err.println("PLAYID: " + message);
 		}
-		System.out.println("같같같같같같같ENDMSG같같같같같같같\n\n");
-	} 
+	}
+
+	private void log(Object... messages) {
+		if (logNormalMessages) {
+			System.out.println("______________PLAYID______________");
+			for (Object msg : messages) {
+				System.out.println(msg.toString());
+			}
+			System.out.println("같같같같같같같ENDMSG같같같같같같같\n\n");
+		}
+	}
 
 }
