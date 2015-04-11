@@ -62,7 +62,7 @@ import playid.util.IntegerTypeUtil;
  */
 public class GdlFodotTransformer implements GdlTransformer {
 
-	public static final String ACTION_PREDICATE_NAME = "do";
+	public static final String ACTION_PREDICATE_NAME = "does";
 	public static final String LEGAL_MOVE_PREDICATE_NAME = "legal";
 
 	/***************************************************************************
