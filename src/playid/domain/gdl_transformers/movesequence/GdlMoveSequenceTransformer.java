@@ -30,7 +30,6 @@ public class GdlMoveSequenceTransformer {
 	public FodotPredicateEnumeration translateMoveSequenceToFodotActions(
 			MoveSequence moves) {
 
-		System.out.println(moves);
 		List<IFodotPredicateEnumerationElement> fodotMoves = new ArrayList<>();
 		GdlFodotSentenceTransformer actionTranslator = new GdlFodotSentenceTransformer(
 				transformer);
