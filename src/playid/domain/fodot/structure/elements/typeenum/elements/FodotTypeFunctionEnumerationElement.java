@@ -2,13 +2,11 @@ package playid.domain.fodot.structure.elements.typeenum.elements;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 import playid.domain.exceptions.fodot.FodotException;
 import playid.domain.fodot.general.FodotElementList;
-import playid.domain.fodot.general.sorting.FodotElementComparators;
 import playid.domain.fodot.theory.elements.terms.FodotConstant;
 import playid.domain.fodot.theory.elements.terms.FodotFunction;
 import playid.domain.fodot.theory.elements.terms.IFodotTerm;
