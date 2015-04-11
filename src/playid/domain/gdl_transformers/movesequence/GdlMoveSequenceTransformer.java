@@ -15,8 +15,10 @@ import playid.domain.fodot.structure.elements.predicateenum.FodotPredicateEnumer
 import playid.domain.fodot.structure.elements.predicateenum.elements.FodotPredicateEnumerationElement;
 import playid.domain.fodot.structure.elements.predicateenum.elements.IFodotPredicateEnumerationElement;
 import playid.domain.fodot.structure.elements.typeenum.elements.IFodotTypeEnumerationElement;
+import playid.domain.fodot.theory.elements.terms.IFodotTerm;
 import playid.domain.gdl_transformers.second_phase.GdlFodotSentenceTransformer;
 import playid.domain.gdl_transformers.second_phase.GdlFodotTransformer;
+
 
 public class GdlMoveSequenceTransformer {
 	private final GdlFodotTransformer transformer;
@@ -28,18 +30,19 @@ public class GdlMoveSequenceTransformer {
 	public FodotPredicateEnumeration translateMoveSequenceToFodotActions(
 			MoveSequence moves) {
 
+		System.out.println(moves);
 		List<IFodotPredicateEnumerationElement> fodotMoves = new ArrayList<>();
 		GdlFodotSentenceTransformer actionTranslator = new GdlFodotSentenceTransformer(
 				transformer);
 
 		for (int i = 0; i < moves.getAmountOfMoves(); i++) {
-			
+
 			//Save the current time in a variable
 			IFodotTypeEnumerationElement time = FodotElementBuilder
 					.createInteger(i).toEnumerationElement();			
-			
+
 			for (Map.Entry<Role, Move> entry : moves.getMoves(i)) {
-				
+
 				//Extract GDL contents: player&action
 				GdlConstant gdlPlayer = entry.getKey().getName();
 				GdlTerm gdlAction = entry.getValue().getContents();
@@ -48,13 +51,14 @@ public class GdlMoveSequenceTransformer {
 				IFodotTypeEnumerationElement fodotPlayer = actionTranslator
 						.generateConstant(gdlPlayer,
 								transformer.getPlayerType())
-						.toEnumerationElement();
-				IFodotTypeEnumerationElement fodotAction = actionTranslator
-						.generateTerm(gdlAction, transformer.getActionType())
-						.toEnumerationElement();
+								.toEnumerationElement();
+				IFodotTerm fodotAction = actionTranslator
+				.generateTerm(gdlAction, transformer.getActionType());
+				IFodotTypeEnumerationElement fodotActionEnum = fodotAction.toEnumerationElement();
+				
 
 				List<IFodotTypeEnumerationElement> predicateElements = Arrays
-						.asList(time, fodotPlayer, fodotAction);
+						.asList(time, fodotPlayer, fodotActionEnum);
 
 				// Add to moves
 				fodotMoves.add(new FodotPredicateEnumerationElement(transformer

@@ -55,9 +55,8 @@ public class FodotTypeFunctionEnumerationElement extends
 
 	@Override
 	public String toCode() {
-		List<IFodotTypeEnumerationElement> domainElements = new ArrayList<IFodotTypeEnumerationElement>(getElements());
-		Collections.sort(domainElements, FodotElementComparators.ENUMERATION_ELEMENT_COMPARATOR);
-		return getDeclaration().getName() + CollectionPrinter.toCoupleAsCode(domainElements);
+		String result = getDeclaration().getName() + CollectionPrinter.toCoupleAsCode(getElements());
+		return result;
 	}
 
 	@Override

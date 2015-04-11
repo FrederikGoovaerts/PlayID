@@ -98,13 +98,13 @@ public class PlayIdPlayer extends StateMachineGamer {
 		}
 	}
 
-	private void logImportant(String message) {
+	protected void logImportant(String message) {
 		if (logImportantMessages) {
 			System.err.println("PLAYID: " + message);
 		}
 	}
 
-	private void log(Object... messages) {
+	protected void log(Object... messages) {
 		if (logNormalMessages) {
 			System.out.println("______________PLAYID______________");
 			for (Object msg : messages) {
