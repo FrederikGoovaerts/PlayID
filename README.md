@@ -8,6 +8,11 @@ To run PlayID, you have to give a GDL specification file as an argument to the P
 
 You can generate the translations of all known GDL singleplayer games by running the SinglePlayerTransformationTest (location: fodot.tests.transformation) or can get the answer to all these games by running the SinglePlayerIdpParseTest.java (located in fodot.tests.idp).
 
+Notes
+==================
+The IDP3 bin/-folder has to be in your PATH environment variable to correctly use the PlayID program correctly.
+
+
 Licensing
 ==================
 
